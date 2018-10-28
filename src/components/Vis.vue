@@ -65,8 +65,7 @@ export default {
       this.net.deleteSelected()
     },
     editItem (node, callback) {
-      const payload = this.data.items[node.id] || {type: node.group}
-      this.$emit(`edit-${payload.type}`, payload, payload => {
+      this.$emit('edit-item', this.data.items[node.id] || {type: node.group}, payload => {
         if (!payload) {
           return callback()
         }

@@ -1,14 +1,7 @@
 <template>
   <v-slide-y-transition mode="out-in">
     <div class="canvas-container">
-      <Vis ref="vis"
-        @edit-connection="editConnection"
-        @edit-controller="editController"
-        @edit-dummy="editDummy"
-        @edit-port="editPort"
-        @edit-host="editHost"
-        @edit-switch="editSwitch"
-      />
+      <Vis ref="vis" @edit-item="editItem"/>
       <Edit ref="edit"/>
       <v-speed-dial v-model="fab" bottom right style="position: fixed" open-on-hover>
         <v-btn slot="activator" v-model="fab" color="accent" dark fab>
@@ -53,23 +46,8 @@ export default {
     fab: false
   }),
   methods: {
-    editConnection (data, callback) {
-      this.$refs.edit.edit('connection', data, callback)
-    },
-    editController (data, callback) {
-      this.$refs.edit.edit('controller', data, callback)
-    },
-    editDummy (data, callback) {
-      this.$refs.edit.edit('dummy', data, callback)
-    },
-    editHost (data, callback) {
-      this.$refs.edit.edit('host', data, callback)
-    },
-    editPort (data, callback) {
-      this.$refs.edit.edit('port', data, callback)
-    },
-    editSwitch (data, callback) {
-      this.$refs.edit.edit('switch', data, callback)
+    editItem (item, callback, ...args) {
+      this.$refs.edit.edit(item.type, item, callback)
     }
   }
 }
