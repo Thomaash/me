@@ -148,14 +148,14 @@
         "44d0e3b6-14af-4881-9e2e-9bfdf8fedeb4": {
             "type": "host",
             "hostname": "h1",
-            "x": -339,
-            "y": 177
+            "x": -393,
+            "y": 153
         },
         "0ed365c1-8317-4caf-ac6e-23b9dd8a7cab": {
             "hostname": "eth0",
             "type": "port",
-            "x": -364,
-            "y": 257
+            "x": -418,
+            "y": 233
         },
         "6de3f859-a2ee-448e-bf3e-5c9edc83d1e0": {
             "type": "connection",
@@ -165,8 +165,8 @@
         "5ec8c35d-fde9-4d4a-b3b0-2c31b7abcb35": {
             "hostname": "eth1",
             "type": "port",
-            "x": -314,
-            "y": 257
+            "x": -368,
+            "y": 233
         },
         "b9b88002-7b6d-491b-9d23-28420c5e7cf0": {
             "type": "connection",
@@ -176,14 +176,14 @@
         "0d651e75-aa02-43b6-b281-f2ea01b475b9": {
             "type": "host",
             "hostname": "h2",
-            "x": -200,
-            "y": 177
+            "x": -204,
+            "y": 145
         },
         "1cddc061-24c9-4793-9815-e65e472ca648": {
             "hostname": "eth0",
             "type": "port",
-            "x": -225,
-            "y": 257
+            "x": -229,
+            "y": 225
         },
         "3a0c702a-9044-469a-ba11-f83f1193a111": {
             "type": "connection",
@@ -193,8 +193,8 @@
         "98802b97-c256-4304-8899-1743ba2e2186": {
             "hostname": "eth1",
             "type": "port",
-            "x": -175,
-            "y": 257
+            "x": -179,
+            "y": 225
         },
         "8b590265-8bd4-47ac-bf55-b919fd54bd8d": {
             "type": "connection",
@@ -204,14 +204,14 @@
         "c5581b98-b5c8-4d23-ac97-b33e0a233562": {
             "type": "host",
             "hostname": "h3",
-            "x": 141,
-            "y": 158
+            "x": 130,
+            "y": 157
         },
         "06fd2b5d-02a1-456c-b1bb-ac6b2788c86f": {
             "hostname": "eth0",
             "type": "port",
-            "x": 116,
-            "y": 238
+            "x": 105,
+            "y": 237
         },
         "3e0de79b-ea11-4683-af13-10f0974182f5": {
             "type": "connection",
@@ -221,8 +221,8 @@
         "5fc68b2c-9ebc-42c6-b712-6bea68890749": {
             "hostname": "eth1",
             "type": "port",
-            "x": 166,
-            "y": 238
+            "x": 155,
+            "y": 237
         },
         "e3fb0c68-0e53-42bf-8662-a25e1767707b": {
             "type": "connection",
@@ -232,14 +232,14 @@
         "cc0e01a6-808f-4bc6-9709-07311cbf3ead": {
             "type": "host",
             "hostname": "h4",
-            "x": 271,
-            "y": 155
+            "x": 260,
+            "y": 154
         },
         "dc7c9a65-aaea-4b64-a25e-b9f6afc4f64b": {
             "hostname": "eth0",
             "type": "port",
-            "x": 246,
-            "y": 235
+            "x": 235,
+            "y": 234
         },
         "949d2563-56e4-43b7-9cfe-698cdd8791c1": {
             "type": "connection",
@@ -249,8 +249,8 @@
         "fe34070c-97c1-4678-8e84-22774cff103c": {
             "hostname": "eth1",
             "type": "port",
-            "x": 296,
-            "y": 235
+            "x": 285,
+            "y": 234
         },
         "01170837-63a2-438b-b657-8cce853c57ce": {
             "type": "connection",
@@ -273,7 +273,7 @@
         },
         "6939b9fc-a1a5-4f7d-95c3-1c218f6e8893": {
             "type": "connection",
-            "from": "2d0b0b6d-9684-4250-aab0-9b51ba3c70db",
+            "from": "0836ceee-94d1-4c9a-91c7-1f0bd7004c48",
             "to": "1cddc061-24c9-4793-9815-e65e472ca648"
         },
         "b042bc07-0cde-4609-ae17-8bfcfe3292aa": {
@@ -306,6 +306,48 @@
             "type": "connection",
             "from": "c7140bf4-cd87-48b6-b1fa-f75e42776c1c",
             "to": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e"
+        },
+        "61a275b8-ffe3-466b-99ee-4f02d79d6899": {
+            "type": "dummy",
+            "hostname": "Room B",
+            "x": 202,
+            "y": 55
+        },
+        "0897a214-80f0-49a9-8eb0-43c011e2a516": {
+            "type": "connection",
+            "from": "61a275b8-ffe3-466b-99ee-4f02d79d6899",
+            "to": "cc0e01a6-808f-4bc6-9709-07311cbf3ead"
+        },
+        "841bfc4d-fb35-46ec-b48d-fe3738abb9b4": {
+            "type": "connection",
+            "from": "61a275b8-ffe3-466b-99ee-4f02d79d6899",
+            "to": "c5581b98-b5c8-4d23-ac97-b33e0a233562"
+        },
+        "723c5c87-5ad8-4d1d-8772-57b37dec1d18": {
+            "type": "connection",
+            "from": "61a275b8-ffe3-466b-99ee-4f02d79d6899",
+            "to": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e"
+        },
+        "13a89e01-0bf9-4600-b723-b64355defab6": {
+            "type": "dummy",
+            "hostname": "Room A",
+            "x": -319,
+            "y": 54
+        },
+        "c696ed77-9ce6-46ee-9ad9-cd11bf6d7041": {
+            "type": "connection",
+            "from": "13a89e01-0bf9-4600-b723-b64355defab6",
+            "to": "0d651e75-aa02-43b6-b281-f2ea01b475b9"
+        },
+        "f2d9ccba-e9f0-4e79-aca4-2ef015a2186a": {
+            "type": "connection",
+            "from": "13a89e01-0bf9-4600-b723-b64355defab6",
+            "to": "44d0e3b6-14af-4881-9e2e-9bfdf8fedeb4"
+        },
+        "ccf072c5-df54-4d50-a0c8-e91c5fcebf08": {
+            "type": "connection",
+            "from": "13a89e01-0bf9-4600-b723-b64355defab6",
+            "to": "a41e6c27-1729-425c-b390-87890ed26014"
         }
     }
 }
