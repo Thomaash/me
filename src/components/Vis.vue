@@ -305,7 +305,7 @@ export default {
 
     // network
     this.net = new vis.Network(this.$refs.vis, {nodes, edges}, options)
-    this.net.on('deselectNode', event => {
+    const deselectHandler = event => {
       if (event.event.changedPointers[0].ctrlKey) {
         // Add to selection when ctrl is pressed.
         this.net.setSelection({
@@ -313,7 +313,9 @@ export default {
           edges: [...event.edges, ...event.previousSelection.edges]
         })
       }
-    })
+    }
+    this.net.on('deselectNode', deselectHandler)
+    this.net.on('deselectEdge', deselectHandler)
     this.net.on('doubleClick', event => {
       if (event.nodes.length === 0 && event.edges.length === 1) {
         const id = event.edges[0]
