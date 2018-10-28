@@ -46,8 +46,8 @@ export default {
     fab: false
   }),
   methods: {
-    editItem (item, callback, ...args) {
-      this.$refs.edit.edit(item.type, item, callback)
+    editItem (item, callback) {
+      this.$refs.edit.edit(item, callback)
     }
   }
 }

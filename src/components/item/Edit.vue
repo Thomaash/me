@@ -51,7 +51,8 @@ export default {
     item: {}
   }),
   methods: {
-    edit (type, item, callback) {
+    edit (_, item, callback) {
+      const type = item.type
       this.component = typeComponentMap[type]
       this.headline = typeHeadlineMap[type]
       this.item = JSON.parse(JSON.stringify(item))
