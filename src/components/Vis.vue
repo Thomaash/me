@@ -224,7 +224,8 @@ export default {
           image: controllerImg
         },
         dummy: {
-          color: 'gray'
+          color: 'dimgray',
+          font: {color: 'white'}
         },
         host: {
           shape: 'image',
