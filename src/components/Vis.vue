@@ -305,7 +305,16 @@ export default {
 
     // network
     this.net = new vis.Network(this.$refs.vis, {nodes, edges}, options)
-    this.net.on('doubleClick', (event) => {
+    this.net.on('deselectNode', event => {
+      if (event.event.changedPointers[0].ctrlKey) {
+        // Add to selection when ctrl is pressed.
+        this.net.setSelection({
+          nodes: [...event.nodes, ...event.previousSelection.nodes],
+          edges: [...event.edges, ...event.previousSelection.edges]
+        })
+      }
+    })
+    this.net.on('doubleClick', event => {
       if (event.nodes.length === 0 && event.edges.length === 1) {
         const id = event.edges[0]
         this.editItem(edges.get(id), edge => edge ? edges.update(edge) : null)
@@ -313,7 +322,7 @@ export default {
         this.net.editNode()
       }
     })
-    this.net.on('hold', (event) => {
+    this.net.on('hold', event => {
       if (event.nodes.length === 0 && event.edges.length === 1) {
         this.net.editEdgeMode()
       } else if (event.nodes.length === 1) {
@@ -323,7 +332,7 @@ export default {
         }
       }
     })
-    this.net.on('dragEnd', (event) => {
+    this.net.on('dragEnd', event => {
       if (event.nodes.length > 0) {
         event.nodes.forEach(nodeId => this.commitPosition(nodeId))
       }
