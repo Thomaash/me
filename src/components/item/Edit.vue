@@ -51,7 +51,7 @@ export default {
     item: {}
   }),
   methods: {
-    edit (_, item, callback) {
+    edit (item, callback) {
       const type = item.type
       this.component = typeComponentMap[type]
       this.headline = typeHeadlineMap[type]
