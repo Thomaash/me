@@ -98,8 +98,7 @@ export default {
       const {x, y} = this.net.getPositions([nodeId])[nodeId]
       this.$store.commit('data/updateItem', {
         id: nodeId,
-        x,
-        y
+        item: {x, y}
       })
     },
     orderNodes (edge) {
@@ -129,6 +128,22 @@ export default {
       const src = this.$store.state.data.items[edge.from].type
       const dst = this.$store.state.data.items[edge.to].type
       return edgeTests[type](src, dst)
+    },
+    organizePorts (node) {
+      const ports = this.net.getConnectedNodes(node.id)
+      .map(id => this.nodes.get(id))
+      .filter(node => node.group === 'port')
+
+      const {x, y} = this.net.getPositions([node.id])[node.id]
+      const portY = y + 70
+      const firstX = x - (ports.length - 1) * 50 / 2
+
+      ports.forEach((port, i) => {
+        port.x = firstX + 50 * i
+        port.y = portY
+        this.nodes.update(port)
+        this.commitPosition(port.id)
+      })
     }
   },
   mounted () {
@@ -197,18 +212,14 @@ export default {
               for (let i = 0; i < ports; ++i) {
                 const port = {
                   label: `eth${i}`,
-                  group: 'port',
-                  x: firstX + 50 * i,
-                  y: portY
+                  group: 'port'
                 }
                 nodes.add(port)
                 this.$store.commit('data/setItem', {
                   id: port.id,
                   item: {
                     hostname: port.label,
-                    type: 'port',
-                    x: port.x,
-                    y: port.y
+                    type: 'port'
                   }
                 })
 
@@ -227,6 +238,7 @@ export default {
                   }
                 })
               }
+              this.organizePorts(edited)
             }
           })
         },
@@ -301,6 +313,11 @@ export default {
     this.net.on('hold', (event) => {
       if (event.nodes.length === 0 && event.edges.length === 1) {
         this.net.editEdgeMode()
+      } else if (event.nodes.length === 1) {
+        const node = this.nodes.get(event.nodes[0])
+        if (node.group === 'host' || node.group === 'switch') {
+          this.organizePorts(node)
+        }
       }
     })
     this.net.on('dragEnd', (event) => {

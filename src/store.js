@@ -12,12 +12,10 @@ const data = {
     setItem (state, {id, item}) {
       state.items[id] = item
     },
-    updateItem (state, item) {
-      const saved = state.items[item.id]
+    updateItem (state, {id, item}) {
+      const saved = state.items[id]
       Object.keys(item).forEach(key => {
-        if (key !== 'id') {
-          saved[key] = item[key]
-        }
+        saved[key] = item[key]
       })
     },
     removeItems (state, ids) {
