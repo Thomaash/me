@@ -287,7 +287,7 @@
             "to": "9b90b775-7585-44c1-96e1-9eff18200af5"
         },
         "df9427ad-bf9b-4132-8514-5993f37967a1": {
-            "type": "link",
+            "type": "connection",
             "from": "dc7c9a65-aaea-4b64-a25e-b9f6afc4f64b",
             "to": "5fc68b2c-9ebc-42c6-b712-6bea68890749"
         },
