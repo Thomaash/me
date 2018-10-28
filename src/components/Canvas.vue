@@ -4,6 +4,7 @@
       <Vis ref="vis"
         @edit-connection="editConnection"
         @edit-controller="editController"
+        @edit-dummy="editDummy"
         @edit-port="editPort"
         @edit-host="editHost"
         @edit-switch="editSwitch"
@@ -28,6 +29,9 @@
         </v-btn>
         <v-btn fab dark small color="purple" @click="$refs.vis.addController()">
           <v-icon>developer_board</v-icon>
+        </v-btn>
+        <v-btn fab dark small color="gray" @click="$refs.vis.addDummy()">
+          <v-icon>label</v-icon>
         </v-btn>
         <v-btn fab dark small color="red" @click="$refs.vis.deleteSelected()">
           <v-icon>delete</v-icon>
@@ -54,6 +58,9 @@ export default {
     },
     editController (data, callback) {
       this.$refs.edit.edit('controller', data, callback)
+    },
+    editDummy (data, callback) {
+      this.$refs.edit.edit('dummy', data, callback)
     },
     editHost (data, callback) {
       this.$refs.edit.edit('host', data, callback)

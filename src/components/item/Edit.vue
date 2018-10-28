@@ -19,6 +19,7 @@
 <script>
 import ConnectionEdit from './Connection'
 import ControllerEdit from './Controller'
+import DummyEdit from './Dummy'
 import HostEdit from './Host'
 import PortEdit from './Port'
 import SwitchEdit from './Switch'
@@ -26,6 +27,7 @@ import SwitchEdit from './Switch'
 const typeComponentMap = {
   'connection': 'ConnectionEdit',
   'controller': 'ControllerEdit',
+  'dummy': 'DummyEdit',
   'host': 'HostEdit',
   'port': 'PortEdit',
   'switch': 'SwitchEdit'
@@ -33,6 +35,7 @@ const typeComponentMap = {
 const typeHeadlineMap = {
   'connection': 'Connection',
   'controller': 'Controller',
+  'dummy': 'Label',
   'host': 'Host',
   'port': 'Port',
   'switch': 'Switch'
@@ -40,7 +43,7 @@ const typeHeadlineMap = {
 
 export default {
   name: 'ItemEdit',
-  components: {ConnectionEdit, ControllerEdit, HostEdit, PortEdit, SwitchEdit},
+  components: {ConnectionEdit, ControllerEdit, DummyEdit, HostEdit, PortEdit, SwitchEdit},
   data: () => ({
     dialog: false,
     component: 'HostEdit',

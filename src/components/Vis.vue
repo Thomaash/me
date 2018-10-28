@@ -13,6 +13,7 @@ import switchImg from '@/assets/network/router.svg'
 const actionTypeMap = {
   'add-connection': 'connection',
   'add-controller': 'controller',
+  'add-dummy': 'dummy',
   'add-host': 'host',
   'add-port': 'port',
   'add-switch': 'switch'
@@ -21,7 +22,7 @@ const portAmounts = {
   'host': 2,
   'switch': 6
 }
-const nodePriorities = [ 'controller', 'switch', 'host', 'port' ]
+const nodePriorities = [ 'dummy', 'controller', 'switch', 'host', 'port' ]
 
 export default {
   name: 'Vis',
@@ -40,6 +41,10 @@ export default {
     },
     addController () {
       this.action = 'add-controller'
+      this.net.addNodeMode()
+    },
+    addDummy () {
+      this.action = 'add-dummy'
       this.net.addNodeMode()
     },
     addHost () {
@@ -148,7 +153,6 @@ export default {
               return callback()
             }
 
-            console.log(edited)
             callback(edited)
 
             this.commitPosition(edited.id)
@@ -220,6 +224,9 @@ export default {
           color: 'purple',
           image: controllerImg
         },
+        dummy: {
+          color: 'gray'
+        },
         host: {
           shape: 'image',
           color: 'teal',
@@ -289,6 +296,7 @@ export default {
 div {position: absolute; width: 100%; height: 100%;}
 .add-connection {cursor: url(../assets/cursors/connection.png) 18 18, auto;}
 .add-controller {cursor: url(../assets/cursors/controller.png) 18 18, auto;}
+.add-dummy {cursor: url(../assets/cursors/dummy.png) 18 18, auto;}
 .add-host {cursor: url(../assets/cursors/host.png) 18 18, auto;}
 .add-port {cursor: url(../assets/cursors/port.png) 18 18, auto;}
 .add-switch {cursor: url(../assets/cursors/switch.png) 18 18, auto;}
