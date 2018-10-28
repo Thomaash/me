@@ -209,9 +209,6 @@ export default {
 
             const ports = portAmounts[edited.group] || 0
             if (ports > 0) {
-              const {x, y} = this.net.getPositions([edited.id])[edited.id]
-              const portY = y + 80
-              const firstX = x - (ports - 1) * 50 / 2
               for (let i = 0; i < ports; ++i) {
                 const port = {
                   label: `eth${i}`,
