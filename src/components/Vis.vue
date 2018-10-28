@@ -80,6 +80,8 @@ export default {
     editItem (node, callback) {
       this.$emit('edit-item', this.data.items[node.id] || {type: node.group}, payload => {
         if (!payload) {
+          // Node/edge adding mode is not turned off unless a node/edge is placed.
+          this.net.disableEditMode()
           return callback()
         }
 
