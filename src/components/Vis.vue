@@ -71,14 +71,6 @@ export default {
         }
 
         if (node.from && node.to) {
-          const src = this.data.items[node.from].type
-          const dst = this.data.items[node.to].type
-          if (nodePriorities.indexOf(src) > nodePriorities.indexOf(dst)) {
-            const tmp = node.from
-            node.from = node.to
-            node.to = tmp
-          }
-
           payload.from = node.from
           payload.to = node.to
         }
@@ -96,6 +88,24 @@ export default {
         x,
         y
       })
+    },
+    orderNodes (edge) {
+      const src = this.data.items[edge.from].type
+      const dst = this.data.items[edge.to].type
+      if (nodePriorities.indexOf(src) > nodePriorities.indexOf(dst)) {
+        const tmp = edge.from
+        edge.from = edge.to
+        edge.to = tmp
+      }
+    },
+    isEdgeValid (edge) {
+      const src = this.$store.state.data.items[edge.from].type
+      const dst = this.$store.state.data.items[edge.to].type
+      return (src === 'switch' && dst === 'port') ||
+        (src === 'host' && dst === 'port') ||
+        (src === 'port' && dst === 'port') ||
+        (src === 'controller' && dst === 'switch') ||
+        (src === 'dummy')
     }
   },
   mounted () {
@@ -202,19 +212,27 @@ export default {
           this.editItem(node, callback)
         },
         addEdge: (edge, callback) => {
-          edge.id = edge.id || vis.util.randomUUID()
-          edge.group = actionTypeMap[this.action]
-          this.action = ''
+          this.orderNodes(edge)
+          if (this.isEdgeValid(edge)) {
+            edge.id = edge.id || vis.util.randomUUID()
+            edge.group = actionTypeMap[this.action]
 
-          if (edge.from !== edge.to) {
             this.editItem(edge, callback)
           } else {
             callback()
           }
+
+          this.action = ''
         },
         editEdge: (edge, callback) => {
+          this.orderNodes(edge)
+          if (this.isEdgeValid(edge)) {
+            this.editItem(edge, callback)
+          } else {
+            callback()
+          }
+
           this.action = ''
-          this.editItem(edge, callback)
         }
       },
       groups: {
