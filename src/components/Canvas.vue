@@ -8,7 +8,7 @@
           <v-icon>expand_less</v-icon>
           <v-icon>expand_more</v-icon>
         </v-btn>
-        <v-btn fab dark small color="cyan" @click="$refs.vis.addConnection()">
+        <v-btn fab dark small color="cyan" @click="$refs.vis.addEdge()">
           <v-icon>link</v-icon>
         </v-btn>
         <v-btn fab dark small color="orange" @click="$refs.vis.addPort()">

@@ -3,7 +3,7 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-textarea label="Label" required v-model="item.hostname"/>
+          <v-text-field label="Label" required v-model="item.hostname"/>
         </v-flex>
       </v-layout>
     </v-container>
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: 'DummyEdit',
+  name: 'LinkEdit',
   props: ['value'],
   data: () => ({
     dialog: false,

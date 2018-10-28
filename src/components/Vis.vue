@@ -11,10 +11,10 @@ import portImg from '@/assets/network/port.svg'
 import switchImg from '@/assets/network/router.svg'
 
 const actionTypeMap = {
-  'add-connection': 'connection',
   'add-controller': 'controller',
   'add-dummy': 'dummy',
   'add-host': 'host',
+  'add-link': 'link',
   'add-port': 'port',
   'add-switch': 'switch'
 }
@@ -23,6 +23,19 @@ const portAmounts = {
   'switch': 6
 }
 const nodePriorities = [ 'dummy', 'controller', 'switch', 'host', 'port' ]
+const edgeTests = {
+  'connection': (src, dst) => src === 'port' && dst === 'port',
+  'link': (src, dst) => (
+    (src === 'controller' && dst === 'switch') ||
+    (src === 'switch' && dst === 'port') ||
+    (src === 'host' && dst === 'port') ||
+    (src === 'dummy')
+  )
+}
+
+function isEdge (type) {
+  return type === 'connection' || type === 'link'
+}
 
 export default {
   name: 'Vis',
@@ -35,8 +48,8 @@ export default {
     }
   },
   methods: {
-    addConnection () {
-      this.action = 'add-connection'
+    addEdge () {
+      this.action = 'add-edge'
       this.net.addEdgeMode()
     },
     addController () {
@@ -98,14 +111,24 @@ export default {
         edge.to = tmp
       }
     },
-    isEdgeValid (edge) {
+    getEdgeType (edge) {
+      const item = this.data.items[edge.id]
+      if (item && item.type) {
+        return item.type
+      }
+
+      const src = this.data.items[edge.from].type
+      const dst = this.data.items[edge.to].type
+      if (src === 'port' && dst === 'port') {
+        return 'connection'
+      } else {
+        return 'link'
+      }
+    },
+    isEdgeValid (edge, type) {
       const src = this.$store.state.data.items[edge.from].type
       const dst = this.$store.state.data.items[edge.to].type
-      return (src === 'switch' && dst === 'port') ||
-        (src === 'host' && dst === 'port') ||
-        (src === 'port' && dst === 'port') ||
-        (src === 'controller' && dst === 'switch') ||
-        (src === 'dummy')
+      return edgeTests[type](src, dst)
     }
   },
   mounted () {
@@ -119,7 +142,7 @@ export default {
     // create an array with nodes
     const nodes = new vis.DataSet(
       items
-      .filter(({type}) => type !== 'connection')
+      .filter(({type}) => !isEdge(type))
       .map(payload => ({
         id: payload.id,
         label: payload.hostname,
@@ -133,7 +156,7 @@ export default {
     // create an array with edges
     const edges = new vis.DataSet(
       items
-      .filter(({type}) => type === 'connection')
+      .filter(({type}) => isEdge(type))
       .map(payload => ({
         id: payload.id,
         label: payload.hostname,
@@ -213,9 +236,10 @@ export default {
         },
         addEdge: (edge, callback) => {
           this.orderNodes(edge)
-          if (this.isEdgeValid(edge)) {
+          const type = this.getEdgeType(edge)
+          if (this.isEdgeValid(edge, type)) {
             edge.id = edge.id || vis.util.randomUUID()
-            edge.group = actionTypeMap[this.action]
+            edge.group = type
 
             this.editItem(edge, callback)
           } else {
@@ -226,7 +250,7 @@ export default {
         },
         editEdge: (edge, callback) => {
           this.orderNodes(edge)
-          if (this.isEdgeValid(edge)) {
+          if (this.isEdgeValid(edge, this.getEdgeType(edge))) {
             this.editItem(edge, callback)
           } else {
             callback()
@@ -312,7 +336,7 @@ export default {
 
 <style scoped>
 div {position: absolute; width: 100%; height: 100%;}
-.add-connection {cursor: url(../assets/cursors/connection.png) 18 18, auto;}
+.add-edge {cursor: url(../assets/cursors/edge.png) 18 18, auto;}
 .add-controller {cursor: url(../assets/cursors/controller.png) 18 18, auto;}
 .add-dummy {cursor: url(../assets/cursors/dummy.png) 18 18, auto;}
 .add-host {cursor: url(../assets/cursors/host.png) 18 18, auto;}

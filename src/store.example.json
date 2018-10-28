@@ -14,7 +14,7 @@
             "y": -133
         },
         "0b285be7-23f8-45ba-a26b-c792cdf1b67d": {
-            "type": "connection",
+            "type": "link",
             "from": "a41e6c27-1729-425c-b390-87890ed26014",
             "to": "1ddd0a0d-3ff8-425e-a0ed-d87a04d01632"
         },
@@ -25,7 +25,7 @@
             "y": -133
         },
         "203aa879-3190-41d0-9405-9a29c348f121": {
-            "type": "connection",
+            "type": "link",
             "from": "a41e6c27-1729-425c-b390-87890ed26014",
             "to": "2d0b0b6d-9684-4250-aab0-9b51ba3c70db"
         },
@@ -36,7 +36,7 @@
             "y": -133
         },
         "6898058e-7ff0-4f44-bdd5-87c0cfd561b7": {
-            "type": "connection",
+            "type": "link",
             "from": "a41e6c27-1729-425c-b390-87890ed26014",
             "to": "6330eb6c-9b5c-4e45-b3c3-55d2533bacbc"
         },
@@ -47,7 +47,7 @@
             "y": -133
         },
         "fd5b97ff-b4ef-4527-b65a-1e11f0e95b3c": {
-            "type": "connection",
+            "type": "link",
             "from": "a41e6c27-1729-425c-b390-87890ed26014",
             "to": "1ad7a8bb-d70b-4829-9eb4-23d45466348e"
         },
@@ -58,7 +58,7 @@
             "y": -133
         },
         "f75f74a7-8b8b-484e-b88e-202b0ece21be": {
-            "type": "connection",
+            "type": "link",
             "from": "a41e6c27-1729-425c-b390-87890ed26014",
             "to": "0836ceee-94d1-4c9a-91c7-1f0bd7004c48"
         },
@@ -69,7 +69,7 @@
             "y": -133
         },
         "40e23986-5231-404f-b51c-8c996327c179": {
-            "type": "connection",
+            "type": "link",
             "from": "a41e6c27-1729-425c-b390-87890ed26014",
             "to": "e2f3bc54-30f7-4068-a9ee-bbe6b8757f42"
         },
@@ -86,7 +86,7 @@
             "y": -135
         },
         "658c1979-a262-4964-9218-1d65394a3613": {
-            "type": "connection",
+            "type": "link",
             "from": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
             "to": "9995eea0-93dc-4b75-86ee-0084666229f0"
         },
@@ -97,7 +97,7 @@
             "y": -135
         },
         "ad4f9c86-0162-4c3d-baea-e82415d203d8": {
-            "type": "connection",
+            "type": "link",
             "from": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
             "to": "9b90b775-7585-44c1-96e1-9eff18200af5"
         },
@@ -108,7 +108,7 @@
             "y": -135
         },
         "628f9f57-a170-4efa-bcbc-e7245f735680": {
-            "type": "connection",
+            "type": "link",
             "from": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
             "to": "a31d76af-b30c-4cea-b6cc-92e7adb88223"
         },
@@ -119,7 +119,7 @@
             "y": -135
         },
         "3fc23439-3627-4bb5-b746-a3d89cdc4036": {
-            "type": "connection",
+            "type": "link",
             "from": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
             "to": "210d2fa7-3316-4dfe-9701-d18732b53d6a"
         },
@@ -130,7 +130,7 @@
             "y": -135
         },
         "906e2ac7-1702-412f-8caa-1d36efaddf43": {
-            "type": "connection",
+            "type": "link",
             "from": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
             "to": "4d814ba5-1ec0-447a-a025-a3b91b140fe2"
         },
@@ -141,63 +141,63 @@
             "y": -135
         },
         "54a39606-54a6-44c4-918f-446ca9012ee0": {
-            "type": "connection",
+            "type": "link",
             "from": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
             "to": "21bd131c-91d9-4176-ad60-013fcf050d98"
         },
         "44d0e3b6-14af-4881-9e2e-9bfdf8fedeb4": {
             "type": "host",
             "hostname": "h1",
-            "x": -393,
-            "y": 153
+            "x": -408,
+            "y": 143
         },
         "0ed365c1-8317-4caf-ac6e-23b9dd8a7cab": {
             "hostname": "eth0",
             "type": "port",
-            "x": -418,
-            "y": 233
+            "x": -433,
+            "y": 223
         },
         "6de3f859-a2ee-448e-bf3e-5c9edc83d1e0": {
-            "type": "connection",
+            "type": "link",
             "from": "44d0e3b6-14af-4881-9e2e-9bfdf8fedeb4",
             "to": "0ed365c1-8317-4caf-ac6e-23b9dd8a7cab"
         },
         "5ec8c35d-fde9-4d4a-b3b0-2c31b7abcb35": {
             "hostname": "eth1",
             "type": "port",
-            "x": -368,
-            "y": 233
+            "x": -383,
+            "y": 223
         },
         "b9b88002-7b6d-491b-9d23-28420c5e7cf0": {
-            "type": "connection",
+            "type": "link",
             "from": "44d0e3b6-14af-4881-9e2e-9bfdf8fedeb4",
             "to": "5ec8c35d-fde9-4d4a-b3b0-2c31b7abcb35"
         },
         "0d651e75-aa02-43b6-b281-f2ea01b475b9": {
             "type": "host",
             "hostname": "h2",
-            "x": -204,
-            "y": 145
+            "x": -200,
+            "y": 142
         },
         "1cddc061-24c9-4793-9815-e65e472ca648": {
             "hostname": "eth0",
             "type": "port",
-            "x": -229,
-            "y": 225
+            "x": -225,
+            "y": 222
         },
         "3a0c702a-9044-469a-ba11-f83f1193a111": {
-            "type": "connection",
+            "type": "link",
             "from": "0d651e75-aa02-43b6-b281-f2ea01b475b9",
             "to": "1cddc061-24c9-4793-9815-e65e472ca648"
         },
         "98802b97-c256-4304-8899-1743ba2e2186": {
             "hostname": "eth1",
             "type": "port",
-            "x": -179,
-            "y": 225
+            "x": -175,
+            "y": 222
         },
         "8b590265-8bd4-47ac-bf55-b919fd54bd8d": {
-            "type": "connection",
+            "type": "link",
             "from": "0d651e75-aa02-43b6-b281-f2ea01b475b9",
             "to": "98802b97-c256-4304-8899-1743ba2e2186"
         },
@@ -214,7 +214,7 @@
             "y": 237
         },
         "3e0de79b-ea11-4683-af13-10f0974182f5": {
-            "type": "connection",
+            "type": "link",
             "from": "c5581b98-b5c8-4d23-ac97-b33e0a233562",
             "to": "06fd2b5d-02a1-456c-b1bb-ac6b2788c86f"
         },
@@ -225,7 +225,7 @@
             "y": 237
         },
         "e3fb0c68-0e53-42bf-8662-a25e1767707b": {
-            "type": "connection",
+            "type": "link",
             "from": "c5581b98-b5c8-4d23-ac97-b33e0a233562",
             "to": "5fc68b2c-9ebc-42c6-b712-6bea68890749"
         },
@@ -242,7 +242,7 @@
             "y": 234
         },
         "949d2563-56e4-43b7-9cfe-698cdd8791c1": {
-            "type": "connection",
+            "type": "link",
             "from": "cc0e01a6-808f-4bc6-9709-07311cbf3ead",
             "to": "dc7c9a65-aaea-4b64-a25e-b9f6afc4f64b"
         },
@@ -253,7 +253,7 @@
             "y": 234
         },
         "01170837-63a2-438b-b657-8cce853c57ce": {
-            "type": "connection",
+            "type": "link",
             "from": "cc0e01a6-808f-4bc6-9709-07311cbf3ead",
             "to": "fe34070c-97c1-4678-8e84-22774cff103c"
         },
@@ -287,7 +287,7 @@
             "to": "9b90b775-7585-44c1-96e1-9eff18200af5"
         },
         "df9427ad-bf9b-4132-8514-5993f37967a1": {
-            "type": "connection",
+            "type": "link",
             "from": "dc7c9a65-aaea-4b64-a25e-b9f6afc4f64b",
             "to": "5fc68b2c-9ebc-42c6-b712-6bea68890749"
         },
@@ -298,33 +298,37 @@
             "y": -393
         },
         "85066e9e-654b-40b2-b348-4c4454acd80d": {
-            "type": "connection",
+            "type": "link",
             "from": "c7140bf4-cd87-48b6-b1fa-f75e42776c1c",
-            "to": "a41e6c27-1729-425c-b390-87890ed26014"
+            "to": "a41e6c27-1729-425c-b390-87890ed26014",
+            "hostname": ""
         },
         "42f9661b-fde1-4afd-9801-5b21bdc8d66f": {
-            "type": "connection",
+            "type": "link",
             "from": "c7140bf4-cd87-48b6-b1fa-f75e42776c1c",
-            "to": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e"
+            "to": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
+            "hostname": ""
         },
         "61a275b8-ffe3-466b-99ee-4f02d79d6899": {
             "type": "dummy",
             "hostname": "Room B",
-            "x": 202,
-            "y": 55
+            "x": 178,
+            "y": 63
         },
         "0897a214-80f0-49a9-8eb0-43c011e2a516": {
-            "type": "connection",
+            "type": "link",
             "from": "61a275b8-ffe3-466b-99ee-4f02d79d6899",
-            "to": "cc0e01a6-808f-4bc6-9709-07311cbf3ead"
+            "to": "cc0e01a6-808f-4bc6-9709-07311cbf3ead",
+            "hostname": "Right"
         },
         "841bfc4d-fb35-46ec-b48d-fe3738abb9b4": {
-            "type": "connection",
+            "type": "link",
             "from": "61a275b8-ffe3-466b-99ee-4f02d79d6899",
-            "to": "c5581b98-b5c8-4d23-ac97-b33e0a233562"
+            "to": "c5581b98-b5c8-4d23-ac97-b33e0a233562",
+            "hostname": "Left"
         },
         "723c5c87-5ad8-4d1d-8772-57b37dec1d18": {
-            "type": "connection",
+            "type": "link",
             "from": "61a275b8-ffe3-466b-99ee-4f02d79d6899",
             "to": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e"
         },
@@ -335,17 +339,19 @@
             "y": 54
         },
         "c696ed77-9ce6-46ee-9ad9-cd11bf6d7041": {
-            "type": "connection",
+            "type": "link",
             "from": "13a89e01-0bf9-4600-b723-b64355defab6",
-            "to": "0d651e75-aa02-43b6-b281-f2ea01b475b9"
+            "to": "0d651e75-aa02-43b6-b281-f2ea01b475b9",
+            "hostname": "Desk 2"
         },
         "f2d9ccba-e9f0-4e79-aca4-2ef015a2186a": {
-            "type": "connection",
+            "type": "link",
             "from": "13a89e01-0bf9-4600-b723-b64355defab6",
-            "to": "44d0e3b6-14af-4881-9e2e-9bfdf8fedeb4"
+            "to": "44d0e3b6-14af-4881-9e2e-9bfdf8fedeb4",
+            "hostname": "Desk 1"
         },
         "ccf072c5-df54-4d50-a0c8-e91c5fcebf08": {
-            "type": "connection",
+            "type": "link",
             "from": "13a89e01-0bf9-4600-b723-b64355defab6",
             "to": "a41e6c27-1729-425c-b390-87890ed26014"
         }
