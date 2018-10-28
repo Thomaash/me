@@ -135,12 +135,14 @@ export default {
       .filter(node => node.group === 'port')
 
       const {x, y} = this.net.getPositions([node.id])[node.id]
+      const xOffset = ports.length <= 8 ? 50 : 30
+      const yEvenOffset = ports.length <= 8 ? 0 : 25
       const portY = y + 70
-      const firstX = x - (ports.length - 1) * 50 / 2
+      const firstX = x - (ports.length - 1) * xOffset / 2
 
       ports.forEach((port, i) => {
-        port.x = firstX + 50 * i
-        port.y = portY
+        port.x = firstX + xOffset * i
+        port.y = portY + (i % 2 === 0 ? yEvenOffset : 0)
         this.nodes.update(port)
         this.commitPosition(port.id)
       })
