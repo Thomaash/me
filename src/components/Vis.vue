@@ -278,6 +278,7 @@ export default {
           image: controllerImg
         },
         dummy: {
+          shape: 'box',
           color: 'dimgray',
           font: {color: 'white'}
         },
