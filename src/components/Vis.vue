@@ -1,7 +1,7 @@
 <template>
   <div class="template-root" @mousemove="moveMouseTag" @drag="moveMouseTag">
     <div ref="vis" class="vis-root"/>
-      <div class="mouse-tag" v-if="action !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
+      <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
         <v-icon v-text="mouseTagIcon" color="black"/>
       </div>
   </div>
@@ -15,15 +15,6 @@ import hostImg from '@/assets/network/host.svg'
 import portImg from '@/assets/network/port.svg'
 import switchImg from '@/assets/network/switch.svg'
 
-const actionTypeMap = {
-  'add-controller': 'controller',
-  'add-dummy': 'dummy',
-  'add-edge': 'edge',
-  'add-host': 'host',
-  'add-link': 'link',
-  'add-port': 'port',
-  'add-switch': 'switch'
-}
 const portAmounts = {
   'host': 2,
   'switch': 6
@@ -46,7 +37,7 @@ function isEdge (type) {
 export default {
   name: 'Vis',
   data: () => ({
-    action: '',
+    newItemType: '',
     mouseTag: {
       x: 0,
       y: 0
@@ -57,7 +48,7 @@ export default {
       return this.$store.state.data
     },
     mouseTagIcon () {
-      return '$vuetify.icons.net-' + actionTypeMap[this.action]
+      return '$vuetify.icons.net-' + this.newItemType
     }
   },
   methods: {
@@ -66,27 +57,27 @@ export default {
       this.mouseTag.y = y
     },
     addEdge () {
-      this.action = 'add-edge'
+      this.newItemType = 'edge'
       this.net.addEdgeMode()
     },
     addController () {
-      this.action = 'add-controller'
+      this.newItemType = 'controller'
       this.net.addNodeMode()
     },
     addDummy () {
-      this.action = 'add-dummy'
+      this.newItemType = 'dummy'
       this.net.addNodeMode()
     },
     addHost () {
-      this.action = 'add-host'
+      this.newItemType = 'host'
       this.net.addNodeMode()
     },
     addPort () {
-      this.action = 'add-port'
+      this.newItemType = 'port'
       this.net.addNodeMode()
     },
     addSwitch () {
-      this.action = 'add-switch'
+      this.newItemType = 'switch'
       this.net.addNodeMode()
     },
     deleteSelected () {
@@ -222,8 +213,8 @@ export default {
       manipulation: {
         enabled: false,
         addNode: (node, callback) => {
-          node.group = actionTypeMap[this.action]
-          this.action = ''
+          node.group = this.newItemType
+          this.newItemType = ''
 
           this.editItem(node, edited => {
             if (!edited) {
@@ -289,7 +280,7 @@ export default {
           })
         },
         editNode: (node, callback) => {
-          this.action = ''
+          this.newItemType = ''
           this.editItem(node, callback)
         },
         addEdge: (edge, callback) => {
@@ -304,7 +295,7 @@ export default {
             callback()
           }
 
-          this.action = ''
+          this.newItemType = ''
         },
         editEdge: (edge, callback) => {
           this.orderNodes(edge)
@@ -314,7 +305,7 @@ export default {
             callback()
           }
 
-          this.action = ''
+          this.newItemType = ''
         }
       },
       groups: {
