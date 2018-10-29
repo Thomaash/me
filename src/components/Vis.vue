@@ -152,7 +152,7 @@ export default {
       const ports = this.net.getConnectedNodes(node.id)
       .map(id => this.nodes.get(id))
       .filter(node => node.group === 'port')
-      .sort((n1, n2) => n1.label.localeCompare(n2.label))
+      .sort((n1, n2) => (n1.label || '').localeCompare(n2.label || ''))
 
       const {x, y} = this.net.getPositions([node.id])[node.id]
       const xOffset = ports.length <= 8 ? 50 : 30
