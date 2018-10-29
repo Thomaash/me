@@ -1,18 +1,24 @@
 <template>
-  <div ref="vis" :class="action"/>
+  <div class="template-root" @mousemove="moveMouseTag" @drag="moveMouseTag">
+    <div ref="vis" :class="action" class="vis-root"/>
+      <div class="mouse-tag" v-if="action !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
+        <v-icon v-text="mouseTagIcon" color="black"/>
+      </div>
+  </div>
 </template>
 
 <script>
 import vis from 'vis'
 
-import controllerImg from '@/assets/network/developer_board.svg'
-import hostImg from '@/assets/network/computer.svg'
+import controllerImg from '@/assets/network/controller.svg'
+import hostImg from '@/assets/network/host.svg'
 import portImg from '@/assets/network/port.svg'
-import switchImg from '@/assets/network/router.svg'
+import switchImg from '@/assets/network/switch.svg'
 
 const actionTypeMap = {
   'add-controller': 'controller',
   'add-dummy': 'dummy',
+  'add-edge': 'edge',
   'add-host': 'host',
   'add-link': 'link',
   'add-port': 'port',
@@ -40,14 +46,25 @@ function isEdge (type) {
 export default {
   name: 'Vis',
   data: () => ({
-    action: ''
+    action: '',
+    mouseTag: {
+      x: 0,
+      y: 0
+    }
   }),
   computed: {
     data () {
       return this.$store.state.data
+    },
+    mouseTagIcon () {
+      return '$vuetify.icons.net-' + actionTypeMap[this.action]
     }
   },
   methods: {
+    moveMouseTag ({clientX: x, clientY: y}) {
+      this.mouseTag.x = x
+      this.mouseTag.y = y
+    },
     addEdge () {
       this.action = 'add-edge'
       this.net.addEdgeMode()
@@ -366,11 +383,8 @@ export default {
 </script>
 
 <style scoped>
-div {position: absolute; width: 100%; height: 100%;}
-.add-edge {cursor: url(../assets/cursors/edge.png) 18 18, auto;}
-.add-controller {cursor: url(../assets/cursors/controller.png) 18 18, auto;}
-.add-dummy {cursor: url(../assets/cursors/dummy.png) 18 18, auto;}
-.add-host {cursor: url(../assets/cursors/host.png) 18 18, auto;}
-.add-port {cursor: url(../assets/cursors/port.png) 18 18, auto;}
-.add-switch {cursor: url(../assets/cursors/switch.png) 18 18, auto;}
+.template-root {position: absolute; width: 100%; height: 100%;}
+.vis-root {position: absolute; width: 100%; height: 100%;}
+
+.mouse-tag {position: fixed; margin: 1em;}
 </style>

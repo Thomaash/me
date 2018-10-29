@@ -29,19 +29,19 @@ export default {
     return {
       drawer: true,
       items: [{
-        icon: 'home',
+        icon: 'mdi-home',
         title: 'Home',
         to: '/'
       }, {
-        icon: 'map',
+        icon: 'mdi-map',
         title: 'Canvas',
         to: '/canvas'
       }, {
-        icon: 'save',
+        icon: 'mdi-content-save',
         title: 'Export/Import',
         to: '/export'
       }, {
-        icon: 'info',
+        icon: 'mdi-information',
         title: 'About',
         to: '/about'
       }],

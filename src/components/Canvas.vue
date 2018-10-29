@@ -5,29 +5,29 @@
       <Edit ref="edit"/>
       <v-speed-dial v-model="fab" bottom right style="position: fixed" open-on-hover>
         <v-btn slot="activator" v-model="fab" color="accent" dark fab>
-          <v-icon>expand_less</v-icon>
-          <v-icon>expand_more</v-icon>
+          <v-icon>mdi-chevron-up</v-icon>
+          <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
         <v-btn fab dark small color="cyan" @click="$refs.vis.addEdge()">
-          <v-icon>link</v-icon>
+          <v-icon>$vuetify.icons.net-edge</v-icon>
         </v-btn>
         <v-btn fab dark small color="orange" @click="$refs.vis.addPort()">
-          <v-icon>radio_button_unchecked</v-icon>
+          <v-icon>$vuetify.icons.net-port</v-icon>
         </v-btn>
         <v-btn fab dark small color="green" @click="$refs.vis.addHost()">
-          <v-icon>computer</v-icon>
+          <v-icon>$vuetify.icons.net-host</v-icon>
         </v-btn>
         <v-btn fab dark small color="indigo" @click="$refs.vis.addSwitch()">
-          <v-icon>router</v-icon>
+          <v-icon>$vuetify.icons.net-switch</v-icon>
         </v-btn>
         <v-btn fab dark small color="purple" @click="$refs.vis.addController()">
-          <v-icon>developer_board</v-icon>
+          <v-icon>$vuetify.icons.net-controller</v-icon>
         </v-btn>
         <v-btn fab dark small color="gray" @click="$refs.vis.addDummy()">
-          <v-icon>label</v-icon>
+          <v-icon>$vuetify.icons.net-label</v-icon>
         </v-btn>
         <v-btn fab dark small color="red" @click="$refs.vis.deleteSelected()">
-          <v-icon>delete</v-icon>
+          <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-speed-dial>
     </div>
