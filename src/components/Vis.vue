@@ -1,6 +1,6 @@
 <template>
   <div class="template-root" @mousemove="moveMouseTag" @drag="moveMouseTag">
-    <div ref="vis" :class="action" class="vis-root"/>
+    <div ref="vis" class="vis-root"/>
       <div class="mouse-tag" v-if="action !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
         <v-icon v-text="mouseTagIcon" color="black"/>
       </div>
