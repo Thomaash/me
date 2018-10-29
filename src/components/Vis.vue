@@ -377,7 +377,11 @@ export default {
         this.net.selectNodes([event.nodes[0], ...toSelectFiltered])
       }
     })
-    console.log(this.net, nodes, edges)
+
+    // @todo - debug
+    window.net = this.net
+    window.nodes = this.nodes
+    window.edges = this.edges
   }
 }
 </script>
