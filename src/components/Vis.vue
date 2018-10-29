@@ -166,6 +166,14 @@ export default {
         this.nodes.update(port)
         this.commitPosition(port.id)
       })
+    },
+    getClosestNodeId (x, y, types) {
+      const ids = this.nodes.getIds()
+      .filter(id => types.indexOf(this.$store.state.data.items[id].type) !== -1)
+      const positions = this.net.getPositions(ids)
+      const distances = ids.map(id => Math.hypot(positions[id].x - x, positions[id].y - y))
+      const closestIndex = distances.reduce((acc, val, i) => val < distances[acc] ? i : acc, 0)
+      return ids[closestIndex]
     }
   },
   mounted () {
@@ -225,6 +233,25 @@ export default {
             callback(edited)
 
             this.commitPosition(edited.id)
+
+            if (edited.group === 'port') {
+              const {x, y} = this.net.getPositions(edited.id)[edited.id]
+              const closestId = this.getClosestNodeId(x, y, ['host', 'switch'])
+              const link = {
+                id: vis.util.randomUUID(),
+                from: closestId,
+                to: edited.id
+              }
+              this.edges.add(link)
+              this.$store.commit('data/setItem', {
+                id: link.id,
+                item: {
+                  type: 'link',
+                  from: link.from,
+                  to: link.to
+                }
+              })
+            }
 
             const ports = portAmounts[edited.group] || 0
             if (ports > 0) {
