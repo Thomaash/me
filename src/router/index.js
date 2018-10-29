@@ -3,15 +3,15 @@ import Vue from 'vue'
 
 import Canvas from '@/components/Canvas'
 import Export from '@/components/Export'
-import HelloWorld from '@/components/HelloWorld'
+import Home from '@/components/Home'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [ {
     path: '/',
-    name: 'HelloWorld',
-    component: HelloWorld
+    name: 'Home',
+    component: Home
   }, {
     path: '/canvas',
     name: 'Canvas',
