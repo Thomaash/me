@@ -9,6 +9,7 @@
 
 <script>
 import vis from 'vis'
+import deselectHandler from './vis/deselectHandler'
 
 import controllerImg from '@/assets/network/controller.svg'
 import hostImg from '@/assets/network/host.svg'
@@ -340,17 +341,8 @@ export default {
 
     // network
     this.net = new vis.Network(this.$refs.vis, {nodes, edges}, options)
-    const deselectHandler = event => {
-      if (event.event.changedPointers[0].ctrlKey) {
-        // Add to selection when ctrl is pressed.
-        this.net.setSelection({
-          nodes: [...event.nodes, ...event.previousSelection.nodes],
-          edges: [...event.edges, ...event.previousSelection.edges]
-        })
-      }
-    }
-    this.net.on('deselectNode', deselectHandler)
-    this.net.on('deselectEdge', deselectHandler)
+    this.net.on('deselectNode', deselectHandler.bind(null, this.net))
+    this.net.on('deselectEdge', deselectHandler.bind(null, this.net))
     this.net.on('doubleClick', event => {
       if (event.nodes.length === 0 && event.edges.length === 1) {
         const id = event.edges[0]
