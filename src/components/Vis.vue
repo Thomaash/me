@@ -53,7 +53,7 @@ export default {
     }
   },
   methods: {
-    moveMouseTag ({clientX: x, clientY: y}) {
+    moveMouseTag ({ clientX: x, clientY: y }) {
       this.mouseTag.x = x
       this.mouseTag.y = y
     },
@@ -82,7 +82,7 @@ export default {
       this.net.addNodeMode()
     },
     deleteSelected () {
-      const {nodes, edges} = this.net.getSelection()
+      const { nodes, edges } = this.net.getSelection()
       this.$store.commit('data/removeItems', [...nodes, ...edges])
       this.net.deleteSelected()
     },
@@ -143,11 +143,11 @@ export default {
     },
     organizePorts (node) {
       const ports = this.net.getConnectedNodes(node.id)
-      .map(id => this.nodes.get(id))
-      .filter(node => node.group === 'port')
-      .sort((n1, n2) => (n1.label || '').localeCompare(n2.label || ''))
+        .map(id => this.nodes.get(id))
+        .filter(node => node.group === 'port')
+        .sort((n1, n2) => (n1.label || '').localeCompare(n2.label || ''))
 
-      const {x, y} = this.net.getPositions([node.id])[node.id]
+      const { x, y } = this.net.getPositions([node.id])[node.id]
       const xOffset = ports.length <= 8 ? 50 : 30
       const yEvenOffset = ports.length <= 8 ? 0 : 25
       const portY = y + 70
@@ -162,7 +162,7 @@ export default {
     },
     getClosestNodeId (x, y, types) {
       const ids = this.nodes.getIds()
-      .filter(id => types.indexOf(this.$store.state.data.items[id].type) !== -1)
+        .filter(id => types.indexOf(this.$store.state.data.items[id].type) !== -1)
       const positions = this.net.getPositions(ids)
       const distances = ids.map(id => Math.hypot(positions[id].x - x, positions[id].y - y))
       const closestIndex = distances.reduce((acc, val, i) => val < distances[acc] ? i : acc, 0)
@@ -171,36 +171,36 @@ export default {
   },
   mounted () {
     const items = Object.keys(this.data.items)
-    .map(id => {
-      const node = JSON.parse(JSON.stringify(this.data.items[id]))
-      node.id = id
-      return node
-    })
+      .map(id => {
+        const node = JSON.parse(JSON.stringify(this.data.items[id]))
+        node.id = id
+        return node
+      })
 
     // create an array with nodes
     const nodes = new vis.DataSet(
       items
-      .filter(({type}) => !isEdge(type))
-      .map(payload => ({
-        id: payload.id,
-        label: payload.hostname,
-        group: payload.type,
-        x: payload.x,
-        y: payload.y
-      }))
+        .filter(({ type }) => !isEdge(type))
+        .map(payload => ({
+          id: payload.id,
+          label: payload.hostname,
+          group: payload.type,
+          x: payload.x,
+          y: payload.y
+        }))
     )
     this.nodes = nodes
 
     // create an array with edges
     const edges = new vis.DataSet(
       items
-      .filter(({type}) => isEdge(type))
-      .map(payload => ({
-        id: payload.id,
-        label: payload.hostname,
-        from: payload.from,
-        to: payload.to
-      }))
+        .filter(({ type }) => isEdge(type))
+        .map(payload => ({
+          id: payload.id,
+          label: payload.hostname,
+          from: payload.from,
+          to: payload.to
+        }))
     )
     this.edges = edges
 
@@ -228,7 +228,7 @@ export default {
             this.commitPosition(edited.id)
 
             if (edited.group === 'port') {
-              const {x, y} = this.net.getPositions(edited.id)[edited.id]
+              const { x, y } = this.net.getPositions(edited.id)[edited.id]
               const closestId = this.getClosestNodeId(x, y, ['host', 'switch'])
               const association = {
                 id: vis.util.randomUUID(),
@@ -313,7 +313,7 @@ export default {
         dummy: {
           shape: 'box',
           color: 'dimgray',
-          font: {color: 'white'}
+          font: { color: 'white' }
         },
         host: {
           shape: 'image',
@@ -335,7 +335,7 @@ export default {
     }
 
     // network
-    this.net = new vis.Network(this.$refs.vis, {nodes, edges}, options)
+    this.net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
     this.net.on('deselectNode', deselectHandler.bind(null, this.net))
     this.net.on('deselectEdge', deselectHandler.bind(null, this.net))
     this.net.on('doubleClick', event => {
@@ -377,7 +377,7 @@ export default {
         toSelect.add(edge.from)
       })
       const toSelectFiltered = [...toSelect]
-      .filter(nodeId => this.$store.state.data.items[nodeId].type === 'port')
+        .filter(nodeId => this.$store.state.data.items[nodeId].type === 'port')
       if (toSelectFiltered.length) {
         this.net.selectNodes([event.nodes[0], ...toSelectFiltered])
       }

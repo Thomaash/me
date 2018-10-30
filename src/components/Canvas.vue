@@ -41,7 +41,7 @@ import Edit from '@/components/item/Edit'
 
 export default {
   name: 'Canvas',
-  components: {Vis, Edit},
+  components: { Vis, Edit },
   data: () => ({
     fab: false
   }),
