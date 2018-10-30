@@ -12,7 +12,7 @@
 const hints = [
   'You can double click any item to edit it\'s settings.',
   'You can hold ctrl key to select multiple items.',
-  'You can long press a connection or link to reconnect it.',
+  'You can long press a link or association to reconnect it.',
   'You can long press a switch or host to organize it\'s ports.',
 
   'First, solve the problem. Then, write the code.    — John Johnson'

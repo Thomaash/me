@@ -22,8 +22,8 @@ const portAmounts = {
 }
 const nodePriorities = [ 'dummy', 'controller', 'switch', 'host', 'port' ]
 const edgeTests = {
-  'connection': (src, dst) => src === 'port' && dst === 'port',
-  'link': (src, dst) => (
+  'link': (src, dst) => src === 'port' && dst === 'port',
+  'association': (src, dst) => (
     (src === 'controller' && dst === 'switch') ||
     (src === 'switch' && dst === 'port') ||
     (src === 'host' && dst === 'port') ||
@@ -32,7 +32,7 @@ const edgeTests = {
 }
 
 function isEdge (type) {
-  return type === 'connection' || type === 'link'
+  return type === 'link' || type === 'association'
 }
 
 export default {
@@ -130,9 +130,9 @@ export default {
       const src = this.data.items[edge.from].type
       const dst = this.data.items[edge.to].type
       if (src === 'port' && dst === 'port') {
-        return 'connection'
-      } else {
         return 'link'
+      } else {
+        return 'association'
       }
     },
     isEdgeValid (edge, type) {
@@ -229,18 +229,18 @@ export default {
             if (edited.group === 'port') {
               const {x, y} = this.net.getPositions(edited.id)[edited.id]
               const closestId = this.getClosestNodeId(x, y, ['host', 'switch'])
-              const link = {
+              const association = {
                 id: vis.util.randomUUID(),
                 from: closestId,
                 to: edited.id
               }
-              this.edges.add(link)
+              this.edges.add(association)
               this.$store.commit('data/setItem', {
-                id: link.id,
+                id: association.id,
                 item: {
-                  type: 'link',
-                  from: link.from,
-                  to: link.to
+                  type: 'association',
+                  from: association.from,
+                  to: association.to
                 }
               })
             }
@@ -270,7 +270,7 @@ export default {
                 this.$store.commit('data/setItem', {
                   id: edge.id,
                   item: {
-                    type: 'connection',
+                    type: 'link',
                     from: edge.from,
                     to: edge.to
                   }
