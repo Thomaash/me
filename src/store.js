@@ -9,10 +9,13 @@ const data = {
   namespaced: true,
   state: exampleData,
   mutations: {
-    setItem (state, {id, item}) {
+    setItem (state, { id, item }) {
+      if (item.id == null) {
+        throw new Error('Items have to have ids.')
+      }
       state.items[id] = item
     },
-    updateItem (state, {id, item}) {
+    updateItem (state, { id, item }) {
       const saved = state.items[id]
       Object.keys(item).forEach(key => {
         saved[key] = item[key]

@@ -87,21 +87,25 @@ export default {
       this.net.deleteSelected()
     },
     editItem (node, callback) {
-      this.$emit('edit-item', this.data.items[node.id] || {type: node.group}, payload => {
-        if (!payload) {
+      const oldItem = this.data.items[node.id] || {
+        id: node.id,
+        type: node.group
+      }
+      this.$emit('edit-item', oldItem, item => {
+        if (!item) {
           // Node/edge adding mode is not turned off unless a node/edge is placed.
           this.net.disableEditMode()
           return callback()
         }
 
         if (node.from && node.to) {
-          payload.from = node.from
-          payload.to = node.to
+          item.from = node.from
+          item.to = node.to
         }
 
-        this.$store.commit('data/setItem', {id: node.id, item: payload})
-        node.label = payload.hostname
-        node.group = payload.type
+        this.$store.commit('data/setItem', { id: node.id, item })
+        node.label = item.hostname
+        node.group = item.type
         callback(node)
       })
     },
@@ -238,6 +242,7 @@ export default {
               this.$store.commit('data/setItem', {
                 id: association.id,
                 item: {
+                  id: association.id,
                   type: 'association',
                   from: association.from,
                   to: association.to
@@ -256,6 +261,7 @@ export default {
                 this.$store.commit('data/setItem', {
                   id: port.id,
                   item: {
+                    id: port.id,
                     hostname: port.label,
                     type: 'port'
                   }
@@ -270,6 +276,7 @@ export default {
                 this.$store.commit('data/setItem', {
                   id: edge.id,
                   item: {
+                    id: edge.id,
                     type: 'link',
                     from: edge.from,
                     to: edge.to
