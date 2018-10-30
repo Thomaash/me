@@ -5,6 +5,12 @@
         <v-flex xs12 sm6 md4>
           <v-text-field label="Dev Name" required v-model="item.hostname"/>
         </v-flex>
+        <v-flex xs12 sm6 md4>
+          <v-text-field label="IPv4" v-model="item.ipv4"/>
+        </v-flex>
+        <v-flex xs12 sm6 md4>
+          <v-text-field label="IPv6" v-model="item.ipv6"/>
+        </v-flex>
       </v-layout>
     </v-container>
   </v-card-text>
