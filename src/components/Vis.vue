@@ -103,18 +103,15 @@ export default {
           item.to = node.to
         }
 
-        this.$store.commit('data/setItem', { id: node.id, item })
+        this.$store.commit('data/setItem', item)
         node.label = item.hostname
         node.group = item.type
         callback(node)
       })
     },
-    commitPosition (nodeId) {
-      const {x, y} = this.net.getPositions([nodeId])[nodeId]
-      this.$store.commit('data/updateItem', {
-        id: nodeId,
-        item: {x, y}
-      })
+    commitPosition (id) {
+      const { x, y } = this.net.getPositions([id])[id]
+      this.$store.commit('data/updateItem', { id, x, y })
     },
     orderNodes (edge) {
       const src = this.data.items[edge.from].type
@@ -241,12 +238,9 @@ export default {
               this.edges.add(association)
               this.$store.commit('data/setItem', {
                 id: association.id,
-                item: {
-                  id: association.id,
-                  type: 'association',
-                  from: association.from,
-                  to: association.to
-                }
+                type: 'association',
+                from: association.from,
+                to: association.to
               })
             }
 
@@ -260,11 +254,8 @@ export default {
                 nodes.add(port)
                 this.$store.commit('data/setItem', {
                   id: port.id,
-                  item: {
-                    id: port.id,
-                    hostname: port.label,
-                    type: 'port'
-                  }
+                  hostname: port.label,
+                  type: 'port'
                 })
 
                 const edge = {
@@ -275,12 +266,9 @@ export default {
                 edges.add(edge)
                 this.$store.commit('data/setItem', {
                   id: edge.id,
-                  item: {
-                    id: edge.id,
-                    type: 'link',
-                    from: edge.from,
-                    to: edge.to
-                  }
+                  type: 'link',
+                  from: edge.from,
+                  to: edge.to
                 })
               }
               this.organizePorts(edited)
