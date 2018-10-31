@@ -18,12 +18,12 @@ Vue.use(Vuetify, {
   },
   iconfont: 'mdi',
   icons: {
-    'net-controller': 'mdi mdi-developer-board',
+    'net-controller': 'mdi-developer-board',
     'net-dummy': 'mdi-label',
-    'net-edge': 'mdi-link',
+    'net-edge': 'mdi-ethernet-cable',
     'net-host': 'mdi-laptop',
     'net-label': 'mdi-label',
-    'net-port': 'mdi-radiobox-blank',
+    'net-port': 'mdi-ethernet',
     'net-switch': 'mdi-switch'
   }
 })
