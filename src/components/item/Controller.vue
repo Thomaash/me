@@ -3,7 +3,16 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12 sm6 md4>
-          <v-text-field label="Hostname" required v-model="item.hostname"/>
+          <v-text-field label="Label" required v-model="item.hostname"/>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-select label="Type" clearable :items="controllerTypes" v-model="item.controllerType"/>
+        </v-flex>
+        <v-flex xs12>
+          <v-text-field label="IP" v-model="item.ip"/>
+        </v-flex>
+        <v-flex xs12 sm6 md4>
+          <v-text-field label="Port" v-model.number="item.port"/>
         </v-flex>
       </v-layout>
     </v-container>
@@ -11,11 +20,19 @@
 </template>
 
 <script>
+const controllerTypes = [
+  { value: 'NOX', text: 'NOX' },
+  { value: 'OVSController', text: 'OVSController' },
+  { value: 'RemoteController', text: 'RemoteController' },
+  { value: 'Ryu', text: 'Ryu' }
+]
+
 export default {
   name: 'ControllerEdit',
   props: ['value'],
   data: () => ({
     dialog: false,
+    controllerTypes: controllerTypes,
     item: {}
   }),
   watch: {

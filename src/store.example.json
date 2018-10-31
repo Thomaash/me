@@ -372,6 +372,9 @@
             "id": "c7140bf4-cd87-48b6-b1fa-f75e42776c1c",
             "type": "controller",
             "hostname": "c1",
+            "controllerType": "RemoteController",
+            "ip": "127.0.0.1",
+            "port": "6633",
             "x": -75,
             "y": -393
         },
