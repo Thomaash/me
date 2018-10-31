@@ -266,7 +266,7 @@ export default {
                 edges.add(edge)
                 this.$store.commit('data/setItem', {
                   id: edge.id,
-                  type: 'link',
+                  type: 'association',
                   from: edge.from,
                   to: edge.to
                 })
