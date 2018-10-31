@@ -5,7 +5,7 @@
             "id": "a41e6c27-1729-425c-b390-87890ed26014",
             "type": "switch",
             "hostname": "s1",
-            "switchType": "OVSBridge",
+            "switchType": "OVSSwitch",
             "x": -317,
             "y": -213
         },
@@ -91,7 +91,7 @@
             "id": "fc4009e7-fb91-4dea-8937-8b8bbdd01b8e",
             "type": "switch",
             "hostname": "s2",
-            "switchType": "OVSBridge",
+            "switchType": "OVSSwitch",
             "x": 169,
             "y": -215
         },
