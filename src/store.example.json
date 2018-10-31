@@ -290,7 +290,8 @@
             "type": "host",
             "hostname": "h4",
             "x": 260,
-            "y": 154
+            "y": 154,
+            "defaultRoute": "172.18.0.1"
         },
         "dc7c9a65-aaea-4b64-a25e-b9f6afc4f64b": {
             "id": "dc7c9a65-aaea-4b64-a25e-b9f6afc4f64b",
