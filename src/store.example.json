@@ -333,10 +333,12 @@
             "type": "link",
             "from": "e2f3bc54-30f7-4068-a9ee-bbe6b8757f42",
             "to": "9995eea0-93dc-4b75-86ee-0084666229f0",
-            "bandwidth": "100M",
-            "delay": "5ms",
-            "loss": "0.01",
-            "hostname": "Backbone"
+            "bandwidth": 100,
+            "delay": 10,
+            "loss": 1,
+            "hostname": "Backbone",
+            "maxQueueSize": 42,
+            "jitter": 5
         },
         "00d7d4c7-5de1-4bf5-845f-fe7962087656": {
             "id": "00d7d4c7-5de1-4bf5-845f-fe7962087656",
