@@ -160,13 +160,16 @@ export default {
         this.commitPosition(port.id)
       })
     },
-    getClosestNodeId (x, y, types) {
+    getClosest (x, y, types) {
       const ids = this.nodes.getIds()
         .filter(id => types.indexOf(this.$store.state.data.items[id].type) !== -1)
       const positions = this.net.getPositions(ids)
       const distances = ids.map(id => Math.hypot(positions[id].x - x, positions[id].y - y))
       const closestIndex = distances.reduce((acc, val, i) => val < distances[acc] ? i : acc, 0)
-      return ids[closestIndex]
+      return {
+        id: ids[closestIndex],
+        distance: distances[closestIndex]
+      }
     }
   },
   mounted () {
@@ -229,19 +232,22 @@ export default {
 
             if (edited.group === 'port') {
               const { x, y } = this.net.getPositions(edited.id)[edited.id]
-              const closestId = this.getClosestNodeId(x, y, ['host', 'switch'])
-              const association = {
-                id: vis.util.randomUUID(),
-                from: closestId,
-                to: edited.id
+              const closest = this.getClosest(x, y, ['host', 'switch'])
+              if (closest.distance <= 500) {
+                const closestId = closest.id
+                const association = {
+                  id: vis.util.randomUUID(),
+                  from: closestId,
+                  to: edited.id
+                }
+                this.edges.add(association)
+                this.$store.commit('data/setItem', {
+                  id: association.id,
+                  type: 'association',
+                  from: association.from,
+                  to: association.to
+                })
               }
-              this.edges.add(association)
-              this.$store.commit('data/setItem', {
-                id: association.id,
-                type: 'association',
-                from: association.from,
-                to: association.to
-              })
             }
 
             const ports = portAmounts[edited.group] || 0
