@@ -2,20 +2,67 @@
   <v-slide-y-transition mode="out-in">
     <v-container grid-list-md>
       <v-layout wrap>
-        <v-textarea xs12 label="Export" v-model="json" rows="40"/>
+        <v-flex xs12>
+          <v-card>
+            <v-card-title primary-title>
+              <h3>Export</h3>
+            </v-card-title>
+            <v-card-actions>
+              <v-btn flat @click="downloadJSON">JSON</v-btn>
+              <v-btn flat @click="downloadScript">Python 2 script</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+        <v-flex xs12>
+          <v-textarea solo label="Python 2 script" v-model="script" rows="40"/>
+        </v-flex>
+        <v-flex xs12>
+          <v-textarea solo label="Raw" v-model="json" rows="40"/>
+        </v-flex>
       </v-layout>
     </v-container>
   </v-slide-y-transition>
 </template>
 
 <script>
+import Builder from '@/builder'
+
+function download (filename, mime, data) {
+  const element = document.createElement('a')
+  element.setAttribute('href', `data:${mime},${encodeURIComponent(data)}`)
+  element.setAttribute('download', filename)
+  element.style.display = 'none'
+
+  document.body.appendChild(element)
+  element.click()
+  document.body.removeChild(element)
+}
+
 export default {
   name: 'Export',
   data: () => ({
-    json: '{}'
+    json: '{}',
+    script: ''
   }),
+  methods: {
+    downloadJSON () {
+      download('mininet_network.json', 'application/json;charset=utf-8', JSON.stringify(this.$store.state.data, undefined, 4))
+    },
+    downloadScript () {
+      const builder = new Builder(JSON.parse(this.json))
+      const script = builder.build()
+      download('mininet_network.py', 'text/x-python;charset=utf-8', script)
+    }
+  },
   mounted () {
-    this.json = JSON.stringify(this.$store.state.data, undefined, 4)
+    const graph = this.$store.state.data
+
+    // Raw
+    this.json = JSON.stringify(graph, undefined, 4)
+
+    // Script
+    const builder = new Builder(JSON.parse(this.json))
+    this.script = builder.build()
   }
 }
 </script>
