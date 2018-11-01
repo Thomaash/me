@@ -150,10 +150,10 @@ export default class {
       `intfName1='${fromDev}'`,
       `intfName2='${toDev}'`,
       ...(link.bandwidth == null ? [] : [`bw=${link.bandwidth}`]),
-      ...(link.delay == null ? [] : [`delay='${link.delay}ms'`]),
+      ...(link.delay == null ? [] : [`delay='${link.delay}'`]),
       ...(link.loss == null ? [] : [`loss=${link.loss}`]),
       ...(link.maxQueueSize == null ? [] : [`max_queue_size=${link.maxQueueSize}`]),
-      ...(link.jitter == null ? [] : [`jitter='${link.jitter}ms'`])
+      ...(link.jitter == null ? [] : [`jitter='${link.jitter}'`])
     ]
 
     this._code.links.push(`net.addLink(${args.join(', ')})`)

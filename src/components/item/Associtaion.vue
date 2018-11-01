@@ -1,34 +1,27 @@
 <template>
   <v-card-text>
-    <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12>
-          <v-text-field label="Label" required v-model="item.hostname"/>
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <v-form v-model="valid">
+      <v-container grid-list-md>
+        <v-layout wrap>
+          <v-flex xs12>
+            <v-text-field label="Label" v-model="item.hostname" clearable/>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-form>
   </v-card-text>
 </template>
 
 <script>
+import common from './common'
+
 export default {
   name: 'AssociationEdit',
-  props: ['value'],
+  mixins: [common],
   data: () => ({
-    dialog: false,
+    valid: false,
     item: {}
-  }),
-  watch: {
-    item (val) {
-      this.$emit('input', val)
-    },
-    value (val) {
-      this.item = val
-    }
-  },
-  mounted () {
-    this.item = this.value
-  }
+  })
 }
 </script>
 

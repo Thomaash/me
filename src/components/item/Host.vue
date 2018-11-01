@@ -1,36 +1,49 @@
 <template>
   <v-card-text>
-    <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12 sm6 md4>
-          <v-text-field label="Hostname" required v-model="item.hostname"/>
-        </v-flex>
-        <v-flex xs12>
-          <v-text-field label="Default Route" required v-model="item.defaultRoute"/>
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <v-form v-model="valid">
+      <v-container grid-list-md>
+        <v-layout wrap>
+          <v-flex xs12 sm6 md4>
+            <v-text-field label="Hostname" v-model="item.hostname" :error-messages="hostnameErrors"/>
+          </v-flex>
+          <v-flex xs12>
+            <v-text-field label="Default Route" v-model="item.defaultRoute" :error-messages="defaultRouteErrors" clearable/>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-form>
   </v-card-text>
 </template>
 
 <script>
+import common from './common'
+import { required, hostname, ip } from './rules'
+
 export default {
   name: 'HostEdit',
-  props: ['value'],
+  mixins: [common],
   data: () => ({
-    dialog: false,
+    valid: false,
     item: {}
   }),
-  watch: {
-    item (val) {
-      this.$emit('input', val)
+  computed: {
+    hostnameErrors () {
+      return [
+        ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
+        ...(this.$v.item.hostname.hostname ? [] : ['Invalid hostname.'])
+      ]
     },
-    value (val) {
-      this.item = val
+    defaultRouteErrors () {
+      return [
+        ...(this.$v.item.defaultRoute.ip ? [] : ['Invalid IP address.'])
+      ]
     }
   },
-  mounted () {
-    this.item = this.value
+  validations: {
+    item: {
+      hostname: { required, hostname },
+      defaultRoute: { ip }
+    }
   }
 }
 </script>

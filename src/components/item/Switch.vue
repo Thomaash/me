@@ -1,19 +1,24 @@
 <template>
   <v-card-text>
-    <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12 sm6 md4>
-          <v-text-field label="Hostname" required v-model="item.hostname"/>
-        </v-flex>
-        <v-flex xs12 sm6 md4>
-          <v-select label="Type" clearable :items="switchTypes" v-model="item.switchType"/>
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <v-form v-model="valid">
+      <v-container grid-list-md>
+        <v-layout wrap>
+          <v-flex xs12 sm6 md4>
+            <v-text-field label="Hostname" v-model="item.hostname" :error-messages="hostnameErrors"/>
+          </v-flex>
+          <v-flex xs12 sm6 md4>
+            <v-select label="Type" clearable :items="switchTypes" v-model="item.switchType"/>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-form>
   </v-card-text>
 </template>
 
 <script>
+import common from './common'
+import { required, hostname } from './rules'
+
 const switchTypes = [
   { value: 'IVSSwitch', text: 'IVSSwitch' },
   { value: 'LinuxBridge', text: 'LinuxBridge' },
@@ -24,22 +29,24 @@ const switchTypes = [
 
 export default {
   name: 'SwitchEdit',
-  props: ['value'],
+  mixins: [common],
   data: () => ({
-    dialog: false,
-    switchTypes: switchTypes,
-    item: {}
+    valid: false,
+    item: {},
+    switchTypes: switchTypes
   }),
-  watch: {
-    item (val) {
-      this.$emit('input', val)
-    },
-    value (val) {
-      this.item = val
+  computed: {
+    hostnameErrors () {
+      return [
+        ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
+        ...(this.$v.item.hostname.hostname ? [] : ['Invalid hostname.'])
+      ]
     }
   },
-  mounted () {
-    this.item = this.value
+  validations: {
+    item: {
+      hostname: { required, hostname }
+    }
   }
 }
 </script>

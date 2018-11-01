@@ -5,11 +5,11 @@
         <v-card-title>
           <span class="headline" v-text="headline"/>
         </v-card-title>
-        <div v-model="item" :is="component"/>
+        <div v-model="item" @valid="v => valid = v" :is="component"/>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" flat @click.native="cancel">Cancel</v-btn>
-          <v-btn color="primary" flat @click.native="save">Save</v-btn>
+          <v-btn color="primary" flat @click.native="save" :disabled="!valid">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -35,7 +35,7 @@ const typeComponentMap = {
   'switch': 'SwitchEdit'
 }
 const typeHeadlineMap = {
-  'association': 'Associtaion',
+  'association': 'Association',
   'controller': 'Controller',
   'dummy': 'Label',
   'host': 'Host',
@@ -49,6 +49,7 @@ export default {
   components: { AssociationEdit, ControllerEdit, DummyEdit, HostEdit, LinkEdit, PortEdit, SwitchEdit },
   data: () => ({
     dialog: false,
+    valid: false,
     component: 'HostEdit',
     headline: '',
     item: {}

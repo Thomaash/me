@@ -2,10 +2,12 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css'
 import App from './App'
 import Vue from 'vue'
+import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import router from './router'
 import store from './store'
 
+Vue.use(Vuelidate)
 Vue.use(Vuetify, {
   theme: {
     primary: '#009688',

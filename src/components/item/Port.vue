@@ -1,24 +1,29 @@
 <template>
   <v-card-text>
-    <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12 sm6 md4>
-          <v-text-field label="Dev Name" required v-model="item.hostname"/>
-        </v-flex>
-        <v-flex xs12>
-          <v-textarea label="IPs" v-model="ips"/>
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <v-form v-model="valid">
+      <v-container grid-list-md>
+        <v-layout wrap>
+          <v-flex xs12 sm6 md4>
+            <v-text-field label="Dev Name" v-model="item.hostname" :error-messages="hostnameErrors" clearable/>
+          </v-flex>
+          <v-flex xs12>
+            <v-textarea label="IPs" v-model="ips" :error-messages="ipsErrors" clearable/>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-form>
   </v-card-text>
 </template>
 
 <script>
+import common from './common'
+import { required, hostname, ipsWithMasks } from './rules'
+
 export default {
   name: 'PortEdit',
-  props: ['value'],
+  mixins: [common],
   data: () => ({
-    dialog: false,
+    valid: false,
     item: {}
   }),
   computed: {
@@ -27,20 +32,30 @@ export default {
         return (this.item.ips || []).join('\n')
       },
       set (val) {
-        this.item.ips = val.split('\n').filter(line => line !== '')
+        if (val) {
+          this.$set(this.item, 'ips', val.split('\n').filter(line => line !== ''))
+        } else {
+          this.$delete(this.item, 'ips')
+        }
       }
-    }
-  },
-  watch: {
-    item (val) {
-      this.$emit('input', val)
     },
-    value (val) {
-      this.item = val
+    hostnameErrors () {
+      return [
+        ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
+        ...(this.$v.item.hostname.hostname ? [] : ['Invalid hostname.'])
+      ]
+    },
+    ipsErrors () {
+      return [
+        ...(this.$v.item.ips.ipsWithMasks ? [] : ['Invalid IP(s).'])
+      ]
     }
   },
-  mounted () {
-    this.item = this.value
+  validations: {
+    item: {
+      hostname: { required, hostname },
+      ips: { ipsWithMasks }
+    }
   }
 }
 </script>
