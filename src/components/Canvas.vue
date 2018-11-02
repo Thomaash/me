@@ -3,8 +3,8 @@
     <div class="canvas-container">
       <Vis ref="vis" @edit-item="editItem"/>
       <Edit ref="edit"/>
-      <v-speed-dial v-model="fab" bottom right style="position: fixed" open-on-hover>
-        <v-btn slot="activator" v-model="fab" color="accent" dark fab>
+      <v-speed-dial v-model="fab" bottom right open-on-hover style="position: fixed">
+        <v-btn fab dark color="accent" slot="activator" v-model="fab">
           <v-icon>mdi-chevron-up</v-icon>
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
