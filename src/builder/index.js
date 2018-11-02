@@ -95,7 +95,8 @@ export default class {
             this._addSwitch(item)
             break
         }
-      } catch (_error) {
+      } catch (error) {
+        console.error(error)
         this._code.log.push(
           item != null && item.type !== null && item.id !== null
             ? `# Failed to add ${item.type}/${item.hostname} (${item.id}).`
