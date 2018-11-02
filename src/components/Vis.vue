@@ -201,6 +201,8 @@ export default {
     }
   },
   mounted () {
+    this.focusRoot()
+
     const items = Object.keys(this.data.items)
       .map(id => {
         const node = JSON.parse(JSON.stringify(this.data.items[id]))
@@ -426,6 +428,8 @@ export default {
 </script>
 
 <style scoped>
+*:focus {outline: none;}
+
 .template-root {position: absolute; width: 100%; height: 100%;}
 .vis-root {position: absolute; width: 100%; height: 100%;}
 
