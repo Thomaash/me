@@ -160,6 +160,13 @@ export default class {
     this._code.links.push(`net.addLink(${args.join(', ')})`)
   }
   _addPort (port) {
+    if (!this._portToLink(port)) {
+      this._code.log.push(
+        `# Skipping ${port.type}/${port.hostname} (${port.id}): not connected to anything.`
+      )
+      return
+    }
+
     const node = this._portToNode(port)
     const dev = `${node.hostname}-${port.hostname}`
 
@@ -183,8 +190,13 @@ export default class {
     this._code.nodes.push(`${swtch.hostname} = net.addSwitch(${args.join(', ')})`)
     this._code.startSwitches.push(`${swtch.hostname}.start([${controllerHostnames.join(', ')}])`)
   }
+
   _portToNode (port) {
     return this._getNeighbors(port, ['host', 'switch'])[0]
+  }
+  _portToLink (port) {
+    return this._getNodesEdges(port)
+      .find(edge => edge.type === 'link')
   }
   _getNeighbors (node, types) {
     const nodes = new Set()
@@ -199,6 +211,16 @@ export default class {
   _getNodesAssocs (node) {
     return Object.values(this._graph.items)
       .filter(item => item.type === 'association' && (
+        item.from === node.id ||
+        item.to === node.id
+      ))
+  }
+  _getNodesEdges (node) {
+    return Object.values(this._graph.items)
+      .filter(item => (
+        item.type === 'association' ||
+        item.type === 'link'
+      ) && (
         item.from === node.id ||
         item.to === node.id
       ))
