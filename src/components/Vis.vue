@@ -1,5 +1,5 @@
 <template>
-  <div class="template-root" @mousemove="moveMouseTag" @drag="moveMouseTag">
+  <div class="template-root" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
     <div ref="vis" class="vis-root"/>
       <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
         <v-icon v-text="mouseTagIcon" color="black"/>
@@ -29,6 +29,19 @@ const edgeTests = {
     (src === 'host' && dst === 'port') ||
     (src === 'dummy')
   )
+}
+
+const keybindings = {
+  'Delete': 'deleteSelected',
+  'a': 'fitAll',
+  'c': 'addController',
+  'd': 'deleteSelected',
+  'e': 'addEdge',
+  'f': 'fitSelected',
+  'h': 'addHost',
+  'l': 'addDummy',
+  'p': 'addPort',
+  's': 'addSwitch'
 }
 
 function isEdge (type) {
@@ -85,6 +98,15 @@ export default {
       const { nodes, edges } = this.net.getSelection()
       this.$store.commit('data/removeItems', [...nodes, ...edges])
       this.net.deleteSelected()
+    },
+    fitAll () {
+      this.net.fit({ animation: true })
+    },
+    fitSelected () {
+      this.net.fit({
+        nodes: this.net.getSelectedNodes(),
+        animation: true
+      })
     },
     editItem (node, callback) {
       const oldItem = this.data.items[node.id] || {
@@ -170,6 +192,12 @@ export default {
         id: ids[closestIndex],
         distance: distances[closestIndex]
       }
+    },
+    focusRoot () {
+      this.$el.focus()
+    },
+    keypress ({ key }) {
+      (this[keybindings[key]] || (() => {}))()
     }
   },
   mounted () {

@@ -11,9 +11,20 @@
 <script>
 const hints = [
   'You can double click any item to edit it\'s settings.',
-  'You can hold ctrl key to select multiple items.',
+  'You can hold [ctrl] to select multiple items.',
   'You can long press a link or association to reconnect it.',
   'You can long press a switch or host to organize it\'s ports.',
+
+  'You can press [a] to fit all items into the viewport.',
+  'You can press [c] to add a controller.',
+  'You can press [d] to delete selected items.',
+  'You can press [delete] to delete selected items.',
+  'You can press [e] to add an edge.',
+  'You can press [f] to fit selected items into the viewport.',
+  'You can press [h] to add a host.',
+  'You can press [l] to add a label.',
+  'You can press [p] to add a port.',
+  'You can press [s] to add a switch.',
 
   'First, solve the problem. Then, write the code.    — John Johnson'
 ]
