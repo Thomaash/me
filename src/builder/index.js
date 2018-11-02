@@ -160,23 +160,25 @@ export default class {
     this._code.links.push(`net.addLink(${args.join(', ')})`)
   }
   _addPort (port) {
-    if (!this._portToLink(port)) {
+    const link = this._portToLink(port)
+    const node = this._portToNode(port)
+    if (!link || !node) {
       this._code.log.push(
         `# Skipping ${port.type}/${port.hostname} (${port.id}): not connected to anything.`
       )
       return
     }
 
-    const node = this._portToNode(port)
-    const dev = `${node.hostname}-${port.hostname}`
+    const hostname = node.hostname
+    const dev = `${hostname}-${port.hostname}`
 
     ;(port.ips || []).forEach((ip, i) => {
       this._code.ports.push(
         ...(i === 0 ? [
-          `${node.hostname}.intf('${dev}').ip = '${ip.split('/')[0]}'`,
-          `${node.hostname}.intf('${dev}').prefixLen = ${ip.split('/')[1]}`
+          `${hostname}.intf('${dev}').ip = '${ip.split('/')[0]}'`,
+          `${hostname}.intf('${dev}').prefixLen = ${ip.split('/')[1]}`
         ] : []),
-        `${node.hostname}.cmd('ip a a ${ip} dev ${dev}')`
+        `${hostname}.cmd('ip a a ${ip} dev ${dev}')`
       )
     })
   }
