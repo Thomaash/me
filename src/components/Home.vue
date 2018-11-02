@@ -20,6 +20,7 @@ const hints = [
   'You can press [d] to delete selected items.',
   'You can press [delete] to delete selected items.',
   'You can press [e] to add an edge.',
+  'You can press [escape] to stop editing edges or adding items.',
   'You can press [f] to fit selected items into the viewport.',
   'You can press [h] to add a host.',
   'You can press [l] to add a label.',

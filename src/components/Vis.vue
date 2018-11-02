@@ -33,6 +33,7 @@ const edgeTests = {
 
 const keybindings = {
   'Delete': 'deleteSelected',
+  'Escape': 'stopEditMode',
   'a': 'fitAll',
   'c': 'addController',
   'd': 'deleteSelected',
@@ -108,6 +109,10 @@ export default {
         animation: true
       })
     },
+    stopEditMode () {
+      this.newItemType = ''
+      this.net.disableEditMode()
+    },
     editItem (node, callback) {
       const oldItem = this.data.items[node.id] || {
         id: node.id,
@@ -116,7 +121,7 @@ export default {
       this.$emit('edit-item', oldItem, item => {
         if (!item) {
           // Node/edge adding mode is not turned off unless a node/edge is placed.
-          this.net.disableEditMode()
+          this.stopEditMode()
           return callback()
         }
 
