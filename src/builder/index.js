@@ -120,9 +120,9 @@ export default class {
   _addController (controller) {
     const args = [
       `'${controller.hostname}'`,
-      ...(controller.controllerType ? [`controller=mininet.node.${controller.controllerType}`] : []),
-      ...(controller.ip ? [`ip='${controller.ip}'`] : []),
-      ...(controller.port ? [`port=${controller.port}`] : [])
+      ...(controller.controllerType != null ? [`controller=mininet.node.${controller.controllerType}`] : []),
+      ...(controller.ip != null ? [`ip='${controller.ip}'`] : []),
+      ...(controller.port != null ? [`port=${controller.port}`] : [])
     ]
     this._code.nodes.push(`${controller.hostname} = net.addController(${args.join(', ')})`)
     this._code.startControllers.push(`${controller.hostname}.start()`)
@@ -131,7 +131,7 @@ export default class {
     const args = [
       `'${host.hostname}'`,
       'ip=None',
-      ...(host.defaultRoute ? [`defaultRoute='via ${host.defaultRoute}'`] : [])
+      ...(host.defaultRoute != null ? [`defaultRoute='via ${host.defaultRoute}'`] : [])
     ]
     this._code.nodes.push(`${host.hostname} = net.addHost(${args.join(', ')})`)
   }
@@ -150,11 +150,11 @@ export default class {
       toNode.hostname,
       `intfName1='${fromDev}'`,
       `intfName2='${toDev}'`,
-      ...(link.bandwidth == null ? [] : [`bw=${link.bandwidth}`]),
-      ...(link.delay == null ? [] : [`delay='${link.delay}'`]),
-      ...(link.loss == null ? [] : [`loss=${link.loss}`]),
-      ...(link.maxQueueSize == null ? [] : [`max_queue_size=${link.maxQueueSize}`]),
-      ...(link.jitter == null ? [] : [`jitter='${link.jitter}'`])
+      ...(link.bandwidth != null ? [`bw=${link.bandwidth}`] : []),
+      ...(link.delay != null ? [`delay='${link.delay}'`] : []),
+      ...(link.loss != null ? [`loss=${link.loss}`] : []),
+      ...(link.maxQueueSize != null ? [`max_queue_size=${link.maxQueueSize}`] : []),
+      ...(link.jitter != null ? [`jitter='${link.jitter}'`] : [])
     ]
 
     this._code.links.push(`net.addLink(${args.join(', ')})`)
