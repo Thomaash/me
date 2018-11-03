@@ -185,7 +185,16 @@ export default class {
   _addSwitch (swtch) {
     const args = [
       `'${swtch.hostname}'`,
-      ...(swtch.switchType ? [`cls=mininet.node.${swtch.switchType}`] : [])
+      ...(swtch.batch != null ? [`batch=${swtch.batch ? 'True' : 'False'}`] : []),
+      ...(swtch.datapath != null ? [`datapath='${swtch.datapath}'`] : []),
+      ...(swtch.dpopts != null ? [`dpopts='${swtch.dpopts}'`] : []),
+      ...(swtch.failMode != null ? [`failMode='${swtch.failMode}'`] : []),
+      ...(swtch.inband != null ? [`inband=${swtch.inband ? 'True' : 'False'}`] : []),
+      ...(swtch.protocol != null ? [`protocols='${swtch.protocol}'`] : []),
+      ...(swtch.reconnectms != null ? [`reconnectms=${swtch.reconnectms}`] : []),
+      ...(swtch.stp != null ? [`stp=${swtch.stp ? 'True' : 'False'}`] : []),
+      ...(swtch.stpPriority != null ? [`prio=${swtch.stpPriority}`] : []),
+      ...(swtch.switchType != null ? [`cls=mininet.node.${swtch.switchType}`] : [])
     ]
     const controllerHostnames = this._getNeighbors(swtch, ['controller'])
       .map(controller => controller.hostname)

@@ -53,3 +53,7 @@ const timeWithUnit = v => !req(v) || (
   /^\d+(|m|u)s$/.test(v)
 )
 export { timeWithUnit }
+
+const divisible = divisor =>
+  v => !req(v) || v % divisor === 0
+export { divisible }
