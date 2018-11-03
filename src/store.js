@@ -13,23 +13,23 @@ const data = {
       if (item.id == null) {
         throw new Error('Items have to have ids.')
       }
-      state.items[item.id] = item
+      Vue.set(state.items, item.id, item)
     },
     updateItem (state, item) {
       const saved = state.items[item.id]
       Object.keys(item).forEach(key => {
-        saved[key] = item[key]
+        Vue.set(saved, key, item[key])
       })
     },
     setScript (state, script) {
       if (script && script !== '') {
-        state.script = script
+        Vue.set(state, 'script', script)
       } else {
-        delete state.script
+        Vue.delete(state, 'script')
       }
     },
     removeItems (state, ids) {
-      ids.forEach(id => delete state.items[id])
+      ids.forEach(id => Vue.delete(state.items, id))
     }
   }
 }
