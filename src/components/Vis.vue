@@ -103,10 +103,10 @@ export default {
     fitAll () {
       this.net.fit({ animation: true })
     },
-    fitSelected () {
+    fitSelected (animate) {
       this.net.fit({
         nodes: this.net.getSelectedNodes(),
-        animation: true
+        animation: animate == null ? true : !!animate
       })
     },
     stopEditMode () {
@@ -423,6 +423,21 @@ export default {
         this.net.selectNodes([event.nodes[0], ...toSelectFiltered])
       }
     })
+
+    // Focus item, focus again in case of immediate resize.
+    const idToSelect = this.$route.params.id
+    if (idToSelect) {
+      const fitSelection = animate => {
+        this.net.setSelection({
+          nodes: [idToSelect].filter(id => this.nodes.get(id)),
+          edges: [idToSelect].filter(id => this.edges.get(id))
+        })
+        this.fitSelected(animate)
+      }
+      this.net.on('resize', fitSelection)
+      window.setTimeout(() => this.net.off('resize', fitSelection), 4000)
+      fitSelection(false)
+    }
 
     // @todo - debug
     window.net = this.net

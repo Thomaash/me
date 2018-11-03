@@ -1,5 +1,6 @@
 export default class {
   constructor (graph) {
+    this.log = []
     this._graph = graph
     this._code = {
       _metadata: [
@@ -97,10 +98,12 @@ export default class {
         }
       } catch (error) {
         console.error(error)
-        this._code.log.push(
+        this._log(
           item != null && item.type !== null && item.id !== null
-            ? `# Failed to add ${item.type}/${item.hostname} (${item.id}).`
-            : `# Malformed item (${Object.entries(this._graph.items).find(([_, v]) => v === item)[0]}).`
+            ? `Failed to add ${item.type}/${item.hostname} (${item.id}).`
+            : `Malformed item (${Object.entries(this._graph.items).find(([_, v]) => v === item)[0]}).`,
+          'error',
+          item
         )
       }
     })
@@ -163,8 +166,10 @@ export default class {
     const link = this._portToLink(port)
     const node = this._portToNode(port)
     if (!link || !node) {
-      this._code.log.push(
-        `# Skipping ${port.type}/${port.hostname} (${port.id}): not connected to anything.`
+      this._log(
+        `Skipping ${port.type}/${port.hostname} (${port.id}): not connected to anything.`,
+        'info',
+        port
       )
       return
     }
@@ -238,5 +243,10 @@ export default class {
   }
   _getEdgesNodes (edge) {
     return [this._graph.items[edge.from], this._graph.items[edge.to]]
+  }
+
+  _log (msg, severity, item) {
+    this._code.log.push(msg.replace(/^(.*)$/gm, '# $1'))
+    this.log.push({ item, severity, msg })
   }
 }

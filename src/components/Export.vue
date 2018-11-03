@@ -19,6 +19,25 @@
         <v-flex xs12>
           <v-textarea solo label="Raw" v-model="json" rows="40"/>
         </v-flex>
+        <v-flex xs12>
+          <v-card>
+            <v-card-title primary-title>
+              <h3>Log</h3>
+            </v-card-title>
+            <v-card-text>
+              <v-list>
+                <v-list-tile v-for="(l, i) in log" :key="'export_log_' + i" @click="selectInCanvas(l.item.id)">
+                  <v-list-tile-action>
+                    <v-icon v-text="'$vuetify.icons.' + l.severity"/>
+                  </v-list-tile-action>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-text="l.msg"/>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </v-flex>
       </v-layout>
     </v-container>
   </v-slide-y-transition>
@@ -42,15 +61,23 @@ export default {
   name: 'Export',
   data: () => ({
     json: '{}',
+    log: [],
     script: ''
   }),
   methods: {
+    selectInCanvas (id) {
+      this.$router.push({
+        name: 'Canvas',
+        params: { id }
+      })
+    },
     downloadJSON () {
       download('mininet_network.json', 'application/json;charset=utf-8', JSON.stringify(this.$store.state.data, undefined, 4))
     },
     downloadScript () {
       const builder = new Builder(JSON.parse(this.json))
       const script = builder.build()
+      this.log = builder.log
       download('mininet_network.py', 'text/x-python;charset=utf-8', script)
     }
   },
@@ -62,6 +89,7 @@ export default {
 
     // Script
     const builder = new Builder(JSON.parse(this.json))
+    this.log = builder.log
     this.script = builder.build()
   }
 }
