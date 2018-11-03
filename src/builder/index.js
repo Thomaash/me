@@ -12,6 +12,7 @@ export default class {
         { attr: 'build', name: 'Build the network' },
         { attr: 'startControllers', name: 'Start controllers' },
         { attr: 'startSwitches', name: 'Start switches' },
+        { attr: 'cmds', name: 'Run commands' },
         { attr: 'cli', name: 'Start CLI' },
         { attr: 'finish', name: 'Finish' },
         { attr: 'log', name: 'Log', silent: true }
@@ -52,12 +53,13 @@ export default class {
         'from mininet.net import Mininet',
         'from mininet.cli import CLI',
         'from mininet.link import TCLink',
-        'from mininet.log import setLogLevel, info',
+        'from mininet.log import setLogLevel, info, debug',
         'import mininet.node'
       ],
       init: [
         'setLogLevel(\'info\')',
-        'net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=TCLink)'
+        'net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=TCLink)',
+        'cli = CLI(net, script=\'/dev/null\')'
       ],
       nodes: [],
       links: [],
@@ -67,8 +69,9 @@ export default class {
       ],
       startControllers: [],
       startSwitches: [],
+      cmds: [],
       cli: [
-        'CLI(net)'
+        'cli.run()'
       ],
       finish: [
         'net.stop()'
@@ -107,6 +110,9 @@ export default class {
         )
       }
     })
+    if (this._graph.script) {
+      this._addScript(this._graph.script)
+    }
 
     return this._code.toString()
   }
@@ -118,6 +124,15 @@ export default class {
       default:
         throw new TypeError('Unsupported version of graph.')
     }
+  }
+
+  _addScript (script) {
+    script.split('\n')
+      .filter(line => !/^(#|$)/.test(line))
+      .forEach(line => this._code.cmds.push(
+        `debug('mininet> ${line}\\n')`,
+        `cli.onecmd('${line}')`
+      ))
   }
 
   _addController (controller) {

@@ -1,5 +1,6 @@
 {
     "version": 0,
+    "script": "# Ping between all hosts.\npingall\n",
     "items": {
         "a41e6c27-1729-425c-b390-87890ed26014": {
             "id": "a41e6c27-1729-425c-b390-87890ed26014",

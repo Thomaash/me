@@ -21,6 +21,13 @@ const data = {
         saved[key] = item[key]
       })
     },
+    setScript (state, script) {
+      if (script && script !== '') {
+        state.script = script
+      } else {
+        delete state.script
+      }
+    },
     removeItems (state, ids) {
       ids.forEach(id => delete state.items[id])
     }

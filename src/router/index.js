@@ -4,6 +4,7 @@ import Vue from 'vue'
 import Canvas from '@/components/Canvas'
 import Export from '@/components/Export'
 import Home from '@/components/Home'
+import Script from '@/components/Script'
 
 Vue.use(Router)
 
@@ -16,6 +17,10 @@ export default new Router({
     path: '/canvas/:id?',
     name: 'Canvas',
     component: Canvas
+  }, {
+    path: '/script',
+    name: 'Script',
+    component: Script
   }, {
     path: '/export',
     name: 'Export',

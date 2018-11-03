@@ -37,6 +37,10 @@ export default {
         title: 'Canvas',
         to: '/canvas'
       }, {
+        icon: 'mdi-script',
+        title: 'Startup Script',
+        to: '/script'
+      }, {
         icon: 'mdi-content-save',
         title: 'Export/Import',
         to: '/export'
