@@ -20,12 +20,6 @@
           </v-card>
         </v-flex>
         <v-flex xs12>
-          <v-textarea solo label="Python 2 script" v-model="script" rows="40"/>
-        </v-flex>
-        <v-flex xs12>
-          <v-textarea solo label="Raw" v-model="json" rows="40"/>
-        </v-flex>
-        <v-flex xs12>
           <v-card>
             <v-card-title primary-title>
               <h3>Log</h3>
@@ -73,22 +67,6 @@ export default {
     alertType: 'error',
     alertText: '…'
   }),
-  computed: {
-    json () {
-      return JSON.stringify(
-        exporter.exportData(
-          this.$store.state.data
-        ),
-        undefined,
-        4
-      )
-    },
-    script () {
-      const builder = new Builder(JSON.parse(JSON.stringify(this.$store.state.data)))
-      this.log = builder.log
-      return builder.build()
-    }
-  },
   methods: {
     showAlert (type, text) {
       this.alertType = type
