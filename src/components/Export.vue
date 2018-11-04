@@ -45,6 +45,7 @@
 
 <script>
 import Builder from '@/builder'
+import exporter from '@/exporter'
 
 function download (filename, mime, data) {
   const element = document.createElement('a')
@@ -60,10 +61,24 @@ function download (filename, mime, data) {
 export default {
   name: 'Export',
   data: () => ({
-    json: '{}',
-    log: [],
-    script: ''
+    log: []
   }),
+  computed: {
+    json () {
+      return JSON.stringify(
+        exporter.exportData(
+          this.$store.state.data
+        ),
+        undefined,
+        4
+      )
+    },
+    script () {
+      const builder = new Builder(JSON.parse(JSON.stringify(this.$store.state.data)))
+      this.log = builder.log
+      return builder.build()
+    }
+  },
   methods: {
     selectInCanvas (id) {
       this.$router.push({
@@ -72,7 +87,17 @@ export default {
       })
     },
     downloadJSON () {
-      download('mininet_network.json', 'application/json;charset=utf-8', JSON.stringify(this.$store.state.data, undefined, 4))
+      download(
+        'mininet_network.json',
+        'application/json;charset=utf-8',
+        JSON.stringify(
+          exporter.exportData(
+            this.$store.state.data
+          ),
+          undefined,
+          4
+        )
+      )
     },
     downloadScript () {
       const builder = new Builder(JSON.parse(this.json))
@@ -80,17 +105,6 @@ export default {
       this.log = builder.log
       download('mininet_network.py', 'text/x-python;charset=utf-8', script)
     }
-  },
-  mounted () {
-    const graph = this.$store.state.data
-
-    // Raw
-    this.json = JSON.stringify(graph, undefined, 4)
-
-    // Script
-    const builder = new Builder(JSON.parse(this.json))
-    this.log = builder.log
-    this.script = builder.build()
   }
 }
 </script>
