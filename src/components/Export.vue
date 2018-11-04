@@ -8,12 +8,15 @@
               <h3>Export/Import</h3>
             </v-card-title>
             <v-card-actions>
-              <v-progress-circular :indeterminate="working"/>
               <v-btn flat :disabled="working" @click="uploadJSON">Import JSON</v-btn>
               <v-btn flat :disabled="working" @click="downloadJSON">Export JSON</v-btn>
               <v-btn flat :disabled="working" @click="downloadScript">Export Python 2 script</v-btn>
               <input type="file" style="display:none" ref="fileInput" @input="uploadFile">
             </v-card-actions>
+            <v-card-text v-if="alertEnabled || working">
+              <v-progress-linear v-if="working" :indeterminate="working"/>
+              <v-alert v-model="alertEnabled" dismissible :type="alertType">{{alertText}}</v-alert>
+            </v-card-text>
           </v-card>
         </v-flex>
         <v-flex xs12>
@@ -65,7 +68,10 @@ export default {
   name: 'Export',
   data: () => ({
     log: [],
-    working: false
+    working: false,
+    alertEnabled: false,
+    alertType: 'error',
+    alertText: '…'
   }),
   computed: {
     json () {
@@ -84,6 +90,11 @@ export default {
     }
   },
   methods: {
+    showAlert (type, text) {
+      this.alertType = type
+      this.alertText = text
+      this.alertEnabled = true
+    },
     uploadJSON () {
       this.working = true
 
@@ -105,16 +116,10 @@ export default {
           const data = exporter.importData(importData)
           this.$store.commit('data/importData', data)
 
-          this.log = [{
-            severity: 'info',
-            msg: 'Succesfully imported.'
-          }]
+          this.showAlert('success', 'Succesfully imported.')
         } catch (error) {
           console.error(error)
-          this.log = [{
-            severity: 'error',
-            msg: 'Import failed.'
-          }]
+          this.showAlert('error', 'Import failed.')
         } finally {
           this.working = false
         }
