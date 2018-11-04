@@ -15,8 +15,6 @@ localForage.config({
   storeName: 'vuex'
 })
 
-window.lf = localForage
-
 const vuexPersist = new VuexPersist({
   storage: localForage,
   asyncStorage: true,
