@@ -2,24 +2,32 @@
   <v-slide-y-transition mode="out-in">
     <v-container grid-list-md>
       <v-layout wrap>
-        <v-flex xs12>
+        <v-flex xs12 md6>
           <v-card>
             <v-card-title primary-title>
-              <h3>Export/Import</h3>
+              <h3>Export</h3>
             </v-card-title>
             <v-card-actions>
-              <v-btn flat :disabled="working" @click="importEmpty">Import Empty</v-btn>
-              <v-btn flat :disabled="working" @click="importExample">Import Example</v-btn>
-              <v-btn flat :disabled="working" @click="uploadJSON">Import File</v-btn>
-              <v-btn flat :disabled="working" @click="downloadJSON">Export JSON</v-btn>
-              <v-btn flat :disabled="working" @click="downloadScript">Export Python 2 script</v-btn>
-              <input type="file" style="display:none" ref="fileInput" @input="uploadFile">
+              <v-btn flat :disabled="working" @click="downloadJSON">JSON</v-btn>
+              <v-btn flat :disabled="working" @click="downloadScript">Python 2 script</v-btn>
             </v-card-actions>
-            <v-card-text v-if="alertEnabled || working">
-              <v-progress-linear v-if="working" :indeterminate="working"/>
-              <v-alert v-model="alertEnabled" dismissible :type="alertType">{{alertText}}</v-alert>
-            </v-card-text>
           </v-card>
+        </v-flex>
+        <v-flex xs12 md6>
+          <v-card>
+            <v-card-title primary-title>
+              <h3>Import</h3>
+            </v-card-title>
+            <v-card-actions>
+              <v-btn flat :disabled="working" @click="importEmpty">Empty</v-btn>
+              <v-btn flat :disabled="working" @click="importExample">Example</v-btn>
+              <v-btn flat :disabled="working" @click="uploadJSON">File</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+        <v-flex xs12 v-if="alertEnabled || working">
+          <v-progress-linear v-if="working" :indeterminate="working"/>
+          <v-alert v-model="alertEnabled" dismissible :type="alertType">{{alertText}}</v-alert>
         </v-flex>
         <v-flex xs12 v-if="log.length">
           <v-card>
@@ -40,6 +48,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
+        <input type="file" style="display:none" ref="fileInput" @input="uploadFile"/>
       </v-layout>
     </v-container>
   </v-slide-y-transition>
