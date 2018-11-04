@@ -1,5 +1,6 @@
 export default {
-  importData ({ version, script, items }) {
+  importData (external) {
+    const { version, script, items } = JSON.parse(JSON.stringify(external))
     switch (version) {
       case 0:
         return {
@@ -13,7 +14,8 @@ export default {
         throw new TypeError('Unsuported export version.')
     }
   },
-  exportData ({ version, script, items }) {
+  exportData (internal) {
+    const { script, items } = JSON.parse(JSON.stringify(internal))
     return {
       version: 0,
       script,
