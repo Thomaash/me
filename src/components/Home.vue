@@ -41,6 +41,7 @@ const hints = [
   'You can press [l] to add a label.',
   'You can press [p] to add a port.',
   'You can press [s] to add a switch.',
+  'You can press [z] to reset zoom.',
 
   // Other
   'First, solve the problem. Then, write the code.    — John Johnson'

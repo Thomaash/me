@@ -42,7 +42,8 @@ const keybindings = {
   'h': 'addHost',
   'l': 'addDummy',
   'p': 'addPort',
-  's': 'addSwitch'
+  's': 'addSwitch',
+  'z': 'setScale'
 }
 
 function isEdge (type) {
@@ -118,6 +119,12 @@ export default {
       this.net.fit({
         nodes: this.net.getSelectedNodes(),
         animation: animate == null ? true : !!animate
+      })
+    },
+    setScale (scale) {
+      this.net.moveTo({
+        scale: scale != null ? scale : 1,
+        animation: true
       })
     },
     stopEditMode () {
