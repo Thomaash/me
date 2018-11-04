@@ -30,12 +30,15 @@ const vuexPersist = new VuexPersist({
   async restoreState (key, storage) {
     const state = await storage.getItem(key)
     if (!state || !state.data || !state.data.items || !Array.isArray(state.data.items)) {
-      return { data: JSON.parse(JSON.stringify(exampleData)) }
-    }
-
-    return {
-      loading: false,
-      data: exporter.importData(state.data)
+      return {
+        loading: false,
+        data: JSON.parse(JSON.stringify(exampleData))
+      }
+    } else {
+      return {
+        loading: false,
+        data: exporter.importData(state.data)
+      }
     }
   }
 })
