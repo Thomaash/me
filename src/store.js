@@ -1,13 +1,50 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VuexPersist from 'vuex-persist'
+import exporter from '@/exporter'
+import localForage from 'localforage'
 
 import exampleData from './store.example'
 
 Vue.use(Vuex)
 
+localForage.config({
+  name: 'Vuex',
+  version: 1.0,
+  storeName: 'vuex'
+})
+
+window.lf = localForage
+
+const vuexPersist = new VuexPersist({
+  storage: localForage,
+  asyncStorage: true,
+  strictMode: false,
+  reducer: state => ({ data: state.data }),
+  async saveState (key, state, storage) {
+    return storage.setItem(key, {
+      data: exporter.exportData(state.data)
+    })
+  },
+  async restoreState (key, storage) {
+    const state = await storage.getItem(key)
+    if (!state || !state.data || !state.data.items || !Array.isArray(state.data.items)) {
+      return { data: exampleData }
+    }
+
+    return {
+      loading: false,
+      data: exporter.importData(state.data)
+    }
+  }
+})
+
 const data = {
   namespaced: true,
-  state: exampleData,
+  state: {
+    script: '',
+    items: {}
+  },
   mutations: {
     setItem (state, item) {
       if (item.id == null) {
@@ -35,14 +72,14 @@ const data = {
 }
 
 export default new Vuex.Store({
-  strict: true,
   state: {
+    loading: true
   },
   mutations: {
   },
-  actions: {
-  },
+  actions: {},
   modules: {
     data
-  }
+  },
+  plugins: [vuexPersist.plugin]
 })

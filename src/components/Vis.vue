@@ -53,6 +53,7 @@ export default {
   name: 'Vis',
   data: () => ({
     newItemType: '',
+    initialized: false,
     mouseTag: {
       x: 0,
       y: 0
@@ -62,8 +63,18 @@ export default {
     data () {
       return this.$store.state.data
     },
+    loading () {
+      return this.$store.state.loading
+    },
     mouseTagIcon () {
       return '$vuetify.icons.net-' + this.newItemType
+    }
+  },
+  watch: {
+    loading (_prev, curr) {
+      if (!this.initialized && curr === true) {
+        this.init()
+      }
     }
   },
   methods: {
@@ -203,246 +214,252 @@ export default {
     },
     keypress ({ key }) {
       (this[keybindings[key]] || (() => {}))()
+    },
+    init () {
+      this.initialized = true
+
+      const items = Object.keys(this.data.items)
+        .map(id => {
+          const node = JSON.parse(JSON.stringify(this.data.items[id]))
+          node.id = id
+          return node
+        })
+
+      // create an array with nodes
+      const nodes = new vis.DataSet(
+        items
+          .filter(({ type }) => !isEdge(type))
+          .map(payload => ({
+            id: payload.id,
+            label: payload.hostname,
+            group: payload.type,
+            x: payload.x,
+            y: payload.y
+          }))
+      )
+      this.nodes = nodes
+
+      // create an array with edges
+      const edges = new vis.DataSet(
+        items
+          .filter(({ type }) => isEdge(type))
+          .map(payload => ({
+            id: payload.id,
+            label: payload.hostname,
+            from: payload.from,
+            to: payload.to
+          }))
+      )
+      this.edges = edges
+
+      // options
+      const options = {
+        physics: {
+          enabled: false
+        },
+        edges: {
+          smooth: false
+        },
+        manipulation: {
+          enabled: false,
+          addNode: (node, callback) => {
+            node.group = this.newItemType
+            this.newItemType = ''
+
+            this.editItem(node, edited => {
+              if (!edited) {
+                return callback()
+              }
+
+              callback(edited)
+
+              this.commitPosition(edited.id)
+
+              if (edited.group === 'port') {
+                const { x, y } = this.net.getPositions(edited.id)[edited.id]
+                const closest = this.getClosest(x, y, ['host', 'switch'])
+                if (closest.distance <= 500) {
+                  const closestId = closest.id
+                  const association = {
+                    id: vis.util.randomUUID(),
+                    from: closestId,
+                    to: edited.id
+                  }
+                  this.edges.add(association)
+                  this.$store.commit('data/setItem', {
+                    id: association.id,
+                    type: 'association',
+                    from: association.from,
+                    to: association.to
+                  })
+                }
+              }
+
+              const ports = portAmounts[edited.group] || 0
+              if (ports > 0) {
+                for (let i = 0; i < ports; ++i) {
+                  const port = {
+                    label: `eth${i}`,
+                    group: 'port'
+                  }
+                  nodes.add(port)
+                  this.$store.commit('data/setItem', {
+                    id: port.id,
+                    hostname: port.label,
+                    type: 'port'
+                  })
+
+                  const edge = {
+                    id: vis.util.randomUUID(),
+                    from: edited.id,
+                    to: port.id
+                  }
+                  edges.add(edge)
+                  this.$store.commit('data/setItem', {
+                    id: edge.id,
+                    type: 'association',
+                    from: edge.from,
+                    to: edge.to
+                  })
+                }
+                this.organizePorts(edited)
+              }
+            })
+          },
+          editNode: (node, callback) => {
+            this.newItemType = ''
+            this.editItem(node, callback)
+          },
+          addEdge: (edge, callback) => {
+            this.orderNodes(edge)
+            const type = this.getEdgeType(edge)
+            if (this.isEdgeValid(edge, type)) {
+              edge.id = edge.id || vis.util.randomUUID()
+              edge.group = type
+
+              this.editItem(edge, callback)
+            } else {
+              callback()
+            }
+
+            this.newItemType = ''
+          },
+          editEdge: (edge, callback) => {
+            this.orderNodes(edge)
+            if (this.isEdgeValid(edge, this.getEdgeType(edge))) {
+              this.editItem(edge, callback)
+            } else {
+              callback()
+            }
+
+            this.newItemType = ''
+          }
+        },
+        groups: {
+          controller: {
+            shape: 'image',
+            color: 'purple',
+            image: controllerImg
+          },
+          dummy: {
+            shape: 'box',
+            color: 'dimgray',
+            font: { color: 'white' }
+          },
+          host: {
+            shape: 'image',
+            color: 'teal',
+            image: hostImg
+          },
+          port: {
+            shape: 'image',
+            color: 'green',
+            size: 10,
+            image: portImg
+          },
+          switch: {
+            shape: 'image',
+            color: 'teal',
+            image: switchImg
+          }
+        }
+      }
+
+      // network
+      this.net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
+      this.net.on('deselectNode', deselectHandler.bind(null, this.net))
+      this.net.on('deselectEdge', deselectHandler.bind(null, this.net))
+      this.net.on('doubleClick', event => {
+        if (event.nodes.length === 0 && event.edges.length === 1) {
+          const id = event.edges[0]
+          this.editItem(edges.get(id), edge => edge ? edges.update(edge) : null)
+        } else if (event.nodes.length === 1) {
+          this.net.editNode()
+        }
+      })
+      this.net.on('hold', event => {
+        if (event.nodes.length === 0 && event.edges.length === 1) {
+          this.net.editEdgeMode()
+        } else if (event.nodes.length === 1) {
+          const node = this.nodes.get(event.nodes[0])
+          if (node.group === 'host' || node.group === 'switch') {
+            this.organizePorts(node)
+          }
+        }
+      })
+      this.net.on('dragEnd', event => {
+        if (event.nodes.length > 0) {
+          event.nodes.forEach(nodeId => this.commitPosition(nodeId))
+        }
+      })
+      this.net.on('dragStart', event => {
+        if (event.nodes.length !== 1) {
+          return
+        }
+        const nodeItem = this.$store.state.data.items[event.nodes[0]]
+        if (!(nodeItem.type === 'host' || nodeItem.type === 'switch')) {
+          return
+        }
+
+        const toSelect = new Set()
+        this.net.getSelectedEdges().forEach(edgeId => {
+          const edge = edges.get(edgeId)
+          toSelect.add(edge.to)
+          toSelect.add(edge.from)
+        })
+        const toSelectFiltered = [...toSelect]
+          .filter(nodeId => this.$store.state.data.items[nodeId].type === 'port')
+        if (toSelectFiltered.length) {
+          this.net.selectNodes([event.nodes[0], ...toSelectFiltered])
+        }
+      })
+
+      // Focus item, focus again in case of immediate resize.
+      const idToSelect = this.$route.params.id
+      if (idToSelect) {
+        const fitSelection = animate => {
+          this.net.setSelection({
+            nodes: [idToSelect].filter(id => this.nodes.get(id)),
+            edges: [idToSelect].filter(id => this.edges.get(id))
+          })
+          this.fitSelected(animate)
+        }
+        this.net.on('resize', fitSelection)
+        window.setTimeout(() => this.net.off('resize', fitSelection), 4000)
+        fitSelection(false)
+      }
+
+      // @todo - debug
+      window.net = this.net
+      window.nodes = this.nodes
+      window.edges = this.edges
     }
   },
   mounted () {
     this.focusRoot()
-
-    const items = Object.keys(this.data.items)
-      .map(id => {
-        const node = JSON.parse(JSON.stringify(this.data.items[id]))
-        node.id = id
-        return node
-      })
-
-    // create an array with nodes
-    const nodes = new vis.DataSet(
-      items
-        .filter(({ type }) => !isEdge(type))
-        .map(payload => ({
-          id: payload.id,
-          label: payload.hostname,
-          group: payload.type,
-          x: payload.x,
-          y: payload.y
-        }))
-    )
-    this.nodes = nodes
-
-    // create an array with edges
-    const edges = new vis.DataSet(
-      items
-        .filter(({ type }) => isEdge(type))
-        .map(payload => ({
-          id: payload.id,
-          label: payload.hostname,
-          from: payload.from,
-          to: payload.to
-        }))
-    )
-    this.edges = edges
-
-    // options
-    const options = {
-      physics: {
-        enabled: false
-      },
-      edges: {
-        smooth: false
-      },
-      manipulation: {
-        enabled: false,
-        addNode: (node, callback) => {
-          node.group = this.newItemType
-          this.newItemType = ''
-
-          this.editItem(node, edited => {
-            if (!edited) {
-              return callback()
-            }
-
-            callback(edited)
-
-            this.commitPosition(edited.id)
-
-            if (edited.group === 'port') {
-              const { x, y } = this.net.getPositions(edited.id)[edited.id]
-              const closest = this.getClosest(x, y, ['host', 'switch'])
-              if (closest.distance <= 500) {
-                const closestId = closest.id
-                const association = {
-                  id: vis.util.randomUUID(),
-                  from: closestId,
-                  to: edited.id
-                }
-                this.edges.add(association)
-                this.$store.commit('data/setItem', {
-                  id: association.id,
-                  type: 'association',
-                  from: association.from,
-                  to: association.to
-                })
-              }
-            }
-
-            const ports = portAmounts[edited.group] || 0
-            if (ports > 0) {
-              for (let i = 0; i < ports; ++i) {
-                const port = {
-                  label: `eth${i}`,
-                  group: 'port'
-                }
-                nodes.add(port)
-                this.$store.commit('data/setItem', {
-                  id: port.id,
-                  hostname: port.label,
-                  type: 'port'
-                })
-
-                const edge = {
-                  id: vis.util.randomUUID(),
-                  from: edited.id,
-                  to: port.id
-                }
-                edges.add(edge)
-                this.$store.commit('data/setItem', {
-                  id: edge.id,
-                  type: 'association',
-                  from: edge.from,
-                  to: edge.to
-                })
-              }
-              this.organizePorts(edited)
-            }
-          })
-        },
-        editNode: (node, callback) => {
-          this.newItemType = ''
-          this.editItem(node, callback)
-        },
-        addEdge: (edge, callback) => {
-          this.orderNodes(edge)
-          const type = this.getEdgeType(edge)
-          if (this.isEdgeValid(edge, type)) {
-            edge.id = edge.id || vis.util.randomUUID()
-            edge.group = type
-
-            this.editItem(edge, callback)
-          } else {
-            callback()
-          }
-
-          this.newItemType = ''
-        },
-        editEdge: (edge, callback) => {
-          this.orderNodes(edge)
-          if (this.isEdgeValid(edge, this.getEdgeType(edge))) {
-            this.editItem(edge, callback)
-          } else {
-            callback()
-          }
-
-          this.newItemType = ''
-        }
-      },
-      groups: {
-        controller: {
-          shape: 'image',
-          color: 'purple',
-          image: controllerImg
-        },
-        dummy: {
-          shape: 'box',
-          color: 'dimgray',
-          font: { color: 'white' }
-        },
-        host: {
-          shape: 'image',
-          color: 'teal',
-          image: hostImg
-        },
-        port: {
-          shape: 'image',
-          color: 'green',
-          size: 10,
-          image: portImg
-        },
-        switch: {
-          shape: 'image',
-          color: 'teal',
-          image: switchImg
-        }
-      }
+    if (!this.loading) {
+      this.init()
     }
-
-    // network
-    this.net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
-    this.net.on('deselectNode', deselectHandler.bind(null, this.net))
-    this.net.on('deselectEdge', deselectHandler.bind(null, this.net))
-    this.net.on('doubleClick', event => {
-      if (event.nodes.length === 0 && event.edges.length === 1) {
-        const id = event.edges[0]
-        this.editItem(edges.get(id), edge => edge ? edges.update(edge) : null)
-      } else if (event.nodes.length === 1) {
-        this.net.editNode()
-      }
-    })
-    this.net.on('hold', event => {
-      if (event.nodes.length === 0 && event.edges.length === 1) {
-        this.net.editEdgeMode()
-      } else if (event.nodes.length === 1) {
-        const node = this.nodes.get(event.nodes[0])
-        if (node.group === 'host' || node.group === 'switch') {
-          this.organizePorts(node)
-        }
-      }
-    })
-    this.net.on('dragEnd', event => {
-      if (event.nodes.length > 0) {
-        event.nodes.forEach(nodeId => this.commitPosition(nodeId))
-      }
-    })
-    this.net.on('dragStart', event => {
-      if (event.nodes.length !== 1) {
-        return
-      }
-      const nodeItem = this.$store.state.data.items[event.nodes[0]]
-      if (!(nodeItem.type === 'host' || nodeItem.type === 'switch')) {
-        return
-      }
-
-      const toSelect = new Set()
-      this.net.getSelectedEdges().forEach(edgeId => {
-        const edge = edges.get(edgeId)
-        toSelect.add(edge.to)
-        toSelect.add(edge.from)
-      })
-      const toSelectFiltered = [...toSelect]
-        .filter(nodeId => this.$store.state.data.items[nodeId].type === 'port')
-      if (toSelectFiltered.length) {
-        this.net.selectNodes([event.nodes[0], ...toSelectFiltered])
-      }
-    })
-
-    // Focus item, focus again in case of immediate resize.
-    const idToSelect = this.$route.params.id
-    if (idToSelect) {
-      const fitSelection = animate => {
-        this.net.setSelection({
-          nodes: [idToSelect].filter(id => this.nodes.get(id)),
-          edges: [idToSelect].filter(id => this.edges.get(id))
-        })
-        this.fitSelected(animate)
-      }
-      this.net.on('resize', fitSelection)
-      window.setTimeout(() => this.net.off('resize', fitSelection), 4000)
-      fitSelection(false)
-    }
-
-    // @todo - debug
-    window.net = this.net
-    window.nodes = this.nodes
-    window.edges = this.edges
   }
 }
 </script>
