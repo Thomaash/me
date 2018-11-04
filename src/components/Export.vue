@@ -148,7 +148,7 @@ export default {
     downloadScript () {
       this.working = true
 
-      const builder = new Builder(JSON.parse(this.json))
+      const builder = new Builder(JSON.parse(JSON.stringify(this.$store.state.data)))
       const script = builder.build()
       this.log = builder.log
       download('mininet_network.py', 'text/x-python;charset=utf-8', script)
