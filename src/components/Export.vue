@@ -8,9 +8,10 @@
               <h3>Export/Import</h3>
             </v-card-title>
             <v-card-actions>
-              <v-btn flat @click="uploadJSON">Import JSON</v-btn>
-              <v-btn flat @click="downloadJSON">Export JSON</v-btn>
-              <v-btn flat @click="downloadScript">Export Python 2 script</v-btn>
+              <v-progress-circular :indeterminate="working"/>
+              <v-btn flat :disabled="working" @click="uploadJSON">Import JSON</v-btn>
+              <v-btn flat :disabled="working" @click="downloadJSON">Export JSON</v-btn>
+              <v-btn flat :disabled="working" @click="downloadScript">Export Python 2 script</v-btn>
               <input type="file" style="display:none" ref="fileInput" @input="uploadFile">
             </v-card-actions>
           </v-card>
@@ -63,7 +64,8 @@ function download (filename, mime, data) {
 export default {
   name: 'Export',
   data: () => ({
-    log: []
+    log: [],
+    working: false
   }),
   computed: {
     json () {
@@ -83,20 +85,39 @@ export default {
   },
   methods: {
     uploadJSON () {
+      this.working = true
+
       const input = this.$refs.fileInput
       input.click()
     },
     uploadFile () {
+      this.working = true
+
       const input = this.$refs.fileInput
       const file = input.files[0]
 
       const fr = new FileReader()
       fr.readAsBinaryString(file)
       fr.onloadend = () => {
-        const json = fr.result
-        const importData = JSON.parse(json)
-        const data = exporter.importData(importData)
-        this.$store.commit('data/importData', data)
+        try {
+          const json = fr.result
+          const importData = JSON.parse(json)
+          const data = exporter.importData(importData)
+          this.$store.commit('data/importData', data)
+
+          this.log = [{
+            severity: 'info',
+            msg: 'Succesfully imported.'
+          }]
+        } catch (error) {
+          console.error(error)
+          this.log = [{
+            severity: 'error',
+            msg: 'Import failed.'
+          }]
+        } finally {
+          this.working = false
+        }
       }
 
       input.value = ''
@@ -108,6 +129,8 @@ export default {
       })
     },
     downloadJSON () {
+      this.working = true
+
       download(
         'mininet_network.json',
         'application/json;charset=utf-8',
@@ -119,12 +142,18 @@ export default {
           4
         )
       )
+
+      this.working = false
     },
     downloadScript () {
+      this.working = true
+
       const builder = new Builder(JSON.parse(this.json))
       const script = builder.build()
       this.log = builder.log
       download('mininet_network.py', 'text/x-python;charset=utf-8', script)
+
+      this.working = false
     }
   }
 }
