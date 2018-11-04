@@ -28,6 +28,7 @@ const hints = [
   'You can hold [ctrl] to select multiple items.',
   'You can long press a link or association to reconnect it.',
   'You can long press a switch or host to organize it\'s ports.',
+  'You can place a new port nearby a switch or host to automatically connect them.',
 
   // Keyboard
   'You can press [a] to fit all items into the viewport.',
