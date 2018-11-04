@@ -5,6 +5,7 @@ import exporter from '@/exporter'
 import localForage from 'localforage'
 
 import exampleData from './store.example'
+import emptyData from './store.empty'
 
 Vue.use(Vuex)
 
@@ -29,7 +30,7 @@ const vuexPersist = new VuexPersist({
   async restoreState (key, storage) {
     const state = await storage.getItem(key)
     if (!state || !state.data || !state.data.items || !Array.isArray(state.data.items)) {
-      return { data: exampleData }
+      return { data: JSON.parse(JSON.stringify(exampleData)) }
     }
 
     return {
@@ -41,10 +42,7 @@ const vuexPersist = new VuexPersist({
 
 const data = {
   namespaced: true,
-  state: {
-    script: '',
-    items: {}
-  },
+  state: JSON.parse(JSON.stringify(emptyData)),
   mutations: {
     importData (state, data) {
       Object.keys(data).forEach(key =>

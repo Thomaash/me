@@ -8,7 +8,9 @@
               <h3>Export/Import</h3>
             </v-card-title>
             <v-card-actions>
-              <v-btn flat :disabled="working" @click="uploadJSON">Import JSON</v-btn>
+              <v-btn flat :disabled="working" @click="importEmpty">Import Empty</v-btn>
+              <v-btn flat :disabled="working" @click="importExample">Import Example</v-btn>
+              <v-btn flat :disabled="working" @click="uploadJSON">Import File</v-btn>
               <v-btn flat :disabled="working" @click="downloadJSON">Export JSON</v-btn>
               <v-btn flat :disabled="working" @click="downloadScript">Export Python 2 script</v-btn>
               <input type="file" style="display:none" ref="fileInput" @input="uploadFile">
@@ -19,7 +21,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
-        <v-flex xs12>
+        <v-flex xs12 v-if="log.length">
           <v-card>
             <v-card-title primary-title>
               <h3>Log</h3>
@@ -45,6 +47,8 @@
 
 <script>
 import Builder from '@/builder'
+import emptyData from '@/store.empty'
+import exampleData from '@/store.example'
 import exporter from '@/exporter'
 
 function download (filename, mime, data) {
@@ -74,8 +78,6 @@ export default {
       this.alertEnabled = true
     },
     uploadJSON () {
-      this.working = true
-
       const input = this.$refs.fileInput
       input.click()
     },
@@ -104,6 +106,28 @@ export default {
       }
 
       input.value = ''
+    },
+    importExample () {
+      this.working = true
+
+      this.$store.commit(
+        'data/importData',
+        JSON.parse(JSON.stringify(exampleData))
+      )
+      this.showAlert('success', 'Succesfully imported.')
+
+      this.working = false
+    },
+    importEmpty () {
+      this.working = true
+
+      this.$store.commit(
+        'data/importData',
+        JSON.parse(JSON.stringify(emptyData))
+      )
+      this.showAlert('success', 'Succesfully imported.')
+
+      this.working = false
     },
     selectInCanvas (id) {
       this.$router.push({
