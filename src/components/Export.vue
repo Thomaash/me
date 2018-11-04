@@ -5,11 +5,13 @@
         <v-flex xs12>
           <v-card>
             <v-card-title primary-title>
-              <h3>Export</h3>
+              <h3>Export/Import</h3>
             </v-card-title>
             <v-card-actions>
-              <v-btn flat @click="downloadJSON">JSON</v-btn>
-              <v-btn flat @click="downloadScript">Python 2 script</v-btn>
+              <v-btn flat @click="uploadJSON">Import JSON</v-btn>
+              <v-btn flat @click="downloadJSON">Export JSON</v-btn>
+              <v-btn flat @click="downloadScript">Export Python 2 script</v-btn>
+              <input type="file" style="display:none" ref="fileInput" @input="uploadFile">
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -80,6 +82,25 @@ export default {
     }
   },
   methods: {
+    uploadJSON () {
+      const input = this.$refs.fileInput
+      input.click()
+    },
+    uploadFile () {
+      const input = this.$refs.fileInput
+      const file = input.files[0]
+
+      const fr = new FileReader()
+      fr.readAsBinaryString(file)
+      fr.onloadend = () => {
+        const json = fr.result
+        const importData = JSON.parse(json)
+        const data = exporter.importData(importData)
+        this.$store.commit('data/importData', data)
+      }
+
+      input.value = ''
+    },
     selectInCanvas (id) {
       this.$router.push({
         name: 'Canvas',

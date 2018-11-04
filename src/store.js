@@ -46,6 +46,11 @@ const data = {
     items: {}
   },
   mutations: {
+    importData (state, data) {
+      Object.keys(data).forEach(key =>
+        Vue.set(state, key, data[key])
+      )
+    },
     setItem (state, item) {
       if (item.id == null) {
         throw new Error('Items have to have ids.')
