@@ -442,12 +442,13 @@ export default {
       })
 
       // Focus item, focus again in case of immediate resize.
-      const idToSelect = this.$route.params.id
-      if (idToSelect) {
+      const idsParam = this.$route.params.ids
+      if (idsParam) {
+        const ids = idsParam.split(',')
         const fitSelection = animate => {
           this.net.setSelection({
-            nodes: [idToSelect].filter(id => this.nodes.get(id)),
-            edges: [idToSelect].filter(id => this.edges.get(id))
+            nodes: ids.filter(id => this.nodes.get(id)),
+            edges: ids.filter(id => this.edges.get(id))
           })
           this.fitSelected(animate)
         }

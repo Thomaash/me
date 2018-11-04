@@ -14,7 +14,7 @@ export default new Router({
     name: 'Home',
     component: Home
   }, {
-    path: '/canvas/:id?',
+    path: '/canvas/:ids?',
     name: 'Canvas',
     component: Canvas
   }, {

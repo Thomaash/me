@@ -36,15 +36,19 @@
             </v-card-title>
             <v-card-text>
               <v-list>
-                <v-list-tile v-for="(l, i) in log" :key="'export_log_' + i" @click="selectInCanvas(l.item.id)">
+                <v-list-tile avatar v-for="(l, i) in log" :key="'export_log_' + i" @click="">
                   <v-list-tile-action>
-                    <v-icon v-text="'$vuetify.icons.' + l.severity"/>
+                    <v-checkbox v-model="logCbs[i]"/>
                   </v-list-tile-action>
-                  <v-list-tile-content>
+                  <v-list-tile-content @click="$set(logCbs, i, !logCbs[i])">
                     <v-list-tile-title v-text="l.msg"/>
                   </v-list-tile-content>
+                  <v-list-tile-avatar @click="selectInCanvas(l.item.id)">
+                    <v-icon v-text="'$vuetify.icons.' + l.severity"/>
+                  </v-list-tile-avatar>
                 </v-list-tile>
               </v-list>
+              <v-btn flat @click="selectInCanvas()">Select in the Canvas</v-btn>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -75,6 +79,7 @@ export default {
   name: 'Export',
   data: () => ({
     log: [],
+    logCbs: [],
     working: false,
     alertEnabled: false,
     alertType: 'error',
@@ -139,9 +144,21 @@ export default {
       this.working = false
     },
     selectInCanvas (id) {
+      let ids
+      if (id) {
+        ids = [id]
+      } else if (this.logCbs.some(cb => cb)) {
+        ids = this.logCbs
+          .map((cb, i) => cb ? i : null)
+          .filter(i => i !== null)
+          .map(i => this.log[i].item.id)
+      } else {
+        ids = this.log.map(l => l.item.id)
+      }
+
       this.$router.push({
         name: 'Canvas',
-        params: { id }
+        params: { ids: ids.join(',') }
       })
     },
     downloadJSON () {
