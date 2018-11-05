@@ -3,7 +3,7 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Label" v-model="item.hostname" :error-messages="hostnameErrors"/>
+          <v-text-field label="Label" v-model="item.hostname" autofocus :error-messages="hostnameErrors"/>
         </v-flex>
         <v-flex xs12>
           <v-text-field label="Bandwidth" v-model.number="item.bandwidth" :error-messages="bandwidthErrors" type="number" min="0" suffix="MBits/s" clearable/>

@@ -9,7 +9,7 @@
           <div v-model="item" @valid="v => valid = v" :is="component"/>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-btn color="primary" flat @click.native="cancel">Cancel</v-btn>
           <v-btn color="primary" flat @click.native="save" :disabled="!valid">Save</v-btn>
         </v-card-actions>
@@ -52,15 +52,18 @@ export default {
   data: () => ({
     dialog: false,
     valid: false,
-    component: 'HostEdit',
-    headline: '',
     item: {}
   }),
+  computed: {
+    component () {
+      return typeComponentMap[this.item.type] || 'div'
+    },
+    headline () {
+      return typeHeadlineMap[this.item.type] || ''
+    }
+  },
   methods: {
     edit (item, callback) {
-      const type = item.type
-      this.component = typeComponentMap[type]
-      this.headline = typeHeadlineMap[type]
       this.item = JSON.parse(JSON.stringify(item))
       this.callback = callback
 
@@ -69,14 +72,14 @@ export default {
     save () {
       const item = JSON.parse(JSON.stringify(this.item))
       this.callback(item)
-
-      this.item = {}
-      this.callback = null
-
-      this.dialog = false
+      this.close()
     },
     cancel () {
       this.callback()
+      this.close()
+    },
+    close () {
+      this.item = {}
       this.callback = null
       this.dialog = false
     }
