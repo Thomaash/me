@@ -36,7 +36,7 @@ export default class {
             ].filter(node => node.hostname === hostname)
               .forEach(node =>
                 this._log(
-                  `Failed to add ${node.type}/${node.hostname} (${node.id}): conflicting hostname.`,
+                  `Failed to add ${node.type}/${node.hostname}: conflicting hostname.`,
                   'error',
                   node
                 )
@@ -45,7 +45,7 @@ export default class {
             const { devname, ports } = error.payload
             ports.forEach(port =>
               this._log(
-                `Failed to add ${port.type}/${port.hostname} (${port.id}): conflicting interface name ${devname}.`,
+                `Failed to add ${port.type}/${port.hostname}: conflicting interface name ${devname}.`,
                 'error',
                 port
               )
@@ -54,7 +54,7 @@ export default class {
             console.error(error)
             this._log(
               item != null && item.type !== null && item.id !== null
-                ? `Failed to add ${item.type}/${item.hostname} (${item.id}).`
+                ? `Failed to add ${item.type}/${item.hostname}.`
                 : `Malformed item (${this._items.arr.$all.find(v => v === item)}).`,
               'error',
               item
@@ -132,7 +132,7 @@ export default class {
     const node = this._portToNode(port)
     if (!link || !node) {
       this._log(
-        `Skipping ${port.type}/${port.hostname} (${port.id}): not connected to anything.`,
+        `Skipping ${port.type}/${port.hostname}: not connected to anything.`,
         'info',
         port
       )
