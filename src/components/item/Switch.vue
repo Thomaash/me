@@ -3,37 +3,37 @@
     <v-form v-model="valid">
       <v-container grid-list-md>
         <v-layout wrap>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
             <v-text-field label="Hostname" v-model="item.hostname" :error-messages="hostnameErrors"/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
             <v-select label="Type" :items="switchTypes" v-model="item.switchType" clearable/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12 md6>
             <v-select label="STP" :items="enabledDisabled" v-model="item.stp" clearable/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12 md6>
             <v-text-field label="STP Priority" v-model.number="item.stpPriority" type="number" step="4096" min="0" max="65535" :error-messages="stpPriorityErrors" clearable/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-text-field label="Ofdatapath arguments" v-model="item.dpopts" clearable/>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-select label="Fail Mode" :items="failModes" v-model="item.failMode" clearable/>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
             <v-select label="Datapath" :items="datapaths" v-model="item.datapath" clearable/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
-            <v-select label="Inband" :items="enabledDisabled" v-model="item.inband" clearable/>
-          </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
             <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
+            <v-text-field label="Ofdatapath arguments" v-model="item.dpopts" clearable/>
+          </v-flex>
+          <v-flex xs12>
             <v-text-field label="Reconnect Timeout" v-model.number="item.reconnectms" type="number" min="0" suffix="ms" :error-messages="reconnectmsErrors" clearable/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
+            <v-select label="Fail Mode" :items="failModes" v-model="item.failMode" clearable/>
+          </v-flex>
+          <v-flex xs12>
+            <v-select label="Inband" :items="enabledDisabled" v-model="item.inband" clearable/>
+          </v-flex>
+          <v-flex xs12>
             <v-select label="Batch" :items="enabledDisabled" v-model="item.batch" clearable/>
           </v-flex>
         </v-layout>

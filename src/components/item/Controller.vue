@@ -3,16 +3,16 @@
     <v-form v-model="valid">
       <v-container grid-list-md>
         <v-layout wrap>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
             <v-text-field label="Label" v-model="item.hostname" :error-messages="hostnameErrors" clearable/>
           </v-flex>
-          <v-flex xs12 sm8>
+          <v-flex xs12>
             <v-select label="Type" :items="controllerTypes" v-model="item.controllerType" clearable/>
           </v-flex>
           <v-flex xs12>
             <v-text-field label="IP" v-model="item.ip" :error-messages="ipErrors" clearable/>
           </v-flex>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
             <v-text-field label="Port" v-model.number="item.port" :error-messages="portErrors" clearable/>
           </v-flex>
         </v-layout>

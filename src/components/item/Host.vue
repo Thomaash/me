@@ -3,7 +3,7 @@
     <v-form v-model="valid">
       <v-container grid-list-md>
         <v-layout wrap>
-          <v-flex xs12 sm6 md4>
+          <v-flex xs12>
             <v-text-field label="Hostname" v-model="item.hostname" :error-messages="hostnameErrors"/>
           </v-flex>
           <v-flex xs12>
