@@ -1,129 +1,41 @@
+import Code from './Code'
+import Items from './Items'
+
 export default class {
-  constructor (graph) {
+  constructor (data) {
     this.log = []
-    this._graph = graph
-    this._code = {
-      _metadata: [
-        { attr: 'imports', name: 'Imports', silent: true },
-        { attr: 'init', name: 'Initialize Mininet' },
-        { attr: 'nodes', name: 'Add nodes' },
-        { attr: 'links', name: 'Add links' },
-        { attr: 'ports', name: 'Add interfaces' },
-        { attr: 'build', name: 'Build the network' },
-        { attr: 'startControllers', name: 'Start controllers' },
-        { attr: 'startSwitches', name: 'Start switches' },
-        { attr: 'cmds', name: 'Run commands' },
-        { attr: 'cli', name: 'Start CLI' },
-        { attr: 'finish', name: 'Finish' },
-        { attr: 'log', name: 'Log', silent: true }
-      ],
-      toString () {
-        const code = [
-          '#!/usr/bin/env python2',
-          '# -*- coding: utf-8 -*-',
-          ''
-        ]
-
-        this._metadata.forEach(({ attr, name, silent }) => {
-          const arr = this[attr]
-          if (arr.length) {
-            code.push(
-              `# ${name} {{{`,
-              '',
-              ...(silent ? [] : [
-                `info('\\n*** ${name}\\n')`,
-                ''
-              ]),
-              ...arr,
-              '',
-              '# }}}'
-            )
-          }
-        })
-
-        code.push(
-          '',
-          '# vim:fdm=marker',
-          ''
-        )
-
-        return code.join('\n')
-      },
-      imports: [
-        'from mininet.net import Mininet',
-        'from mininet.cli import CLI',
-        'from mininet.link import TCLink',
-        'from mininet.log import setLogLevel, info, debug',
-        'import mininet.node'
-      ],
-      init: [
-        'setLogLevel(\'info\')',
-        'net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=TCLink)',
-        'cli = CLI(net, script=\'/dev/null\')'
-      ],
-      nodes: [],
-      links: [],
-      ports: [],
-      build: [
-        'net.build()'
-      ],
-      startControllers: [],
-      startSwitches: [],
-      cmds: [],
-      cli: [
-        'cli.run()'
-      ],
-      finish: [
-        'net.stop()'
-      ],
-      log: []
-    }
+    this._data = data
+    this._items = new Items(data.items)
+    this._code = new Code()
   }
   build () {
-    Object.values(this._graph.items).forEach(item => {
-      try {
-        switch (item.type) {
-          case 'controller':
-            this._addController(item)
-            break
-          case 'host':
-            this._addHost(item)
-            break
-          case 'link':
-            this._addLink(item)
-            break
-          case 'port':
-            this._addPort(item)
-            break
-          case 'switch':
-            this._addSwitch(item)
-            break
+    [
+      { items: this._items.arr.controller, method: this._addController.bind(this) },
+      { items: this._items.arr.host, method: this._addHost.bind(this) },
+      { items: this._items.arr.link, method: this._addLink.bind(this) },
+      { items: this._items.arr.port, method: this._addPort.bind(this) },
+      { items: this._items.arr.switch, method: this._addSwitch.bind(this) }
+    ].forEach(({ items, method }) => {
+      items.forEach(item => {
+        try {
+          method(item)
+        } catch (error) {
+          console.error(error)
+          this._log(
+            item != null && item.type !== null && item.id !== null
+              ? `Failed to add ${item.type}/${item.hostname} (${item.id}).`
+              : `Malformed item (${this._items.arr.$all.find(v => v === item)}).`,
+            'error',
+            item
+          )
         }
-      } catch (error) {
-        console.error(error)
-        this._log(
-          item != null && item.type !== null && item.id !== null
-            ? `Failed to add ${item.type}/${item.hostname} (${item.id}).`
-            : `Malformed item (${Object.entries(this._graph.items).find(([_, v]) => v === item)[0]}).`,
-          'error',
-          item
-        )
-      }
+      })
     })
-    if (this._graph.script) {
-      this._addScript(this._graph.script)
+    if (this._data.script) {
+      this._addScript(this._data.script)
     }
 
     return this._code.toString()
-  }
-  testVersion () {
-    switch (this._graph.version) {
-      case 0:
-        console.warn('Development version of graph, proceed with caution.')
-        break
-      default:
-        throw new TypeError('Unsupported version of graph.')
-    }
   }
 
   _addScript (script) {
@@ -154,8 +66,8 @@ export default class {
     this._code.nodes.push(`${host.hostname} = net.addHost(${args.join(', ')})`)
   }
   _addLink (link) {
-    const fromPort = this._graph.items[link.from]
-    const toPort = this._graph.items[link.to]
+    const fromPort = this._items.map.port[link.from]
+    const toPort = this._items.map.port[link.to]
 
     const fromNode = this._portToNode(fromPort)
     const toNode = this._portToNode(toPort)
@@ -178,7 +90,7 @@ export default class {
     this._code.links.push(`net.addLink(${args.join(', ')})`)
   }
   _addPort (port) {
-    const link = this._portToLink(port)
+    const link = port.$links[0]
     const node = this._portToNode(port)
     if (!link || !node) {
       this._log(
@@ -225,39 +137,15 @@ export default class {
   _portToNode (port) {
     return this._getNeighbors(port, ['host', 'switch'])[0]
   }
-  _portToLink (port) {
-    return this._getNodesEdges(port)
-      .find(edge => edge.type === 'link')
-  }
   _getNeighbors (node, types) {
     const nodes = new Set()
-    this._getNodesAssocs(node)
+    node.$associations
       .forEach(assoc => {
-        this._getEdgesNodes(assoc)
+        assoc.$nodes
           .forEach(node => nodes.add(node))
       })
 
     return [...nodes].filter(n => n !== node && types.indexOf(n.type) >= 0)
-  }
-  _getNodesAssocs (node) {
-    return Object.values(this._graph.items)
-      .filter(item => item.type === 'association' && (
-        item.from === node.id ||
-        item.to === node.id
-      ))
-  }
-  _getNodesEdges (node) {
-    return Object.values(this._graph.items)
-      .filter(item => (
-        item.type === 'association' ||
-        item.type === 'link'
-      ) && (
-        item.from === node.id ||
-        item.to === node.id
-      ))
-  }
-  _getEdgesNodes (edge) {
-    return [this._graph.items[edge.from], this._graph.items[edge.to]]
   }
 
   _log (msg, severity, item) {
