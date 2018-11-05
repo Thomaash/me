@@ -1,30 +1,28 @@
 <template>
-  <v-card-text>
-    <v-form v-model="valid">
-      <v-container grid-list-md>
-        <v-layout wrap>
-          <v-flex xs12>
-            <v-text-field label="Label" v-model="item.hostname" :error-messages="hostnameErrors"/>
-          </v-flex>
-          <v-flex xs12>
-            <v-text-field label="Bandwidth" v-model.number="item.bandwidth" :error-messages="bandwidthErrors" type="number" min="0" suffix="MBits/s" clearable/>
-          </v-flex>
-          <v-flex xs12 md6>
-            <v-text-field label="Delay" v-model="item.delay" :error-messages="delayErrors" clearable/>
-          </v-flex>
-          <v-flex xs12 md6>
-            <v-text-field label="Jitter" v-model="item.jitter" :error-messages="jitterErrors" clearable/>
-          </v-flex>
-          <v-flex xs12>
-            <v-text-field label="Loss" v-model.number="item.loss" :error-messages="lossErrors" type="number" min="0" max="100" suffix="%" clearable/>
-          </v-flex>
-          <v-flex xs12>
-            <v-text-field label="Max queue" v-model.number="item.maxQueueSize" :error-messages="maxQueueSizeErrors" type="number" min="0" suffix="packets" clearable/>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-form>
-  </v-card-text>
+  <v-form v-model="valid">
+    <v-container grid-list-md>
+      <v-layout wrap>
+        <v-flex xs12>
+          <v-text-field label="Label" v-model="item.hostname" :error-messages="hostnameErrors"/>
+        </v-flex>
+        <v-flex xs12>
+          <v-text-field label="Bandwidth" v-model.number="item.bandwidth" :error-messages="bandwidthErrors" type="number" min="0" suffix="MBits/s" clearable/>
+        </v-flex>
+        <v-flex xs12 md6>
+          <v-text-field label="Delay" v-model="item.delay" :error-messages="delayErrors" clearable/>
+        </v-flex>
+        <v-flex xs12 md6>
+          <v-text-field label="Jitter" v-model="item.jitter" :error-messages="jitterErrors" clearable/>
+        </v-flex>
+        <v-flex xs12>
+          <v-text-field label="Loss" v-model.number="item.loss" :error-messages="lossErrors" type="number" min="0" max="100" suffix="%" clearable/>
+        </v-flex>
+        <v-flex xs12>
+          <v-text-field label="Max queue" v-model.number="item.maxQueueSize" :error-messages="maxQueueSizeErrors" type="number" min="0" suffix="packets" clearable/>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-form>
 </template>
 
 <script>

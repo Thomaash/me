@@ -5,7 +5,9 @@
         <v-card-title>
           <span class="headline" v-text="headline"/>
         </v-card-title>
-        <div v-model="item" @valid="v => valid = v" :is="component"/>
+        <v-card-text>
+          <div v-model="item" @valid="v => valid = v" :is="component"/>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" flat @click.native="cancel">Cancel</v-btn>
