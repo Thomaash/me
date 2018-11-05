@@ -4,30 +4,64 @@ import Items from './Items'
 export default class {
   constructor (data) {
     this.log = []
+    this._hostnames = new Set()
+    this._devnames = Object.create(null)
     this._data = data
     this._items = new Items(data.items)
     this._code = new Code()
   }
   build () {
     [
+      // Nodes (stop on hostname conflict)
       { items: this._items.arr.controller, method: this._addController.bind(this) },
       { items: this._items.arr.host, method: this._addHost.bind(this) },
-      { items: this._items.arr.link, method: this._addLink.bind(this) },
+      { items: this._items.arr.switch, method: this._addSwitch.bind(this) },
+
+      // Interfaces (stop on devname conflict)
       { items: this._items.arr.port, method: this._addPort.bind(this) },
-      { items: this._items.arr.switch, method: this._addSwitch.bind(this) }
+
+      // Links
+      { items: this._items.arr.link, method: this._addLink.bind(this) }
     ].forEach(({ items, method }) => {
       items.forEach(item => {
         try {
           method(item)
         } catch (error) {
-          console.error(error)
-          this._log(
-            item != null && item.type !== null && item.id !== null
-              ? `Failed to add ${item.type}/${item.hostname} (${item.id}).`
-              : `Malformed item (${this._items.arr.$all.find(v => v === item)}).`,
-            'error',
-            item
-          )
+          if (error instanceof SyntaxError && error.message === 'Hostname collision.') {
+            const hostname = item.hostname
+            ;[
+              ...this._items.arr.controller,
+              ...this._items.arr.host,
+              ...this._items.arr.switch
+            ].filter(node => node.hostname === hostname)
+              .forEach(node =>
+                this._log(
+                  `Failed to add ${node.type}/${node.hostname} (${node.id}): conflicting hostname.`,
+                  'error',
+                  node
+                )
+              )
+          } else if (error instanceof SyntaxError && error.message === 'Devname collision.') {
+            const { devname, ports } = error.payload
+            ports.forEach(port =>
+              this._log(
+                `Failed to add ${port.type}/${port.hostname} (${port.id}): conflicting interface name ${devname}.`,
+                'error',
+                port
+              )
+            )
+          } else {
+            console.error(error)
+            this._log(
+              item != null && item.type !== null && item.id !== null
+                ? `Failed to add ${item.type}/${item.hostname} (${item.id}).`
+                : `Malformed item (${this._items.arr.$all.find(v => v === item)}).`,
+              'error',
+              item
+            )
+          }
+
+          throw new Error('Script building failure.')
         }
       })
     })
@@ -48,6 +82,8 @@ export default class {
   }
 
   _addController (controller) {
+    this._addHostname(controller)
+
     const args = [
       `'${controller.hostname}'`,
       ...(controller.controllerType != null ? [`controller=mininet.node.${controller.controllerType}`] : []),
@@ -58,6 +94,8 @@ export default class {
     this._code.startControllers.push(`${controller.hostname}.start()`)
   }
   _addHost (host) {
+    this._addHostname(host)
+
     const args = [
       `'${host.hostname}'`,
       'ip=None',
@@ -104,6 +142,8 @@ export default class {
     const hostname = node.hostname
     const dev = `${hostname}-${port.hostname}`
 
+    this._addDevname(port, dev)
+
     ;(port.ips || []).forEach((ip, i) => {
       this._code.ports.push(
         ...(i === 0 ? [
@@ -115,6 +155,8 @@ export default class {
     })
   }
   _addSwitch (swtch) {
+    this._addHostname(swtch)
+
     const args = [
       `'${swtch.hostname}'`,
       ...(swtch.batch != null ? [`batch=${swtch.batch ? 'True' : 'False'}`] : []),
@@ -146,6 +188,26 @@ export default class {
       })
 
     return [...nodes].filter(n => n !== node && types.indexOf(n.type) >= 0)
+  }
+  _addHostname (item) {
+    const hostname = item.hostname
+    if (this._hostnames.has(hostname)) {
+      throw new SyntaxError('Hostname collision.')
+    } else {
+      this._hostnames.add(hostname)
+    }
+  }
+  _addDevname (port, devname) {
+    if (this._devnames[devname]) {
+      const error = new SyntaxError('Devname collision.')
+      error.payload = {
+        devname,
+        ports: [this._devnames[devname], port]
+      }
+      throw error
+    } else {
+      this._devnames[devname] = port
+    }
   }
 
   _log (msg, severity, item) {

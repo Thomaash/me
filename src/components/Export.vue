@@ -179,14 +179,19 @@ export default {
       this.working = false
     },
     downloadScript () {
-      this.working = true
+      try {
+        this.working = true
 
-      const builder = new Builder(exporter.exportData(this.$store.state.data))
-      const script = builder.build()
-      this.log = builder.log
-      download('mininet_network.py', 'text/x-python;charset=utf-8', script)
-
-      this.working = false
+        const builder = new Builder(exporter.exportData(this.$store.state.data))
+        this.log = builder.log
+        const script = builder.build()
+        this.showAlert('success', 'Script built.')
+        download('mininet_network.py', 'text/x-python;charset=utf-8', script)
+      } catch (_) {
+        this.showAlert('error', 'Script was not built.')
+      } finally {
+        this.working = false
+      }
     }
   }
 }
