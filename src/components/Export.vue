@@ -187,7 +187,8 @@ export default {
         const script = builder.build()
         this.showAlert('success', 'Script built.')
         download('mininet_network.py', 'text/x-python;charset=utf-8', script)
-      } catch (_) {
+      } catch (error) {
+        console.error(error)
         this.showAlert('error', 'Script was not built.')
       } finally {
         this.working = false
