@@ -20,7 +20,10 @@ function wrapTitle (title, html) {
 }
 
 const keys = {
-  ctrl: wrapTitle('Control key', '<kbd>Ctrl</kbd>'),
+  ctrl: wrapTitle('Control', '<kbd>Ctrl</kbd>'),
+  del: wrapTitle('Delete', '<kbd>Del</kbd>'),
+  esc: wrapTitle('Escape', '<kbd>Esc</kbd>'),
+
   lmb: wrapTitle('Left mouse button', '<kbd>LMB</kbd>'),
   lmbdc: wrapTitle('Double click left mouse button', '<kbd>LMB</kbd>, <kbd>LMB</kbd>'),
   lmblp: wrapTitle('Long press left mouse button', '<kbd>   LMB   </kbd>')
@@ -40,8 +43,8 @@ export default {
       { combination: `${keys.lmblp}`, description: 'Reconnect a link or association.' },
       { combination: `${keys.lmb}`, description: 'Place a new port nearby a switch or host to automatically connect them.' },
 
-      { combination: '<kbd>Delete</kbd>', description: 'Delete selected items.' },
-      { combination: '<kbd>Escape</kbd>', description: 'Stop editing edges or adding items.' },
+      { combination: `${keys.del}`, description: 'Delete selected items.' },
+      { combination: `${keys.esc}`, description: 'Stop editing edges or adding items.' },
 
       { combination: '<kbd>A</kbd>', description: 'Fit all items into the viewport.' },
       { combination: '<kbd>C</kbd>', description: 'Add a controller.' },
