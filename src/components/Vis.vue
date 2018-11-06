@@ -9,6 +9,7 @@
 
 <script>
 import deselectHandler from './vis/deselectHandler'
+import generateTooltip from './vis/generateTooltip'
 import vis from 'vis'
 import { items as theme } from '@/theme'
 
@@ -65,6 +66,13 @@ function buildGroupColor (primary, bg, alwaysBorder) {
       border: primary
     }
   }
+}
+
+function updateNode (node, item) {
+  node.label = item.hostname
+  node.title = generateTooltip(item)
+
+  return node
 }
 
 export default {
@@ -166,8 +174,7 @@ export default {
         }
 
         this.$store.commit('data/setItem', item)
-        node.label = item.hostname
-        node.group = item.type
+        updateNode(node, item)
         callback(node)
       })
     },
@@ -253,13 +260,12 @@ export default {
       const nodes = new vis.DataSet(
         items
           .filter(({ type }) => !isEdge(type))
-          .map(payload => ({
-            id: payload.id,
-            label: payload.hostname,
-            group: payload.type,
-            x: payload.x,
-            y: payload.y
-          }))
+          .map(item => updateNode({
+            id: item.id,
+            group: item.type,
+            x: item.x,
+            y: item.y
+          }, item))
       )
       this.nodes = nodes
 
@@ -267,12 +273,11 @@ export default {
       const edges = new vis.DataSet(
         items
           .filter(({ type }) => isEdge(type))
-          .map(payload => ({
-            id: payload.id,
-            label: payload.hostname,
-            from: payload.from,
-            to: payload.to
-          }))
+          .map(item => updateNode({
+            id: item.id,
+            from: item.from,
+            to: item.to
+          }, item))
       )
       this.edges = edges
 
@@ -291,6 +296,9 @@ export default {
         },
         edges: {
           smooth: false
+        },
+        interaction: {
+          hover: true
         },
         manipulation: {
           enabled: false,
@@ -508,4 +516,16 @@ export default {
 .vis-root {position: absolute; width: 100%; height: 100%;}
 
 .mouse-tag {position: fixed; margin: 1em;}
+</style>
+
+<style>
+.vis-tooltip {
+  background: rgba(255, 255, 255, 0.9);
+  border: grey 1px solid;
+  padding: 1ex;
+  position: absolute;
+  white-space: nowrap;
+}
+.vis-tooltip td {padding-left: 1ex;}
+.vis-tooltip td:first-child {padding-left: unset;}
 </style>
