@@ -110,7 +110,7 @@ export default {
           const data = exporter.importData(importData)
           this.$store.commit('data/importData', data)
 
-          this.showAlert('success', 'Succesfully imported.')
+          this.showAlert('success', 'Successfully imported.')
         } catch (error) {
           console.error(error)
           this.showAlert('error', 'Import failed.')
@@ -125,7 +125,7 @@ export default {
       this.working = true
 
       this.$store.commit('data/importData', exampleData)
-      this.showAlert('success', 'Succesfully imported.')
+      this.showAlert('success', 'Successfully imported.')
 
       this.working = false
     },
@@ -133,7 +133,7 @@ export default {
       this.working = true
 
       this.$store.commit('data/importData', emptyData)
-      this.showAlert('success', 'Succesfully imported.')
+      this.showAlert('success', 'Successfully imported.')
 
       this.working = false
     },
