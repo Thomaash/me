@@ -1,13 +1,13 @@
 import colors from 'vuetify/es5/util/colors'
 
 const vuetify = {
-  primary: '#009688',
-  secondary: '#26A69A',
-  accent: '#009688',
-  error: '#f44336',
-  warning: '#ffeb3b',
-  info: '#2196f3',
-  success: '#4caf50'
+  'primary': colors.teal.base,
+  'secondary': colors.teal.lighten1,
+  'accent': colors.teal.darken1,
+  'error': colors.red.base,
+  'warning': colors.orange.base,
+  'info': colors.blue.base,
+  'success': colors.green.base
 }
 export { vuetify }
 
