@@ -30,7 +30,7 @@ const vuexPersist = new VuexPersist({
     if (!state || !state.data || !state.data.items || !Array.isArray(state.data.items)) {
       return {
         loading: false,
-        data: JSON.parse(JSON.stringify(exampleData))
+        data: exporter.importData(exampleData)
       }
     } else {
       return {
@@ -43,9 +43,10 @@ const vuexPersist = new VuexPersist({
 
 const data = {
   namespaced: true,
-  state: JSON.parse(JSON.stringify(emptyData)),
+  state: exporter.importData(emptyData),
   mutations: {
-    importData (state, data) {
+    importData (state, importData) {
+      const data = exporter.importData(importData)
       Object.keys(data).forEach(key =>
         Vue.set(state, key, data[key])
       )

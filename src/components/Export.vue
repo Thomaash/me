@@ -124,10 +124,7 @@ export default {
     importExample () {
       this.working = true
 
-      this.$store.commit(
-        'data/importData',
-        JSON.parse(JSON.stringify(exampleData))
-      )
+      this.$store.commit('data/importData', exampleData)
       this.showAlert('success', 'Succesfully imported.')
 
       this.working = false
@@ -135,10 +132,7 @@ export default {
     importEmpty () {
       this.working = true
 
-      this.$store.commit(
-        'data/importData',
-        JSON.parse(JSON.stringify(emptyData))
-      )
+      this.$store.commit('data/importData', emptyData)
       this.showAlert('success', 'Succesfully imported.')
 
       this.working = false
