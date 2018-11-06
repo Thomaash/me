@@ -4,8 +4,11 @@ import Items from './Items'
 export default class {
   constructor (data) {
     this.log = []
-    this._hostnames = new Set()
+
     this._devnames = Object.create(null)
+    this._hostnames = new Set()
+    this._linked = new Set()
+
     this._data = data
     this._items = new Items(data.items)
     this._code = new Code()
@@ -49,6 +52,13 @@ export default class {
                 'error',
                 port
               )
+            )
+          } else if (error instanceof SyntaxError && error.message === 'Multiple links per port.') {
+            const { port } = error.payload
+            this._log(
+              `Failed to add ${port.type}/${port.hostname}: single port has multiple links.`,
+              'error',
+              port
             )
           } else {
             console.error(error)
@@ -106,6 +116,9 @@ export default class {
   _addLink (link) {
     const fromPort = this._items.map.port[link.from]
     const toPort = this._items.map.port[link.to]
+
+    this._addLinkedPort(fromPort)
+    this._addLinkedPort(toPort)
 
     const fromNode = this._portToNode(fromPort)
     const toNode = this._portToNode(toPort)
@@ -207,6 +220,15 @@ export default class {
       throw error
     } else {
       this._devnames[devname] = port
+    }
+  }
+  _addLinkedPort (port) {
+    if (this._linked.has(port)) {
+      const error = new SyntaxError('Multiple links per port.')
+      error.payload = { port }
+      throw error
+    } else {
+      this._linked.add(port)
     }
   }
 
