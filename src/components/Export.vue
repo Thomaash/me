@@ -75,6 +75,8 @@ function download (filename, mime, data) {
   document.body.removeChild(element)
 }
 
+const logPriority = ['error', 'warning', 'info']
+
 export default {
   name: 'Export',
   data: () => ({
@@ -179,6 +181,7 @@ export default {
     downloadScript () {
       try {
         this.working = true
+        this.log = []
 
         const builder = new Builder(exporter.exportData(this.$store.state.data))
         this.log = builder.log
@@ -187,6 +190,10 @@ export default {
         download('mininet_network.py', 'text/x-python;charset=utf-8', script)
       } catch (error) {
         console.error(error)
+        this.log.sort(
+          ({ severity: a }, { severity: b }) =>
+            logPriority.indexOf(a) - logPriority.indexOf(b)
+        )
         this.showAlert('error', 'Script was not built.')
       } finally {
         this.working = false
