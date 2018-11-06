@@ -1,4 +1,5 @@
 const edgeRE = /^(link|association)$/
+const collator = new Intl.Collator('en-US-u-kn')
 
 export default class {
   constructor (itemsArray) {
@@ -35,6 +36,7 @@ export default class {
     this.arr = {}
     Object.keys(this.map).forEach(key => {
       this.arr[key] = Object.values(this.map[key])
+        .sort(({ hostname: a }, { hostname: b }) => collator.compare(a, b))
     })
 
     // Node's edges and edge's nodes
