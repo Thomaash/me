@@ -3,6 +3,16 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
+          <v-card>
+            <v-card-title primary-title>
+              <h3>Introduction</h3>
+            </v-card-title>
+            <v-card-text>
+              GUI topology editor for Mininet with Python script export.
+            </v-card-text>
+          </v-card>
+        </v-flex>
+        <v-flex xs12>
           <BindingsCard/>
         </v-flex>
       </v-layout>
