@@ -8,8 +8,9 @@
 </template>
 
 <script>
-import vis from 'vis'
 import deselectHandler from './vis/deselectHandler'
+import vis from 'vis'
+import { items as theme } from '@/theme'
 
 import controllerImg from '@/assets/network/controller.svg'
 import hostImg from '@/assets/network/host.svg'
@@ -48,6 +49,22 @@ const keybindings = {
 
 function isEdge (type) {
   return type === 'link' || type === 'association'
+}
+
+function buildGroupColor (primary, bg, alwaysBorder) {
+  bg = bg || 'rgba(0,0,0,0)'
+  return {
+    background: bg,
+    border: primary,
+    highlight: {
+      background: bg,
+      border: primary
+    },
+    hover: {
+      background: bg,
+      border: primary
+    }
+  }
 }
 
 export default {
@@ -264,6 +281,14 @@ export default {
         physics: {
           enabled: false
         },
+        nodes: {
+          borderWidth: 0.0001,
+          borderWidthSelected: 1,
+          shapeProperties: {
+            borderRadius: 6,
+            useBorderWithImage: true
+          }
+        },
         edges: {
           smooth: false
         },
@@ -365,28 +390,32 @@ export default {
         groups: {
           controller: {
             shape: 'image',
-            color: 'purple',
+            color: buildGroupColor(theme.controller),
+            size: 25,
             image: controllerImg
           },
           dummy: {
             shape: 'box',
-            color: 'dimgray',
-            font: { color: 'white' }
+            color: buildGroupColor(theme.dummy, '#fff', true),
+            font: { color: theme.dummy },
+            borderWidth: 1
           },
           host: {
             shape: 'image',
-            color: 'teal',
+            color: buildGroupColor(theme.host),
+            size: 25,
             image: hostImg
           },
           port: {
             shape: 'image',
-            color: 'green',
+            color: buildGroupColor(theme.port),
             size: 10,
             image: portImg
           },
           switch: {
             shape: 'image',
-            color: 'teal',
+            color: buildGroupColor(theme.switch),
+            size: 25,
             image: switchImg
           }
         }

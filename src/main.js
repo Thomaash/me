@@ -6,18 +6,11 @@ import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import router from './router'
 import store from './store'
+import { vuetify as theme } from './theme'
 
 Vue.use(Vuelidate)
 Vue.use(Vuetify, {
-  theme: {
-    primary: '#009688',
-    secondary: '#26A69A',
-    accent: '#009688',
-    error: '#f44336',
-    warning: '#ffeb3b',
-    info: '#2196f3',
-    success: '#4caf50'
-  },
+  theme,
   iconfont: 'mdi',
   icons: {
     'net-controller': 'mdi-developer-board',
