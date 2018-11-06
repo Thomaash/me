@@ -156,21 +156,25 @@ export default {
       })
     },
     downloadJSON () {
-      this.working = true
+      try {
+        this.working = true
 
-      download(
-        'mininet_network.json',
-        'application/json;charset=utf-8',
-        JSON.stringify(
-          exporter.exportData(
-            this.$store.state.data
-          ),
-          undefined,
-          4
+        this.showAlert('success', 'Successfully exported.')
+        download(
+          'mininet_network.json',
+          'application/json;charset=utf-8',
+          JSON.stringify(
+            exporter.exportData(this.$store.state.data),
+            undefined,
+            4
+          )
         )
-      )
-
-      this.working = false
+      } catch (error) {
+        console.error(error)
+        this.showAlert('error', 'Export failed.')
+      } finally {
+        this.working = false
+      }
     },
     downloadScript () {
       try {
