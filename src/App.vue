@@ -58,4 +58,5 @@ export default {
 
 <style>
 html::-webkit-scrollbar {width: 0px !important;}
+.with-title {cursor: help;}
 </style>
