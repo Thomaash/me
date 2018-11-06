@@ -109,8 +109,7 @@ export default {
         try {
           const json = fr.result
           const importData = JSON.parse(json)
-          const data = exporter.importData(importData)
-          await this.confirmImport(data)
+          await this.confirmImport(importData)
         } catch (error) {
           console.error(error)
           this.showAlert('error', 'Import failed.')
