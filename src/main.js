@@ -4,11 +4,11 @@ import App from './App'
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
+import VuetifyConfirm from 'vuetify-confirm'
 import router from './router'
 import store from './store'
 import { vuetify as theme } from './theme'
 
-Vue.use(Vuelidate)
 Vue.use(Vuetify, {
   theme,
   iconfont: 'mdi',
@@ -22,6 +22,8 @@ Vue.use(Vuetify, {
     'net-switch': 'mdi-switch'
   }
 })
+Vue.use(Vuelidate)
+Vue.use(VuetifyConfirm)
 
 Vue.config.productionTip = false
 

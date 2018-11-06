@@ -105,14 +105,12 @@ export default {
 
       const fr = new FileReader()
       fr.readAsBinaryString(file)
-      fr.onloadend = () => {
+      fr.onloadend = async () => {
         try {
           const json = fr.result
           const importData = JSON.parse(json)
           const data = exporter.importData(importData)
-          this.$store.commit('data/importData', data)
-
-          this.showAlert('success', 'Successfully imported.')
+          await this.confirmImport(data)
         } catch (error) {
           console.error(error)
           this.showAlert('error', 'Import failed.')
@@ -123,21 +121,33 @@ export default {
 
       input.value = ''
     },
-    importExample () {
+    async importExample () {
       this.working = true
-
-      this.$store.commit('data/importData', exampleData)
-      this.showAlert('success', 'Successfully imported.')
-
+      await this.confirmImport(exampleData)
       this.working = false
     },
-    importEmpty () {
+    async importEmpty () {
       this.working = true
-
-      this.$store.commit('data/importData', emptyData)
-      this.showAlert('success', 'Successfully imported.')
-
+      await this.confirmImport(emptyData)
       this.working = false
+    },
+    async confirmImport (importData) {
+      const confirmed = await this.$confirm(
+        'This will erase all your work (except what you have exported).<br/>Are you sure you want to continue?',
+        {
+          buttonFalseText: 'Keep existing project',
+          buttonTrueText: 'Import',
+          icon: this.$vuetify.icons.warning,
+          title: 'Warning',
+          width: 600
+        }
+      )
+      if (confirmed) {
+        this.$store.commit('data/importData', importData)
+        this.showAlert('success', 'Successfully imported.')
+      } else {
+        this.showAlert('info', 'Import canceled.')
+      }
     },
     selectInCanvas (id) {
       let ids
