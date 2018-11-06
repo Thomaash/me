@@ -9,7 +9,7 @@ const generators = {
   },
 
   port (item) {
-    const ips = item.ips || ['No addresses.']
+    const ips = item.ips || ['No addresses']
     return ips.join('<br/>')
   },
   link (item) {
@@ -28,14 +28,14 @@ const generators = {
         '</table>'
       ].join('')
     } else {
-      return 'No limits.'
+      return 'No limits'
     }
   },
   host (item) {
     if (item.defaultRoute) {
       return `Default Route: ${item.defaultRoute}`
     } else {
-      return 'No default route.'
+      return 'No default route'
     }
   },
   switch (item) {
