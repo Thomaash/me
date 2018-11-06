@@ -5,22 +5,30 @@ export default class {
     // Maps
     this.map = {
       $all: Object.create(null),
-      $edge: Object.create(null),
-      $node: Object.create(null)
+      $edges: Object.create(null),
+      $nodes: Object.create(null),
+      association: Object.create(null),
+      controller: Object.create(null),
+      host: Object.create(null),
+      link: Object.create(null),
+      port: Object.create(null),
+      switch: Object.create(null)
     }
     itemsArray.forEach(item => {
-      this.map.$all[item.id] = item
-      if (edgeRE.test(item.type)) {
-        this.map.$edge[item.id] = item
+      const { id, type } = item
+
+      this.map.$all[id] = item
+      if (edgeRE.test(type)) {
+        this.map.$edges[id] = item
       } else {
         item.$associations = []
         item.$edges = []
         item.$links = []
-        this.map.$node[item.id] = item
+        this.map.$nodes[id] = item
       }
 
-      const obj = this.map[item.type] || (this.map[item.type] = Object.create(null))
-      obj[item.id] = item
+      const obj = this.map[type] || (this.map[type] = Object.create(null))
+      obj[id] = item
     })
 
     // Arrays
@@ -30,10 +38,10 @@ export default class {
     })
 
     // Node's edges and edge's nodes
-    this.arr.$edge.forEach(edge => {
+    this.arr.$edges.forEach(edge => {
       const nodes = [
-        this.map.$node[edge.from],
-        this.map.$node[edge.to]
+        this.map.$nodes[edge.from],
+        this.map.$nodes[edge.to]
       ]
 
       ;['$edges', `$${edge.type}s`].forEach(key => {
