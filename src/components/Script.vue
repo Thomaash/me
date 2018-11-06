@@ -5,7 +5,7 @@
         <v-flex xs12>
           <v-card>
             <v-card-text>
-              <v-textarea label="Script" v-model="script" :rows="rows + 1"/>
+              <v-textarea label="Script" v-model="script" auto-grow/>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -27,9 +27,6 @@ export default {
       set (script) {
         this.$store.commit('data/setScript', script)
       }
-    },
-    rows () {
-      return (this.script || '').split('\n').length
     }
   }
 }
