@@ -23,7 +23,7 @@ const keys = {
   ctrl: wrapTitle('Control key', '<kbd>Ctrl</kbd>'),
   lmb: wrapTitle('Left mouse button', '<kbd>LMB</kbd>'),
   lmbdc: wrapTitle('Double click left mouse button', '<kbd>LMB</kbd>, <kbd>LMB</kbd>'),
-  lmblp: wrapTitle('Long press left mouse button', '<kbd>  LMB  </kbd>')
+  lmblp: wrapTitle('Long press left mouse button', '<kbd>   LMB   </kbd>')
 }
 
 export default {
