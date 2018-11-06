@@ -283,7 +283,7 @@ export default {
         },
         nodes: {
           borderWidth: 0.0001,
-          borderWidthSelected: 1,
+          borderWidthSelected: 2,
           shapeProperties: {
             borderRadius: 6,
             useBorderWithImage: true
