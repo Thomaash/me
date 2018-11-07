@@ -45,7 +45,7 @@ export default {
       { combination: `${keys.lmbd}`, description: 'Move the viewport or the node under the cursor.' },
       { combination: `${keys.ctrl} + ${keys.lmb}`, description: 'Select or unselect multiple items.' },
       { combination: `${keys.lmbdc}`, description: 'Edit item.' },
-      { combination: `${keys.lmblp}`, description: 'Organise the ports of a switch or host.' },
+      { combination: `${keys.lmblp}`, description: 'Organize the ports of a switch or host.' },
       { combination: `${keys.lmblp}`, description: 'Reconnect a link or association.' },
 
       { combination: `${keys.rmbd}`, description: 'Rectangular selection of nodes.' },
