@@ -29,7 +29,7 @@
         },
         {
             "id": "0ed365c1-8317-4caf-ac6e-23b9dd8a7cab",
-            "hostname": "netX",
+            "hostname": "eth0",
             "type": "port",
             "ips": [
                 "172.18.1.1/16",
@@ -658,7 +658,7 @@
         {
             "id": "a3942eba-463f-4ec7-a533-f34dc1bce0a3",
             "type": "port",
-            "hostname": "netY",
+            "hostname": "eth1",
             "x": -383,
             "y": 213
         },
