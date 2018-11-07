@@ -1,5 +1,5 @@
 <template>
-  <div class="template-root" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
+  <div class="vis-container" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
     <div ref="vis" class="vis-root"/>
     <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
       <v-icon v-text="mouseTagIcon" color="black"/>
@@ -8,10 +8,11 @@
 </template>
 
 <script>
+import RectangularSelection from './vis/RectangularSelection'
 import deselectHandler from './vis/deselectHandler'
 import generateTooltip from './vis/generateTooltip'
 import vis from 'vis'
-import { items as theme } from '@/theme'
+import { items as theme, selection as selectionTheme } from '@/theme'
 
 import controllerImg from '@/assets/network/controller.svg'
 import hostImg from '@/assets/network/host.svg'
@@ -494,6 +495,10 @@ export default {
         fitSelection(false)
       }
 
+      // Set rectangular selection up
+      const rs = new RectangularSelection(this.$refs.vis, this.net, this.nodes, selectionTheme)
+      rs.attach()
+
       // @todo - debug
       window.net = this.net
       window.nodes = this.nodes
@@ -510,9 +515,7 @@ export default {
 </script>
 
 <style scoped>
-*:focus {outline: none;}
-
-.template-root {position: absolute; width: 100%; height: 100%;}
+.vis-container {position: absolute; width: 100%; height: 100%;}
 .vis-root {position: absolute; width: 100%; height: 100%;}
 
 .mouse-tag {position: fixed; margin: 1em;}
@@ -528,4 +531,7 @@ export default {
 }
 .vis-tooltip td {padding-left: 1ex;}
 .vis-tooltip td:first-child {padding-left: unset;}
+
+.vis-container {outline: none;}
+.vis-container * {outline: none;}
 </style>
