@@ -55,7 +55,7 @@ export default {
       { combination: 'z', description: 'Reset zoom.' }
     ],
     special: {
-      '@': { tag: 'span', text: ' @ ', title: 'Click on' },
+      '@': { tag: 'span', text: ' @ ', title: 'On' },
       '+': { tag: 'span', text: ' + ', title: 'Both together' },
 
       'LMB': { tag: 'kbd', text: 'LMB', title: 'Left mouse button' },
@@ -71,9 +71,9 @@ export default {
       'esc': { tag: 'kbd', text: 'Esc', title: 'Escape' },
 
       ':edge': { tag: 'v-icon', text: '$vuetify.icons.net-edge', title: 'Link or association' },
-      ':item': { tag: 'v-icon', text: '$vuetify.icons.net-port', title: 'Port, host, switch, controller, label, link or association' },
-      ':node': { tag: 'v-icon', text: '$vuetify.icons.net-port', title: 'Port, host, switch, controller or label' },
-      ':swho': { tag: 'v-icon', text: '$vuetify.icons.net-port', title: 'Switch or host' },
+      ':item': { tag: 'v-icon', text: '$vuetify.icons.net-host', title: 'Port, host, switch, controller, label, link or association' },
+      ':node': { tag: 'v-icon', text: '$vuetify.icons.net-host', title: 'Port, host, switch, controller or label' },
+      ':swho': { tag: 'v-icon', text: '$vuetify.icons.net-host', title: 'Switch or host' },
       ':port': { tag: 'v-icon', text: '$vuetify.icons.net-port', title: 'Port' }
     },
     nodeIcons: ['port', 'host', 'switch', 'controller', 'dummy'],
