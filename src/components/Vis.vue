@@ -534,4 +534,7 @@ export default {
 
 .vis-container {outline: none;}
 .vis-container * {outline: none;}
+
+/* Content resizing glitch workaround. */
+.vis-container {max-height: calc(100vh - 64px);}
 </style>
