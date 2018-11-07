@@ -26,6 +26,7 @@ const keys = {
   esc: wrapTitle('Escape', '<kbd>Esc</kbd>'),
 
   lmb: wrapTitle('Left mouse button', '<kbd>LMB</kbd>'),
+  lmbd: wrapTitle('Drag with left mouse button pressed', '<kbd>LMB →</kbd>'),
   lmbdc: wrapTitle('Double click left mouse button', '<kbd>LMB</kbd>, <kbd>LMB</kbd>'),
   lmblp: wrapTitle('Long press left mouse button', '<kbd>   LMB   </kbd>'),
 
@@ -40,11 +41,12 @@ export default {
       { text: 'Description', value: 'description', sortable: false }
     ],
     items: [
+      { combination: `${keys.lmb}`, description: 'Select a node or edge.' },
+      { combination: `${keys.lmbd}`, description: 'Move the viewport or the node under the cursor.' },
       { combination: `${keys.ctrl} + ${keys.lmb}`, description: 'Select or unselect multiple items.' },
       { combination: `${keys.lmbdc}`, description: 'Edit item.' },
       { combination: `${keys.lmblp}`, description: 'Organise the ports of a switch or host.' },
       { combination: `${keys.lmblp}`, description: 'Reconnect a link or association.' },
-      { combination: `${keys.lmb}`, description: 'Place a new port nearby a switch or host to automatically connect them.' },
 
       { combination: `${keys.rmbd}`, description: 'Rectangular selection of nodes.' },
       { combination: `${keys.ctrl} + ${keys.rmbd}`, description: 'Remove nodes from the selection.' },
