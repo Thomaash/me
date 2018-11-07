@@ -4,8 +4,8 @@ import VuexPersist from 'vuex-persist'
 import exporter from '@/exporter'
 import localForage from 'localforage'
 
-import exampleData from './store.example'
-import emptyData from './store.empty'
+import exampleData from '@/examples/medium_1_controller'
+import emptyData from '@/examples/empty'
 
 Vue.use(Vuex)
 

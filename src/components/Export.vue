@@ -20,7 +20,14 @@
             </v-card-title>
             <v-card-actions>
               <v-btn flat :disabled="working" @click="importEmpty">Empty</v-btn>
-              <v-btn flat :disabled="working" @click="importExample">Example</v-btn>
+              <v-menu bottom offset-y>
+                <v-btn flat slot="activator">Examples</v-btn>
+                <v-list>
+                  <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click="">
+                    <v-list-tile-title v-text="example.title" @click="importData(example.data)"/>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
               <v-btn flat :disabled="working" @click="uploadJSON">File</v-btn>
             </v-card-actions>
           </v-card>
@@ -60,8 +67,12 @@
 
 <script>
 import Builder from '@/builder'
-import emptyData from '@/store.empty'
-import exampleData from '@/store.example'
+import exampleEmpty from '@/examples/empty'
+import exampleMedium1C from '@/examples/medium_1_controller'
+import exampleMedium2C from '@/examples/medium_2_controllers'
+import exampleTiny from '@/examples/tiny'
+import exampleTinyController from '@/examples/tiny_controller'
+import exampleTinyTC from '@/examples/tiny_tc'
 import exporter from '@/exporter'
 
 function download (filename, mime, data) {
@@ -85,7 +96,23 @@ export default {
     working: false,
     alertEnabled: false,
     alertType: 'error',
-    alertText: '…'
+    alertText: '…',
+    examples: [{
+      title: 'Tiny without controller',
+      data: exampleTiny
+    }, {
+      title: 'Tiny with remote controller',
+      data: exampleTinyController
+    }, {
+      title: 'Tiny with traffic control',
+      data: exampleTinyTC
+    }, {
+      title: 'Medium with 1 controller',
+      data: exampleMedium1C
+    }, {
+      title: 'Medium with 2 controllers',
+      data: exampleMedium2C
+    } ]
   }),
   methods: {
     showAlert (type, text) {
@@ -120,15 +147,13 @@ export default {
 
       input.value = ''
     },
-    async importExample () {
+    async importData (data) {
       this.working = true
-      await this.confirmImport(exampleData)
+      await this.confirmImport(data)
       this.working = false
     },
-    async importEmpty () {
-      this.working = true
-      await this.confirmImport(emptyData)
-      this.working = false
+    importEmpty () {
+      this.importData(exampleEmpty)
     },
     async confirmImport (importData) {
       const confirmed = await this.$confirm(
