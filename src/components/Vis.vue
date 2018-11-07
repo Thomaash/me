@@ -1,9 +1,9 @@
 <template>
   <div class="template-root" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
     <div ref="vis" class="vis-root"/>
-      <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
-        <v-icon v-text="mouseTagIcon" color="black"/>
-      </div>
+    <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
+      <v-icon v-text="mouseTagIcon" color="black"/>
+    </div>
   </div>
 </template>
 
