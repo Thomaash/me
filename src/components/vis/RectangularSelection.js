@@ -117,7 +117,6 @@ export default class {
     if (this._drag) {
       const { startX, startY, endX, endY } = this._rectCanvas
 
-      console.log(ctx)
       ctx.lineWidth = 4
       ctx.strokeStyle = this._colors.border
       ctx.strokeRect(startX, startY, endX - startX, endY - startY)
