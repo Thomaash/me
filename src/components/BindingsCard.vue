@@ -58,8 +58,8 @@ export default {
       '@': { tag: 'span', text: ' @ ', title: 'On' },
       '+': { tag: 'span', text: ' + ', title: 'Both together' },
 
-      'LMB': { tag: 'kbd', text: 'LMB', title: 'Left mouse button' },
-      'LMB2': { tag: 'kbd', text: '2·LMB', title: 'Double click left mouse button' },
+      'LMB': { tag: 'kbd', text: 'LMB', title: 'Left mouse button click' },
+      'LMB2': { tag: 'kbd', text: '2·LMB', title: 'Double left mouse button click' },
       'LMBd': { tag: 'kbd', text: 'LMB →', title: 'Drag with left mouse button pressed' },
       'LMBlp': { tag: 'kbd', text: '   LMB   ', title: 'Long press left mouse button' },
       'RMBd': { tag: 'kbd', text: 'RMB →', title: 'Drag with right mouse button pressed' },
