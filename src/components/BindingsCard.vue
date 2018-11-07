@@ -21,12 +21,15 @@ function wrapTitle (title, html) {
 
 const keys = {
   ctrl: wrapTitle('Control', '<kbd>Ctrl</kbd>'),
+  shift: wrapTitle('Shift', '<kbd>Shift</kbd>'),
   del: wrapTitle('Delete', '<kbd>Del</kbd>'),
   esc: wrapTitle('Escape', '<kbd>Esc</kbd>'),
 
   lmb: wrapTitle('Left mouse button', '<kbd>LMB</kbd>'),
   lmbdc: wrapTitle('Double click left mouse button', '<kbd>LMB</kbd>, <kbd>LMB</kbd>'),
-  lmblp: wrapTitle('Long press left mouse button', '<kbd>   LMB   </kbd>')
+  lmblp: wrapTitle('Long press left mouse button', '<kbd>   LMB   </kbd>'),
+
+  rmbd: wrapTitle('Drag with right mouse button pressed', '<kbd>RMB →</kbd>')
 }
 
 export default {
@@ -42,6 +45,10 @@ export default {
       { combination: `${keys.lmblp}`, description: 'Organise the ports of a switch or host.' },
       { combination: `${keys.lmblp}`, description: 'Reconnect a link or association.' },
       { combination: `${keys.lmb}`, description: 'Place a new port nearby a switch or host to automatically connect them.' },
+
+      { combination: `${keys.rmbd}`, description: 'Rectangular selection of nodes.' },
+      { combination: `${keys.ctrl} + ${keys.rmbd}`, description: 'Remove nodes from the selection.' },
+      { combination: `${keys.shift} + ${keys.rmbd}`, description: 'Add nodes to the selection.' },
 
       { combination: `${keys.del}`, description: 'Delete selected items.' },
       { combination: `${keys.esc}`, description: 'Stop editing edges or adding items.' },
