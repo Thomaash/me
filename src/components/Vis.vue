@@ -1,7 +1,9 @@
 <template>
   <div class="vis-container" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
     <VisCanvas v-if="!loading" @ready="init"/>
-    <div v-else>Loading…</div>
+    <v-flex v-else class="text-xs-center" pa-5>
+      <v-progress-circular :size="50" color="primary" indeterminate/>
+    </v-flex>
     <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
       <v-icon v-text="mouseTagIcon" color="black"/>
     </div>
