@@ -6,7 +6,7 @@
           <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="hostnameErrors" clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="IPs" v-model="ips" :error-messages="ipsErrors" clearable/>
+          <v-textarea label="IPs" v-model="ips" :error-messages="ipsErrors" auto-grow clearable/>
         </v-flex>
       </v-layout>
     </v-container>
