@@ -284,7 +284,7 @@ export default {
         } finally {
           this.working = false
         }
-      })
+      }, 100)
     }
   }
 }
