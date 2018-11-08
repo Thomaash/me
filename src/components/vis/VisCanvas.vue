@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="vis-container" :style="{ width: width, height: height }">
+  <div ref="container" class="vis-container" :style="{ width: widthStyle, height: heightStyle }">
     <div class="vis-root" ref="vis"/>
   </div>
 </template>
@@ -16,23 +16,81 @@ import switchImg from '@/assets/network/switch.svg'
 
 export default {
   name: 'VisCanvas',
-  props: {
-    width: {
-      type: String,
-      default: '100%'
-    },
-    height: {
-      type: String,
-      default: '100%'
-    }
-  },
-  data: () => ({}),
+  data: () => ({
+    width: null,
+    height: null
+  }),
   computed: {
     data () {
       return this.$store.state.data
+    },
+    widthStyle () {
+      return this.width == null
+        ? undefined
+        : `${this.width}px`
+    },
+    heightStyle () {
+      return this.height == null
+        ? undefined
+        : `${this.height}px`
     }
   },
   methods: {
+    toDataURL (scale) {
+      return new Promise(resolve => {
+        scale = scale || 2
+
+        const beforeDrawingHandler = ctx => {
+          const { x, y } = this.net.view.targetTranslation
+          const scale = this.net.view.targetScale
+          ctx.fillStyle = '#fff'
+          ctx.fillRect(
+            -x / scale - 1,
+            -y / scale - 1,
+            ctx.canvas.width / scale + 2,
+            ctx.canvas.height / scale + 2
+          )
+        }
+        const afterDrawingHandler = ctx => {
+          const url = ctx.canvas.toDataURL('image/png')
+
+          this.net.off('beforeDrawing', beforeDrawingHandler)
+          this.net.off('afterDrawing', afterDrawingHandler)
+          this.width = null
+          this.height = null
+
+          resolve(url)
+        }
+        const resizeHandler = () => {
+          this.net.off('resize', resizeHandler)
+
+          this.net.fit({ animation: false })
+          this.net.moveTo({ scale, animation: false })
+
+          this.net.on('beforeDrawing', beforeDrawingHandler)
+          this.net.on('afterDrawing', afterDrawingHandler)
+          this.net.redraw()
+        }
+
+        const coords = this.nodes.get().reduce((acc, { x, y }) => {
+          if (x < acc.sX) {
+            acc.sX = x
+          } else if (x > acc.eX) {
+            acc.eX = x
+          }
+          if (y < acc.sY) {
+            acc.sY = y
+          } else if (y > acc.eY) {
+            acc.eY = y
+          }
+
+          return acc
+        }, { sX: 0, eX: 0, sY: 0, eY: 0 })
+        this.net.on('resize', resizeHandler)
+        this.width = (coords.eX - coords.sX) * scale + 200 * scale
+        this.height = (coords.eY - coords.sY) * scale + 200 * scale
+      })
+    },
     isEdge (type) {
       return type === 'link' || type === 'association'
     },
@@ -143,12 +201,15 @@ export default {
     // Create the network
     const net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
 
+    this.net = net
+    this.nodes = nodes
+    this.edges = edges
     this.$emit('ready', { container, net, nodes, edges })
   }
 }
 </script>
 
 <style scoped>
-.vis-container {position: relative;}
+.vis-container {position: relative; width: 100%; height: 100%;}
 .vis-container > * {position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;}
 </style>

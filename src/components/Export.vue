@@ -10,6 +10,14 @@
             <v-card-actions>
               <v-btn flat :disabled="working" @click="downloadJSON">JSON</v-btn>
               <v-btn flat :disabled="working" @click="downloadScript">Python 2 script</v-btn>
+              <v-menu bottom offset-y :disabled="working">
+                <v-btn flat slot="activator" :disabled="working">Image</v-btn>
+                <v-list>
+                  <v-list-tile v-for="(imageSize, i) in imageSizes" :key="'imageSize' + i" @click="">
+                    <v-list-tile-title v-text="imageSize.title" @click="downloadImageStart(imageSize.data)"/>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -59,7 +67,10 @@
             </v-card-text>
           </v-card>
         </v-flex>
-        <input type="file" style="display:none" ref="fileInput" @input="uploadFile"/>
+        <div style="height: 0px; width: 0px; overflow: hidden;">
+          <input type="file" ref="fileInput" @input="uploadFile"/>
+          <VisCanvas v-if="visCanvasOn" @ready="downloadImageFinish" ref="visCanvas"/>
+        </div>
       </v-layout>
     </v-container>
   </v-slide-y-transition>
@@ -67,6 +78,7 @@
 
 <script>
 import Builder from '@/builder'
+import VisCanvas from '@/components/vis/VisCanvas'
 import exampleEmpty from '@/examples/empty'
 import exampleMedium1C from '@/examples/medium_1_controller'
 import exampleMedium2C from '@/examples/medium_2_controllers'
@@ -75,9 +87,13 @@ import exampleTinyController from '@/examples/tiny_controller'
 import exampleTinyTC from '@/examples/tiny_tc'
 import exporter from '@/exporter'
 
-function download (filename, mime, data) {
+function download (filename, mimeOrHref, data) {
+  const href = mimeOrHref && data
+    ? `data:${mimeOrHref},${encodeURIComponent(data)}`
+    : mimeOrHref
+
   const element = document.createElement('a')
-  element.setAttribute('href', `data:${mime},${encodeURIComponent(data)}`)
+  element.setAttribute('href', href)
   element.setAttribute('download', filename)
   element.style.display = 'none'
 
@@ -90,6 +106,7 @@ const logPriority = ['error', 'warning', 'info']
 
 export default {
   name: 'Export',
+  components: { VisCanvas },
   data: () => ({
     log: [],
     logCbs: [],
@@ -97,6 +114,18 @@ export default {
     alertEnabled: false,
     alertType: 'error',
     alertText: '…',
+    visCanvasOn: false,
+    imageScale: 2,
+    imageSizes: [{
+      title: 'Small',
+      data: 1
+    }, {
+      title: 'Medium',
+      data: 2
+    }, {
+      title: 'Large',
+      data: 4
+    }],
     examples: [{
       title: 'Tiny without controller',
       data: exampleTiny
@@ -232,6 +261,28 @@ export default {
       } finally {
         this.working = false
       }
+    },
+    downloadImageStart (scale) {
+      this.working = true
+      this.imageScale = scale
+      this.visCanvasOn = true
+    },
+    downloadImageFinish () {
+      // The timeout prevents glitches like missing node icons.
+      window.setTimeout(async () => {
+        try {
+          const image = await this.$refs.visCanvas.toDataURL(this.imageScale)
+          this.visCanvasOn = false
+
+          this.showAlert('success', 'Image rendered.')
+          download('mininet_network.png', image)
+        } catch (error) {
+          console.error(error)
+          this.showAlert('error', 'Image was not rendered.')
+        } finally {
+          this.working = false
+        }
+      })
     }
   }
 }
