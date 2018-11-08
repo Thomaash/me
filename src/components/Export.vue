@@ -28,7 +28,7 @@
             </v-card-title>
             <v-card-actions>
               <v-btn flat :disabled="working" @click="importEmpty">Empty</v-btn>
-              <v-menu bottom offset-y>
+              <v-menu bottom offset-y :disabled="working">
                 <v-btn flat slot="activator" :disabled="working">Examples</v-btn>
                 <v-list>
                   <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click="">
