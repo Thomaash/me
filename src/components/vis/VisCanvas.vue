@@ -36,7 +36,7 @@ export default {
     }
   },
   methods: {
-    toDataURL (scale) {
+    toBlob (scale) {
       return new Promise(resolve => {
         scale = scale || 2
 
@@ -51,15 +51,18 @@ export default {
             ctx.canvas.height / scale + 2
           )
         }
-        const afterDrawingHandler = ctx => {
-          const url = ctx.canvas.toDataURL('image/png')
-
+        const afterDrawingHandler = async (ctx) => {
           this.net.off('beforeDrawing', beforeDrawingHandler)
           this.net.off('afterDrawing', afterDrawingHandler)
+
+          const blob = await new Promise(resolve => {
+            ctx.canvas.toBlob(resolve, 'image/png')
+          })
+
           this.width = null
           this.height = null
 
-          resolve(url)
+          resolve(blob)
         }
         const resizeHandler = () => {
           this.net.off('resize', resizeHandler)
