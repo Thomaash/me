@@ -1,6 +1,7 @@
 <template>
   <div class="vis-container" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
-    <div ref="vis" class="vis-root"/>
+    <VisCanvas v-if="!loading" @ready="init"/>
+    <div v-else>Loading…</div>
     <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
       <v-icon v-text="mouseTagIcon" color="black"/>
     </div>
@@ -9,15 +10,11 @@
 
 <script>
 import RectangularSelection from './vis/RectangularSelection'
+import VisCanvas from './vis/VisCanvas'
 import deselectHandler from './vis/deselectHandler'
-import generateTooltip from './vis/generateTooltip'
+import updateNode from './vis/updateNode'
 import vis from 'vis'
-import { items as theme, selection as selectionTheme } from '@/theme'
-
-import controllerImg from '@/assets/network/controller.svg'
-import hostImg from '@/assets/network/host.svg'
-import portImg from '@/assets/network/port.svg'
-import switchImg from '@/assets/network/switch.svg'
+import { selection as selectionTheme } from '@/theme'
 
 const portAmounts = {
   'host': 2,
@@ -49,38 +46,11 @@ const keybindings = {
   'z': 'setScale'
 }
 
-function isEdge (type) {
-  return type === 'link' || type === 'association'
-}
-
-function buildGroupColor (primary, bg, alwaysBorder) {
-  bg = bg || 'rgba(0,0,0,0)'
-  return {
-    background: bg,
-    border: primary,
-    highlight: {
-      background: bg,
-      border: primary
-    },
-    hover: {
-      background: bg,
-      border: primary
-    }
-  }
-}
-
-function updateNode (node, item) {
-  node.label = item.hostname
-  node.title = generateTooltip(item)
-
-  return node
-}
-
 export default {
   name: 'Vis',
+  components: { VisCanvas },
   data: () => ({
     newItemType: '',
-    initialized: false,
     mouseTag: {
       x: 0,
       y: 0
@@ -95,13 +65,6 @@ export default {
     },
     mouseTagIcon () {
       return '$vuetify.icons.net-' + this.newItemType
-    }
-  },
-  watch: {
-    loading (_prev, curr) {
-      if (!this.initialized && curr === true) {
-        this.init()
-      }
     }
   },
   methods: {
@@ -247,60 +210,13 @@ export default {
     keypress ({ key }) {
       (this[keybindings[key]] || (() => {}))()
     },
-    init () {
-      this.initialized = true
-
-      const items = Object.keys(this.data.items)
-        .map(id => {
-          const node = JSON.parse(JSON.stringify(this.data.items[id]))
-          node.id = id
-          return node
-        })
-
-      // create an array with nodes
-      const nodes = new vis.DataSet(
-        items
-          .filter(({ type }) => !isEdge(type))
-          .map(item => updateNode({
-            id: item.id,
-            group: item.type,
-            x: item.x,
-            y: item.y
-          }, item))
-      )
+    init ({ container, net, nodes, edges }) {
+      this.net = net
       this.nodes = nodes
-
-      // create an array with edges
-      const edges = new vis.DataSet(
-        items
-          .filter(({ type }) => isEdge(type))
-          .map(item => updateNode({
-            id: item.id,
-            from: item.from,
-            to: item.to
-          }, item))
-      )
       this.edges = edges
 
-      // options
-      const options = {
-        physics: {
-          enabled: false
-        },
-        nodes: {
-          borderWidth: 0.0001,
-          borderWidthSelected: 2,
-          shapeProperties: {
-            borderRadius: 6,
-            useBorderWithImage: true
-          }
-        },
-        edges: {
-          smooth: false
-        },
-        interaction: {
-          hover: true
-        },
+      // Manipulation
+      this.net.setOptions({
         manipulation: {
           enabled: false,
           addNode: (node, callback) => {
@@ -343,7 +259,7 @@ export default {
                     label: `eth${i}`,
                     group: 'port'
                   }
-                  nodes.add(port)
+                  this.nodes.add(port)
                   this.$store.commit('data/setItem', {
                     id: port.id,
                     hostname: port.label,
@@ -355,7 +271,7 @@ export default {
                     from: edited.id,
                     to: port.id
                   }
-                  edges.add(edge)
+                  this.edges.add(edge)
                   this.$store.commit('data/setItem', {
                     id: edge.id,
                     type: 'association',
@@ -395,49 +311,16 @@ export default {
 
             this.newItemType = ''
           }
-        },
-        groups: {
-          controller: {
-            shape: 'image',
-            color: buildGroupColor(theme.controller),
-            size: 25,
-            image: controllerImg
-          },
-          dummy: {
-            shape: 'box',
-            color: buildGroupColor(theme.dummy, '#fff', true),
-            font: { color: theme.dummy },
-            borderWidth: 1
-          },
-          host: {
-            shape: 'image',
-            color: buildGroupColor(theme.host),
-            size: 25,
-            image: hostImg
-          },
-          port: {
-            shape: 'image',
-            color: buildGroupColor(theme.port),
-            size: 10,
-            image: portImg
-          },
-          switch: {
-            shape: 'image',
-            color: buildGroupColor(theme.switch),
-            size: 25,
-            image: switchImg
-          }
         }
-      }
+      })
 
-      // network
-      this.net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
+      // Events
       this.net.on('deselectNode', deselectHandler.bind(null, this.net))
       this.net.on('deselectEdge', deselectHandler.bind(null, this.net))
       this.net.on('doubleClick', event => {
         if (event.nodes.length === 0 && event.edges.length === 1) {
           const id = event.edges[0]
-          this.editItem(edges.get(id), edge => edge ? edges.update(edge) : null)
+          this.editItem(this.edges.get(id), edge => edge ? this.edges.update(edge) : null)
         } else if (event.nodes.length === 1) {
           this.net.editNode()
         }
@@ -468,7 +351,7 @@ export default {
 
         const toSelect = new Set()
         this.net.getSelectedEdges().forEach(edgeId => {
-          const edge = edges.get(edgeId)
+          const edge = this.edges.get(edgeId)
           toSelect.add(edge.to)
           toSelect.add(edge.from)
         })
@@ -496,7 +379,7 @@ export default {
       }
 
       // Set rectangular selection up
-      const rs = new RectangularSelection(this.$refs.vis, this.net, this.nodes, selectionTheme)
+      const rs = new RectangularSelection(container, this.net, this.nodes, selectionTheme)
       rs.attach()
 
       // @todo - debug
@@ -507,16 +390,14 @@ export default {
   },
   mounted () {
     this.focusRoot()
-    if (!this.loading) {
-      this.init()
-    }
   }
 }
 </script>
 
 <style scoped>
 .vis-container {position: absolute; width: 100%; height: 100%;}
-.vis-root {position: absolute; width: 100%; height: 100%;}
+/* Content resizing glitch workaround. */
+.vis-container {max-height: calc(100vh - 64px);}
 
 .mouse-tag {position: fixed; margin: 1em;}
 </style>
@@ -534,7 +415,4 @@ export default {
 
 .vis-container {outline: none;}
 .vis-container * {outline: none;}
-
-/* Content resizing glitch workaround. */
-.vis-container {max-height: calc(100vh - 64px);}
 </style>
