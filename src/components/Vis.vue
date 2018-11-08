@@ -1,5 +1,5 @@
 <template>
-  <div class="vis-container" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
+  <div class="component-container" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
     <VisCanvas v-if="!loading" @ready="init"/>
     <v-flex v-else class="text-xs-center" pa-5>
       <v-progress-circular :size="50" color="primary" indeterminate/>
@@ -397,9 +397,9 @@ export default {
 </script>
 
 <style scoped>
-.vis-container {position: absolute; width: 100%; height: 100%;}
+.component-container {position: relative; width: 100%; height: 100%;}
 /* Content resizing glitch workaround. */
-.vis-container {max-height: calc(100vh - 64px);}
+.component-container {max-height: calc(100vh - 64px);}
 
 .mouse-tag {position: fixed; margin: 1em;}
 </style>
@@ -415,6 +415,6 @@ export default {
 .vis-tooltip td {padding-left: 1ex;}
 .vis-tooltip td:first-child {padding-left: unset;}
 
-.vis-container {outline: none;}
-.vis-container * {outline: none;}
+.component-container {outline: none;}
+.component-container * {outline: none;}
 </style>

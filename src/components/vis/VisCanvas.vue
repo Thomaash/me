@@ -1,5 +1,7 @@
 <template>
-  <div ref="container" class="vis-container"/>
+  <div ref="container" class="vis-container" :style="{ width: width, height: height }">
+    <div class="vis-root" ref="vis"/>
+  </div>
 </template>
 
 <script>
@@ -14,6 +16,16 @@ import switchImg from '@/assets/network/switch.svg'
 
 export default {
   name: 'VisCanvas',
+  props: {
+    width: {
+      type: String,
+      default: '100%'
+    },
+    height: {
+      type: String,
+      default: '100%'
+    }
+  },
   data: () => ({}),
   computed: {
     data () {
@@ -129,7 +141,7 @@ export default {
     )
 
     // Create the network
-    const net = new vis.Network(container, { nodes, edges }, options)
+    const net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
 
     this.$emit('ready', { container, net, nodes, edges })
   }
@@ -137,5 +149,6 @@ export default {
 </script>
 
 <style scoped>
-.vis-container {position: absolute; width: 100%; height: 100%;}
+.vis-container {position: relative;}
+.vis-container > * {position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;}
 </style>
