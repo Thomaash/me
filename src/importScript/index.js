@@ -88,6 +88,22 @@ export default function (input) {
           : args[1] + '-eth0'
       }
 
+      if (args.bw) {
+        item.bandwidth = args.bw
+      }
+      if (args.delay) {
+        item.delay = delQuotes(args.delay)
+      }
+      if (args.loss) {
+        item.loss = args.loss
+      }
+      if (args.max_queue_size) {
+        item.maxQueueSize = args.max_queue_size
+      }
+      if (args.jitter) {
+        item.jitter = delQuotes(args.jitter)
+      }
+
       links.push(item)
     } else if (funcName === '.start') {
       // Association switch → controller
