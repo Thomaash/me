@@ -14,6 +14,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "antlr4": "^4.7.1",
     "localforage": "^1.7.3",
     "vis": "^4.21.0",
     "vue": "^2.5.2",

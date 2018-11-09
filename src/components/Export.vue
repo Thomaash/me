@@ -86,6 +86,7 @@ import exampleTiny from '@/examples/tiny'
 import exampleTinyController from '@/examples/tiny_controller'
 import exampleTinyTC from '@/examples/tiny_tc'
 import exporter from '@/exporter'
+import importScript from '@/importScript'
 
 function download (filename, mimeOrHref, data) {
   const href = mimeOrHref && data
@@ -163,9 +164,17 @@ export default {
       fr.readAsBinaryString(file)
       fr.onloadend = async () => {
         try {
-          const json = fr.result
-          const importData = JSON.parse(json)
-          await this.confirmImport(importData)
+          if (file.type === 'application/json') {
+            const json = fr.result
+            const importData = JSON.parse(json)
+            await this.confirmImport(importData)
+          } else if (file.type === 'text/x-python') {
+            const script = fr.result
+            const importData = importScript(script)
+            await this.confirmImport(importData, '<p>Importing scripts is highly unreliable. Imported project will be anything from <strong>incomplete</strong> to <strong>disfunctional</strong>.</p>')
+          } else {
+            this.showAlert('error', 'Unknown file format.')
+          }
         } catch (error) {
           console.error(error)
           this.showAlert('error', 'Import failed.')
@@ -184,9 +193,10 @@ export default {
     importEmpty () {
       this.importData(exampleEmpty)
     },
-    async confirmImport (importData) {
+    async confirmImport (importData, text) {
       const confirmed = await this.$confirm(
-        'This will erase all your work (except what you have exported).<br/>Are you sure you want to continue?',
+        (text || '') +
+        '<p>This will <strong>erase all your work</strong> (except what you have exported).<br/>Are you sure you want to continue?</p>',
         {
           buttonFalseText: 'Keep existing project',
           buttonTrueText: 'Import',
