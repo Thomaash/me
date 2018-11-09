@@ -15,7 +15,10 @@ export default class {
       port: Object.create(null),
       switch: Object.create(null)
     }
-    itemsArray.forEach(item => {
+    itemsArray.map(
+      // Add new attrs without modifying original data.
+      item => Object.create(item)
+    ).forEach(item => {
       const { id, type } = item
 
       this.map.$all[id] = item
