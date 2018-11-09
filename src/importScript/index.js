@@ -16,6 +16,21 @@ function delQuotes (str) {
   return str.substr(1, str.length - 2)
 }
 
+function fixNextHostDev (set, hostDev) {
+  let [host, dev] = hostDev.split('-')
+  if (dev == null) {
+    let i = 0
+    do {
+      dev = `eth${i}`
+      hostDev = `${host}-${dev}`
+      ++i
+    } while (set.has(hostDev))
+    set.add(hostDev)
+    return hostDev
+  }
+  return hostDev
+}
+
 function FunctionCallListener (callback) {
   Python2Listener.call(this)
   this.visited = new Set()
@@ -82,10 +97,10 @@ export default function (input) {
         type: 'link',
         from: args.intfName1
           ? delQuotes(args.intfName1)
-          : args[0] + '-eth0',
+          : args[0],
         to: args.intfName2
           ? delQuotes(args.intfName2)
-          : args[1] + '-eth0'
+          : args[1]
       }
 
       if (args.bw) {
@@ -229,10 +244,17 @@ export default function (input) {
   })
 
   // Set up ports without IPs
+  const hostDevs = new Set()
+  links.forEach(link => hostDevs.add(link.from).add(link.to))
+  links.forEach(edge => {
+    edge.from = fixNextHostDev(hostDevs, edge.from)
+    edge.to = fixNextHostDev(hostDevs, edge.to)
+  })
   links.forEach(edge => {
     ;[edge.from, edge.to].forEach(hostDev => {
       if (!portMap[hostDev]) {
         const [host, dev] = hostDev.split('-')
+
         const port = {
           id: 'script_import_' + ++lastId,
           type: 'port',
