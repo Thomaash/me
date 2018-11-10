@@ -15,6 +15,12 @@
           <v-text-field label="STP Priority" v-model.number="item.stpPriority" type="number" step="4096" min="0" max="65535" :error-messages="stpPriorityErrors" clearable/>
         </v-flex>
         <v-flex xs12>
+          <v-text-field label="IP" v-model="item.ip" :error-messages="ipErrors" clearable/>
+        </v-flex>
+        <v-flex xs12>
+          <v-text-field label="DPCTL Port" v-model.number="item.dpctlPort" type="number" min="1" max="65535" :error-messages="dpctlPortErrors" clearable/>
+        </v-flex>
+        <v-flex xs12>
           <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
         </v-flex>
         <v-flex xs12 md6>
@@ -51,7 +57,7 @@
 
 <script>
 import common from './common'
-import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData } from './rules'
+import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData, ip } from './rules'
 
 const switchTypes = [
   { value: 'IVSSwitch', text: 'IVSSwitch' },
@@ -92,6 +98,12 @@ export default {
     enabledDisabled
   }),
   computed: {
+    dpctlPortErrors () {
+      return [
+        ...(this.$v.item.dpctlPort.integer ? [] : ['The port has to be positive integer.']),
+        ...(this.$v.item.dpctlPort.between ? [] : ['The port has to be between 1 and 65535.'])
+      ]
+    },
     dpidErrors () {
       return [
         ...(this.$v.item.dpid.hexData ? [] : ['Datapath ID has to be in hexadecimal.']),
@@ -103,6 +115,11 @@ export default {
       return [
         ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
         ...(this.$v.item.hostname.hostname ? [] : ['Invalid hostname.'])
+      ]
+    },
+    ipErrors () {
+      return [
+        ...(this.$v.item.ip.ip ? [] : ['Invalid IP address.'])
       ]
     },
     stpPriorityErrors () {
@@ -121,8 +138,10 @@ export default {
   },
   validations: {
     item: {
+      dpctlPort: { integer, between: between(1, 65535) },
       dpid: { hexData, minLength: minLength(1), maxLength: maxLength(16) },
       hostname: { required, hostname },
+      ip: { ip },
       reconnectms: { integer, minValue: minValue(0) },
       stpPriority: { integer, between: between(0, 65535), divisible: divisible(4096) }
     }

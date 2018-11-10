@@ -181,6 +181,12 @@ export default function (input) {
       if (args.reconnectms) {
         item.reconnectms = args.reconnectms
       }
+      if (args.ip) {
+        item.ip = delQuotes(args.ip)
+      }
+      if (args.port) {
+        item.dpctlPort = args.port
+      }
       if (args.verbose) {
         item.verbose = args.verbose === 'True'
       }
