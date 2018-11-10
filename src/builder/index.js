@@ -178,6 +178,7 @@ export default class {
       ...(swtch.dpopts != null ? [`dpopts='${swtch.dpopts}'`] : []),
       ...(swtch.failMode != null ? [`failMode='${swtch.failMode}'`] : []),
       ...(swtch.inband != null ? [`inband=${swtch.inband ? 'True' : 'False'}`] : []),
+      ...(swtch.opts != null ? [`opts='${swtch.opts}'`] : []),
       ...(swtch.protocol != null ? [`protocols='${swtch.protocol}'`] : []),
       ...(swtch.reconnectms != null ? [`reconnectms=${swtch.reconnectms}`] : []),
       ...(swtch.stp != null ? [`stp=${swtch.stp ? 'True' : 'False'}`] : []),

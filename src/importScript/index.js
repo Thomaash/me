@@ -166,6 +166,9 @@ export default function (input) {
       if (args.dpopts) {
         item.dpopts = delQuotes(args.dpopts)
       }
+      if (args.opts) {
+        item.opts = delQuotes(args.opts)
+      }
       if (args.failMode) {
         item.failMode = delQuotes(args.failMode)
       }

@@ -41,6 +41,9 @@
         <v-flex xs12>
           <v-select label="Verbose" :items="enabledDisabled" v-model="item.verbose" clearable/>
         </v-flex>
+        <v-flex xs12>
+          <v-text-field label="Additional Switch Options" v-model="item.opts" clearable/>
+        </v-flex>
       </v-layout>
     </v-container>
   </v-form>
