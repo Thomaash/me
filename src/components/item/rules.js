@@ -57,3 +57,6 @@ export { timeWithUnit }
 const divisible = divisor =>
   v => !req(v) || v % divisor === 0
 export { divisible }
+
+const hexData = v => !req(v) || /^[0-9a-fA-F]*$/.test(v)
+export { hexData }

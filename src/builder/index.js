@@ -174,6 +174,7 @@ export default class {
       `'${swtch.hostname}'`,
       ...(swtch.batch != null ? [`batch=${swtch.batch ? 'True' : 'False'}`] : []),
       ...(swtch.datapath != null ? [`datapath='${swtch.datapath}'`] : []),
+      ...(swtch.dpid != null ? [`dpid='${swtch.dpid}'`] : []),
       ...(swtch.dpopts != null ? [`dpopts='${swtch.dpopts}'`] : []),
       ...(swtch.failMode != null ? [`failMode='${swtch.failMode}'`] : []),
       ...(swtch.inband != null ? [`inband=${swtch.inband ? 'True' : 'False'}`] : []),

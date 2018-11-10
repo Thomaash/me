@@ -160,6 +160,9 @@ export default function (input) {
       if (args.datapath) {
         item.datapath = delQuotes(args.datapath)
       }
+      if (args.dpid) {
+        item.dpid = delQuotes(args.dpid)
+      }
       if (args.dpopts) {
         item.dpopts = delQuotes(args.dpopts)
       }

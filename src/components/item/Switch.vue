@@ -14,8 +14,11 @@
         <v-flex xs12 md6>
           <v-text-field label="STP Priority" v-model.number="item.stpPriority" type="number" step="4096" min="0" max="65535" :error-messages="stpPriorityErrors" clearable/>
         </v-flex>
-        <v-flex xs12>
+        <v-flex xs12 md6>
           <v-select label="Datapath" :items="datapaths" v-model="item.datapath" clearable/>
+        </v-flex>
+        <v-flex xs12 md6>
+          <v-text-field label="Datapath ID" v-model="item.dpid" type="text" :error-messages="dpidErrors" clearable/>
         </v-flex>
         <v-flex xs12>
           <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
@@ -45,7 +48,7 @@
 
 <script>
 import common from './common'
-import { required, hostname, integer, between, divisible, minValue } from './rules'
+import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData } from './rules'
 
 const switchTypes = [
   { value: 'IVSSwitch', text: 'IVSSwitch' },
@@ -86,6 +89,13 @@ export default {
     enabledDisabled
   }),
   computed: {
+    dpidErrors () {
+      return [
+        ...(this.$v.item.dpid.hexData ? [] : ['Datapath ID has to be in hexadecimal.']),
+        ...(this.$v.item.dpid.minLength ? [] : ['Datapath ID has to have at least 1 digits.']),
+        ...(this.$v.item.dpid.maxLength ? [] : ['Datapath ID has to have at most 16 digits.'])
+      ]
+    },
     hostnameErrors () {
       return [
         ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
@@ -108,9 +118,10 @@ export default {
   },
   validations: {
     item: {
+      dpid: { hexData, minLength: minLength(1), maxLength: maxLength(16) },
       hostname: { required, hostname },
-      stpPriority: { integer, between: between(0, 65535), divisible: divisible(4096) },
-      reconnectms: { integer, minValue: minValue(0) }
+      reconnectms: { integer, minValue: minValue(0) },
+      stpPriority: { integer, between: between(0, 65535), divisible: divisible(4096) }
     }
   }
 }
