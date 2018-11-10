@@ -11,8 +11,11 @@
         <v-flex xs12>
           <v-text-field label="IP" v-model="item.ip" :error-messages="ipErrors" clearable/>
         </v-flex>
-        <v-flex xs12>
+        <v-flex xs12 md6>
           <v-text-field label="Port" v-model.number="item.port" :error-messages="portErrors" clearable/>
+        </v-flex>
+        <v-flex xs12 md6>
+          <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
         </v-flex>
       </v-layout>
     </v-container>
@@ -29,6 +32,10 @@ const controllerTypes = [
   { value: 'RemoteController', text: 'RemoteController' },
   { value: 'Ryu', text: 'Ryu' }
 ]
+const protocols = [
+  { value: 'tcp', text: 'TCP' },
+  { value: 'upd', text: 'UDP' }
+]
 
 export default {
   name: 'ControllerEdit',
@@ -36,7 +43,8 @@ export default {
   data: () => ({
     valid: false,
     item: {},
-    controllerTypes
+    controllerTypes,
+    protocols
   }),
   computed: {
     hostnameErrors () {

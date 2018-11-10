@@ -212,6 +212,9 @@ export default function (input) {
       if (args.port) {
         item.port = args.port
       }
+      if (args.protocol) {
+        item.protocol = delQuotes(args.protocol)
+      }
 
       items.push(item)
     } else if (funcName === '.cmd' && /^'ip a a .* dev .*'$/.test(args[0])) {

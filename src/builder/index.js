@@ -98,7 +98,8 @@ export default class {
       `'${controller.hostname}'`,
       ...(controller.controllerType != null ? [`controller=mininet.node.${controller.controllerType}`] : []),
       ...(controller.ip != null ? [`ip='${controller.ip}'`] : []),
-      ...(controller.port != null ? [`port=${controller.port}`] : [])
+      ...(controller.port != null ? [`port=${controller.port}`] : []),
+      ...(controller.protocol != null ? [`protocol='${controller.protocol}'`] : [])
     ]
     this._code.nodes.push(`${controller.hostname} = net.addController(${args.join(', ')})`)
     this._code.startControllers.push(`${controller.hostname}.start()`)
