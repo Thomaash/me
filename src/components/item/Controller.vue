@@ -12,7 +12,7 @@
           <v-text-field label="IP" v-model="item.ip" :error-messages="ipErrors" clearable/>
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field label="Port" v-model.number="item.port" :error-messages="portErrors" clearable/>
+          <v-text-field label="Port" v-model.number="item.port" type="number" min="1" max="65535" :error-messages="portErrors" clearable/>
         </v-flex>
         <v-flex xs12 md6>
           <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
