@@ -14,14 +14,14 @@
         <v-flex xs12 md6>
           <v-text-field label="STP Priority" v-model.number="item.stpPriority" type="number" step="4096" min="0" max="65535" :error-messages="stpPriorityErrors" clearable/>
         </v-flex>
+        <v-flex xs12>
+          <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
+        </v-flex>
         <v-flex xs12 md6>
           <v-select label="Datapath" :items="datapaths" v-model="item.datapath" clearable/>
         </v-flex>
         <v-flex xs12 md6>
           <v-text-field label="Datapath ID" v-model="item.dpid" type="text" :error-messages="dpidErrors" clearable/>
-        </v-flex>
-        <v-flex xs12>
-          <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
         </v-flex>
         <v-flex xs12>
           <v-text-field label="Ofdatapath arguments" v-model="item.dpopts" clearable/>
