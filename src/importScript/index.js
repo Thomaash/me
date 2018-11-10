@@ -65,7 +65,11 @@ export default function (input) {
         return child.children.map(child => {
           const text = child.getText()
           if (text.startsWith('[')) {
-            return delQuotes(text).split(',')
+            if (text === '[]') {
+              return []
+            } else {
+              return delQuotes(text).split(',')
+            }
           } else {
             return text
           }
