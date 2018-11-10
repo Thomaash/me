@@ -175,6 +175,9 @@ export default function (input) {
       if (args.reconnectms) {
         item.reconnectms = args.reconnectms
       }
+      if (args.verbose) {
+        item.verbose = args.verbose === 'True'
+      }
       if (args.stp) {
         item.stp = args.stp === 'True'
       }

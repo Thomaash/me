@@ -181,7 +181,8 @@ export default class {
       ...(swtch.reconnectms != null ? [`reconnectms=${swtch.reconnectms}`] : []),
       ...(swtch.stp != null ? [`stp=${swtch.stp ? 'True' : 'False'}`] : []),
       ...(swtch.stpPriority != null ? [`prio=${swtch.stpPriority}`] : []),
-      ...(swtch.switchType != null ? [`cls=mininet.node.${swtch.switchType}`] : [])
+      ...(swtch.switchType != null ? [`cls=mininet.node.${swtch.switchType}`] : []),
+      ...(swtch.verbose != null ? [`verbose=${swtch.verbose ? 'True' : 'False'}`] : [])
     ]
     const controllerHostnames = this._getNeighbors(swtch, ['controller'])
       .map(controller => controller.hostname)
