@@ -1,4 +1,4 @@
-import { helpers } from 'vuelidate/lib/validators'
+import { helpers, integer, between } from 'vuelidate/lib/validators'
 export * from 'vuelidate/lib/validators'
 
 const req = helpers.req
@@ -48,6 +48,12 @@ export { ip }
 
 const ipsWithMasks = v => !req(v) || v.every(testIPWithMask)
 export { ipsWithMasks }
+
+const port = v => !req(v) || (
+  integer(v) &&
+  between(1, 65535)(v)
+)
+export { port }
 
 const timeWithUnit = v => !req(v) || (
   /^\d+(|m|u)s$/.test(v)

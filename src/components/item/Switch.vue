@@ -57,7 +57,7 @@
 
 <script>
 import common from './common'
-import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData, ip } from './rules'
+import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData, ip, port } from './rules'
 
 const switchTypes = [
   { value: 'IVSSwitch', text: 'IVSSwitch' },
@@ -100,8 +100,7 @@ export default {
   computed: {
     dpctlPortErrors () {
       return [
-        ...(this.$v.item.dpctlPort.integer ? [] : ['The port has to be positive integer.']),
-        ...(this.$v.item.dpctlPort.between ? [] : ['The port has to be between 1 and 65535.'])
+        ...(this.$v.item.dpctlPort.port ? [] : ['Has to be a valid port.'])
       ]
     },
     dpidErrors () {
@@ -138,7 +137,7 @@ export default {
   },
   validations: {
     item: {
-      dpctlPort: { integer, between: between(1, 65535) },
+      dpctlPort: { port },
       dpid: { hexData, minLength: minLength(1), maxLength: maxLength(16) },
       hostname: { required, hostname },
       ip: { ip },

@@ -24,7 +24,7 @@
 
 <script>
 import common from './common'
-import { required, hostname, ip, integer, between } from './rules'
+import { required, hostname, ip, port } from './rules'
 
 const controllerTypes = [
   { value: 'NOX', text: 'NOX' },
@@ -60,8 +60,7 @@ export default {
     },
     portErrors () {
       return [
-        ...(this.$v.item.port.integer ? [] : ['The port has to be positive integer.']),
-        ...(this.$v.item.port.between ? [] : ['The port has to be between 1 and 65535.'])
+        ...(this.$v.item.port.port ? [] : ['Has to be a valid port.'])
       ]
     }
   },
@@ -69,7 +68,7 @@ export default {
     item: {
       hostname: { required, hostname },
       ip: { ip },
-      port: { integer, between: between(1, 65535) }
+      port: { port }
     }
   }
 }
