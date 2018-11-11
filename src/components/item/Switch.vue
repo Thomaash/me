@@ -3,7 +3,7 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Hostname" v-model="item.hostname" autofocus :error-messages="hostnameErrors"/>
+          <v-text-field label="Hostname" v-model="item.hostname" autofocus :error-messages="errors.item.hostname"/>
         </v-flex>
         <v-flex xs12>
           <v-select label="Type" :items="switchTypes" v-model="item.switchType" clearable/>
@@ -12,13 +12,13 @@
           <v-select label="STP" :items="enabledDisabled" v-model="item.stp" clearable/>
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field label="STP Priority" v-model.number="item.stpPriority" type="number" step="4096" min="0" max="65535" :error-messages="stpPriorityErrors" clearable/>
+          <v-text-field label="STP Priority" v-model.number="item.stpPriority" type="number" step="4096" min="0" max="65535" :error-messages="errors.item.stpPriority" clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="IP" v-model="item.ip" :error-messages="ipErrors" clearable/>
+          <v-text-field label="IP" v-model="item.ip" :error-messages="errors.item.ip" clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="DPCTL Port" v-model.number="item.dpctlPort" type="number" min="1" max="65535" :error-messages="dpctlPortErrors" clearable/>
+          <v-text-field label="DPCTL Port" v-model.number="item.dpctlPort" type="number" min="1" max="65535" :error-messages="errors.item.dpctlPort" clearable/>
         </v-flex>
         <v-flex xs12>
           <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
@@ -27,13 +27,13 @@
           <v-select label="Datapath" :items="datapaths" v-model="item.datapath" clearable/>
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field label="Datapath ID" v-model="item.dpid" type="text" :error-messages="dpidErrors" clearable/>
+          <v-text-field label="Datapath ID" v-model="item.dpid" type="text" :error-messages="errors.item.dpid" clearable/>
         </v-flex>
         <v-flex xs12>
           <v-text-field label="Ofdatapath arguments" v-model="item.dpopts" clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="Reconnect Timeout" v-model.number="item.reconnectms" type="number" min="0" suffix="ms" :error-messages="reconnectmsErrors" clearable/>
+          <v-text-field label="Reconnect Timeout" v-model.number="item.reconnectms" type="number" min="0" suffix="ms" :error-messages="errors.item.reconnectms" clearable/>
         </v-flex>
         <v-flex xs12>
           <v-select label="Fail Mode" :items="failModes" v-model="item.failMode" clearable/>
@@ -57,6 +57,7 @@
 
 <script>
 import common from './common'
+import errors from './errors'
 import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData, ip, port } from './rules'
 
 const switchTypes = [
@@ -87,7 +88,7 @@ const enabledDisabled = [
 
 export default {
   name: 'SwitchEdit',
-  mixins: [common],
+  mixins: [common, errors],
   data: () => ({
     valid: false,
     item: {},
@@ -97,44 +98,6 @@ export default {
     protocols,
     enabledDisabled
   }),
-  computed: {
-    dpctlPortErrors () {
-      return [
-        ...(this.$v.item.dpctlPort.port ? [] : ['Has to be a valid port.'])
-      ]
-    },
-    dpidErrors () {
-      return [
-        ...(this.$v.item.dpid.hexData ? [] : ['Datapath ID has to be in hexadecimal.']),
-        ...(this.$v.item.dpid.minLength ? [] : ['Datapath ID has to have at least 1 digits.']),
-        ...(this.$v.item.dpid.maxLength ? [] : ['Datapath ID has to have at most 16 digits.'])
-      ]
-    },
-    hostnameErrors () {
-      return [
-        ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
-        ...(this.$v.item.hostname.hostname ? [] : ['Invalid hostname.'])
-      ]
-    },
-    ipErrors () {
-      return [
-        ...(this.$v.item.ip.ip ? [] : ['Invalid IP address.'])
-      ]
-    },
-    stpPriorityErrors () {
-      return [
-        ...(this.$v.item.stpPriority.integer ? [] : ['Priority has to be an integer.']),
-        ...(this.$v.item.stpPriority.between ? [] : ['Priority has to be between 0 and 65535 inclusive.']),
-        ...(this.$v.item.stpPriority.divisible ? [] : ['Priority has to be a multiple of 4096.'])
-      ]
-    },
-    reconnectmsErrors () {
-      return [
-        ...(this.$v.item.reconnectms.integer ? [] : ['Reconnect timeout has to be an integer.']),
-        ...(this.$v.item.reconnectms.minValue ? [] : ['Reconnect timeout has to be an non-negative.'])
-      ]
-    }
-  },
   validations: {
     item: {
       dpctlPort: { port },

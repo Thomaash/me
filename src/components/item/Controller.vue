@@ -3,16 +3,16 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Label" v-model="item.hostname" autofocus :error-messages="hostnameErrors" clearable/>
+          <v-text-field label="Label" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable/>
         </v-flex>
         <v-flex xs12>
           <v-select label="Type" :items="controllerTypes" v-model="item.controllerType" clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="IP" v-model="item.ip" :error-messages="ipErrors" clearable/>
+          <v-text-field label="IP" v-model="item.ip" :error-messages="errors.item.ip" clearable/>
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field label="Port" v-model.number="item.port" type="number" min="1" max="65535" :error-messages="portErrors" clearable/>
+          <v-text-field label="Port" v-model.number="item.port" type="number" min="1" max="65535" :error-messages="errors.item.port" clearable/>
         </v-flex>
         <v-flex xs12 md6>
           <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
@@ -24,6 +24,7 @@
 
 <script>
 import common from './common'
+import errors from './errors'
 import { required, hostname, ip, port } from './rules'
 
 const controllerTypes = [
@@ -39,31 +40,13 @@ const protocols = [
 
 export default {
   name: 'ControllerEdit',
-  mixins: [common],
+  mixins: [common, errors],
   data: () => ({
     valid: false,
     item: {},
     controllerTypes,
     protocols
   }),
-  computed: {
-    hostnameErrors () {
-      return [
-        ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
-        ...(this.$v.item.hostname.hostname ? [] : ['Invalid hostname.'])
-      ]
-    },
-    ipErrors () {
-      return [
-        ...(this.$v.item.ip.ip ? [] : ['Invalid IP address.'])
-      ]
-    },
-    portErrors () {
-      return [
-        ...(this.$v.item.port.port ? [] : ['Has to be a valid port.'])
-      ]
-    }
-  },
   validations: {
     item: {
       hostname: { required, hostname },

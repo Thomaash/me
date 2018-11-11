@@ -3,10 +3,10 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="hostnameErrors" clearable/>
+          <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="IPs" v-model="ips" :error-messages="ipsErrors" auto-grow clearable/>
+          <v-textarea label="IPs" v-model="ips" :error-messages="errors.item.ips" auto-grow clearable/>
         </v-flex>
       </v-layout>
     </v-container>
@@ -15,11 +15,12 @@
 
 <script>
 import common from './common'
+import errors from './errors'
 import { required, hostname, ipsWithMasks } from './rules'
 
 export default {
   name: 'PortEdit',
-  mixins: [common],
+  mixins: [common, errors],
   data: () => ({
     valid: false,
     item: {}
@@ -36,17 +37,6 @@ export default {
           this.$delete(this.item, 'ips')
         }
       }
-    },
-    hostnameErrors () {
-      return [
-        ...(this.$v.item.hostname.required ? [] : ['Hostname is required.']),
-        ...(this.$v.item.hostname.hostname ? [] : ['Invalid hostname.'])
-      ]
-    },
-    ipsErrors () {
-      return [
-        ...(this.$v.item.ips.ipsWithMasks ? [] : ['Invalid IP(s).'])
-      ]
     }
   },
   validations: {
