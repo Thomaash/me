@@ -42,7 +42,7 @@ const testIPWithMask = v => testIP4WithMask(v) || testIP6WithMask(v)
 
 const hostname = withParams(
   { type: 'hostname' },
-  v => !req(v) || /^[a-zA-Z][a-zA-Z0-9_]*$/.test(v)
+  v => !req(v) || /^[a-zA-Z][a-zA-Z0-9]*$/.test(v)
 )
 export { hostname }
 
