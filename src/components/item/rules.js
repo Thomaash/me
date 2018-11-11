@@ -1,7 +1,7 @@
 import { helpers, integer, between } from 'vuelidate/lib/validators'
 export * from 'vuelidate/lib/validators'
 
-const req = helpers.req
+const { req, withParams } = helpers
 
 const testMask4 = v => /^\d+$/.test(v) && v >= 0 && v <= 24
 const testMask6 = v => /^\d+$/.test(v) && v >= 0 && v <= 64
@@ -40,29 +40,49 @@ const testIP6WithMask = v => {
 const testIP = v => testIP4(v) || testIP6(v)
 const testIPWithMask = v => testIP4WithMask(v) || testIP6WithMask(v)
 
-const hostname = v => !req(v) || /^[a-zA-Z][a-zA-Z0-9_]*$/.test(v)
+const hostname = withParams(
+  { type: 'hostname' },
+  v => !req(v) || /^[a-zA-Z][a-zA-Z0-9_]*$/.test(v)
+)
 export { hostname }
 
-const ip = v => !req(v) || testIP(v)
+const ip = withParams(
+  { type: 'ip' },
+  v => !req(v) || testIP(v)
+)
 export { ip }
 
-const ipsWithMasks = v => !req(v) || v.every(testIPWithMask)
+const ipsWithMasks = withParams(
+  { type: 'ipsWithMasks' },
+  v => !req(v) || v.every(testIPWithMask)
+)
 export { ipsWithMasks }
 
-const port = v => !req(v) || (
-  integer(v) &&
+const port = withParams(
+  { type: 'port' },
+  v => !req(v) || (
+    integer(v) &&
   between(1, 65535)(v)
+  )
 )
 export { port }
 
-const timeWithUnit = v => !req(v) || (
-  /^\d+(|m|u)s$/.test(v)
+const timeWithUnit = withParams(
+  { type: 'timeWithUnit' },
+  v => !req(v) || (
+    /^\d+(|m|u)s$/.test(v)
+  )
 )
 export { timeWithUnit }
 
-const divisible = divisor =>
+const divisible = divisor => withParams(
+  { type: 'divisible', divisor },
   v => !req(v) || v % divisor === 0
+)
 export { divisible }
 
-const hexData = v => !req(v) || /^[0-9a-fA-F]*$/.test(v)
+const hexData = withParams(
+  { type: 'hexData' },
+  v => !req(v) || /^[0-9a-fA-F]*$/.test(v)
+)
 export { hexData }
