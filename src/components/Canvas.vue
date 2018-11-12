@@ -37,7 +37,7 @@
 <script>
 import Edit from '@/components/item/Edit'
 import Vis from '@/components/Vis'
-import {items as theme} from '@/theme'
+import { items as theme } from '@/theme'
 
 export default {
   name: 'Canvas',
