@@ -12,8 +12,19 @@ function parse (input) {
   return parser.file_input()
 }
 
-function delQuotes (str) {
-  return str.substr(1, str.length - 2)
+function pyString (str) {
+  if (!/^'.*'$/.test(str)) {
+    throw new TypeError('Expected string.')
+  } else {
+    return str.substr(1, str.length - 2)
+  }
+}
+function pyNumber (str) {
+  if (isNaN(str)) {
+    throw new TypeError('Expected number.')
+  } else {
+    return str * 1
+  }
 }
 
 function fixNextHostDev (set, hostDev) {
@@ -68,7 +79,7 @@ export default function (input) {
             if (text === '[]') {
               return []
             } else {
-              return delQuotes(text).split(',')
+              return text.substr(1, text.length - 2).split(',')
             }
           } else {
             return text
@@ -93,34 +104,34 @@ export default function (input) {
 
     if (funcName === '.onecmd') {
       // Script
-      scriptLines.push(delQuotes(args[0]))
+      scriptLines.push(pyString(args[0]))
     } else if (funcName === '.addLink') {
       // Link
       const item = {
         id: 'script_import_' + ++lastId,
         type: 'link',
         from: args.intfName1
-          ? delQuotes(args.intfName1)
+          ? pyString(args.intfName1)
           : args[0],
         to: args.intfName2
-          ? delQuotes(args.intfName2)
+          ? pyString(args.intfName2)
           : args[1]
       }
 
       if (args.bw) {
-        item.bandwidth = args.bw
+        item.bandwidth = pyNumber(args.bw)
       }
       if (args.delay) {
-        item.delay = delQuotes(args.delay)
+        item.delay = pyString(args.delay)
       }
       if (args.loss) {
-        item.loss = args.loss
+        item.loss = pyNumber(args.loss)
       }
       if (args.max_queue_size) {
-        item.maxQueueSize = args.max_queue_size
+        item.maxQueueSize = pyNumber(args.max_queue_size)
       }
       if (args.jitter) {
-        item.jitter = delQuotes(args.jitter)
+        item.jitter = pyString(args.jitter)
       }
 
       links.push(item)
@@ -139,7 +150,7 @@ export default function (input) {
       })
     } else if (funcName === '.addHost') {
       // Host
-      const hostname = delQuotes(args[0])
+      const hostname = pyString(args[0])
       const item = {
         id: 'script_import_' + ++lastId,
         type: 'host',
@@ -152,7 +163,7 @@ export default function (input) {
       items.push(item)
     } else if (funcName === '.addSwitch') {
       // Switch
-      const hostname = delQuotes(args[0])
+      const hostname = pyString(args[0])
       const item = {
         id: 'script_import_' + ++lastId,
         type: 'switch',
@@ -162,31 +173,31 @@ export default function (input) {
         item.batch = args.batch === 'True'
       }
       if (args.datapath) {
-        item.datapath = delQuotes(args.datapath)
+        item.datapath = pyString(args.datapath)
       }
       if (args.dpid) {
-        item.dpid = delQuotes(args.dpid)
+        item.dpid = pyString(args.dpid)
       }
       if (args.dpopts) {
-        item.dpopts = delQuotes(args.dpopts)
+        item.dpopts = pyString(args.dpopts)
       }
       if (args.opts) {
-        item.opts = delQuotes(args.opts)
+        item.opts = pyString(args.opts)
       }
       if (args.failMode) {
-        item.failMode = delQuotes(args.failMode)
+        item.failMode = pyString(args.failMode)
       }
       if (args.inband) {
         item.inband = args.inband === 'True'
       }
       if (args.protocols) {
-        item.protocol = delQuotes(args.protocols)
+        item.protocol = pyString(args.protocols)
       }
       if (args.reconnectms) {
         item.reconnectms = args.reconnectms
       }
       if (args.ip) {
-        item.ip = delQuotes(args.ip)
+        item.ip = pyString(args.ip)
       }
       if (args.port) {
         item.dpctlPort = args.port
@@ -207,7 +218,7 @@ export default function (input) {
       items.push(item)
     } else if (funcName === '.addController') {
       // Controller
-      const hostname = delQuotes(args[0] || args.name)
+      const hostname = pyString(args[0] || args.name)
       const item = {
         id: 'script_import_' + ++lastId,
         type: 'controller',
@@ -217,13 +228,13 @@ export default function (input) {
         item.controllerType = args.controller.replace(/.*\./, '')
       }
       if (args.ip) {
-        item.ip = delQuotes(args.ip)
+        item.ip = pyString(args.ip)
       }
       if (args.port) {
-        item.port = args.port
+        item.port = pyNumber(args.port)
       }
       if (args.protocol) {
-        item.protocol = delQuotes(args.protocol)
+        item.protocol = pyString(args.protocol)
       }
 
       items.push(item)

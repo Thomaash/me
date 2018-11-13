@@ -396,7 +396,6 @@
             "to": "9995eea0-93dc-4b75-86ee-0084666229f0",
             "bandwidth": 100,
             "delay": "10ms",
-            "loss": null,
             "hostname": "Backbone",
             "maxQueueSize": 42,
             "jitter": "5ms"
