@@ -3,7 +3,7 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Label" v-model="item.hostname" autofocus :error-messages="errors.item.hostname"/>
+          <v-text-field label="Label" v-model="item.hostname" autofocus/>
         </v-flex>
         <v-flex xs12>
           <v-text-field label="Bandwidth" v-model.number="item.bandwidth" :error-messages="errors.item.bandwidth" type="number" min="0" suffix="MBits/s" clearable/>
@@ -28,7 +28,7 @@
 <script>
 import common from './common'
 import errors from './errors'
-import { hostname, timeWithUnit, integer, minValue, between } from './rules'
+import { timeWithUnit, integer, minValue, between } from './rules'
 
 export default {
   name: 'LinkEdit',
@@ -39,7 +39,6 @@ export default {
   }),
   validations: {
     item: {
-      hostname: { hostname },
       bandwidth: { minValue: minValue(0) },
       delay: { timeWithUnit },
       loss: { between: between(0, 100) },
