@@ -51,16 +51,20 @@ const data = {
         Vue.set(state, key, data[key])
       )
     },
-    setItem (state, item) {
-      if (item.id == null) {
-        throw new Error('Items have to have ids.')
-      }
-      Vue.set(state.items, item.id, item)
+    setItems (state, items) {
+      items.forEach(item => {
+        if (item.id == null) {
+          throw new Error('Items have to have ids.')
+        }
+        Vue.set(state.items, item.id, item)
+      })
     },
-    updateItem (state, item) {
-      const saved = state.items[item.id]
-      Object.keys(item).forEach(key => {
-        Vue.set(saved, key, item[key])
+    updateItems (state, items) {
+      items.forEach(item => {
+        const saved = state.items[item.id]
+        Object.keys(item).forEach(key => {
+          Vue.set(saved, key, item[key])
+        })
       })
     },
     setScript (state, script) {

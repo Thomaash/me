@@ -139,21 +139,18 @@ export default {
           item.to = node.to
         }
 
-        this.$store.commit('data/setItem', item)
+        this.$store.commit('data/setItems', [item])
         updateNode(node, item)
         callback(node)
       })
     },
-    commitPosition (id) {
-      const { x, y } = this.net.getPositions([id])[id]
-      this.$store.commit('data/updateItem', { id, x, y })
-    },
     commitPositions (ids) {
       const positions = this.net.getPositions(ids)
-      ids.forEach(id => {
-        const { x, y } = positions[id]
-        this.$store.commit('data/updateItem', { id, x, y })
-      })
+      const updateItems = Object.keys(positions).map(id => ({
+        ...positions[id],
+        id
+      }))
+      this.$store.commit('data/updateItems', updateItems)
     },
     orderNodes (edge) {
       const src = this.data.items[edge.from].type
@@ -199,8 +196,8 @@ export default {
         port.x = firstX + xOffset * i
         port.y = portY + (i % 2 === 0 ? yEvenOffset : 0)
         this.nodes.update(port)
-        this.commitPosition(port.id)
       })
+      this.commitPositions(ports.map(({ id }) => id))
     },
     getClosest (x, y, types) {
       const ids = this.nodes.getIds()
@@ -246,7 +243,7 @@ export default {
 
               callback(edited)
 
-              this.commitPosition(edited.id)
+              this.commitPositions([edited.id])
 
               if (edited.group === 'port') {
                 const { x, y } = this.net.getPositions(edited.id)[edited.id]
@@ -259,24 +256,25 @@ export default {
                     to: edited.id
                   }
                   this.edges.add(association)
-                  this.$store.commit('data/setItem', {
+                  this.$store.commit('data/setItems', [{
                     id: association.id,
                     type: 'association',
                     from: association.from,
                     to: association.to
-                  })
+                  }])
                 }
               }
 
               const ports = portAmounts[edited.group] || 0
               if (ports > 0) {
+                const items = []
                 for (let i = 0; i < ports; ++i) {
                   const port = {
                     label: `eth${i}`,
                     group: 'port'
                   }
                   this.nodes.add(port)
-                  this.$store.commit('data/setItem', {
+                  items.push({
                     id: port.id,
                     hostname: port.label,
                     type: 'port'
@@ -288,13 +286,14 @@ export default {
                     to: port.id
                   }
                   this.edges.add(edge)
-                  this.$store.commit('data/setItem', {
+                  items.push({
                     id: edge.id,
                     type: 'association',
                     from: edge.from,
                     to: edge.to
                   })
                 }
+                this.$store.commit('data/setItems', items)
                 this.organizePorts(edited)
               }
             })
@@ -353,7 +352,7 @@ export default {
       })
       this.net.on('dragEnd', event => {
         if (event.nodes.length > 0) {
-          event.nodes.forEach(nodeId => this.commitPosition(nodeId))
+          this.commitPositions(event.nodes)
         }
       })
       this.net.on('dragStart', event => {
