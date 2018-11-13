@@ -8,25 +8,25 @@
           <v-icon>mdi-chevron-up</v-icon>
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
-        <v-btn fab dark small :color="theme.edge" @click="$refs.vis.addEdge()">
+        <v-btn fab dark small :color="theme.edge" @click="$refs.vis.addEdge()" title="Edge">
           <v-icon>$vuetify.icons.net-edge</v-icon>
         </v-btn>
-        <v-btn fab dark small :color="theme.port" @click="$refs.vis.addPort()">
+        <v-btn fab dark small :color="theme.port" @click="$refs.vis.addPort()" title="Port">
           <v-icon>$vuetify.icons.net-port</v-icon>
         </v-btn>
-        <v-btn fab dark small :color="theme.host" @click="$refs.vis.addHost()">
+        <v-btn fab dark small :color="theme.host" @click="$refs.vis.addHost()" title="Host">
           <v-icon>$vuetify.icons.net-host</v-icon>
         </v-btn>
-        <v-btn fab dark small :color="theme.switch" @click="$refs.vis.addSwitch()">
+        <v-btn fab dark small :color="theme.switch" @click="$refs.vis.addSwitch()" title="Switch">
           <v-icon>$vuetify.icons.net-switch</v-icon>
         </v-btn>
-        <v-btn fab dark small :color="theme.controller" @click="$refs.vis.addController()">
+        <v-btn fab dark small :color="theme.controller" @click="$refs.vis.addController()" title="Controller">
           <v-icon>$vuetify.icons.net-controller</v-icon>
         </v-btn>
-        <v-btn fab dark small :color="theme.dummy" @click="$refs.vis.addDummy()">
+        <v-btn fab dark small :color="theme.dummy" @click="$refs.vis.addDummy()" title="Label">
           <v-icon>$vuetify.icons.net-label</v-icon>
         </v-btn>
-        <v-btn fab dark small color="red" @click="$refs.vis.deleteSelected()">
+        <v-btn fab dark small color="red" @click="$refs.vis.deleteSelected()" title="Delete">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-speed-dial>
