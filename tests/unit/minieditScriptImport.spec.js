@@ -27,6 +27,7 @@ describe('Import Miniedit script', () => {
       { type: 'host', hostname: 'h4', defaultRoute: '192.168.1.1' },
       { type: 'host', hostname: 'h5', defaultRoute: '192.168.1.1' },
       { type: 'host', hostname: 'h6' },
+      { type: 'link', bandwidth: 100, delay: '15ms', loss: 7, maxQueueSize: 145, jitter: '25ms' },
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.101/8'] },
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.102/8'] },
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.103/8'] },

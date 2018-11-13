@@ -141,7 +141,13 @@
         },
         {
             "dest": "h5",
-            "opts": {},
+            "opts": {
+                "bw": 100,
+                "delay": "15ms",
+                "jitter": "25ms",
+                "loss": 7,
+                "max_queue_size": 145
+            },
             "src": "s3"
         },
         {

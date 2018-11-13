@@ -67,21 +67,27 @@ function fixNextHostDev (set, hostDev) {
   return hostDev
 }
 
-function FunctionCallListener (callback) {
+function MyListener ({ enterArglist, enterAssignment }) {
   Python2Listener.call(this)
   this.visited = new Set()
-  this.callback = callback
+  this.enterArglistCb = enterArglist
+  this.enterAssignmentCb = enterAssignment
   return this
 }
-FunctionCallListener.prototype = Object.create(Python2Listener.prototype)
-FunctionCallListener.prototype.constructor = FunctionCallListener
-FunctionCallListener.prototype.enterArglist = function (ctx) {
+MyListener.prototype = Object.create(Python2Listener.prototype)
+MyListener.prototype.constructor = MyListener
+MyListener.prototype.enterArglist = function (ctx) {
   if (this.visited.has(ctx)) {
     return
   }
   this.visited.add(ctx)
 
-  this.callback(ctx)
+  this.enterArglistCb(ctx)
+}
+MyListener.prototype.enterExpr_stmt = function (ctx) {
+  if (ctx.children.length === 3 && ctx.children[1].getText() === '=') {
+    this.enterAssignmentCb(ctx)
+  }
 }
 
 export default function (input) {
@@ -92,184 +98,219 @@ export default function (input) {
   const links = []
   const portMap = {}
   const scriptLines = []
+  const vars = {}
   let lastId = 0
 
-  const printer = new FunctionCallListener(argsCtx => {
-    const args = argsCtx.children.map(child => {
-      if (!child.children) {
-        return child.getText()
-      } else {
-        return child.children.map(child => {
-          const text = child.getText()
-          if (text.startsWith('[')) {
-            if (text === '[]') {
-              return []
+  const printer = new MyListener({
+    enterArglist: argsCtx => {
+      const args = argsCtx.children.map(child => {
+        if (!child.children) {
+          return child.getText()
+        } else {
+          return child.children.map(child => {
+            const text = child.getText()
+            if (text.startsWith('[')) {
+              if (text === '[]') {
+                return []
+              } else {
+                return text.substr(1, text.length - 2).split(',')
+              }
             } else {
-              return text.substr(1, text.length - 2).split(',')
+              return text
             }
-          } else {
-            return text
+          })
+        }
+      }).filter(val =>
+        val !== ','
+      ).reduce((acc, val, i, arr) => {
+        if (val === '**') {
+          // Ignore
+        } else if (arr[i - 1] === '**') {
+          try {
+            const varName = val[0]
+            const value = vars[varName] // ctx
+              .getText() // Python dictionary
+              .replace(/'/g, '"') // JSON (hopefully)
+            const obj = JSON.parse(value)
+
+            // Use the same format as use non dict values
+            Object.keys(obj).forEach(key => {
+              const val = obj[key]
+              switch (typeof val) {
+                case 'number':
+                  obj[key] = `${val}`
+                  break
+                case 'string':
+                  obj[key] = `'${val}'`
+                  break
+              }
+            })
+
+            Object.assign(acc, obj)
+          } catch (error) {
+            console.warn(error)
           }
-        })
-      }
-    }).filter(val =>
-      val !== ','
-    ).reduce((acc, val, i) => {
-      if (val.length === 1) {
-        acc[i] = val[0]
-      } else {
-        acc[val[0]] = val[2]
-      }
-      return acc
-    }, {})
+        } else if (val.length === 1) {
+          acc[i] = val[0]
+        } else {
+          acc[val[0]] = val[2]
+        }
+        return acc
+      }, {})
 
-    const { funcName, varName } = processArgsCtx(argsCtx)
+      const { funcName, varName } = processArgsCtx(argsCtx)
 
-    if (funcName === '.onecmd') {
-      // Script
-      scriptLines.push(pyString(args[0]))
-    } else if (funcName === '.addLink') {
-      // Link
-      const item = {
-        id: 'script_import_' + ++lastId,
-        type: 'link',
-        from: args.intfName1
-          ? pyString(args.intfName1)
-          : args[0],
-        to: args.intfName2
-          ? pyString(args.intfName2)
-          : args[1]
-      }
-
-      if (args.bw) {
-        item.bandwidth = pyNumber(args.bw)
-      }
-      if (args.delay) {
-        item.delay = pyString(args.delay)
-      }
-      if (args.loss) {
-        item.loss = pyNumber(args.loss)
-      }
-      if (args.max_queue_size) {
-        item.maxQueueSize = pyNumber(args.max_queue_size)
-      }
-      if (args.jitter) {
-        item.jitter = pyString(args.jitter)
-      }
-
-      links.push(item)
-    } else if (funcName === '.start') {
-      // Association switch → controller
-      const hostnameTo = varName
-      args[0].forEach(hostnameFrom => {
+      if (funcName === '.onecmd') {
+        // Script
+        scriptLines.push(pyString(args[0]))
+      } else if (funcName === '.addLink') {
+        // Link
         const item = {
           id: 'script_import_' + ++lastId,
-          type: 'association',
-          from: hostnameFrom,
-          to: hostnameTo
+          type: 'link',
+          from: args.intfName1
+            ? pyString(args.intfName1)
+            : args[0],
+          to: args.intfName2
+            ? pyString(args.intfName2)
+            : args[1]
         }
 
-        associations.push(item)
-      })
-    } else if (funcName === '.addHost') {
-      // Host
-      const hostname = pyString(args[0])
-      const item = {
-        id: 'script_import_' + ++lastId,
-        type: 'host',
-        hostname
-      }
-      if (pyNotNull(args.defaultRoute)) {
-        item.defaultRoute = args.defaultRoute.replace(/.*via\s+([0-9a-fA-F.:]+).*/, '$1')
-      }
-      if (pyNotNull(args.ip)) {
-        hostIPs[item.hostname] = pyString(args.ip)
-      }
+        if (args.bw) {
+          item.bandwidth = pyNumber(args.bw)
+        }
+        if (args.delay) {
+          item.delay = pyString(args.delay)
+        }
+        if (args.loss) {
+          item.loss = pyNumber(args.loss)
+        }
+        if (args.max_queue_size) {
+          item.maxQueueSize = pyNumber(args.max_queue_size)
+        }
+        if (args.jitter) {
+          item.jitter = pyString(args.jitter)
+        }
 
-      items.push(item)
-    } else if (funcName === '.addSwitch') {
-      // Switch
-      const hostname = pyString(args[0])
-      const item = {
-        id: 'script_import_' + ++lastId,
-        type: 'switch',
-        hostname
-      }
-      if (args.batch) {
-        item.batch = args.batch === 'True'
-      }
-      if (args.datapath) {
-        item.datapath = pyString(args.datapath)
-      }
-      if (args.dpid) {
-        item.dpid = pyString(args.dpid)
-      }
-      if (args.dpopts) {
-        item.dpopts = pyString(args.dpopts)
-      }
-      if (args.opts) {
-        item.opts = pyString(args.opts)
-      }
-      if (args.failMode) {
-        item.failMode = pyString(args.failMode)
-      }
-      if (args.inband) {
-        item.inband = args.inband === 'True'
-      }
-      if (args.protocols) {
-        item.protocol = pyString(args.protocols)
-      }
-      if (args.reconnectms) {
-        item.reconnectms = args.reconnectms
-      }
-      if (args.ip) {
-        item.ip = pyString(args.ip)
-      }
-      if (args.port) {
-        item.dpctlPort = args.port
-      }
-      if (args.verbose) {
-        item.verbose = args.verbose === 'True'
-      }
-      if (args.stp) {
-        item.stp = args.stp === 'True'
-      }
-      if (args.prio) {
-        item.stpPriority = args.prio
-      }
-      if (args.cls) {
-        item.switchType = args.cls.replace(/.*\./, '')
-      }
+        links.push(item)
+      } else if (funcName === '.start') {
+        // Association switch → controller
+        const hostnameTo = varName
+        args[0].forEach(hostnameFrom => {
+          const item = {
+            id: 'script_import_' + ++lastId,
+            type: 'association',
+            from: hostnameFrom,
+            to: hostnameTo
+          }
 
-      items.push(item)
-    } else if (funcName === '.addController') {
-      // Controller
-      const hostname = pyString(args[0] || args.name)
-      const item = {
-        id: 'script_import_' + ++lastId,
-        type: 'controller',
-        hostname
-      }
-      if (args.controller) {
-        item.controllerType = args.controller.replace(/.*\./, '')
-      }
-      if (args.ip) {
-        item.ip = pyString(args.ip)
-      }
-      if (args.port) {
-        item.port = pyNumber(args.port)
-      }
-      if (args.protocol) {
-        item.protocol = pyString(args.protocol)
-      }
+          associations.push(item)
+        })
+      } else if (funcName === '.addHost') {
+        // Host
+        const hostname = pyString(args[0])
+        const item = {
+          id: 'script_import_' + ++lastId,
+          type: 'host',
+          hostname
+        }
+        if (pyNotNull(args.defaultRoute)) {
+          item.defaultRoute = args.defaultRoute.replace(/.*via\s+([0-9a-fA-F.:]+).*/, '$1')
+        }
+        if (pyNotNull(args.ip)) {
+          hostIPs[item.hostname] = pyString(args.ip)
+        }
 
-      items.push(item)
-    } else if (funcName === '.cmd' && /^'ip a a .* dev .*'$/.test(args[0])) {
-      // Port IPs
-      const { 1: ip, 2: hostname, 3: devname } = /^'ip a a (.*) dev ([^-]+)-([^-]+)'$/.exec(args[0])
-      const host = ips[hostname] || (ips[hostname] = {})
-      const dev = host[devname] || (host[devname] = [])
-      dev.push(ip)
+        items.push(item)
+      } else if (funcName === '.addSwitch') {
+        // Switch
+        const hostname = pyString(args[0])
+        const item = {
+          id: 'script_import_' + ++lastId,
+          type: 'switch',
+          hostname
+        }
+        if (args.batch) {
+          item.batch = args.batch === 'True'
+        }
+        if (args.datapath) {
+          item.datapath = pyString(args.datapath)
+        }
+        if (args.dpid) {
+          item.dpid = pyString(args.dpid)
+        }
+        if (args.dpopts) {
+          item.dpopts = pyString(args.dpopts)
+        }
+        if (args.opts) {
+          item.opts = pyString(args.opts)
+        }
+        if (args.failMode) {
+          item.failMode = pyString(args.failMode)
+        }
+        if (args.inband) {
+          item.inband = args.inband === 'True'
+        }
+        if (args.protocols) {
+          item.protocol = pyString(args.protocols)
+        }
+        if (args.reconnectms) {
+          item.reconnectms = args.reconnectms
+        }
+        if (args.ip) {
+          item.ip = pyString(args.ip)
+        }
+        if (args.port) {
+          item.dpctlPort = args.port
+        }
+        if (args.verbose) {
+          item.verbose = args.verbose === 'True'
+        }
+        if (args.stp) {
+          item.stp = args.stp === 'True'
+        }
+        if (args.prio) {
+          item.stpPriority = args.prio
+        }
+        if (args.cls) {
+          item.switchType = args.cls.replace(/.*\./, '')
+        }
+
+        items.push(item)
+      } else if (funcName === '.addController') {
+        // Controller
+        const hostname = pyString(args[0] || args.name)
+        const item = {
+          id: 'script_import_' + ++lastId,
+          type: 'controller',
+          hostname
+        }
+        if (args.controller) {
+          item.controllerType = args.controller.replace(/.*\./, '')
+        }
+        if (args.ip) {
+          item.ip = pyString(args.ip)
+        }
+        if (args.port) {
+          item.port = pyNumber(args.port)
+        }
+        if (args.protocol) {
+          item.protocol = pyString(args.protocol)
+        }
+
+        items.push(item)
+      } else if (funcName === '.cmd' && /^'ip a a .* dev .*'$/.test(args[0])) {
+        // Port IPs
+        const { 1: ip, 2: hostname, 3: devname } = /^'ip a a (.*) dev ([^-]+)-([^-]+)'$/.exec(args[0])
+        const host = ips[hostname] || (ips[hostname] = {})
+        const dev = host[devname] || (host[devname] = [])
+        dev.push(ip)
+      }
+    },
+    enterAssignment: assignmentCtx => {
+      const name = assignmentCtx.children[0].getText()
+      const value = assignmentCtx.children[2]
+      vars[name] = value
     }
   })
 
