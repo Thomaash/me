@@ -12,6 +12,28 @@ function parse (input) {
   return parser.file_input()
 }
 
+function processArgsCtx (argsCtx) {
+  const funcCtx = argsCtx.parentCtx.parentCtx
+  const funcNameIndex = funcCtx.children.indexOf(argsCtx.parentCtx) - 1
+  const funcName = funcCtx.children[funcNameIndex].getText()
+
+  let varName
+  if (
+    funcCtx.children[0].getText() === 'net' &&
+    funcCtx.children[1].getText() === '.get'
+  ) {
+    varName = pyString(funcCtx.children[2].children[1].getText())
+  } else if (funcNameIndex > 0) {
+    varName = funcCtx.children[0].getText()
+  } else {
+    varName = null
+  }
+
+  return {
+    funcCtx, funcNameIndex, funcName, varName
+  }
+}
+
 function pyString (str) {
   if (!/^'.*'$/.test(str)) {
     throw new TypeError('Expected string.')
@@ -97,10 +119,7 @@ export default function (input) {
       return acc
     }, {})
 
-    const funcCtx = argsCtx.parentCtx.parentCtx
-    const funcNameIndex = funcCtx.children.findIndex(child => child.getText().startsWith('(')) - 1
-    const funcName = funcCtx.children[funcNameIndex].getText()
-    const varName = funcNameIndex > 0 ? funcCtx.children[0].getText() : null
+    const { funcName, varName } = processArgsCtx(argsCtx)
 
     if (funcName === '.onecmd') {
       // Script
