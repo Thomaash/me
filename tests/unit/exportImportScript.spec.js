@@ -1,5 +1,7 @@
 import { expect } from 'chai'
 
+import { getCleanItems } from './exportImportCommon.js'
+
 import Builder from '../../src/builder'
 import importScript from '../../src/importScript'
 
@@ -8,25 +10,6 @@ import tinyController from '../../src/examples/tiny_controller'
 import tinyTC from '../../src/examples/tiny_tc'
 import medium1Controller from '../../src/examples/medium_1_controller'
 import medium2Controllers from '../../src/examples/medium_2_controllers'
-
-function getCleanItems (items, type) {
-  return items.filter(node =>
-    node.type === type
-  ).map(orig => {
-    const clean = {}
-    Object.keys(orig).forEach(key => {
-      if (type === 'link' && key === 'ips') {
-        clean[key] = orig[key].sort()
-      } else if (
-        (type === 'link' && !/^(id|hostname|from|to)$/.test(key)) ||
-        (type !== 'link' && !/^(id|x|y)$/.test(key))
-      ) {
-        clean[key] = orig[key]
-      }
-    })
-    return clean
-  })
-}
 
 describe('Export import script', () => {
   [
