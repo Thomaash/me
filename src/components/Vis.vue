@@ -148,6 +148,13 @@ export default {
       const { x, y } = this.net.getPositions([id])[id]
       this.$store.commit('data/updateItem', { id, x, y })
     },
+    commitPositions (ids) {
+      const positions = this.net.getPositions(ids)
+      ids.forEach(id => {
+        const { x, y } = positions[id]
+        this.$store.commit('data/updateItem', { id, x, y })
+      })
+    },
     orderNodes (edge) {
       const src = this.data.items[edge.from].type
       const dst = this.data.items[edge.to].type
@@ -216,6 +223,13 @@ export default {
       this.net = net
       this.nodes = nodes
       this.edges = edges
+
+      // Save new positions if any missing
+      this.commitPositions(
+        nodes.get()
+          .filter(({ x, y }) => x == null || y == null)
+          .map(({ id }) => id)
+      )
 
       // Manipulation
       this.net.setOptions({
