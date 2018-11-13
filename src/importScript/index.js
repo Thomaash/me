@@ -48,6 +48,9 @@ function pyNumber (str) {
     return str * 1
   }
 }
+function pyNotNull (str) {
+  return str && str !== 'None'
+}
 
 function fixNextHostDev (set, hostDev) {
   let [host, dev] = hostDev.split('-')
@@ -83,6 +86,7 @@ FunctionCallListener.prototype.enterArglist = function (ctx) {
 
 export default function (input) {
   const associations = []
+  const hostIPs = {}
   const ips = {}
   const items = []
   const links = []
@@ -175,8 +179,11 @@ export default function (input) {
         type: 'host',
         hostname
       }
-      if (args.defaultRoute) {
+      if (pyNotNull(args.defaultRoute)) {
         item.defaultRoute = args.defaultRoute.replace(/.*via\s+([0-9a-fA-F.:]+).*/, '$1')
+      }
+      if (pyNotNull(args.ip)) {
+        hostIPs[item.hostname] = pyString(args.ip)
       }
 
       items.push(item)
@@ -311,6 +318,10 @@ export default function (input) {
           id: 'script_import_' + ++lastId,
           type: 'port',
           hostname: dev
+        }
+        if (hostIPs[host]) {
+          port.ips = [hostIPs[host]]
+          delete hostIPs[host]
         }
         items.push(port)
 
