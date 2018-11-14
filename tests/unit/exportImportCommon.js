@@ -21,3 +21,10 @@ function getCleanItems (items, typeOnly) {
   })
 }
 export { getCleanItems }
+
+function removeNonCode (script) {
+  return script.split('\n')
+    .filter(line => !/^($|#)/.test(line))
+    .join('\n')
+}
+export { removeNonCode }

@@ -1,14 +1,10 @@
 import { expect } from 'chai'
 
+import { removeNonCode } from './exportImportCommon.js'
+
 import Builder from '../../src/builder'
 import correctScript from './builder.script.txt'
 import data from '../../src/examples/medium_2_controllers'
-
-function removeNonCode (script) {
-  return script.split('\n')
-    .filter(line => !/^($|#)/.test(line))
-    .join('\n')
-}
 
 describe('Builder', () => {
   let script

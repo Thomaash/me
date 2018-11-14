@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import { getCleanItems } from './exportImportCommon.js'
+import { getCleanItems, removeNonCode } from './exportImportCommon.js'
 
 import Builder from '../../src/builder'
 import importScript from '../../src/importScript'
@@ -19,9 +19,9 @@ describe('Export import script', () => {
     { json: medium1Controller, name: 'medium_1_controller' },
     { json: medium2Controllers, name: 'medium_2_controllers' }
   ].forEach(({ json: data1, name }) => describe(name, () => {
-    const builder = new Builder(JSON.parse(JSON.stringify(data1)))
-    const script = builder.build()
-    const data2 = importScript(script)
+    const script1 = new Builder(JSON.parse(JSON.stringify(data1))).build()
+    const data2 = importScript(script1)
+    const script2 = new Builder(JSON.parse(JSON.stringify(data2))).build()
 
     it('types', () => {
       expect(data2.version, 'Version is not a number.').to.be.a('number')
@@ -52,6 +52,11 @@ describe('Export import script', () => {
         expect(items2, `The amount of ${typePl} differs.`).to.have.lengthOf(items1.length)
         expect(items2, `Some ${typePl} we're not imported correctly.`).to.have.deep.members(items1)
       })
+    })
+
+    it('script reexport', () => {
+      expect(removeNonCode(script2), 'Script changed after importing and reexporting.')
+        .to.equal(removeNonCode(script1))
     })
   }))
 })
