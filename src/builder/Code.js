@@ -28,23 +28,22 @@ export default class {
       'net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink)',
       'cli = CLI(net, script=\'/dev/null\')'
     ]
-    this.nodes = []
-    this.links = []
-    this.ports = []
-    this.ips = []
     this.build = [
       'net.build()'
     ]
-    this.startControllers = []
-    this.startSwitches = []
-    this.cmds = []
     this.cli = [
       'cli.run()'
     ]
     this.finish = [
       'net.stop()'
     ]
-    this.log = []
+
+    // Init empty arrays
+    metadata.forEach(({ attr }) => {
+      if (!this[attr]) {
+        this[attr] = []
+      }
+    })
   }
 
   toString () {
