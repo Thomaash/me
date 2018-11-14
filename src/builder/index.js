@@ -60,6 +60,13 @@ export default class {
               'error',
               port
             )
+          } else if (error instanceof SyntaxError && error.message === 'Physical port connected to a link.') {
+            const { port } = error.payload
+            this._log(
+              `Failed to add ${port.type}/${port.hostname}: port can't be both physical and connected to a link.`,
+              'error',
+              port
+            )
           } else {
             console.error(error)
             this._log(
@@ -161,12 +168,9 @@ export default class {
       return
     }
     if (link && port.physical) {
-      this._log(
-        `Failed to add ${port.type}/${port.hostname}: port can't be both physical and connected to a link.`,
-        'error',
-        port
-      )
-      return
+      const error = new SyntaxError('Physical port connected to a link.')
+      error.payload = { port }
+      throw error
     }
 
     const dev = port.physical
