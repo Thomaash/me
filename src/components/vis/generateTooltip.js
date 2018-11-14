@@ -9,8 +9,11 @@ const generators = {
   },
 
   port (item) {
-    const ips = item.ips || ['No addresses']
-    return ips.join('<br/>')
+    const lines = [
+      ...(item.physical ? ['Physical interface'] : []),
+      ...(item.ips || ['No addresses'])
+    ]
+    return lines.join('<br/>')
   },
   link (item) {
     const parts = [
