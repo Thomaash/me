@@ -3,6 +3,22 @@ import { Python2Lexer } from './generated/Python2Lexer'
 import { Python2Parser } from './generated/Python2Parser'
 import { Python2Listener } from './generated/Python2Listener'
 
+class IPs {
+  $push (nodename, portname, ips) {
+    this.$get(nodename, portname)
+      .push(...(
+        Array.isArray(ips)
+          ? ips
+          : [ips]
+      ))
+  }
+  $get (nodename, portname) {
+    const node = this[nodename] || (this[nodename] = {})
+    const port = node[portname] || (node[portname] = [])
+    return port
+  }
+}
+
 function parse (input) {
   const chars = new antlr4.InputStream(input)
   const lexer = new Python2Lexer(chars)
@@ -94,7 +110,7 @@ MyListener.prototype.enterExpr_stmt = function (ctx) {
 export default function (input) {
   const associations = []
   const hostIPs = {}
-  const ips = {}
+  const ips = new IPs()
   const items = []
   const links = []
   const portMap = {}
@@ -302,25 +318,21 @@ export default function (input) {
         items.push(item)
       } else if (funcName === '.cmd' && /^'ip a a .* dev .*'$/.test(args[0])) {
         // Port IPs
-        const { 1: ip, 3: devname } = /^'ip a a (.*) dev ([^-]+-)?([^-]+)'$/.exec(args[0])
-        const hostname = varName
-        const host = ips[hostname] || (ips[hostname] = {})
-        const dev = host[devname] || (host[devname] = [])
-        dev.push(ip)
+        const { 1: ip, 3: portname } = /^'ip a a (.*) dev ([^-]+-)?([^-]+)'$/.exec(args[0])
+        const nodename = varName
+        ips.$push(nodename, portname, ip)
       } else if (funcName === '.Intf') {
         // Physical port
-        const nodeHostname = args.node
-        const portHostname = pyString(args[0])
-        if (nodeHostname) {
-          const host = ips[nodeHostname] || (ips[nodeHostname] = {})
-          const dev = host[portHostname] || (host[portHostname] = [])
-          dev.physical = true
+        const nodename = args.node
+        const portname = pyString(args[0])
+        if (nodename) {
+          ips.$get(nodename, portname).physical = true
         } else {
           const item = {
             id: 'script_import_' + ++lastId,
             type: 'port',
             physical: true,
-            hostname: portHostname
+            hostname: portname
           }
 
           items.push(item)
@@ -340,20 +352,43 @@ export default function (input) {
   walker.walk(printer, tree)
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree)
 
-  // Set up ports with IPs
+  // Prepare ports without IPs
+  const hostDevs = new Set()
+  links.forEach(link => hostDevs.add(link.from).add(link.to))
+  links.forEach(edge => {
+    edge.from = fixNextHostDev(hostDevs, edge.from)
+    edge.to = fixNextHostDev(hostDevs, edge.to)
+  })
+  links.forEach(edge => {
+    ;[edge.from, edge.to].forEach(hostDev => {
+      const [nodename, portname] = hostDev.split('-')
+
+      ips.$push(nodename, portname, hostIPs[nodename] || [])
+      delete hostIPs[nodename]
+    })
+  })
+
+  // Set up ports
   Object.keys(ips).forEach(host => {
     Object.keys(ips[host]).forEach(dev => {
+      // Port
       const port = {
         id: 'script_import_' + ++lastId,
         type: 'port',
-        hostname: dev,
-        ips: [...ips[host][dev]]
+        hostname: dev
       }
-      if (ips[host][dev].physical) {
+
+      const ipList = ips[host][dev]
+      if (ipList.length) {
+        port.ips = [...ipList] // Without additional properties
+      }
+      if (ipList.physical) {
         port.physical = true
       }
+
       items.push(port)
 
+      // Association
       const edge = {
         id: 'script_import_' + ++lastId,
         type: 'association',
@@ -363,42 +398,6 @@ export default function (input) {
       items.push(edge)
 
       portMap[`${host}-${dev}`] = port.id
-    })
-  })
-
-  // Set up ports without IPs
-  const hostDevs = new Set()
-  links.forEach(link => hostDevs.add(link.from).add(link.to))
-  links.forEach(edge => {
-    edge.from = fixNextHostDev(hostDevs, edge.from)
-    edge.to = fixNextHostDev(hostDevs, edge.to)
-  })
-  links.forEach(edge => {
-    ;[edge.from, edge.to].forEach(hostDev => {
-      if (!portMap[hostDev]) {
-        const [host, dev] = hostDev.split('-')
-
-        const port = {
-          id: 'script_import_' + ++lastId,
-          type: 'port',
-          hostname: dev
-        }
-        if (hostIPs[host]) {
-          port.ips = [hostIPs[host]]
-          delete hostIPs[host]
-        }
-        items.push(port)
-
-        const edge = {
-          id: 'script_import_' + ++lastId,
-          type: 'association',
-          from: items.find(item => item.hostname === host).id,
-          to: port.id
-        }
-        items.push(edge)
-
-        portMap[`${host}-${dev}`] = port.id
-      }
     })
   })
 
