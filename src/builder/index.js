@@ -142,29 +142,54 @@ export default class {
     this._code.links.push(`net.addLink(${args.join(', ')})`)
   }
   _addPort (port) {
-    const link = port.$links[0]
     const node = this._portToNode(port)
-    if (!link || !node) {
+    if (!node) {
       this._log(
-        `Skipping ${port.type}/${port.hostname}: not connected to anything.`,
+        `Skipping ${port.type}/${port.hostname}: not connected to any node.`,
         'info',
         port
       )
       return
     }
+    const link = port.$links[0]
+    if (!link && !port.physical) {
+      this._log(
+        `Skipping ${port.type}/${port.hostname}: port has to be either physical or connected to a link.`,
+        'info',
+        port
+      )
+      return
+    }
+    if (link && port.physical) {
+      this._log(
+        `Failed to add ${port.type}/${port.hostname}: port can't be both physical and connected to a link.`,
+        'error',
+        port
+      )
+      return
+    }
 
-    const hostname = node.hostname
-    const dev = `${hostname}-${port.hostname}`
+    const dev = port.physical
+      ? port.hostname
+      : `${node.hostname}-${port.hostname}`
 
     this._addDevname(port, dev)
 
+    if (!link) {
+      const args = [
+        `'${dev}'`,
+        `node=${node.hostname}`
+      ]
+      this._code.ports.push(`mininet.link.Intf(${args.join(', ')})`)
+    }
+
     ;(port.ips || []).forEach((ip, i) => {
-      this._code.ports.push(
+      this._code.ips.push(
         ...(i === 0 ? [
-          `${hostname}.intf('${dev}').ip = '${ip.split('/')[0]}'`,
-          `${hostname}.intf('${dev}').prefixLen = ${ip.split('/')[1]}`
+          `${node.hostname}.intf('${dev}').ip = '${ip.split('/')[0]}'`,
+          `${node.hostname}.intf('${dev}').prefixLen = ${ip.split('/')[1]}`
         ] : []),
-        `${hostname}.cmd('ip a a ${ip} dev ${dev}')`
+        `${node.hostname}.cmd('ip a a ${ip} dev ${dev}')`
       )
     })
   }

@@ -6,6 +6,9 @@
           <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable/>
         </v-flex>
         <v-flex xs12>
+          <v-switch label="Physical" v-model="item.physical"/>
+        </v-flex>
+        <v-flex xs12>
           <v-textarea label="IPs" v-model="ips" :error-messages="errors.item.ips" auto-grow clearable/>
         </v-flex>
       </v-layout>
@@ -25,6 +28,14 @@ export default {
     valid: false,
     item: {}
   }),
+  watch: {
+    'item.physical' (val) {
+      if (val === false) {
+        // Omit physical property if false
+        delete this.$delete(this.item, 'physical')
+      }
+    }
+  },
   computed: {
     ips: {
       get () {

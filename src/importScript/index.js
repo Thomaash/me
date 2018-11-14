@@ -19,6 +19,7 @@ function processArgsCtx (argsCtx) {
 
   let varName
   if (
+    funcCtx.children.length >= 2 &&
     funcCtx.children[0].getText() === 'net' &&
     funcCtx.children[1].getText() === '.get'
   ) {
@@ -301,10 +302,29 @@ export default function (input) {
         items.push(item)
       } else if (funcName === '.cmd' && /^'ip a a .* dev .*'$/.test(args[0])) {
         // Port IPs
-        const { 1: ip, 2: hostname, 3: devname } = /^'ip a a (.*) dev ([^-]+)-([^-]+)'$/.exec(args[0])
+        const { 1: ip, 3: devname } = /^'ip a a (.*) dev ([^-]+-)?([^-]+)'$/.exec(args[0])
+        const hostname = varName
         const host = ips[hostname] || (ips[hostname] = {})
         const dev = host[devname] || (host[devname] = [])
         dev.push(ip)
+      } else if (funcName === '.Intf') {
+        // Physical port
+        const nodeHostname = args.node
+        const portHostname = pyString(args[0])
+        if (nodeHostname) {
+          const host = ips[nodeHostname] || (ips[nodeHostname] = {})
+          const dev = host[portHostname] || (host[portHostname] = [])
+          dev.physical = true
+        } else {
+          const item = {
+            id: 'script_import_' + ++lastId,
+            type: 'port',
+            physical: true,
+            hostname: portHostname
+          }
+
+          items.push(item)
+        }
       }
     },
     enterAssignment: assignmentCtx => {
@@ -327,7 +347,10 @@ export default function (input) {
         id: 'script_import_' + ++lastId,
         type: 'port',
         hostname: dev,
-        ips: ips[host][dev]
+        ips: [...ips[host][dev]]
+      }
+      if (ips[host][dev].physical) {
+        port.physical = true
       }
       items.push(port)
 

@@ -3,10 +3,10 @@
 
 # Imports {{{
 
-from mininet.net import Mininet
 from mininet.cli import CLI
-from mininet.link import TCLink
 from mininet.log import setLogLevel, info, debug
+from mininet.net import Mininet
+import mininet.link
 import mininet.node
 
 # }}}
@@ -15,7 +15,7 @@ import mininet.node
 info('\n*** Initialize Mininet\n')
 
 setLogLevel('info')
-net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=TCLink)
+net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink)
 cli = CLI(net, script='/dev/null')
 
 # }}}
@@ -65,9 +65,9 @@ net.addLink(h4, s2, intfName1='h4-eth1', intfName2='s2-eth2')
 net.addLink(h4, h3, intfName1='h4-eth0', intfName2='h3-eth1', bw=10)
 
 # }}}
-# Add interfaces {{{
+# Add IP addresses {{{
 
-info('\n*** Add interfaces\n')
+info('\n*** Add IP addresses\n')
 
 h1.intf('h1-eth0').ip = '172.18.1.1'
 h1.intf('h1-eth0').prefixLen = 16

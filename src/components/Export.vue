@@ -84,6 +84,7 @@ import exampleMedium1C from '@/examples/medium_1_controller'
 import exampleMedium2C from '@/examples/medium_2_controllers'
 import exampleTiny from '@/examples/tiny'
 import exampleTinyController from '@/examples/tiny_controller'
+import exampleTinyPhysicalInterface from '@/examples/tiny_physical_interface'
 import exampleTinyTC from '@/examples/tiny_tc'
 import exporter from '@/exporter'
 import importScript from '@/importScript'
@@ -133,6 +134,9 @@ export default {
     }, {
       title: 'Tiny with remote controller',
       data: exampleTinyController
+    }, {
+      title: 'Tiny with physical interface',
+      data: exampleTinyPhysicalInterface
     }, {
       title: 'Tiny with traffic control',
       data: exampleTinyTC

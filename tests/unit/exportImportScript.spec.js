@@ -8,6 +8,7 @@ import importScript from '../../src/importScript'
 import tiny from '../../src/examples/tiny'
 import tinyController from '../../src/examples/tiny_controller'
 import tinyTC from '../../src/examples/tiny_tc'
+import tinyPhysicalInterface from '../../src/examples/tiny_physical_interface'
 import medium1Controller from '../../src/examples/medium_1_controller'
 import medium2Controllers from '../../src/examples/medium_2_controllers'
 
@@ -16,6 +17,7 @@ describe('Export import script', () => {
     { json: tiny, name: 'tiny' },
     { json: tinyController, name: 'tiny_controller' },
     { json: tinyTC, name: 'tiny_tc' },
+    { json: tinyPhysicalInterface, name: 'tiny_physical_interface' },
     { json: medium1Controller, name: 'medium_1_controller' },
     { json: medium2Controllers, name: 'medium_2_controllers' }
   ].forEach(({ json: data1, name }) => describe(name, () => {
