@@ -1,19 +1,17 @@
 <template>
-  <v-slide-y-transition mode="out-in">
-    <v-container grid-list-md>
-      <v-layout wrap>
-        <v-card class="circle my-5">
-          <img src="@/assets/icon.svg"/>
-        </v-card>
-        <v-flex xs12>
-          <DescriptionCard/>
-        </v-flex>
-        <v-flex xs12>
-          <LicenseCard/>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-slide-y-transition>
+  <v-container grid-list-md>
+    <v-layout wrap>
+      <v-card class="circle my-5">
+        <img src="@/assets/icon.svg"/>
+      </v-card>
+      <v-flex xs12>
+        <DescriptionCard/>
+      </v-flex>
+      <v-flex xs12>
+        <LicenseCard/>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
