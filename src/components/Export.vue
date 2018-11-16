@@ -4,7 +4,7 @@
       <v-flex xs12 md6>
         <v-card>
           <v-card-title primary-title>
-            <h3>Export</h3>
+            <h3 class="headline">Export</h3>
           </v-card-title>
           <v-card-actions>
             <v-btn flat :disabled="working" @click="downloadJSON">JSON</v-btn>
@@ -23,7 +23,7 @@
       <v-flex xs12 md6>
         <v-card>
           <v-card-title primary-title>
-            <h3>Import</h3>
+            <h3 class="headline">Import</h3>
           </v-card-title>
           <v-card-actions>
             <v-btn flat :disabled="working" @click="importEmpty">Empty</v-btn>
@@ -46,7 +46,7 @@
       <v-flex xs12 v-if="log.length">
         <v-card>
           <v-card-title primary-title>
-            <h3>Log</h3>
+            <h3 class="headline">Log</h3>
           </v-card-title>
           <v-card-text>
             <v-list>
