@@ -1,6 +1,7 @@
 import Router from 'vue-router'
 import Vue from 'vue'
 
+import About from '@/components/About'
 import Canvas from '@/components/Canvas'
 import Export from '@/components/Export'
 import Home from '@/components/Home'
@@ -25,5 +26,9 @@ export default new Router({
     path: '/export',
     name: 'Export',
     component: Export
+  }, {
+    path: '/about',
+    name: 'About',
+    component: About
   } ]
 })
