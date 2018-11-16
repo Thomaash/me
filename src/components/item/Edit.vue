@@ -2,8 +2,8 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent scrollable max-width="600px" @keydown.esc="cancel">
       <v-card>
-        <v-card-title>
-          <span class="headline" v-text="headline"/>
+        <v-card-title primary-title>
+          <h3 class="headline" v-text="headline"/>
         </v-card-title>
         <v-card-text>
           <div v-model="item" @valid="v => valid = v" :is="component"/>
