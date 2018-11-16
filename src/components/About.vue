@@ -5,7 +5,7 @@
         <img src="@/assets/icon.svg"/>
       </v-card>
       <v-flex xs12>
-        <DescriptionCard/>
+        <DescriptionCard full/>
       </v-flex>
       <v-flex xs12>
         <LicenseCard/>
