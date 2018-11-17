@@ -82,9 +82,23 @@ const data = {
 
 export default new Vuex.Store({
   state: {
-    loading: true
+    loading: true,
+    working: false,
+    alert: null
   },
   mutations: {
+    setWorking (state, { working, curr, max }) {
+      state.working = !!working
+      if (!isNaN(curr) && !isNaN(max)) {
+        state.working = { curr, max }
+      }
+    },
+    setAlert (state, { type, text }) {
+      state.alert = { type, text }
+    },
+    clearAlert (state) {
+      state.alert = null
+    }
   },
   actions: {},
   modules: {

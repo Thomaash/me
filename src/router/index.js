@@ -1,5 +1,6 @@
 import Router from 'vue-router'
 import Vue from 'vue'
+import store from '@/store'
 
 import About from '@/components/About'
 import Canvas from '@/components/Canvas'
@@ -9,7 +10,7 @@ import Script from '@/components/Script'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [ {
     path: '/',
     name: 'Home',
@@ -32,3 +33,10 @@ export default new Router({
     component: About
   } ]
 })
+
+router.beforeEach((to, from, next) => {
+  store.commit('clearAlert')
+  next()
+})
+
+export default router

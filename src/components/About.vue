@@ -1,25 +1,25 @@
 <template>
   <v-container grid-list-md>
     <v-layout wrap>
-      <LogoCard/>
+      <Logo/>
       <v-flex xs12>
-        <DescriptionCard full/>
+        <Description full/>
       </v-flex>
       <v-flex xs12>
-        <LicenseCard/>
+        <License/>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import DescriptionCard from './DescriptionCard'
-import LicenseCard from './LicenseCard'
-import LogoCard from './LogoCard'
+import Description from './Description'
+import License from './License'
+import Logo from './Logo'
 
 export default {
   name: 'About',
-  components: { DescriptionCard, LicenseCard, LogoCard }
+  components: { Description, License, Logo }
 }
 </script>
 

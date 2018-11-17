@@ -1,12 +1,8 @@
 <template>
-  <v-container grid-list-md fill-height>
+  <v-container grid-list-md>
     <v-layout wrap>
       <v-flex xs12>
-        <v-card>
-          <v-card-text>
-            <v-textarea label="Script" v-model="script" auto-grow/>
-          </v-card-text>
-        </v-card>
+        <v-textarea label="Script" v-model="script" auto-grow/>
       </v-flex>
     </v-layout>
   </v-container>

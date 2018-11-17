@@ -1,24 +1,21 @@
 <template>
-  <v-card>
-    <v-card-title primary-title>
-      <h3 class="headline">Bindings</h3>
-    </v-card-title>
-    <v-card-text>
-      <v-data-table :headers="headers" :items="items" hide-actions hide-headers>
-        <template slot="items" slot-scope="props">
-          <td class="bindings">
-            <span v-for="c in parse(props.item.combination)" :is="c.tag" v-text="c.text" :title="c.title" class="with-title"/>
-          </td>
-          <td v-text="props.item.description"/>
-        </template>
-      </v-data-table>
-    </v-card-text>
-  </v-card>
+  <section>
+    <h3 class="headline">Bindings</h3>
+
+    <v-data-table :headers="headers" :items="items" hide-actions hide-headers>
+      <template slot="items" slot-scope="props">
+        <td class="bindings">
+          <span v-for="c in parse(props.item.combination)" :is="c.tag" v-text="c.text" :title="c.title" class="with-title"/>
+        </td>
+        <td v-text="props.item.description"/>
+      </template>
+    </v-data-table>
+  </section>
 </template>
 
 <script>
 export default {
-  name: 'BindingsCard',
+  name: 'Bindings',
   data: () => ({
     headers: [
       { text: 'Combination', value: 'name', sortable: false },

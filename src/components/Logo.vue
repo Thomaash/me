@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'LogoCard'
+  name: 'Logo'
 }
 </script>
 

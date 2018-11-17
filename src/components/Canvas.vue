@@ -3,7 +3,7 @@
     <Vis ref="vis" @edit-item="editItem"/>
     <Edit ref="edit"/>
     <v-speed-dial v-model="fab" bottom right open-on-hover style="position: fixed">
-      <v-btn fab dark color="accent" slot="activator" v-model="fab">
+      <v-btn fab dark color="primary" slot="activator" v-model="fab">
         <v-icon>mdi-chevron-up</v-icon>
         <v-icon>mdi-chevron-down</v-icon>
       </v-btn>

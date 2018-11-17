@@ -13,7 +13,7 @@ function addAlpha (hex, alpha) {
 const vuetify = {
   'primary': colors.teal.base,
   'secondary': colors.teal.lighten1,
-  'accent': colors.teal.darken1,
+  'accent': colors.amber.darken1,
   'error': colors.red.base,
   'warning': colors.orange.base,
   'info': colors.blue.base,

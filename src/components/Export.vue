@@ -2,53 +2,48 @@
   <v-container grid-list-md>
     <v-layout wrap>
       <v-flex xs12 md6>
-        <v-card>
-          <v-card-title primary-title>
-            <h3 class="headline">Export</h3>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn flat :disabled="working" @click="downloadJSON">JSON</v-btn>
-            <v-btn flat :disabled="working" @click="downloadScript">Python 2 script</v-btn>
+        <section>
+          <h3 class="headline">Export</h3>
+
+          <p>
+            <v-btn flat color="primary" :disabled="working" @click="downloadJSON">JSON</v-btn>
+            <v-btn flat color="primary" :disabled="working" @click="downloadScript">Python 2 script</v-btn>
             <v-menu bottom offset-y :disabled="working">
-              <v-btn flat slot="activator" :disabled="working">Image</v-btn>
+              <v-btn flat color="primary" slot="activator" :disabled="working">Image</v-btn>
               <v-list>
                 <v-list-tile v-for="(imageSize, i) in imageSizes" :key="'imageSize' + i" @click="">
                   <v-list-tile-title v-text="imageSize.title" @click="downloadImageStart(imageSize.data)"/>
                 </v-list-tile>
               </v-list>
             </v-menu>
-          </v-card-actions>
-        </v-card>
+          </p>
+        </section>
       </v-flex>
+
       <v-flex xs12 md6>
-        <v-card>
-          <v-card-title primary-title>
-            <h3 class="headline">Import</h3>
-          </v-card-title>
-          <v-card-actions>
-            <v-btn flat :disabled="working" @click="importEmpty">Empty</v-btn>
+        <section>
+          <h3 class="headline">Import</h3>
+
+          <p>
+            <v-btn flat color="primary" :disabled="working" @click="importEmpty">Empty</v-btn>
             <v-menu bottom offset-y :disabled="working">
-              <v-btn flat slot="activator" :disabled="working">Examples</v-btn>
+              <v-btn flat color="primary" slot="activator" :disabled="working">Examples</v-btn>
               <v-list>
                 <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click="">
                   <v-list-tile-title v-text="example.title" @click="importData(example.data)"/>
                 </v-list-tile>
               </v-list>
             </v-menu>
-            <v-btn flat :disabled="working" @click="uploadJSON">File</v-btn>
-          </v-card-actions>
-        </v-card>
+            <v-btn flat color="primary" :disabled="working" @click="uploadJSON">File</v-btn>
+          </p>
+        </section>
       </v-flex>
-      <v-flex xs12 v-if="alertEnabled || working">
-        <v-progress-linear v-if="working" :indeterminate="working"/>
-        <v-alert v-model="alertEnabled" dismissible :type="alertType">{{alertText}}</v-alert>
-      </v-flex>
-      <v-flex xs12 v-if="log.length">
-        <v-card>
-          <v-card-title primary-title>
+
+      <v-slide-y-transition mode="out-in">
+        <v-flex xs12 v-if="log.length">
+          <section>
             <h3 class="headline">Log</h3>
-          </v-card-title>
-          <v-card-text>
+
             <v-list>
               <v-list-tile avatar v-for="(l, i) in log" :key="'export_log_' + i" @click="">
                 <v-list-tile-action>
@@ -62,10 +57,12 @@
                 </v-list-tile-avatar>
               </v-list-tile>
             </v-list>
-            <v-btn flat @click="selectInCanvas()">Select in the Canvas</v-btn>
-          </v-card-text>
-        </v-card>
-      </v-flex>
+
+            <v-btn flat color="primary" @click="selectInCanvas()">Select in the Canvas</v-btn>
+          </section>
+        </v-flex>
+      </v-slide-y-transition>
+
       <div style="height: 0px; width: 0px; overflow: hidden;">
         <input type="file" ref="fileInput" @input="uploadFile"/>
         <VisCanvas v-if="visCanvasOn" @ready="downloadImageFinish" ref="visCanvas"/>
@@ -110,10 +107,6 @@ export default {
   data: () => ({
     log: [],
     logCbs: [],
-    working: false,
-    alertEnabled: false,
-    alertType: 'error',
-    alertText: '…',
     visCanvasOn: false,
     imageScale: 2,
     imageSizes: [{
@@ -146,11 +139,19 @@ export default {
       data: exampleMedium2C
     } ]
   }),
+  computed: {
+    working: {
+      get () {
+        return !!this.$store.state.working
+      },
+      set (value) {
+        this.$store.commit('setWorking', { working: !!value })
+      }
+    }
+  },
   methods: {
     showAlert (type, text) {
-      this.alertType = type
-      this.alertText = text
-      this.alertEnabled = true
+      this.$store.commit('setAlert', { type, text })
     },
     uploadJSON () {
       const input = this.$refs.fileInput

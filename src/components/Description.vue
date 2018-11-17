@@ -1,22 +1,20 @@
 <template>
-  <v-card>
-    <v-card-title primary-title>
-      <h3 class="headline">Description</h3>
-    </v-card-title>
+  <section>
+    <h3 class="headline">Description</h3>
 
-    <v-card-text>
+    <p>
       GUI topology editor for Mininet with Python script export.
-    </v-card-text>
+    </p>
 
-    <v-card-actions v-if="full">
+    <p v-if="full">
       <v-btn flat color="primary" target="_blank" href="https://github.com/Thomaash/me">
         Repository
       </v-btn>
       <v-btn flat color="primary" target="_blank" href="https://github.com/Thomaash/me/issues/new">
         New Issue
       </v-btn>
-    </v-card-actions>
-  </v-card>
+    </p>
+  </section>
 </template>
 
 <script>
