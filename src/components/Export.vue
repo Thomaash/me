@@ -79,6 +79,7 @@ import exampleMedium1C from '@/examples/medium_1_controller'
 import exampleMedium2C from '@/examples/medium_2_controllers'
 import exampleTiny from '@/examples/tiny'
 import exampleTinyController from '@/examples/tiny_controller'
+import exampleTinyMininetConf from '@/examples/tiny_mininet_conf'
 import exampleTinyPhysicalInterface from '@/examples/tiny_physical_interface'
 import exampleTinyTC from '@/examples/tiny_tc'
 import exporter from '@/exporter'
@@ -131,6 +132,9 @@ export default {
     }, {
       title: 'Tiny with traffic control',
       data: exampleTinyTC
+    }, {
+      title: 'Tiny with Mininet Settings',
+      data: exampleTinyMininetConf
     }, {
       title: 'Medium with 1 controller',
       data: exampleMedium1C

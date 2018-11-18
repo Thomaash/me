@@ -45,23 +45,23 @@ export default {
     items: [{
       icon: 'mdi-home',
       title: 'Home',
-      to: '/'
+      to: { name: 'Home' }
     }, {
       icon: 'mdi-map',
       title: 'Canvas',
-      to: '/canvas'
+      to: { name: 'Canvas' }
     }, {
-      icon: 'mdi-script',
-      title: 'Startup Script',
-      to: '/script'
+      icon: 'mdi-tune',
+      title: 'Mininet Settings',
+      to: { name: 'MininetSettings' }
     }, {
       icon: 'mdi-content-save',
       title: 'Export/Import',
-      to: '/export'
+      to: { name: 'Export' }
     }, {
       icon: 'mdi-information',
       title: 'About',
-      to: '/about'
+      to: { name: 'About' }
     }],
     title: 'Mininet Editor'
   }),

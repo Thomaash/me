@@ -52,6 +52,12 @@ const ip = withParams(
 )
 export { ip }
 
+const ipWithMask = withParams(
+  { type: 'ipWithMask' },
+  v => !req(v) || testIPWithMask(v)
+)
+export { ipWithMask }
+
 const ipsWithMasks = withParams(
   { type: 'ipsWithMasks' },
   v => !req(v) || v.every(testIPWithMask)

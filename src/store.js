@@ -73,12 +73,15 @@ const data = {
         })
       })
     },
-    setScript (state, script) {
-      if (script && script !== '') {
-        Vue.set(state, 'script', script)
-      } else {
-        Vue.delete(state, 'script')
-      }
+    setValues (state, data) {
+      Object.keys(data).forEach(key => {
+        const value = data[key]
+        if (value != null && value !== '') {
+          Vue.set(state, key, value)
+        } else {
+          Vue.delete(state, key)
+        }
+      })
     },
     removeItems (state, ids) {
       ids.forEach(id => Vue.delete(state.items, id))

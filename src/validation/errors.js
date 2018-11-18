@@ -6,6 +6,7 @@ const errors = {
   hostname: () => 'Has to start with a letter and contain only letters and numbers.',
   integer: () => 'Has to be an integer.',
   ip: () => 'Has to be valid IP 4/6 address.',
+  ipWithMask: () => 'Has to contain a valid IP 4/6 address with a mask (CIDR notation).',
   ips: () => 'Has to contain only valid IP 4/6 addresses, one per line.',
   ipsWithMasks: () => 'Has to contain only valid IP 4/6 addresses with masks (CIDR notation), one per line.',
   maxLength: ({ max }) => `Has to have at most ${max} character(s).`,

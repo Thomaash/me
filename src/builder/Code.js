@@ -25,7 +25,7 @@ export default class {
     ]
     this.init = [
       'setLogLevel(\'info\')',
-      'net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink)',
+      () => `net = Mininet(${this.mininetArgs.join(', ')})`,
       'cli = CLI(net, script=\'/dev/null\')'
     ]
     this.build = [
@@ -44,12 +44,22 @@ export default class {
         this[attr] = []
       }
     })
+
+    // Helpers
+    this.mininetArgs = [
+      'build=False',
+      'controller=mininet.node.RemoteController',
+      'link=mininet.link.TCLink',
+      'topo=None'
+    ]
   }
 
   toString () {
     const code = []
     metadata.forEach(({ attr, name, silent }) => {
       const arr = this[attr]
+        .map(v => v.apply ? v.apply() : v)
+
       if (arr.length) {
         code.push(
           `# ${name} {{{`,

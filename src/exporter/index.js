@@ -1,25 +1,35 @@
 export default {
   importData (external) {
-    const { version, script, items } = JSON.parse(JSON.stringify(external))
-    switch (version) {
-      case 0:
-        return {
-          script,
-          items: items.reduce((acc, val) => {
-            acc[val.id] = val
-            return acc
-          }, {})
-        }
-      default:
-        throw new TypeError('Unsuported export version.')
+    external = JSON.parse(JSON.stringify(external))
+
+    if (external.version === 0) {
+      const items = external.items.reduce((acc, val) => {
+        acc[val.id] = val
+        return acc
+      }, {})
+
+      delete external.version
+      delete external.items
+
+      return {
+        ...external,
+        items
+      }
+    } else {
+      throw new TypeError('Unsuported export version.')
     }
   },
   exportData (internal) {
-    const { script, items } = JSON.parse(JSON.stringify(internal))
+    internal = JSON.parse(JSON.stringify(internal))
+
+    const items = Object.values(internal.items)
+
+    delete internal.items
+
     return {
+      ...internal,
       version: 0,
-      script,
-      items: Object.values(items)
+      items
     }
   }
 }

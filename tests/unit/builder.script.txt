@@ -15,7 +15,7 @@ import mininet.node
 info('\n*** Initialize Mininet\n')
 
 setLogLevel('info')
-net = Mininet(topo=None, build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink)
+net = Mininet(build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink, topo=None)
 cli = CLI(net, script='/dev/null')
 
 # }}}

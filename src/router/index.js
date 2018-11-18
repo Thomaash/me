@@ -6,13 +6,16 @@ import About from '@/components/About'
 import Canvas from '@/components/Canvas'
 import Export from '@/components/Export'
 import Home from '@/components/Home'
-import Script from '@/components/Script'
+import MininetSettings from '@/components/MininetSettings'
 
 Vue.use(Router)
 
 const router = new Router({
   routes: [ {
     path: '/',
+    redirect: { name: 'Home' }
+  }, {
+    path: '/home',
     name: 'Home',
     component: Home
   }, {
@@ -20,9 +23,9 @@ const router = new Router({
     name: 'Canvas',
     component: Canvas
   }, {
-    path: '/script',
-    name: 'Script',
-    component: Script
+    path: '/mininet_settings',
+    name: 'MininetSettings',
+    component: MininetSettings
   }, {
     path: '/export',
     name: 'Export',

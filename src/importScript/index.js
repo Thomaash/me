@@ -65,6 +65,15 @@ function pyNumber (str) {
     return str * 1
   }
 }
+function pyBoolean (str) {
+  if (str === 'True') {
+    return true
+  } else if (str === 'False') {
+    return false
+  } else {
+    throw new TypeError('Expected boolean.')
+  }
+}
 function pyNotNull (str) {
   return str && str !== 'None'
 }
@@ -112,6 +121,7 @@ export default function (input) {
   const hostIPs = {}
   const ips = new IPs()
   const items = []
+  const jsonArgs = {}
   const links = []
   const portMap = {}
   const scriptLines = []
@@ -337,6 +347,25 @@ export default function (input) {
 
           items.push(item)
         }
+      } else if (funcName === 'Mininet') {
+        if (pyNotNull(args.autoSetMacs)) {
+          jsonArgs.autoSetMAC = pyBoolean(args.autoSetMacs)
+        }
+        if (pyNotNull(args.autoStaticArp)) {
+          jsonArgs.autoStaticARP = pyBoolean(args.autoStaticArp)
+        }
+        if (pyNotNull(args.inNamespace)) {
+          jsonArgs.inNamespace = pyBoolean(args.inNamespace)
+        }
+        if (pyNotNull(args.ipBase)) {
+          jsonArgs.ipBase = pyString(args.ipBase)
+        }
+        if (pyNotNull(args.listenPort)) {
+          jsonArgs.listenPortBase = pyNumber(args.listenPort)
+        }
+        if (pyNotNull(args.xterms)) {
+          jsonArgs.spawnTerminals = pyBoolean(args.xterms)
+        }
       }
     },
     enterAssignment: assignmentCtx => {
@@ -416,6 +445,7 @@ export default function (input) {
   })
 
   return {
+    ...jsonArgs,
     version: 0,
     script: scriptLines.join('\n'),
     items

@@ -82,9 +82,20 @@ export default class {
         }
       })
     })
+
     if (this._data.script) {
       this._addScript(this._data.script)
     }
+
+    // Mininet arguments
+    this._code.mininetArgs.push(...[
+      ...(this._data.autoSetMAC != null ? [`autoSetMacs=${this._data.autoSetMAC ? 'True' : 'False'}`] : []),
+      ...(this._data.autoStaticARP != null ? [`autoStaticArp=${this._data.autoStaticARP ? 'True' : 'False'}`] : []),
+      ...(this._data.inNamespace != null ? [`inNamespace=${this._data.inNamespace ? 'True' : 'False'}`] : []),
+      ...(this._data.ipBase != null ? [`ipBase='${this._data.ipBase}'`] : []),
+      ...(this._data.listenPortBase != null ? [`listenPort=${this._data.listenPortBase}`] : []),
+      ...(this._data.spawnTerminals != null ? [`xterms=${this._data.spawnTerminals ? 'True' : 'False'}`] : [])
+    ])
 
     return this._code.toString()
   }
