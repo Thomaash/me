@@ -46,6 +46,12 @@ const data = {
   state: exporter.importData(emptyData),
   mutations: {
     importData (state, importData) {
+      // Clean old data
+      Object.keys(state).forEach(key => {
+        Vue.delete(state, key)
+      })
+
+      // Load new data
       const data = exporter.importData(importData)
       Object.keys(data).forEach(key =>
         Vue.set(state, key, data[key])
