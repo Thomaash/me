@@ -59,10 +59,14 @@ export default {
             ctx.canvas.toBlob(resolve, 'image/png')
           })
 
+          resolve({
+            blob,
+            width: this.width,
+            height: this.height
+          })
+
           this.width = null
           this.height = null
-
-          resolve(blob)
         }
         const resizeHandler = () => {
           this.net.off('resize', resizeHandler)

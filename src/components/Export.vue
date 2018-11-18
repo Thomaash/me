@@ -291,16 +291,22 @@ export default {
       // The timeout prevents glitches like missing node icons.
       window.setTimeout(async () => {
         try {
-          const image = await this.$refs.visCanvas.toBlob(this.imageScale)
+          const { blob, width, height } = await this.$refs.visCanvas.toBlob(this.imageScale)
           this.visCanvasOn = false
 
-          this.showAlert('success', 'Image rendered.')
-          const url = URL.createObjectURL(image)
-          download('mininet_network.png', url)
-          URL.revokeObjectURL(url)
+          const size = `${width.toLocaleString()}\xa0×\xa0${height.toLocaleString()}\xa0px (${((width * height) / 1e6).toLocaleString()}\xa0Mpx)`
+
+          if (blob) {
+            this.showAlert('success', `Image rendered, size: ${size}.`)
+            const url = URL.createObjectURL(blob)
+            download('mininet_network.png', url)
+            URL.revokeObjectURL(url)
+          } else {
+            this.showAlert('error', `Image rendering failed. Probably too large image for this browser, size: ${size}.`)
+          }
         } catch (error) {
           console.error(error)
-          this.showAlert('error', 'Image was not rendered. Maybe too large image?')
+          this.showAlert('error', 'Image rendering failed.')
         } finally {
           this.working = false
         }
