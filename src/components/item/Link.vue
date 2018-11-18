@@ -27,8 +27,8 @@
 
 <script>
 import common from './common'
-import errors from './errors'
-import { timeWithUnit, integer, minValue, between } from './rules'
+import errors from '@/validation/errors'
+import { timeWithUnit, integer, minValue, between } from '@/validation/rules'
 
 export default {
   name: 'LinkEdit',

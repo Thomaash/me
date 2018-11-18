@@ -18,8 +18,8 @@
 
 <script>
 import common from './common'
-import errors from './errors'
-import { required, hostname, ipsWithMasks } from './rules'
+import errors from '@/validation/errors'
+import { required, hostname, ipsWithMasks } from '@/validation/rules'
 
 export default {
   name: 'PortEdit',

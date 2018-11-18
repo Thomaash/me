@@ -57,8 +57,8 @@
 
 <script>
 import common from './common'
-import errors from './errors'
-import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData, ip, port } from './rules'
+import errors from '@/validation/errors'
+import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData, ip, port } from '@/validation/rules'
 import { switchTypes, failModes, datapaths, protocolsOF, enabledDisabled } from '@/selects'
 
 export default {

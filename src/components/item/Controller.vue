@@ -24,9 +24,9 @@
 
 <script>
 import common from './common'
-import errors from './errors'
+import errors from '@/validation/errors'
 import { controllerTypes, protocolsIP } from '@/selects'
-import { required, hostname, ip, port } from './rules'
+import { required, hostname, ip, port } from '@/validation/rules'
 
 export default {
   name: 'ControllerEdit',
