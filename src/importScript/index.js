@@ -121,7 +121,7 @@ export default function (input) {
   const hostIPs = {}
   const ips = new IPs()
   const items = []
-  const jsonArgs = {}
+  const jsonProps = {}
   const links = []
   const portMap = {}
   const scriptLines = []
@@ -349,22 +349,22 @@ export default function (input) {
         }
       } else if (funcName === 'Mininet') {
         if (pyNotNull(args.autoSetMacs)) {
-          jsonArgs.autoSetMAC = pyBoolean(args.autoSetMacs)
+          jsonProps.autoSetMAC = pyBoolean(args.autoSetMacs)
         }
         if (pyNotNull(args.autoStaticArp)) {
-          jsonArgs.autoStaticARP = pyBoolean(args.autoStaticArp)
+          jsonProps.autoStaticARP = pyBoolean(args.autoStaticArp)
         }
         if (pyNotNull(args.inNamespace)) {
-          jsonArgs.inNamespace = pyBoolean(args.inNamespace)
+          jsonProps.inNamespace = pyBoolean(args.inNamespace)
         }
         if (pyNotNull(args.ipBase)) {
-          jsonArgs.ipBase = pyString(args.ipBase)
+          jsonProps.ipBase = pyString(args.ipBase)
         }
         if (pyNotNull(args.listenPort)) {
-          jsonArgs.listenPortBase = pyNumber(args.listenPort)
+          jsonProps.listenPortBase = pyNumber(args.listenPort)
         }
         if (pyNotNull(args.xterms)) {
-          jsonArgs.spawnTerminals = pyBoolean(args.xterms)
+          jsonProps.spawnTerminals = pyBoolean(args.xterms)
         }
       }
     },
@@ -445,7 +445,7 @@ export default function (input) {
   })
 
   return {
-    ...jsonArgs,
+    ...jsonProps,
     version: 0,
     script: scriptLines.join('\n'),
     items
