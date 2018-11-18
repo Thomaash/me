@@ -203,19 +203,19 @@ export default function (input) {
             : args[1]
         }
 
-        if (args.bw) {
+        if (pyNotNull(args.bw)) {
           item.bandwidth = pyNumber(args.bw)
         }
-        if (args.delay) {
+        if (pyNotNull(args.delay)) {
           item.delay = pyString(args.delay)
         }
-        if (args.loss) {
+        if (pyNotNull(args.loss)) {
           item.loss = pyNumber(args.loss)
         }
-        if (args.max_queue_size) {
+        if (pyNotNull(args.max_queue_size)) {
           item.maxQueueSize = pyNumber(args.max_queue_size)
         }
-        if (args.jitter) {
+        if (pyNotNull(args.jitter)) {
           item.jitter = pyString(args.jitter)
         }
 
@@ -257,49 +257,49 @@ export default function (input) {
           type: 'switch',
           hostname
         }
-        if (args.batch) {
+        if (pyNotNull(args.batch)) {
           item.batch = args.batch === 'True'
         }
-        if (args.datapath) {
+        if (pyNotNull(args.datapath)) {
           item.datapath = pyString(args.datapath)
         }
-        if (args.dpid) {
+        if (pyNotNull(args.dpid)) {
           item.dpid = pyString(args.dpid)
         }
-        if (args.dpopts) {
+        if (pyNotNull(args.dpopts)) {
           item.dpopts = pyString(args.dpopts)
         }
-        if (args.opts) {
+        if (pyNotNull(args.opts)) {
           item.opts = pyString(args.opts)
         }
-        if (args.failMode) {
+        if (pyNotNull(args.failMode)) {
           item.failMode = pyString(args.failMode)
         }
-        if (args.inband) {
+        if (pyNotNull(args.inband)) {
           item.inband = args.inband === 'True'
         }
-        if (args.protocols) {
+        if (pyNotNull(args.protocols)) {
           item.protocol = pyString(args.protocols)
         }
-        if (args.reconnectms) {
+        if (pyNotNull(args.reconnectms)) {
           item.reconnectms = args.reconnectms
         }
-        if (args.ip) {
+        if (pyNotNull(args.ip)) {
           item.ip = pyString(args.ip)
         }
-        if (args.port) {
+        if (pyNotNull(args.port)) {
           item.dpctlPort = args.port
         }
-        if (args.verbose) {
+        if (pyNotNull(args.verbose)) {
           item.verbose = args.verbose === 'True'
         }
-        if (args.stp) {
+        if (pyNotNull(args.stp)) {
           item.stp = args.stp === 'True'
         }
-        if (args.prio) {
+        if (pyNotNull(args.prio)) {
           item.stpPriority = args.prio
         }
-        if (args.cls) {
+        if (pyNotNull(args.cls)) {
           item.switchType = args.cls.replace(/.*\./, '')
         }
 
@@ -312,16 +312,16 @@ export default function (input) {
           type: 'controller',
           hostname
         }
-        if (args.controller) {
+        if (pyNotNull(args.controller)) {
           item.controllerType = args.controller.replace(/.*\./, '')
         }
-        if (args.ip) {
+        if (pyNotNull(args.ip)) {
           item.ip = pyString(args.ip)
         }
-        if (args.port) {
+        if (pyNotNull(args.port)) {
           item.port = pyNumber(args.port)
         }
-        if (args.protocol) {
+        if (pyNotNull(args.protocol)) {
           item.protocol = pyString(args.protocol)
         }
 
