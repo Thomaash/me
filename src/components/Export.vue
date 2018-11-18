@@ -149,6 +149,9 @@ export default {
         return !!this.$store.state.working
       },
       set (value) {
+        if (value) {
+          this.$store.commit('clearAlert')
+        }
         this.$store.commit('setWorking', { working: !!value })
       }
     }
