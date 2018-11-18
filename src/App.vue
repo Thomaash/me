@@ -91,6 +91,7 @@ export default {
 
 <style>
 html::-webkit-scrollbar {width: 0px !important;}
+::selection {background: #80CBC4;}
 
 section {margin-bottom: 3em;}
 section > h1,
