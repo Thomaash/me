@@ -21,7 +21,7 @@
           <v-text-field label="DPCTL Port" v-model.number="item.dpctlPort" type="number" min="1" max="65535" :error-messages="errors.item.dpctlPort" clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
+          <v-select label="Protocol" :items="protocolsOF" v-model="item.protocol" clearable/>
         </v-flex>
         <v-flex xs12 md6>
           <v-select label="Datapath" :items="datapaths" v-model="item.datapath" clearable/>
@@ -59,32 +59,7 @@
 import common from './common'
 import errors from './errors'
 import { required, hostname, integer, between, divisible, minValue, minLength, maxLength, hexData, ip, port } from './rules'
-
-const switchTypes = [
-  { value: 'IVSSwitch', text: 'IVSSwitch' },
-  { value: 'LinuxBridge', text: 'LinuxBridge' },
-  { value: 'OVSBridge', text: 'OVSBridge' },
-  { value: 'OVSSwitch', text: 'OVSSwitch' },
-  { value: 'UserSwitch', text: 'UserSwitch' }
-]
-const failModes = [
-  { value: 'secure', text: 'Secure' },
-  { value: 'standalone', text: 'Standalone' }
-]
-const datapaths = [
-  { value: 'kernel', text: 'Kernel' },
-  { value: 'user', text: 'User' }
-]
-const protocols = [
-  { value: 'OpenFlow12', text: 'OpenFlow 1.2' },
-  { value: 'OpenFlow13', text: 'OpenFlow 1.3' },
-  { value: 'OpenFlow14', text: 'OpenFlow 1.4' },
-  { value: 'OpenFlow15', text: 'OpenFlow 1.5' }
-]
-const enabledDisabled = [
-  { value: true, text: 'Enabled' },
-  { value: false, text: 'Disabled' }
-]
+import { switchTypes, failModes, datapaths, protocolsOF, enabledDisabled } from '@/selects'
 
 export default {
   name: 'SwitchEdit',
@@ -95,7 +70,7 @@ export default {
     switchTypes,
     failModes,
     datapaths,
-    protocols,
+    protocolsOF,
     enabledDisabled
   }),
   validations: {

@@ -15,7 +15,7 @@
           <v-text-field label="Port" v-model.number="item.port" type="number" min="1" max="65535" :error-messages="errors.item.port" clearable/>
         </v-flex>
         <v-flex xs12 md6>
-          <v-select label="Protocol" :items="protocols" v-model="item.protocol" clearable/>
+          <v-select label="Protocol" :items="protocolsIP" v-model="item.protocol" clearable/>
         </v-flex>
       </v-layout>
     </v-container>
@@ -25,18 +25,8 @@
 <script>
 import common from './common'
 import errors from './errors'
+import { controllerTypes, protocolsIP } from '@/selects'
 import { required, hostname, ip, port } from './rules'
-
-const controllerTypes = [
-  { value: 'NOX', text: 'NOX' },
-  { value: 'OVSController', text: 'OVSController' },
-  { value: 'RemoteController', text: 'RemoteController' },
-  { value: 'Ryu', text: 'Ryu' }
-]
-const protocols = [
-  { value: 'tcp', text: 'TCP' },
-  { value: 'upd', text: 'UDP' }
-]
 
 export default {
   name: 'ControllerEdit',
@@ -45,7 +35,7 @@ export default {
     valid: false,
     item: {},
     controllerTypes,
-    protocols
+    protocolsIP
   }),
   validations: {
     item: {
