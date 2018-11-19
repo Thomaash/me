@@ -46,26 +46,30 @@ describe('Import Miniedit script', () => {
   }].forEach(({ script, name, amounts, items: expectedItems }) => describe(name, () => {
     const json = importScript(script)
 
-    it('types', () => {
+    it('Types', () => {
       expect(json.version, 'Version is not a number.').to.be.a('number')
       expect(json.script, 'Script is not a string.').to.be.a('string')
       expect(json.items, 'Items is not an array.').to.be.an('array')
     })
 
-    it('item amounts', () => {
+    describe('Item amounts', () => {
       amounts.forEach(([type, amount]) => {
-        expect(
-          json.items.filter(item => item.type === type),
-          `Unexpected amount of ${type} items.`
-        ).to.have.lengthOf(amount)
+        it(type, () => {
+          expect(
+            json.items.filter(item => item.type === type),
+            `Unexpected amount of ${type} items.`
+          ).to.have.lengthOf(amount)
+        })
       })
     })
 
-    it('item properties', () => {
+    describe('Item properties', () => {
       const cleanItems = getCleanItems(json.items)
       expectedItems.forEach(item => {
-        expect(cleanItems)
-          .to.deep.include(item)
+        it(`${item.type}/${item.hostname || '∅'}`, () => {
+          expect(cleanItems)
+            .to.deep.include(item)
+        })
       })
     })
   }))

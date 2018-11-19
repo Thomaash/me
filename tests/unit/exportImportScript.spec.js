@@ -27,22 +27,22 @@ describe('Export import script', () => {
     const data2 = importScript(script1)
     const script2 = new Builder(JSON.parse(JSON.stringify(data2))).build()
 
-    it('types', () => {
+    it('Types', () => {
       expect(data2.version, 'Version is not a number.').to.be.a('number')
       expect(data2.script, 'Script is not a string.').to.be.a('string')
       expect(data2.items, 'Items is not an array.').to.be.an('array')
     })
 
-    it('items', () => {
+    describe('Items', () => {
       // Ports
-      ;(function () {
+      it('port', () => {
         const type = 'port'
         const typePl = 'ports'
         const items1 = getCleanItems(data1.items, type)
         const items2 = getCleanItems(data2.items, type)
         expect(items2, `The amount of ${typePl} differs.`).to.have.lengthOf.at.most(items1.length)
         expect(items1, `Some ${typePl} we're not imported correctly.`).to.include.deep.members(items2)
-      })()
+      })
 
       // Other
       ;[
@@ -51,10 +51,12 @@ describe('Export import script', () => {
         { type: 'link', typePl: 'links' },
         { type: 'switch', typePl: 'switches' }
       ].forEach(({ type, typePl }) => {
-        const items1 = getCleanItems(data1.items, type)
-        const items2 = getCleanItems(data2.items, type)
-        expect(items2, `The amount of ${typePl} differs.`).to.have.lengthOf(items1.length)
-        expect(items2, `Some ${typePl} we're not imported correctly.`).to.have.deep.members(items1)
+        it(type, () => {
+          const items1 = getCleanItems(data1.items, type)
+          const items2 = getCleanItems(data2.items, type)
+          expect(items2, `The amount of ${typePl} differs.`).to.have.lengthOf(items1.length)
+          expect(items2, `Some ${typePl} we're not imported correctly.`).to.have.deep.members(items1)
+        })
       })
     })
 
