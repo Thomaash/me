@@ -50,6 +50,9 @@
         <v-flex xs12>
           <v-text-field label="Additional Switch Options" v-model="item.opts" clearable/>
         </v-flex>
+        <v-flex xs12>
+          <v-textarea label="Startup Script" v-model="item.script" auto-grow clearable/>
+        </v-flex>
       </v-layout>
     </v-container>
   </v-form>

@@ -8,7 +8,8 @@ const metadata = [
   { attr: 'build', name: 'Build the network' },
   { attr: 'startControllers', name: 'Start controllers' },
   { attr: 'startSwitches', name: 'Start switches' },
-  { attr: 'cmds', name: 'Run commands' },
+  { attr: 'nodeCmds', name: 'Run node commands' },
+  { attr: 'globalCmds', name: 'Run global commands' },
   { attr: 'cli', name: 'Start CLI' },
   { attr: 'finish', name: 'Finish' },
   { attr: 'log', name: 'Log', silent: true }

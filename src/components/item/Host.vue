@@ -8,6 +8,9 @@
         <v-flex xs12>
           <v-text-field label="Default Route" v-model="item.defaultRoute" :error-messages="errors.item.defaultRoute" clearable/>
         </v-flex>
+        <v-flex xs12>
+          <v-textarea label="Startup Script" v-model="item.script" auto-grow clearable/>
+        </v-flex>
       </v-layout>
     </v-container>
   </v-form>

@@ -1,6 +1,6 @@
 {
     "version": 0,
-    "script": "# Test the connection.\nh1 ping -c 20 h2\niperf h1 h2\n",
+    "script": "# Test the connection.\niperf h1 h2\n",
     "items": [
         {
             "id": "adc7b0a0-51e5-4678-a4bc-458ac91baed5",
@@ -8,7 +8,8 @@
             "hostname": "s1",
             "switchType": "OVSBridge",
             "x": -30,
-            "y": -161
+            "y": -161,
+            "script": "hostname"
         },
         {
             "id": "5f9035bb-423b-4399-9d5a-92cf0d2e2d25",
@@ -93,7 +94,8 @@
             "type": "host",
             "hostname": "h1",
             "x": -100,
-            "y": 124
+            "y": 124,
+            "script": "# Hostnames (h2 in this case) are not available here, so the IP has to be used.\n# However `h1 ping h2` would work in the startup script under Mininet Settings.\nping -q -c 20 -i 0 192.168.1.2\n"
         },
         {
             "id": "52046764-961b-40ca-9c70-56e41e0891e4",
@@ -129,7 +131,8 @@
             "type": "host",
             "hostname": "h2",
             "x": 85,
-            "y": 123
+            "y": 123,
+            "script": "# Hostnames (h1 in this case) are not available here, so the IP has to be used.\n# However `h2 ping h1` would work in the startup script under Mininet Settings.\nping -q -c 20 -i 0 192.168.1.1\n"
         },
         {
             "id": "f84b2ea0-0a16-4675-987a-af96ada63e8a",

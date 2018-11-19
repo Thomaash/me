@@ -101,12 +101,9 @@ export default class {
   }
 
   _addScript (script) {
-    script.split('\n')
-      .filter(line => !/^(#|$)/.test(line))
-      .forEach(line => this._code.cmds.push(
-        `debug('mininet> ${line}\\n')`,
-        `cli.onecmd('${line}')`
-      ))
+    this._code.globalCmds.push(
+      ...this._scriptToCmds(script)
+    )
   }
 
   _addController (controller) {
@@ -131,6 +128,12 @@ export default class {
       ...(host.defaultRoute != null ? [`defaultRoute='via ${host.defaultRoute}'`] : [])
     ]
     this._code.nodes.push(`${host.hostname} = net.addHost(${args.join(', ')})`)
+
+    if (host.script) {
+      this._code.nodeCmds.push(
+        ...this._scriptToCmds(host.script, host.hostname)
+      )
+    }
   }
   _addLink (link) {
     const fromPort = this._items.map.port[link.from]
@@ -233,6 +236,12 @@ export default class {
       .map(controller => controller.hostname)
     this._code.nodes.push(`${swtch.hostname} = net.addSwitch(${args.join(', ')})`)
     this._code.startSwitches.push(`${swtch.hostname}.start([${controllerHostnames.join(', ')}])`)
+
+    if (swtch.script) {
+      this._code.nodeCmds.push(
+        ...this._scriptToCmds(swtch.script, swtch.hostname)
+      )
+    }
   }
 
   _portToNode (port) {
@@ -276,6 +285,18 @@ export default class {
     } else {
       this._linked.add(port)
     }
+  }
+
+  _scriptToCmds (script, nodeVar) {
+    return script.split('\n')
+      .filter(line => !/^(#|$)/.test(line))
+      .map(line => [
+        `debug('${nodeVar || '[mininet]'}> ${line}\\n')`,
+        nodeVar
+          ? `${nodeVar}.cmdPrint('${line}')`
+          : `cli.onecmd('${line}')`
+      ])
+      .reduce((acc, val) => acc.concat(val), [])
   }
 
   _log (msg, severity, item) {

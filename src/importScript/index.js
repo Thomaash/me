@@ -3,6 +3,8 @@ import { Python2Lexer } from './generated/Python2Lexer'
 import { Python2Parser } from './generated/Python2Parser'
 import { Python2Listener } from './generated/Python2Listener'
 
+const ipAARE = /^'ip a a ([0-9a-fA-F.:/]{6,42}) dev ([^-]+-)?([^-]+)'$/
+
 class IPs {
   $push (nodename, portname, ips) {
     this.$get(nodename, portname)
@@ -125,6 +127,7 @@ export default function (input) {
   const links = []
   const portMap = {}
   const scriptLines = []
+  const scripts = {}
   const vars = {}
   let lastId = 0
 
@@ -326,11 +329,17 @@ export default function (input) {
         }
 
         items.push(item)
-      } else if (funcName === '.cmd' && /^'ip a a .* dev .*'$/.test(args[0])) {
-        // Port IPs
-        const { 1: ip, 3: portname } = /^'ip a a (.*) dev ([^-]+-)?([^-]+)'$/.exec(args[0])
-        const nodename = varName
-        ips.$push(nodename, portname, ip)
+      } else if (funcName === '.cmd' || funcName === '.cmdPrint') {
+        if (ipAARE.test(args[0])) {
+          // Port IP
+          const { 1: ip, 3: portname } = ipAARE.exec(args[0])
+          const nodename = varName
+          ips.$push(nodename, portname, ip)
+        } else {
+          // Node script
+          ;(scripts[varName] || (scripts[varName] = []))
+            .push(pyString(args[0]))
+        }
       } else if (funcName === '.Intf') {
         // Physical port
         const nodename = args.node
@@ -380,6 +389,16 @@ export default function (input) {
   const walker = new antlr4.tree.ParseTreeWalker()
   walker.walk(printer, tree)
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree)
+
+  // Add scripts to nodes
+  items.filter(({ type }) =>
+    type === 'host' || type === 'switch'
+  ).forEach(item => {
+    const script = scripts[item.hostname]
+    if (script) {
+      item.script = script.join('\n')
+    }
+  })
 
   // Prepare ports without IPs
   const hostDevs = new Set()

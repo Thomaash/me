@@ -11,12 +11,12 @@ describe('Import Miniedit script', () => {
     script: minieditScript,
     name: 'Miniedit',
     amounts: [
-      ['association', 20],
+      ['association', 24],
       ['controller', 2],
-      ['host', 6],
-      ['link', 8],
-      ['port', 16],
-      ['switch', 3]
+      ['host', 7],
+      ['link', 10],
+      ['port', 20],
+      ['switch', 4]
     ],
     items: [
       { type: 'controller', hostname: 'c0', controllerType: 'Controller', port: 6653 },
@@ -27,6 +27,7 @@ describe('Import Miniedit script', () => {
       { type: 'host', hostname: 'h4', defaultRoute: '192.168.1.1' },
       { type: 'host', hostname: 'h5', defaultRoute: '192.168.1.1' },
       { type: 'host', hostname: 'h6' },
+      { type: 'host', hostname: 'r4', script: 'sysctl -w net.ipv4.ip_forward=1' },
       { type: 'link', bandwidth: 100, delay: '15ms', loss: 7, maxQueueSize: 145, jitter: '25ms' },
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.101/8'] },
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.102/8'] },
@@ -36,7 +37,8 @@ describe('Import Miniedit script', () => {
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.106/8'] },
       { type: 'switch', hostname: 's1', switchType: 'OVSKernelSwitch' },
       { type: 'switch', hostname: 's2', switchType: 'OVSKernelSwitch' },
-      { type: 'switch', hostname: 's3', switchType: 'OVSKernelSwitch' }
+      { type: 'switch', hostname: 's3', switchType: 'OVSKernelSwitch' },
+      { type: 'switch', hostname: 's5', switchType: 'OVSKernelSwitch', failMode: 'standalone' }
     ]
   }].forEach(({ script, name, amounts, items: expectedItems }) => describe(name, () => {
     const json = importScript(script)

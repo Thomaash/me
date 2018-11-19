@@ -10,6 +10,11 @@ function getCleanItems (items, typeOnly) {
     Object.keys(orig).forEach(key => {
       if (type === 'port' && key === 'ips') {
         clean[key] = orig[key].sort()
+      } else if (key === 'script') {
+        clean[key] = orig[key]
+          .split('\n')
+          .filter(line => !/^(\s*#|$)/.test(line))
+          .join('\n')
       } else if (
         (isEdge && !/^(id|hostname|from|to)$/.test(key)) ||
         (!isEdge && !/^(id|x|y)$/.test(key))
