@@ -26,8 +26,8 @@
       />
     </v-toolbar>
     <v-content>
-      <v-alert v-model="alertShow" dismissible :type="alertData.type" class="mt-0" transition="slide-y-transition">
-        {{ alertData.text }}
+      <v-alert v-model="alert.show" dismissible :type="alert.type" class="mt-0" transition="slide-y-transition">
+        {{ alert.text }}
       </v-alert>
       <v-slide-y-transition mode="out-in">
         <router-view/>
@@ -41,7 +41,6 @@ export default {
   name: 'App',
   data: () => ({
     drawer: true,
-    alertShow: false,
     items: [{
       icon: 'mdi-home',
       title: 'Home',
@@ -76,14 +75,8 @@ export default {
           : 0
       }
     },
-    alertData () {
-      const alert = this.$store.state.alert
-      this.alertShow = !!alert
-      if (alert) {
-        return alert
-      } else {
-        return {}
-      }
+    alert () {
+      return this.$store.state.alert
     }
   }
 }

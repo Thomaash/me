@@ -93,7 +93,7 @@ export default new Vuex.Store({
   state: {
     loading: true,
     working: false,
-    alert: null
+    alert: { show: false }
   },
   mutations: {
     setWorking (state, { working, curr, max }) {
@@ -103,10 +103,10 @@ export default new Vuex.Store({
       }
     },
     setAlert (state, { type, text }) {
-      state.alert = { type, text }
+      state.alert = { show: true, type, text }
     },
     clearAlert (state) {
-      state.alert = null
+      state.alert.show = false
     }
   },
   actions: {},
