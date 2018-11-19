@@ -11,11 +11,11 @@ describe('Import Miniedit script', () => {
     script: minieditScript,
     name: 'Miniedit',
     amounts: [
-      ['association', 24],
+      ['association', 27],
       ['controller', 2],
       ['host', 7],
       ['link', 10],
-      ['port', 20],
+      ['port', 23],
       ['switch', 4]
     ],
     items: [
@@ -35,6 +35,9 @@ describe('Import Miniedit script', () => {
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.104/8'] },
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.105/8'] },
       { type: 'port', hostname: 'eth0', ips: ['192.168.1.106/8'] },
+      { type: 'port', hostname: 'ext0', physical: true },
+      { type: 'port', hostname: 'ext1', physical: true },
+      { type: 'port', hostname: 'ext2', physical: true },
       { type: 'switch', hostname: 's1', switchType: 'OVSKernelSwitch' },
       { type: 'switch', hostname: 's2', switchType: 'OVSKernelSwitch' },
       { type: 'switch', hostname: 's3', switchType: 'OVSKernelSwitch' },

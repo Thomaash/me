@@ -340,7 +340,7 @@ export default function (input) {
           ;(scripts[varName] || (scripts[varName] = []))
             .push(pyString(args[0]))
         }
-      } else if (funcName === '.Intf') {
+      } else if (funcName === '.Intf' || funcName === 'Intf') {
         // Physical port
         const nodename = args.node
         const portname = pyString(args[0])
