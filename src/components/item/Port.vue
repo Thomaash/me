@@ -9,7 +9,7 @@
           <v-textarea label="IPs" v-model="ips" :error-messages="errors.item.ips" auto-grow clearable/>
         </v-flex>
         <v-flex xs12>
-          <v-switch label="Physical" v-model="item.physical"/>
+          <v-switch color="primary" label="Physical" v-model="item.physical"/>
         </v-flex>
       </v-layout>
     </v-container>
