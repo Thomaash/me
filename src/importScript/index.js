@@ -303,7 +303,13 @@ export default function (input) {
           item.stpPriority = args.prio
         }
         if (pyNotNull(args.cls)) {
-          item.switchType = args.cls.replace(/.*\./, '')
+          const cls = args.cls.replace(/.*\./, '')
+          if (cls === 'OVSKernelSwitch') {
+            // Only an alias
+            item.switchType = 'OVSSwitch'
+          } else {
+            item.switchType = args.cls.replace(/.*\./, '')
+          }
         }
 
         items.push(item)

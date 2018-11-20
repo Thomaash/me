@@ -38,10 +38,10 @@ describe('Import Miniedit script', () => {
       { type: 'port', hostname: 'ext0', physical: true },
       { type: 'port', hostname: 'ext1', physical: true },
       { type: 'port', hostname: 'ext2', physical: true },
-      { type: 'switch', hostname: 's1', switchType: 'OVSKernelSwitch' },
-      { type: 'switch', hostname: 's2', switchType: 'OVSKernelSwitch' },
+      { type: 'switch', hostname: 's1', switchType: 'OVSSwitch' },
+      { type: 'switch', hostname: 's2', switchType: 'OVSSwitch' },
       { type: 'switch', hostname: 's3', switchType: 'IVSSwitch' },
-      { type: 'switch', hostname: 's5', switchType: 'OVSKernelSwitch', failMode: 'standalone' },
+      { type: 'switch', hostname: 's5', switchType: 'OVSSwitch', failMode: 'standalone' },
       { type: 'switch', hostname: 's7', switchType: 'UserSwitch' },
       { type: 'switch', hostname: 's8', switchType: 'UserSwitch' }
     ]
