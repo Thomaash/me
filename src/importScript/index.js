@@ -296,6 +296,9 @@ export default function (input) {
         if (pyNotNull(args.verbose)) {
           item.verbose = args.verbose === 'True'
         }
+        if (pyNotNull(args.inNamespace)) {
+          item.inNamespace = args.inNamespace === 'True'
+        }
         if (pyNotNull(args.stp)) {
           item.stp = args.stp === 'True'
         }

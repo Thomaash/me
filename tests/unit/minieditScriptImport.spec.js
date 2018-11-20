@@ -43,7 +43,7 @@ describe('Import Miniedit script', () => {
       { type: 'switch', hostname: 's3', switchType: 'IVSSwitch' },
       { type: 'switch', hostname: 's5', switchType: 'OVSSwitch', failMode: 'standalone' },
       { type: 'switch', hostname: 's7', switchType: 'UserSwitch' },
-      { type: 'switch', hostname: 's8', switchType: 'UserSwitch' }
+      { type: 'switch', hostname: 's8', switchType: 'UserSwitch', inNamespace: true }
     ]
   }].forEach(({ script, name, amounts, items: expectedItems }) => describe(name, () => {
     const json = importScript(script)

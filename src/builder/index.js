@@ -222,6 +222,7 @@ export default class {
       ...(swtch.dpid != null ? [`dpid='${swtch.dpid}'`] : []),
       ...(swtch.dpopts != null ? [`dpopts='${swtch.dpopts}'`] : []),
       ...(swtch.failMode != null ? [`failMode='${swtch.failMode}'`] : []),
+      ...(swtch.inNamespace != null ? [`inNamespace=${swtch.inNamespace ? 'True' : 'False'}`] : []),
       ...(swtch.inband != null ? [`inband=${swtch.inband ? 'True' : 'False'}`] : []),
       ...(swtch.ip != null ? [`ip='${swtch.ip}'`] : []),
       ...(swtch.opts != null ? [`opts='${swtch.opts}'`] : []),

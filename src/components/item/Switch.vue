@@ -42,6 +42,9 @@
           <ThreeStateCheckbox label="Inband" v-model="item.inband"/>
         </v-flex>
         <v-flex xs12>
+          <ThreeStateCheckbox label="In Namespace" v-model="item.inNamespace"/>
+        </v-flex>
+        <v-flex xs12>
           <ThreeStateCheckbox label="Batch" v-model="item.batch"/>
         </v-flex>
         <v-flex xs12>
