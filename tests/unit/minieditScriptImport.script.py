@@ -30,14 +30,15 @@ def myNetwork():
                       port=6653)
 
     info( '*** Add switches\n')
+    s7 = net.addSwitch('s7', cls=UserSwitch)
     r4 = net.addHost('r4', cls=Node, ip='0.0.0.0')
     r4.cmd('sysctl -w net.ipv4.ip_forward=1')
-    s1 = net.addSwitch('s1', cls=OVSKernelSwitch)
-    s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
-    s3 = net.addSwitch('s3', cls=IVSSwitch)
     s5 = net.addSwitch('s5', cls=OVSKernelSwitch, failMode='standalone')
-    s7 = net.addSwitch('s7', cls=UserSwitch)
+    s3 = net.addSwitch('s3', cls=IVSSwitch)
+    s1 = net.addSwitch('s1', cls=OVSKernelSwitch, listenPort=12345, dpid='acdc')
+    Intf( 'extS1', node=s1 )
     s8 = net.addSwitch('s8', cls=UserSwitch, inNamespace=True)
+    s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
 
     info( '*** Add hosts\n')
     h3 = net.addHost('h3', cls=Host, ip='192.168.1.103/8', defaultRoute='via 192.168.1.1')
@@ -78,6 +79,7 @@ def myNetwork():
     net.get('s2').start([c0,c1])
 
     info( '*** Configuring switches\n')
+    s2.cmd('ifconfig s2 127.0.0.6')
 
     CLI(net)
     net.stop()

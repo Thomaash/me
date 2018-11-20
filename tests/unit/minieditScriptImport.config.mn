@@ -250,8 +250,16 @@
                 "controllers": [
                     "c0"
                 ],
+                "dpctl": "12345",
+                "dpid": "acdc",
+                "externalInterfaces": [
+                    "extS1"
+                ],
                 "hostname": "s1",
+                "netflow": "1",
                 "nodeNum": 1,
+                "sflow": "1",
+                "switchIP": "",
                 "switchType": "default"
             },
             "x": "567.0",
@@ -282,7 +290,7 @@
                 "netflow": "0",
                 "nodeNum": 2,
                 "sflow": "0",
-                "switchIP": "",
+                "switchIP": "127.0.0.6",
                 "switchType": "ovs"
             },
             "x": "828.0",

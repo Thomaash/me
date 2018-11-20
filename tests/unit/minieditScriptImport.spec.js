@@ -10,11 +10,11 @@ describe('Import Miniedit script', () => {
     script: minieditScript,
     name: 'Miniedit',
     amounts: [
-      ['association', 27],
+      ['association', 28],
       ['controller', 3],
       ['host', 7],
       ['link', 10],
-      ['port', 23],
+      ['port', 24],
       ['switch', 6]
     ],
     items: [
@@ -38,8 +38,9 @@ describe('Import Miniedit script', () => {
       { type: 'port', hostname: 'ext0', physical: true },
       { type: 'port', hostname: 'ext1', physical: true },
       { type: 'port', hostname: 'ext2', physical: true },
-      { type: 'switch', hostname: 's1', switchType: 'OVSSwitch' },
-      { type: 'switch', hostname: 's2', switchType: 'OVSSwitch' },
+      { type: 'port', hostname: 'extS1', physical: true },
+      { type: 'switch', hostname: 's1', switchType: 'OVSSwitch', dpctlPort: 12345, dpid: 'acdc' },
+      { type: 'switch', hostname: 's2', switchType: 'OVSSwitch', script: 'ifconfig s2 127.0.0.6' },
       { type: 'switch', hostname: 's3', switchType: 'IVSSwitch' },
       { type: 'switch', hostname: 's5', switchType: 'OVSSwitch', failMode: 'standalone' },
       { type: 'switch', hostname: 's7', switchType: 'UserSwitch' },
