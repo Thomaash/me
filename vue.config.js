@@ -4,7 +4,7 @@ module.exports = {
     config
       .module
       .rule('txt')
-      .test(/(\.txt$|^[^.]+$)/)
+      .test(/(\.(txt|py)$|^[^.]+$)/)
       .use('raw-loader')
       .loader('raw-loader')
       .end()
