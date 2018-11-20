@@ -1,3 +1,10 @@
+import { controllerTypes as selectsControllerTypes } from '@/selects'
+
+const controllerTypes = selectsControllerTypes.reduce((acc, val) => {
+  acc[val.value] = val.text
+  return acc
+}, {})
+
 function fixUnit (str) {
   const res = /^(\d+)(\D*)$/.exec(str)
   return `${res[1]} ${res[2]}`
@@ -46,7 +53,7 @@ const generators = {
   },
   controller (item) {
     const parts = [
-      ...(item.controllerType != null ? [`${item.controllerType}`] : ['Default']),
+      ...(item.controllerType != null ? [`${controllerTypes[item.controllerType] || item.controllerType}`] : ['Default']),
       '<br/>',
       ...(item.ip != null && item.port != null ? [
         item.ip.includes(':') ? `[${item.ip}]:${item.port}` : `${item.ip}:${item.port}`
