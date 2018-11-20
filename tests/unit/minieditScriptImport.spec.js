@@ -1,10 +1,9 @@
 import { expect } from 'chai'
 
+import importScript from '../../src/importScript'
 import { getCleanItems } from './exportImportCommon.js'
 
-import importScript from '../../src/importScript'
-
-import minieditScript from './miniedit.py'
+import minieditScript from './minieditScriptImport.script.py'
 
 describe('Import Miniedit script', () => {
   [{

@@ -1,9 +1,8 @@
 import { expect } from 'chai'
 
-import { getCleanItems, removeNonCode } from './exportImportCommon.js'
-
 import Builder from '../../src/builder'
 import importScript from '../../src/importScript'
+import { getCleanItems, removeNonCode } from './exportImportCommon.js'
 
 import tiny from '../../src/examples/tiny'
 import tinyController from '../../src/examples/tiny_controller'

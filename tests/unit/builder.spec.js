@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 
+import Builder from '../../src/builder'
 import { removeNonCode } from './exportImportCommon.js'
 
-import Builder from '../../src/builder'
-import correctScript from './builder.script.txt'
+import correctScript from './builder.script.py'
 import data from '../../src/examples/medium_2_controllers'
 
 describe('Builder', () => {
