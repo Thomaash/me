@@ -27,12 +27,6 @@ const protocolsOF = [
 ]
 export { protocolsOF }
 
-const enabledDisabled = [
-  { value: true, text: 'Enabled' },
-  { value: false, text: 'Disabled' }
-]
-export { enabledDisabled }
-
 const controllerTypes = [
   { value: 'NOX', text: 'NOX' },
   { value: 'OVSController', text: 'OVSController' },

@@ -10,16 +10,16 @@
             <v-text-field label="Base Listening Port" v-model.number="listenPortBase" type="number" min="1" max="65535" :error-messages="errors.listenPortBase" clearable/>
           </v-flex>
           <v-flex xs12>
-            <v-select label="Automatic MAC Addresses" :items="enabledDisabled" v-model="autoSetMAC" clearable/>
+            <ThreeStateCheckbox label="Automatic MAC Addresses" v-model="autoSetMAC"/>
           </v-flex>
           <v-flex xs12>
-            <v-select label="Automatic Static ARP" :items="enabledDisabled" v-model="autoStaticARP" clearable/>
+            <ThreeStateCheckbox label="Automatic Static ARP" v-model="autoStaticARP"/>
           </v-flex>
           <v-flex xs12>
-            <v-select label="In Namespace" :items="enabledDisabled" v-model="inNamespace" clearable/>
+            <ThreeStateCheckbox label="In Namespace" v-model="inNamespace"/>
           </v-flex>
           <v-flex xs12>
-            <v-select label="Spawn Terminals" :items="enabledDisabled" v-model="spawnTerminals" clearable/>
+            <ThreeStateCheckbox label="Spawn Terminals" v-model="spawnTerminals"/>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -35,8 +35,8 @@
 </template>
 
 <script>
+import ThreeStateCheckbox from '@/components/ThreeStateCheckbox'
 import errors from '@/validation/errors'
-import { enabledDisabled } from '@/selects'
 import { ipWithMask, port } from '@/validation/rules'
 
 function ComputedStoreProperty (key) {
@@ -53,9 +53,7 @@ function ComputedStoreProperty (key) {
 export default {
   name: 'Script',
   mixins: [errors],
-  data: () => ({
-    enabledDisabled
-  }),
+  components: { ThreeStateCheckbox },
   computed: {
     autoSetMAC: new ComputedStoreProperty('autoSetMAC'),
     autoStaticARP: new ComputedStoreProperty('autoStaticARP'),

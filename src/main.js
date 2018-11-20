@@ -13,6 +13,9 @@ Vue.use(Vuetify, {
   theme,
   iconfont: 'mdi',
   icons: {
+    'checkboxFalse': 'mdi-close-box',
+    'checkboxTrue': 'mdi-checkbox-marked',
+    'checkboxUndefined': 'mdi-checkbox-blank-outline',
     'net-controller': 'mdi-developer-board',
     'net-dummy': 'mdi-label',
     'net-edge': 'mdi-ethernet-cable',
