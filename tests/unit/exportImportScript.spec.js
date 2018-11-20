@@ -12,6 +12,9 @@ import tinyMininetConf from '../../src/examples/tiny_mininet_conf'
 import medium1Controller from '../../src/examples/medium_1_controller'
 import medium2Controllers from '../../src/examples/medium_2_controllers'
 
+import minieditScript from './minieditScriptImport.script.py'
+const miniedit = importScript(minieditScript)
+
 describe('Export import script', () => {
   [
     { json: tiny, name: 'tiny' },
@@ -20,7 +23,8 @@ describe('Export import script', () => {
     { json: tinyPhysicalInterface, name: 'tiny_physical_interface' },
     { json: tinyMininetConf, name: 'tiny_mininet_conf' },
     { json: medium1Controller, name: 'medium_1_controller' },
-    { json: medium2Controllers, name: 'medium_2_controllers' }
+    { json: medium2Controllers, name: 'medium_2_controllers' },
+    { json: miniedit, name: 'miniedit' }
   ].forEach(({ json: data1, name }) => describe(name, () => {
     const script1 = new Builder(JSON.parse(JSON.stringify(data1))).build()
     const data2 = importScript(script1)
