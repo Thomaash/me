@@ -261,7 +261,7 @@ export default function (input) {
           hostname
         }
         if (pyNotNull(args.batch)) {
-          item.batch = args.batch === 'True'
+          item.batch = pyBoolean(args.batch)
         }
         if (pyNotNull(args.datapath)) {
           item.datapath = pyString(args.datapath)
@@ -279,7 +279,7 @@ export default function (input) {
           item.failMode = pyString(args.failMode)
         }
         if (pyNotNull(args.inband)) {
-          item.inband = args.inband === 'True'
+          item.inband = pyBoolean(args.inband)
         }
         if (pyNotNull(args.protocols)) {
           item.protocol = pyString(args.protocols)
@@ -294,13 +294,13 @@ export default function (input) {
           item.dpctlPort = args.port
         }
         if (pyNotNull(args.verbose)) {
-          item.verbose = args.verbose === 'True'
+          item.verbose = pyBoolean(args.verbose)
         }
         if (pyNotNull(args.inNamespace)) {
-          item.inNamespace = args.inNamespace === 'True'
+          item.inNamespace = pyBoolean(args.inNamespace)
         }
         if (pyNotNull(args.stp)) {
-          item.stp = args.stp === 'True'
+          item.stp = pyBoolean(args.stp)
         }
         if (pyNotNull(args.prio)) {
           item.stpPriority = args.prio
