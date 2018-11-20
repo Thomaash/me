@@ -290,8 +290,8 @@ export default function (input) {
         if (pyNotNull(args.ip)) {
           item.ip = pyString(args.ip)
         }
-        if (pyNotNull(args.port)) {
-          item.dpctlPort = args.port
+        if (pyNotNull(args.listenPort)) {
+          item.dpctlPort = pyNumber(args.listenPort)
         }
         if (pyNotNull(args.verbose)) {
           item.verbose = pyBoolean(args.verbose)

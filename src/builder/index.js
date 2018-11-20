@@ -219,7 +219,7 @@ export default class {
       [swtch.hostname, String],
       [swtch.batch != null, swtch.batch, Boolean, 'batch'],
       [swtch.datapath != null, swtch.datapath, String, 'datapath'],
-      [swtch.dpctlPort != null, swtch.dpctlPort, Number, 'port'],
+      [swtch.dpctlPort != null, swtch.dpctlPort, Number, 'listenPort'],
       [swtch.dpid != null, swtch.dpid, String, 'dpid'],
       [swtch.dpopts != null, swtch.dpopts, String, 'dpopts'],
       [swtch.failMode != null, swtch.failMode, String, 'failMode'],
