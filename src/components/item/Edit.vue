@@ -9,14 +9,14 @@
       @keydown.esc="cancel"
     >
       <v-card>
-        <v-card-title primary-title>
+        <v-card-title primary-title style="flex-grow: 0;">
           <v-icon v-text="'$vuetify.icons.net-' + themeType" class="mr-2"/>
           <h3 class="headline" v-text="headline"/>
         </v-card-title>
-        <v-card-text>
+        <v-card-text style="flex-grow: 1;">
           <div v-model="item" @valid="v => valid = v" :is="component"/>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions style="flex-grow: 0;">
           <v-spacer/>
           <v-btn color="primary" flat @click.native="cancel">Cancel</v-btn>
           <v-btn color="primary" flat @click.native="save" :disabled="!valid">Save</v-btn>
