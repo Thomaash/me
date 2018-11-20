@@ -1,5 +1,6 @@
 import Code from './Code'
 import Items from './Items'
+import pyArgs from './pyArgs'
 
 export default class {
   constructor (data) {
@@ -88,14 +89,14 @@ export default class {
     }
 
     // Mininet arguments
-    this._code.mininetArgs.push(...[
-      ...(this._data.autoSetMAC != null ? [`autoSetMacs=${this._data.autoSetMAC ? 'True' : 'False'}`] : []),
-      ...(this._data.autoStaticARP != null ? [`autoStaticArp=${this._data.autoStaticARP ? 'True' : 'False'}`] : []),
-      ...(this._data.inNamespace != null ? [`inNamespace=${this._data.inNamespace ? 'True' : 'False'}`] : []),
-      ...(this._data.ipBase != null ? [`ipBase='${this._data.ipBase}'`] : []),
-      ...(this._data.listenPortBase != null ? [`listenPort=${this._data.listenPortBase}`] : []),
-      ...(this._data.spawnTerminals != null ? [`xterms=${this._data.spawnTerminals ? 'True' : 'False'}`] : [])
-    ])
+    this._code.mininetArgs.push(...pyArgs([
+      [this._data.autoSetMAC != null, this._data.autoSetMAC, Boolean, 'autoSetMacs'],
+      [this._data.autoStaticARP != null, this._data.autoStaticARP, Boolean, 'autoStaticArp'],
+      [this._data.inNamespace != null, this._data.inNamespace, Boolean, 'inNamespace'],
+      [this._data.ipBase != null, this._data.ipBase, String, 'ipBase'],
+      [this._data.listenPortBase != null, this._data.listenPortBase, Number, 'listenPort'],
+      [this._data.spawnTerminals != null, this._data.spawnTerminals, Boolean, 'xterms']
+    ]))
 
     return this._code.toString()
   }
@@ -109,24 +110,24 @@ export default class {
   _addController (controller) {
     this._addHostname(controller)
 
-    const args = [
-      `'${controller.hostname}'`,
-      ...(controller.controllerType != null ? [`controller=mininet.node.${controller.controllerType}`] : []),
-      ...(controller.ip != null ? [`ip='${controller.ip}'`] : []),
-      ...(controller.port != null ? [`port=${controller.port}`] : []),
-      ...(controller.protocol != null ? [`protocol='${controller.protocol}'`] : [])
-    ]
+    const args = pyArgs([
+      [controller.hostname, String],
+      [controller.controllerType != null, `mininet.node.${controller.controllerType}`, null, 'controller'],
+      [controller.ip != null, controller.ip, String, 'ip'],
+      [controller.port != null, controller.port, Number, 'port'],
+      [controller.protocol != null, controller.protocol, String, 'protocol']
+    ])
     this._code.nodes.push(`${controller.hostname} = net.addController(${args.join(', ')})`)
     this._code.startControllers.push(`${controller.hostname}.start()`)
   }
   _addHost (host) {
     this._addHostname(host)
 
-    const args = [
-      `'${host.hostname}'`,
-      'ip=None',
-      ...(host.defaultRoute != null ? [`defaultRoute='via ${host.defaultRoute}'`] : [])
-    ]
+    const args = pyArgs([
+      [host.hostname, String],
+      ['None', null, 'ip'],
+      [host.defaultRoute != null, `via ${host.defaultRoute}`, String, 'defaultRoute']
+    ])
     this._code.nodes.push(`${host.hostname} = net.addHost(${args.join(', ')})`)
 
     if (host.script) {
@@ -148,17 +149,17 @@ export default class {
     const fromDev = `${fromNode.hostname}-${fromPort.hostname}`
     const toDev = `${toNode.hostname}-${toPort.hostname}`
 
-    const args = [
-      fromNode.hostname,
-      toNode.hostname,
-      `intfName1='${fromDev}'`,
-      `intfName2='${toDev}'`,
-      ...(link.bandwidth != null ? [`bw=${link.bandwidth}`] : []),
-      ...(link.delay != null ? [`delay='${link.delay}'`] : []),
-      ...(link.loss != null ? [`loss=${link.loss}`] : []),
-      ...(link.maxQueueSize != null ? [`max_queue_size=${link.maxQueueSize}`] : []),
-      ...(link.jitter != null ? [`jitter='${link.jitter}'`] : [])
-    ]
+    const args = pyArgs([
+      [fromNode.hostname],
+      [toNode.hostname],
+      [fromDev, String, 'intfName1'],
+      [toDev, String, 'intfName2'],
+      [link.bandwidth != null, link.bandwidth, Number, 'bw'],
+      [link.delay != null, link.delay, String, 'delay'],
+      [link.loss != null, link.loss, Number, 'loss'],
+      [link.maxQueueSize != null, link.maxQueueSize, Number, 'max_queue_size'],
+      [link.jitter != null, link.jitter, String, 'jitter']
+    ])
 
     this._code.links.push(`net.addLink(${args.join(', ')})`)
   }
@@ -194,10 +195,10 @@ export default class {
     this._addDevname(port, dev)
 
     if (!link) {
-      const args = [
-        `'${dev}'`,
-        `node=${node.hostname}`
-      ]
+      const args = pyArgs([
+        [dev, String],
+        [node.hostname, null, 'node']
+      ])
       this._code.ports.push(`mininet.link.Intf(${args.join(', ')})`)
     }
 
@@ -214,25 +215,25 @@ export default class {
   _addSwitch (swtch) {
     this._addHostname(swtch)
 
-    const args = [
-      `'${swtch.hostname}'`,
-      ...(swtch.batch != null ? [`batch=${swtch.batch ? 'True' : 'False'}`] : []),
-      ...(swtch.datapath != null ? [`datapath='${swtch.datapath}'`] : []),
-      ...(swtch.dpctlPort != null ? [`port=${swtch.dpctlPort}`] : []),
-      ...(swtch.dpid != null ? [`dpid='${swtch.dpid}'`] : []),
-      ...(swtch.dpopts != null ? [`dpopts='${swtch.dpopts}'`] : []),
-      ...(swtch.failMode != null ? [`failMode='${swtch.failMode}'`] : []),
-      ...(swtch.inNamespace != null ? [`inNamespace=${swtch.inNamespace ? 'True' : 'False'}`] : []),
-      ...(swtch.inband != null ? [`inband=${swtch.inband ? 'True' : 'False'}`] : []),
-      ...(swtch.ip != null ? [`ip='${swtch.ip}'`] : []),
-      ...(swtch.opts != null ? [`opts='${swtch.opts}'`] : []),
-      ...(swtch.protocol != null ? [`protocols='${swtch.protocol}'`] : []),
-      ...(swtch.reconnectms != null ? [`reconnectms=${swtch.reconnectms}`] : []),
-      ...(swtch.stp != null ? [`stp=${swtch.stp ? 'True' : 'False'}`] : []),
-      ...(swtch.stpPriority != null ? [`prio=${swtch.stpPriority}`] : []),
-      ...(swtch.switchType != null ? [`cls=mininet.node.${swtch.switchType}`] : []),
-      ...(swtch.verbose != null ? [`verbose=${swtch.verbose ? 'True' : 'False'}`] : [])
-    ]
+    const args = pyArgs([
+      [swtch.hostname, String],
+      [swtch.batch != null, swtch.batch, Boolean, 'batch'],
+      [swtch.datapath != null, swtch.datapath, String, 'datapath'],
+      [swtch.dpctlPort != null, swtch.dpctlPort, Number, 'port'],
+      [swtch.dpid != null, swtch.dpid, String, 'dpid'],
+      [swtch.dpopts != null, swtch.dpopts, String, 'dpopts'],
+      [swtch.failMode != null, swtch.failMode, String, 'failMode'],
+      [swtch.inNamespace != null, swtch.inNamespace, Boolean, 'inNamespace'],
+      [swtch.inband != null, swtch.inband, Boolean, 'inband'],
+      [swtch.ip != null, swtch.ip, String, 'ip'],
+      [swtch.opts != null, swtch.opts, String, 'opts'],
+      [swtch.protocol != null, swtch.protocol, String, 'protocols'],
+      [swtch.reconnectms != null, swtch.reconnectms, Number, 'reconnectms'],
+      [swtch.stp != null, swtch.stp, Boolean, 'stp'],
+      [swtch.stpPriority != null, swtch.stpPriority, Number, 'prio'],
+      [swtch.switchType != null, `mininet.node.${swtch.switchType}`, null, 'cls'],
+      [swtch.verbose != null, swtch.verbose, Boolean, 'verbose']
+    ])
     const controllerHostnames = this._getNeighbors(swtch, ['controller'])
       .map(controller => controller.hostname)
     this._code.nodes.push(`${swtch.hostname} = net.addSwitch(${args.join(', ')})`)
