@@ -1,9 +1,9 @@
 const switchTypes = [
-  { value: 'IVSSwitch', text: 'IVSSwitch' },
-  { value: 'LinuxBridge', text: 'LinuxBridge' },
-  { value: 'OVSBridge', text: 'OVSBridge' },
-  { value: 'OVSSwitch', text: 'OVSSwitch' },
-  { value: 'UserSwitch', text: 'UserSwitch' }
+  { value: 'IVSSwitch', text: 'IVS Switch' },
+  { value: 'LinuxBridge', text: 'Linux Bridge' },
+  { value: 'OVSBridge', text: 'OVS Bridge' },
+  { value: 'OVSSwitch', text: 'OVS Switch' },
+  { value: 'UserSwitch', text: 'User Switch' }
 ]
 export { switchTypes }
 

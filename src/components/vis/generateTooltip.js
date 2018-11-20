@@ -1,9 +1,13 @@
-import { controllerTypes as selectsControllerTypes } from '@/selects'
+import { controllerTypes, switchTypes } from '@/selects'
 
-const controllerTypes = selectsControllerTypes.reduce((acc, val) => {
+const reduceToMap = (acc, val) => {
   acc[val.value] = val.text
   return acc
-}, {})
+}
+const typeMap = {
+  controllers: controllerTypes.reduce(reduceToMap, {}),
+  switches: switchTypes.reduce(reduceToMap, {})
+}
 
 function fixUnit (str) {
   const res = /^(\d+)(\D*)$/.exec(str)
@@ -49,11 +53,13 @@ const generators = {
     }
   },
   switch (item) {
-    return item.switchType || 'Default'
+    return item.switchType != null
+      ? `${typeMap.switches[item.switchType] || item.switchType}`
+      : 'Default'
   },
   controller (item) {
     const parts = [
-      ...(item.controllerType != null ? [`${controllerTypes[item.controllerType] || item.controllerType}`] : ['Default']),
+      ...(item.controllerType != null ? [`${typeMap.controllers[item.controllerType] || item.controllerType}`] : ['Default']),
       '<br/>',
       ...(item.ip != null && item.port != null ? [
         item.ip.includes(':') ? `[${item.ip}]:${item.port}` : `${item.ip}:${item.port}`
