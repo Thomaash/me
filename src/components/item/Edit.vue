@@ -10,6 +10,7 @@
     >
       <v-card>
         <v-card-title primary-title>
+          <v-icon v-text="'$vuetify.icons.net-' + themeType" class="mr-2"/>
           <h3 class="headline" v-text="headline"/>
         </v-card-title>
         <v-card-text>
@@ -67,6 +68,15 @@ export default {
     },
     headline () {
       return typeHeadlineMap[this.item.type] || ''
+    },
+    themeType () {
+      switch (this.item.type) {
+        case 'association':
+        case 'link':
+          return 'edge'
+        default:
+          return this.item.type
+      }
     }
   },
   methods: {
