@@ -15,7 +15,7 @@ describe('Import Miniedit script', () => {
       ['host', 7],
       ['link', 10],
       ['port', 23],
-      ['switch', 4]
+      ['switch', 6]
     ],
     items: [
       { type: 'controller', hostname: 'c0', controllerType: 'Controller', port: 6653 },
@@ -40,8 +40,10 @@ describe('Import Miniedit script', () => {
       { type: 'port', hostname: 'ext2', physical: true },
       { type: 'switch', hostname: 's1', switchType: 'OVSKernelSwitch' },
       { type: 'switch', hostname: 's2', switchType: 'OVSKernelSwitch' },
-      { type: 'switch', hostname: 's3', switchType: 'OVSKernelSwitch' },
-      { type: 'switch', hostname: 's5', switchType: 'OVSKernelSwitch', failMode: 'standalone' }
+      { type: 'switch', hostname: 's3', switchType: 'IVSSwitch' },
+      { type: 'switch', hostname: 's5', switchType: 'OVSKernelSwitch', failMode: 'standalone' },
+      { type: 'switch', hostname: 's7', switchType: 'UserSwitch' },
+      { type: 'switch', hostname: 's8', switchType: 'UserSwitch' }
     ]
   }].forEach(({ script, name, amounts, items: expectedItems }) => describe(name, () => {
     const json = importScript(script)

@@ -193,6 +193,20 @@
     ],
     "switches": [
         {
+            "number": "7",
+            "opts": {
+                "controllers": [],
+                "hostname": "s7",
+                "netflow": "0",
+                "nodeNum": 7,
+                "sflow": "0",
+                "switchIP": "",
+                "switchType": "user"
+            },
+            "x": "320.0",
+            "y": "94.0"
+        },
+        {
             "number": "4",
             "opts": {
                 "controllers": [],
@@ -221,8 +235,11 @@
                     "c1"
                 ],
                 "hostname": "s3",
+                "netflow": "0",
                 "nodeNum": 3,
-                "switchType": "default"
+                "sflow": "0",
+                "switchIP": "",
+                "switchType": "ivs"
             },
             "x": "1235.0",
             "y": "440.0"
@@ -241,6 +258,20 @@
             "y": "440.0"
         },
         {
+            "number": "8",
+            "opts": {
+                "controllers": [],
+                "hostname": "s8",
+                "netflow": "0",
+                "nodeNum": 8,
+                "sflow": "0",
+                "switchIP": "",
+                "switchType": "userns"
+            },
+            "x": "320.0",
+            "y": "216.0"
+        },
+        {
             "number": "2",
             "opts": {
                 "controllers": [
@@ -248,8 +279,11 @@
                     "c1"
                 ],
                 "hostname": "s2",
+                "netflow": "0",
                 "nodeNum": 2,
-                "switchType": "default"
+                "sflow": "0",
+                "switchIP": "",
+                "switchType": "ovs"
             },
             "x": "828.0",
             "y": "443.0"

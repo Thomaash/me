@@ -32,10 +32,12 @@ def myNetwork():
     info( '*** Add switches\n')
     r4 = net.addHost('r4', cls=Node, ip='0.0.0.0')
     r4.cmd('sysctl -w net.ipv4.ip_forward=1')
-    s5 = net.addSwitch('s5', cls=OVSKernelSwitch, failMode='standalone')
-    s3 = net.addSwitch('s3', cls=OVSKernelSwitch)
     s1 = net.addSwitch('s1', cls=OVSKernelSwitch)
     s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
+    s3 = net.addSwitch('s3', cls=IVSSwitch)
+    s5 = net.addSwitch('s5', cls=OVSKernelSwitch, failMode='standalone')
+    s7 = net.addSwitch('s7', cls=UserSwitch)
+    s8 = net.addSwitch('s8', cls=UserSwitch, inNamespace=True)
 
     info( '*** Add hosts\n')
     h3 = net.addHost('h3', cls=Host, ip='192.168.1.103/8', defaultRoute='via 192.168.1.1')
@@ -68,9 +70,11 @@ def myNetwork():
         controller.start()
 
     info( '*** Starting switches\n')
+    net.get('s7').start([])
     net.get('s5').start([])
     net.get('s3').start([c1])
     net.get('s1').start([c0])
+    net.get('s8').start([])
     net.get('s2').start([c0,c1])
 
     info( '*** Configuring switches\n')
