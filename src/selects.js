@@ -28,10 +28,11 @@ const protocolsOF = [
 export { protocolsOF }
 
 const controllerTypes = [
+  { value: 'Controller', text: 'OpenFlow Reference Implementation' },
   { value: 'NOX', text: 'NOX' },
-  { value: 'OVSController', text: 'OVSController' },
-  { value: 'RemoteController', text: 'RemoteController' },
-  { value: 'Ryu', text: 'Ryu' }
+  { value: 'OVSController', text: 'OVS Controller' },
+  { value: 'RemoteController', text: 'Remote Controller' },
+  { value: 'Ryu', text: 'Ryu Controller' }
 ]
 export { controllerTypes }
 

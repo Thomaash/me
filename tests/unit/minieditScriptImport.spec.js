@@ -11,7 +11,7 @@ describe('Import Miniedit script', () => {
     name: 'Miniedit',
     amounts: [
       ['association', 27],
-      ['controller', 2],
+      ['controller', 3],
       ['host', 7],
       ['link', 10],
       ['port', 23],
@@ -19,7 +19,8 @@ describe('Import Miniedit script', () => {
     ],
     items: [
       { type: 'controller', hostname: 'c0', controllerType: 'Controller', port: 6653 },
-      { type: 'controller', hostname: 'c1', controllerType: 'Controller', port: 6633 },
+      { type: 'controller', hostname: 'c1', controllerType: 'RemoteController', ip: '127.0.0.1', port: 6633 },
+      { type: 'controller', hostname: 'c2', controllerType: 'OVSController', port: 6643 },
       { type: 'host', hostname: 'h1', defaultRoute: '192.168.1.1' },
       { type: 'host', hostname: 'h2', defaultRoute: '192.168.1.1' },
       { type: 'host', hostname: 'h3', defaultRoute: '192.168.1.1' },

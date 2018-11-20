@@ -17,31 +17,36 @@ def myNetwork():
 
     info( '*** Adding controller\n' )
     c1=net.addController(name='c1',
-                      controller=Controller,
+                      controller=RemoteController,
+                      ip='127.0.0.1',
                       port=6633)
+
+    c2=net.addController(name='c2',
+                      controller=OVSController,
+                      port=6643)
 
     c0=net.addController(name='c0',
                       controller=Controller,
                       port=6653)
 
     info( '*** Add switches\n')
-    s1 = net.addSwitch('s1', cls=OVSKernelSwitch)
-    s3 = net.addSwitch('s3', cls=OVSKernelSwitch)
-    s5 = net.addSwitch('s5', cls=OVSKernelSwitch, failMode='standalone')
     r4 = net.addHost('r4', cls=Node, ip='0.0.0.0')
     r4.cmd('sysctl -w net.ipv4.ip_forward=1')
+    s5 = net.addSwitch('s5', cls=OVSKernelSwitch, failMode='standalone')
+    s3 = net.addSwitch('s3', cls=OVSKernelSwitch)
+    s1 = net.addSwitch('s1', cls=OVSKernelSwitch)
     s2 = net.addSwitch('s2', cls=OVSKernelSwitch)
 
     info( '*** Add hosts\n')
-    h5 = net.addHost('h5', cls=Host, ip='192.168.1.105/8', defaultRoute='via 192.168.1.1')
-    h6 = net.addHost('h6', cls=Host, ip='192.168.1.106/8', defaultRoute=None)
+    h3 = net.addHost('h3', cls=Host, ip='192.168.1.103/8', defaultRoute='via 192.168.1.1')
     h2 = net.addHost('h2', cls=Host, ip='192.168.1.102/8', defaultRoute='via 192.168.1.1')
+    h5 = net.addHost('h5', cls=Host, ip='192.168.1.105/8', defaultRoute='via 192.168.1.1')
+    h4 = net.addHost('h4', cls=Host, ip='192.168.1.104/8', defaultRoute='via 192.168.1.1')
     h1 = net.addHost('h1', cls=Host, ip='192.168.1.101/8', defaultRoute='via 192.168.1.1')
     Intf( 'ext0', node=h1 )
     Intf( 'ext1', node=h1 )
     Intf( 'ext2', node=h1 )
-    h3 = net.addHost('h3', cls=Host, ip='192.168.1.103/8', defaultRoute='via 192.168.1.1')
-    h4 = net.addHost('h4', cls=Host, ip='192.168.1.104/8', defaultRoute='via 192.168.1.1')
+    h6 = net.addHost('h6', cls=Host, ip='192.168.1.106/8', defaultRoute=None)
 
     info( '*** Add links\n')
     net.addLink(s1, h1)
@@ -63,9 +68,9 @@ def myNetwork():
         controller.start()
 
     info( '*** Starting switches\n')
-    net.get('s1').start([c0])
-    net.get('s3').start([c1])
     net.get('s5').start([])
+    net.get('s3').start([c1])
+    net.get('s1').start([c0])
     net.get('s2').start([c0,c1])
 
     info( '*** Configuring switches\n')
