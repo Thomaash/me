@@ -5,6 +5,29 @@ import { Python2Listener } from './generated/Python2Listener'
 
 const ipAARE = /^'ip a a ([0-9a-fA-F.:/]{6,42}) dev ([^-]+-)?([^-]+)'$/
 
+const hostnameLookupTypeRE = /^(host|switch|controller)$/
+class Items {
+  constructor () {
+    this.array = []
+    this._indexMap = Object.create(null)
+  }
+  put (item) {
+    if (hostnameLookupTypeRE.test(item.type) && item.hostname != null) {
+      if (this._indexMap[item.hostname] != null) {
+        Object.assign(this.get(item.hostname), item)
+      } else {
+        this._indexMap[item.hostname] = this.array.length
+        this.array[this.array.length] = item
+      }
+    } else {
+      this.array.push(item)
+    }
+  }
+  get (hostname) {
+    return this.array[this._indexMap[hostname]]
+  }
+}
+
 class IPs {
   $push (nodename, portname, ips) {
     this.$get(nodename, portname)
@@ -122,7 +145,7 @@ export default function (input) {
   const associations = []
   const hostIPs = {}
   const ips = new IPs()
-  const items = []
+  const items = new Items()
   const jsonProps = {}
   const links = []
   const portMap = {}
@@ -251,7 +274,7 @@ export default function (input) {
           hostIPs[item.hostname] = pyString(args.ip)
         }
 
-        items.push(item)
+        items.put(item)
       } else if (funcName === '.addSwitch') {
         // Switch
         const hostname = pyString(args[0])
@@ -315,7 +338,7 @@ export default function (input) {
           }
         }
 
-        items.push(item)
+        items.put(item)
       } else if (funcName === '.addController') {
         // Controller
         const hostname = pyString(args[0] || args.name)
@@ -337,7 +360,7 @@ export default function (input) {
           item.protocol = pyString(args.protocol)
         }
 
-        items.push(item)
+        items.put(item)
       } else if (funcName === '.cmd' || funcName === '.cmdPrint') {
         if (ipAARE.test(args[0])) {
           // Port IP
@@ -363,7 +386,7 @@ export default function (input) {
             hostname: portname
           }
 
-          items.push(item)
+          items.put(item)
         }
       } else if (funcName === 'Mininet') {
         if (pyNotNull(args.autoSetMacs)) {
@@ -400,7 +423,7 @@ export default function (input) {
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree)
 
   // Add scripts to nodes
-  items.filter(({ type }) =>
+  items.array.filter(({ type }) =>
     type === 'host' || type === 'switch'
   ).forEach(item => {
     const script = scripts[item.hostname]
@@ -443,16 +466,16 @@ export default function (input) {
         port.physical = true
       }
 
-      items.push(port)
+      items.put(port)
 
       // Association
       const edge = {
         id: 'script_import_' + ++lastId,
         type: 'association',
-        from: items.find(item => item.hostname === host).id,
+        from: items.get(host).id,
         to: port.id
       }
-      items.push(edge)
+      items.put(edge)
 
       portMap[`${host}-${dev}`] = port.id
     })
@@ -460,22 +483,22 @@ export default function (input) {
 
   // Set up associations (can't be done before all nodes are in items)
   associations.forEach(edge => {
-    edge.from = items.find(item => item.hostname === edge.from).id
-    edge.to = items.find(item => item.hostname === edge.to).id
-    items.push(edge)
+    edge.from = items.get(edge.from).id
+    edge.to = items.get(edge.to).id
+    items.put(edge)
   })
 
   // Set up links (can't be done before all ports are in items)
   links.forEach(edge => {
     edge.from = portMap[edge.from]
     edge.to = portMap[edge.to]
-    items.push(edge)
+    items.put(edge)
   })
 
   return {
     ...jsonProps,
     version: 0,
     script: scriptLines.join('\n'),
-    items
+    items: items.array
   }
 }
