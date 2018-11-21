@@ -1,7 +1,9 @@
 import antlr4 from 'antlr4'
 import { Python2Lexer } from './generated/Python2Lexer'
 import { Python2Parser } from './generated/Python2Parser'
-import { Python2Listener } from './generated/Python2Listener'
+
+import CustomListener from './CustomListener'
+import { pyBoolean, pyNotNull, pyNumber, pyString } from './pyTypes'
 
 const ipAARE = /^'ip a a ([0-9a-fA-F.:/]{6,42}) dev ([^-]+-)?([^-]+)'$/
 
@@ -61,56 +63,6 @@ function parse (input) {
   return parser.file_input()
 }
 
-function processArgsCtx (argsCtx) {
-  const funcCtx = argsCtx.parentCtx.parentCtx
-  const funcNameIndex = funcCtx.children.indexOf(argsCtx.parentCtx) - 1
-  const funcName = funcCtx.children[funcNameIndex].getText()
-
-  let varName
-  if (
-    funcCtx.children.length >= 2 &&
-    funcCtx.children[0].getText() === 'net' &&
-    funcCtx.children[1].getText() === '.get'
-  ) {
-    varName = pyString(funcCtx.children[2].children[1].getText())
-  } else if (funcNameIndex > 0) {
-    varName = funcCtx.children[0].getText()
-  } else {
-    varName = null
-  }
-
-  return {
-    funcCtx, funcNameIndex, funcName, varName
-  }
-}
-
-function pyString (str) {
-  if (!/^'.*'$/.test(str)) {
-    throw new TypeError(`Expected string, got: “${str}”`)
-  } else {
-    return str.substr(1, str.length - 2)
-  }
-}
-function pyNumber (str) {
-  if (isNaN(str)) {
-    throw new TypeError(`Expected number, got: “${str}”`)
-  } else {
-    return str * 1
-  }
-}
-function pyBoolean (str) {
-  if (str === 'True') {
-    return true
-  } else if (str === 'False') {
-    return false
-  } else {
-    throw new TypeError(`Expected boolean, got: “${str}”`)
-  }
-}
-function pyNotNull (str) {
-  return str && str !== 'None'
-}
-
 function fixNextHostDev (set, hostDev) {
   let [host, dev] = hostDev.split('-')
   if (dev == null) {
@@ -126,29 +78,6 @@ function fixNextHostDev (set, hostDev) {
   return hostDev
 }
 
-function MyListener ({ enterArglist, enterAssignment }) {
-  Python2Listener.call(this)
-  this.visited = new Set()
-  this.enterArglistCb = enterArglist
-  this.enterAssignmentCb = enterAssignment
-  return this
-}
-MyListener.prototype = Object.create(Python2Listener.prototype)
-MyListener.prototype.constructor = MyListener
-MyListener.prototype.enterArglist = function (ctx) {
-  if (this.visited.has(ctx)) {
-    return
-  }
-  this.visited.add(ctx)
-
-  this.enterArglistCb(ctx)
-}
-MyListener.prototype.enterExpr_stmt = function (ctx) {
-  if (ctx.children.length === 3 && ctx.children[1].getText() === '=') {
-    this.enterAssignmentCb(ctx)
-  }
-}
-
 export default function (input) {
   const associations = []
   const hostIPs = {}
@@ -159,67 +88,9 @@ export default function (input) {
   const portMap = {}
   const scriptLines = []
   const scripts = {}
-  const vars = {}
 
-  const printer = new MyListener({
-    enterArglist: argsCtx => {
-      const args = argsCtx.children.map(child => {
-        if (!child.children) {
-          return child.getText()
-        } else {
-          return child.children.map(child => {
-            const text = child.getText()
-            if (text.startsWith('[')) {
-              if (text === '[]') {
-                return []
-              } else {
-                return text.substr(1, text.length - 2).split(',')
-              }
-            } else {
-              return text
-            }
-          })
-        }
-      }).filter(val =>
-        val !== ','
-      ).reduce((acc, val, i, arr) => {
-        if (val === '**') {
-          // Ignore
-        } else if (arr[i - 1] === '**') {
-          try {
-            const varName = val[0]
-            const value = vars[varName] // ctx
-              .getText() // Python dictionary
-              .replace(/'/g, '"') // JSON (hopefully)
-            const obj = JSON.parse(value)
-
-            // Use the same format as use non dict values
-            Object.keys(obj).forEach(key => {
-              const val = obj[key]
-              switch (typeof val) {
-                case 'number':
-                  obj[key] = `${val}`
-                  break
-                case 'string':
-                  obj[key] = `'${val}'`
-                  break
-              }
-            })
-
-            Object.assign(acc, obj)
-          } catch (error) {
-            console.warn(error)
-          }
-        } else if (val.length === 1) {
-          acc[i] = val[0]
-        } else {
-          acc[val[0]] = val[2]
-        }
-        return acc
-      }, {})
-
-      const { funcName, varName } = processArgsCtx(argsCtx)
-
+  const printer = new CustomListener({
+    enterArglist: (varName, funcName, args) => {
       if (funcName === '.onecmd') {
         // Script
         scriptLines.push(pyString(args[0]))
@@ -439,11 +310,6 @@ export default function (input) {
 
         items.put(item)
       }
-    },
-    enterAssignment: assignmentCtx => {
-      const name = assignmentCtx.children[0].getText()
-      const value = assignmentCtx.children[2]
-      vars[name] = value
     }
   })
 
