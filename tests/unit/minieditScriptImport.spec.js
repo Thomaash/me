@@ -9,6 +9,12 @@ describe('Import Miniedit script', () => {
   ;[{
     script: minieditScript,
     name: 'Miniedit',
+    props: {
+      ipBase: '10.0.0.0/8',
+      logLevel: 'info',
+      startScript: '',
+      stopScript: ''
+    },
     amounts: [
       ['association', 28],
       ['controller', 3],
@@ -46,7 +52,7 @@ describe('Import Miniedit script', () => {
       { type: 'switch', hostname: 's7', switchType: 'UserSwitch' },
       { type: 'switch', hostname: 's8', switchType: 'UserSwitch', inNamespace: true }
     ]
-  }].forEach(({ script, name, amounts, items: expectedItems }) => describe(name, () => {
+  }].forEach(({ script, name, props, amounts, items: expectedItems }) => describe(name, () => {
     const json = importScript(script)
 
     it('Types', () => {
@@ -60,6 +66,14 @@ describe('Import Miniedit script', () => {
     it('Mandatory properties', () => {
       expect(json, `There has to be a version.`).to.have.own.property('version')
       expect(json, `There have to be items.`).to.have.own.property('items')
+    })
+
+    describe('Root properties', () => {
+      Object.keys(props).forEach(key => {
+        it(key, () => {
+          expect(json[key], `Invalid property value.`).to.be.equal(props[key])
+        })
+      })
     })
 
     describe('Item amounts', () => {
