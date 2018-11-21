@@ -44,7 +44,7 @@ describe('Export import script', () => {
         const items1 = getCleanItems(data1.items, type)
         const items2 = getCleanItems(data2.items, type)
         expect(items2, `The amount of ${typePl} differs.`).to.have.lengthOf.at.most(items1.length)
-        expect(items1, `Some ${typePl} we're not imported correctly.`).to.include.deep.members(items2)
+        expect(items1, `Some ${typePl} were not imported correctly.`).to.include.deep.members(items2)
       })
 
       // Other
@@ -58,7 +58,7 @@ describe('Export import script', () => {
           const items1 = getCleanItems(data1.items, type)
           const items2 = getCleanItems(data2.items, type)
           expect(items2, `The amount of ${typePl} differs.`).to.have.lengthOf(items1.length)
-          expect(items2, `Some ${typePl} we're not imported correctly.`).to.have.deep.members(items1)
+          expect(items2, `Some ${typePl} were not imported correctly.`).to.have.deep.members(items1)
         })
       })
     })
