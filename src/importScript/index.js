@@ -88,6 +88,7 @@ export default function (input) {
   const portMap = {}
   const scriptLines = []
   const scripts = {}
+  let beforeCLIRun = true
 
   const printer = new CustomListener({
     functionCall: (varName, funcName, args) => {
@@ -309,6 +310,16 @@ export default function (input) {
         }
 
         items.put(item)
+      } else if (
+        (
+          (varName === 'cli' && funcName === '.run') ||
+          (funcName === 'CLI' && args[0] === 'net')
+        ) && (
+          !('script' in args) ||
+          args.script === 'None'
+        )
+      ) {
+        beforeCLIRun = false
       }
     }
   })
