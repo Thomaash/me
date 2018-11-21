@@ -22,9 +22,19 @@ class Items {
       item.id = this.nextId()
     }
 
-    if (hostnameLookupTypeRE.test(item.type) && item.hostname != null) {
+    if (
+      item.hostname != null &&
+      (hostnameLookupTypeRE.test(item.type) || item.type == null)
+    ) {
       if (this._indexMap[item.hostname] != null) {
-        Object.assign(this.get(item.hostname), item)
+        const oldItem = this.get(item.hostname)
+
+        // Append to the script
+        if (oldItem.script && item.script) {
+          item.script = `${oldItem.script}\n${item.script}`
+        }
+
+        Object.assign(oldItem, item)
       } else {
         this._indexMap[item.hostname] = this.array.length
         this.array[this.array.length] = item
@@ -87,7 +97,6 @@ export default function (input) {
   const links = []
   const portMap = {}
   const scriptLines = []
-  const scripts = {}
   let beforeCLIRun = true
 
   const printer = new CustomListener({
@@ -243,8 +252,12 @@ export default function (input) {
           ips.$push(nodename, portname, ip)
         } else {
           // Node script
-          ;(scripts[varName] || (scripts[varName] = []))
-            .push(pyString(args[0]))
+          const item = {
+            hostname: varName,
+            script: pyString(args[0])
+          }
+
+          items.put(item)
         }
       } else if (funcName === '.Intf' || funcName === 'Intf') {
         // Physical port
@@ -329,16 +342,6 @@ export default function (input) {
   const walker = new antlr4.tree.ParseTreeWalker()
   walker.walk(printer, tree)
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree)
-
-  // Add scripts to nodes
-  items.array.filter(({ type }) =>
-    type === 'host' || type === 'switch'
-  ).forEach(item => {
-    const script = scripts[item.hostname]
-    if (script) {
-      item.script = script.join('\n')
-    }
-  })
 
   // Prepare ports without IPs
   const hostDevs = new Set()
