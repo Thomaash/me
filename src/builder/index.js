@@ -84,8 +84,16 @@ export default class {
       })
     })
 
-    if (this._data.script) {
-      this._addScript(this._data.script)
+    // Scripts
+    if (this._data.startScript) {
+      this._code.globalStartCmds.push(
+        ...this._scriptToCmds(this._data.startScript)
+      )
+    }
+    if (this._data.stopScript) {
+      this._code.globalStopCmds.push(
+        ...this._scriptToCmds(this._data.stopScript)
+      )
     }
 
     // Mininet arguments
@@ -99,12 +107,6 @@ export default class {
     ]))
 
     return this._code.toString()
-  }
-
-  _addScript (script) {
-    this._code.globalCmds.push(
-      ...this._scriptToCmds(script)
-    )
   }
 
   _addController (controller) {
@@ -148,11 +150,7 @@ export default class {
       this._code.nodeLimits.push(`${host.hostname}.setCPUs(${args.join(', ')})`)
     }
 
-    if (host.script) {
-      this._code.nodeCmds.push(
-        ...this._scriptToCmds(host.script, host.hostname)
-      )
-    }
+    this._addNodeScripts(host.hostname, host.startScript, host.stopScript)
   }
   _addLink (link) {
     const fromPort = this._items.map.port[link.from]
@@ -257,11 +255,7 @@ export default class {
     this._code.nodes.push(`${swtch.hostname} = net.addSwitch(${args.join(', ')})`)
     this._code.startSwitches.push(`${swtch.hostname}.start([${controllerHostnames.join(', ')}])`)
 
-    if (swtch.script) {
-      this._code.nodeCmds.push(
-        ...this._scriptToCmds(swtch.script, swtch.hostname)
-      )
-    }
+    this._addNodeScripts(swtch.hostname, swtch.startScript, swtch.stopScript)
   }
 
   _portToNode (port) {
@@ -317,6 +311,18 @@ export default class {
           : `cli.onecmd('${line}')`
       ])
       .reduce((acc, val) => acc.concat(val), [])
+  }
+  _addNodeScripts (hostname, startScript, stopScript) {
+    if (startScript) {
+      this._code.nodeStartCmds.push(
+        ...this._scriptToCmds(startScript, hostname)
+      )
+    }
+    if (stopScript) {
+      this._code.nodeStopCmds.push(
+        ...this._scriptToCmds(stopScript, hostname)
+      )
+    }
   }
 
   _log (msg, severity, item) {

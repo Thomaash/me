@@ -26,49 +26,52 @@
     "controllers": [
         {
             "opts": {
-                "controllerType": "ref",
-                "hostname": "c0",
+                "controllerProtocol": "tcp",
+                "controllerType": "remote",
+                "hostname": "c1",
                 "remoteIP": "127.0.0.1",
-                "remotePort": 6653
+                "remotePort": 6643
             },
-            "x": "687.0",
+            "x": "1038.0",
             "y": "237.0"
         },
         {
             "opts": {
+                "controllerProtocol": "tcp",
                 "controllerType": "ovsc",
                 "hostname": "c2",
                 "remoteIP": "127.0.0.1",
-                "remotePort": 6643
+                "remotePort": 6653
             },
             "x": "138.0",
             "y": "112.0"
         },
         {
             "opts": {
-                "controllerType": "remote",
-                "hostname": "c1",
+                "controllerProtocol": "tcp",
+                "controllerType": "ref",
+                "hostname": "c0",
                 "remoteIP": "127.0.0.1",
                 "remotePort": 6633
             },
-            "x": "1038.0",
+            "x": "687.0",
             "y": "237.0"
         }
     ],
     "hosts": [
         {
-            "number": "4",
+            "number": "3",
             "opts": {
-                "cores": "2",
-                "cpu": 0.4,
+                "cores": "1",
+                "cpu": 0.3,
                 "defaultRoute": "192.168.1.1",
-                "hostname": "h4",
-                "ip": "192.168.1.104/8",
-                "nodeNum": 4,
-                "sched": "cfs"
+                "hostname": "h3",
+                "ip": "192.168.1.103/8",
+                "nodeNum": 3,
+                "sched": "rt"
             },
-            "x": "951.0",
-            "y": "654.0"
+            "x": "784.0",
+            "y": "660.0"
         },
         {
             "number": "2",
@@ -100,32 +103,18 @@
             "y": "651.0"
         },
         {
-            "number": "5",
+            "number": "4",
             "opts": {
-                "cores": "1,2,4",
-                "cpu": 0.5,
+                "cores": "2",
+                "cpu": 0.4,
                 "defaultRoute": "192.168.1.1",
-                "hostname": "h5",
-                "ip": "192.168.1.105/8",
-                "nodeNum": 5,
-                "sched": "host"
+                "hostname": "h4",
+                "ip": "192.168.1.104/8",
+                "nodeNum": 4,
+                "sched": "cfs"
             },
-            "x": "1149.0",
-            "y": "668.0"
-        },
-        {
-            "number": "3",
-            "opts": {
-                "cores": "1",
-                "cpu": 0.3,
-                "defaultRoute": "192.168.1.1",
-                "hostname": "h3",
-                "ip": "192.168.1.103/8",
-                "nodeNum": 3,
-                "sched": "rt"
-            },
-            "x": "784.0",
-            "y": "660.0"
+            "x": "951.0",
+            "y": "654.0"
         },
         {
             "number": "6",
@@ -147,6 +136,20 @@
             },
             "x": "1362.0",
             "y": "666.0"
+        },
+        {
+            "number": "5",
+            "opts": {
+                "cores": "1,2,4",
+                "cpu": 0.5,
+                "defaultRoute": "192.168.1.1",
+                "hostname": "h5",
+                "ip": "192.168.1.105/8",
+                "nodeNum": 5,
+                "sched": "host"
+            },
+            "x": "1149.0",
+            "y": "668.0"
         }
     ],
     "links": [
@@ -209,6 +212,43 @@
     ],
     "switches": [
         {
+            "number": "1",
+            "opts": {
+                "controllers": [
+                    "c0"
+                ],
+                "dpctl": "12345",
+                "dpid": "acdc",
+                "externalInterfaces": [
+                    "extS1"
+                ],
+                "hostname": "s1",
+                "netflow": "1",
+                "nodeNum": 1,
+                "sflow": "1",
+                "startCommand": "ip l",
+                "stopCommand": "ip a",
+                "switchIP": "",
+                "switchType": "default"
+            },
+            "x": "567.0",
+            "y": "440.0"
+        },
+        {
+            "number": "7",
+            "opts": {
+                "controllers": [],
+                "hostname": "s7",
+                "netflow": "0",
+                "nodeNum": 7,
+                "sflow": "0",
+                "switchIP": "",
+                "switchType": "user"
+            },
+            "x": "320.0",
+            "y": "94.0"
+        },
+        {
             "number": "3",
             "opts": {
                 "controllers": [
@@ -225,18 +265,15 @@
             "y": "440.0"
         },
         {
-            "number": "7",
+            "number": "4",
             "opts": {
                 "controllers": [],
-                "hostname": "s7",
-                "netflow": "0",
-                "nodeNum": 7,
-                "sflow": "0",
-                "switchIP": "",
-                "switchType": "user"
+                "hostname": "r4",
+                "nodeNum": 4,
+                "switchType": "legacyRouter"
             },
-            "x": "320.0",
-            "y": "94.0"
+            "x": "314.0",
+            "y": "438.0"
         },
         {
             "number": "2",
@@ -267,17 +304,6 @@
             "y": "438.0"
         },
         {
-            "number": "4",
-            "opts": {
-                "controllers": [],
-                "hostname": "r4",
-                "nodeNum": 4,
-                "switchType": "legacyRouter"
-            },
-            "x": "314.0",
-            "y": "438.0"
-        },
-        {
             "number": "8",
             "opts": {
                 "controllers": [],
@@ -290,27 +316,6 @@
             },
             "x": "320.0",
             "y": "216.0"
-        },
-        {
-            "number": "1",
-            "opts": {
-                "controllers": [
-                    "c0"
-                ],
-                "dpctl": "12345",
-                "dpid": "acdc",
-                "externalInterfaces": [
-                    "extS1"
-                ],
-                "hostname": "s1",
-                "netflow": "1",
-                "nodeNum": 1,
-                "sflow": "1",
-                "switchIP": "",
-                "switchType": "default"
-            },
-            "x": "567.0",
-            "y": "440.0"
         }
     ],
     "version": "2"

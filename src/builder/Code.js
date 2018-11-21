@@ -9,9 +9,11 @@ const metadata = [
   { attr: 'build', name: 'Build the network' },
   { attr: 'startControllers', name: 'Start controllers' },
   { attr: 'startSwitches', name: 'Start switches' },
-  { attr: 'nodeCmds', name: 'Run node commands' },
-  { attr: 'globalCmds', name: 'Run global commands' },
+  { attr: 'nodeStartCmds', name: 'Run node startup commands' },
+  { attr: 'globalStartCmds', name: 'Run global startup commands' },
   { attr: 'cli', name: 'Start CLI' },
+  { attr: 'globalStopCmds', name: 'Run global shutdown commands' },
+  { attr: 'nodeStopCmds', name: 'Run node shutdown commands' },
   { attr: 'finish', name: 'Finish' },
   { attr: 'log', name: 'Log', silent: true }
 ]

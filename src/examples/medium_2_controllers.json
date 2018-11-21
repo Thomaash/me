@@ -1,6 +1,6 @@
 {
     "version": 0,
-    "script": "# Ping between all hosts.\npingall\n",
+    "startScript": "# Ping between all hosts.\npingall\n",
     "items": [
         {
             "id": "0b285be7-23f8-45ba-a26b-c792cdf1b67d",

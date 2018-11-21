@@ -10,7 +10,7 @@ function getCleanItems (items, typeOnly) {
     Object.keys(orig).forEach(key => {
       if (type === 'port' && key === 'ips') {
         clean[key] = orig[key].sort()
-      } else if (key === 'script') {
+      } else if (key === 'startScript' || key === 'stopScript') {
         clean[key] = orig[key]
           .split('\n')
           .filter(line => !/^(\s*#|$)/.test(line))
@@ -33,3 +33,17 @@ function removeNonCode (script) {
     .join('\n')
 }
 export { removeNonCode }
+
+const types = {
+  autoSetMAC: 'boolean',
+  autoStaticARP: 'boolean',
+  inNamespace: 'boolean',
+  ipBase: 'string',
+  items: 'array',
+  listenPortBase: 'number',
+  spawnTerminals: 'boolean',
+  startScript: 'string',
+  stopScript: 'string',
+  version: 'number'
+}
+export { types }

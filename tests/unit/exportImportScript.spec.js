@@ -2,7 +2,7 @@ import { expect } from 'chai'
 
 import Builder from '../../src/builder'
 import importScript from '../../src/importScript'
-import { getCleanItems, removeNonCode } from './exportImportCommon.js'
+import { getCleanItems, removeNonCode, types } from './exportImportCommon.js'
 
 import tiny from '../../src/examples/tiny'
 import tinyController from '../../src/examples/tiny_controller'
@@ -31,9 +31,16 @@ describe('Export import script', () => {
     const script2 = new Builder(JSON.parse(JSON.stringify(data2))).build()
 
     it('Types', () => {
-      expect(data2.version, 'Version is not a number.').to.be.a('number')
-      expect(data2.script, 'Script is not a string.').to.be.a('string')
-      expect(data2.items, 'Items is not an array.').to.be.an('array')
+      Object.keys(data2).forEach(key => {
+        expect(types, `Unknown property ${key}.`).to.have.own.property(key)
+        const type = types[key]
+        expect(data2[key], `Property ${key} is not a ${type}.`).to.be.a(type)
+      })
+    })
+
+    it('Mandatory properties', () => {
+      expect(data2, `There has to be a version.`).to.have.own.property('version')
+      expect(data2, `There have to be items.`).to.have.own.property('items')
     })
 
     describe('Items', () => {

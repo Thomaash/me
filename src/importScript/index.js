@@ -29,9 +29,12 @@ class Items {
       if (this._indexMap[item.hostname] != null) {
         const oldItem = this.get(item.hostname)
 
-        // Append to the script
-        if (oldItem.script && item.script) {
-          item.script = `${oldItem.script}\n${item.script}`
+        // Append to the scripts
+        if (oldItem.startScript && item.startScript) {
+          item.startScript = `${oldItem.startScript}\n${item.startScript}`
+        }
+        if (oldItem.stopScript && item.stopScript) {
+          item.stopScript = `${oldItem.stopScript}\n${item.stopScript}`
         }
 
         Object.assign(oldItem, item)
@@ -96,14 +99,15 @@ export default function (input) {
   const jsonProps = {}
   const links = []
   const portMap = {}
-  const scriptLines = []
+  const scriptLines = { startScript: [], stopScript: [] }
   let beforeCLIRun = true
 
   const printer = new CustomListener({
     functionCall: (varName, funcName, args) => {
       if (funcName === '.onecmd') {
         // Script
-        scriptLines.push(pyString(args[0]))
+        scriptLines[beforeCLIRun ? 'startScript' : 'stopScript']
+          .push(pyString(args[0]))
       } else if (funcName === '.addLink') {
         // Link
         const item = {
@@ -245,7 +249,7 @@ export default function (input) {
 
         items.put(item)
       } else if (funcName === '.cmd' || funcName === '.cmdPrint') {
-        if (ipAARE.test(args[0])) {
+        if (beforeCLIRun && ipAARE.test(args[0])) {
           // Port IP
           const { 1: ip, 3: portname } = ipAARE.exec(args[0])
           const nodename = varName
@@ -254,7 +258,7 @@ export default function (input) {
           // Node script
           const item = {
             hostname: varName,
-            script: pyString(args[0])
+            [beforeCLIRun ? 'startScript' : 'stopScript']: pyString(args[0])
           }
 
           items.put(item)
@@ -407,7 +411,8 @@ export default function (input) {
   return {
     ...jsonProps,
     version: 0,
-    script: scriptLines.join('\n'),
+    startScript: scriptLines.startScript.join('\n'),
+    stopScript: scriptLines.stopScript.join('\n'),
     items: items.array
   }
 }

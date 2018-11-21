@@ -1,5 +1,5 @@
 {
-    "script": "# Ping between all hosts.\npingall\n",
+    "startScript": "# Ping between all hosts.\npingall\n",
     "ipBase": "192.168.1.0/8",
     "listenPortBase": 6634,
     "autoSetMAC": true,

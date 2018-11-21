@@ -153,9 +153,9 @@ s2.start([c2])
 s3.start([c2])
 
 # }}}
-# Run commands {{{
+# Run global startup commands {{{
 
-info('\n*** Run global commands\n')
+info('\n*** Run global startup commands\n')
 
 debug('[mininet]> pingall\n')
 cli.onecmd('pingall')

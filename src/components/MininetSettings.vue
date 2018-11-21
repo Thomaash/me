@@ -26,7 +26,10 @@
       <v-flex xs12 lg6 :class="{ 'pl-4': $vuetify.breakpoint.lgAndUp }">
         <v-layout wrap>
           <v-flex xs12>
-            <v-textarea label="Startup Script" v-model="script" autofocus auto-grow/>
+            <v-textarea label="Startup Script" v-model="startScript" autofocus auto-grow/>
+          </v-flex>
+          <v-flex xs12>
+            <v-textarea label="Shutdown Script" v-model="stopScript" autofocus auto-grow/>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -60,8 +63,9 @@ export default {
     inNamespace: new ComputedStoreProperty('inNamespace'),
     ipBase: new ComputedStoreProperty('ipBase'),
     listenPortBase: new ComputedStoreProperty('listenPortBase'),
-    script: new ComputedStoreProperty('script'),
-    spawnTerminals: new ComputedStoreProperty('spawnTerminals')
+    spawnTerminals: new ComputedStoreProperty('spawnTerminals'),
+    startScript: new ComputedStoreProperty('startScript'),
+    stopScript: new ComputedStoreProperty('stopScript')
   },
   validations: {
     listenPortBase: { port },
