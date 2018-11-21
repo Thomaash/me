@@ -15,7 +15,7 @@ export default class {
     this._code = new Code()
   }
   build () {
-    [
+    ;[
       // Nodes (stop on hostname conflict)
       { items: this._items.arr.controller, method: this._addController.bind(this) },
       { items: this._items.arr.host, method: this._addHost.bind(this) },

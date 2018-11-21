@@ -6,7 +6,7 @@ import { getCleanItems } from './exportImportCommon.js'
 import minieditScript from './minieditScriptImport.script.py'
 
 describe('Import Miniedit script', () => {
-  [{
+  ;[{
     script: minieditScript,
     name: 'Miniedit',
     amounts: [

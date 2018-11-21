@@ -16,7 +16,7 @@ import minieditScript from './minieditScriptImport.script.py'
 const miniedit = importScript(minieditScript)
 
 describe('Export import script', () => {
-  [
+  ;[
     { json: tiny, name: 'tiny' },
     { json: tinyController, name: 'tiny_controller' },
     { json: tinyTC, name: 'tiny_tc' },
