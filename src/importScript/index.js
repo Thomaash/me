@@ -10,8 +10,16 @@ class Items {
   constructor () {
     this.array = []
     this._indexMap = Object.create(null)
+    this._lastId = -1
+  }
+  nextId () {
+    return 'script_import_' + ++this._lastId
   }
   put (item) {
+    if (item.id == null) {
+      item.id = this.nextId()
+    }
+
     if (hostnameLookupTypeRE.test(item.type) && item.hostname != null) {
       if (this._indexMap[item.hostname] != null) {
         Object.assign(this.get(item.hostname), item)
@@ -152,7 +160,6 @@ export default function (input) {
   const scriptLines = []
   const scripts = {}
   const vars = {}
-  let lastId = 0
 
   const printer = new MyListener({
     enterArglist: argsCtx => {
@@ -219,7 +226,6 @@ export default function (input) {
       } else if (funcName === '.addLink') {
         // Link
         const item = {
-          id: 'script_import_' + ++lastId,
           type: 'link',
           from: args.intfName1
             ? pyString(args.intfName1)
@@ -251,7 +257,6 @@ export default function (input) {
         const hostnameTo = varName
         args[0].forEach(hostnameFrom => {
           const item = {
-            id: 'script_import_' + ++lastId,
             type: 'association',
             from: hostnameFrom,
             to: hostnameTo
@@ -263,7 +268,6 @@ export default function (input) {
         // Host
         const hostname = pyString(args[0])
         const item = {
-          id: 'script_import_' + ++lastId,
           type: 'host',
           hostname
         }
@@ -279,7 +283,6 @@ export default function (input) {
         // Switch
         const hostname = pyString(args[0])
         const item = {
-          id: 'script_import_' + ++lastId,
           type: 'switch',
           hostname
         }
@@ -343,7 +346,6 @@ export default function (input) {
         // Controller
         const hostname = pyString(args[0] || args.name)
         const item = {
-          id: 'script_import_' + ++lastId,
           type: 'controller',
           hostname
         }
@@ -380,7 +382,6 @@ export default function (input) {
           ips.$get(nodename, portname).physical = true
         } else {
           const item = {
-            id: 'script_import_' + ++lastId,
             type: 'port',
             physical: true,
             hostname: portname
@@ -410,7 +411,6 @@ export default function (input) {
       } else if (funcName === '.setCPUFrac') {
         const hostname = varName
         const item = {
-          id: 'script_import_' + ++lastId,
           type: 'host',
           hostname
         }
@@ -426,7 +426,6 @@ export default function (input) {
       } else if (funcName === '.setCPUs') {
         const hostname = varName
         const item = {
-          id: 'script_import_' + ++lastId,
           type: 'host',
           hostname
         }
@@ -485,7 +484,6 @@ export default function (input) {
     Object.keys(ips[host]).forEach(dev => {
       // Port
       const port = {
-        id: 'script_import_' + ++lastId,
         type: 'port',
         hostname: dev
       }
@@ -502,7 +500,6 @@ export default function (input) {
 
       // Association
       const edge = {
-        id: 'script_import_' + ++lastId,
         type: 'association',
         from: items.get(host).id,
         to: port.id
