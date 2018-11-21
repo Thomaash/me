@@ -20,7 +20,7 @@ const errors = {
 
 function prepErrors (root) {
   const items = []
-  const keys = Object.keys(root).filter(key => !key.startsWith('$'))
+  const keys = Object.keys(root).filter(key => !key.startsWith('$') || key === '$each')
   keys.forEach(key => {
     const params = root.$params[key]
     if (params) {
