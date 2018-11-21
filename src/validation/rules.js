@@ -92,3 +92,9 @@ const hexData = withParams(
   v => !req(v) || /^[0-9a-fA-F]*$/.test(v)
 )
 export { hexData }
+
+const naturalNumberList = withParams(
+  { type: 'naturalNumberList' },
+  v => !req(v) || v.every(nm => /^[0-9]+$/.test(nm))
+)
+export { naturalNumberList }

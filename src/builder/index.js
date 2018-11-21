@@ -126,9 +126,27 @@ export default class {
     const args = pyArgs([
       [host.hostname, String],
       ['None', null, 'ip'],
-      [host.defaultRoute != null, `via ${host.defaultRoute}`, String, 'defaultRoute']
+      [host.defaultRoute != null, `via ${host.defaultRoute}`, String, 'defaultRoute'],
+      [
+        [host.cpuScheduler, host.cpuCores, host.cpuLimit].some(v => v != null),
+        'mininet.node.CPULimitedHost', null, 'cls'
+      ]
     ])
     this._code.nodes.push(`${host.hostname} = net.addHost(${args.join(', ')})`)
+
+    if (host.cpuScheduler != null || host.cpuLimit != null) {
+      const args = pyArgs([
+        [host.cpuScheduler != null, host.cpuScheduler, String, 'sched'],
+        [host.cpuLimit != null, host.cpuLimit, Number, 'f']
+      ])
+      this._code.nodeLimits.push(`${host.hostname}.setCPUFrac(${args.join(', ')})`)
+    }
+    if (host.cpuCores != null) {
+      const args = pyArgs([
+        [host.cpuCores != null, host.cpuCores.join(','), String, 'cores']
+      ])
+      this._code.nodeLimits.push(`${host.hostname}.setCPUs(${args.join(', ')})`)
+    }
 
     if (host.script) {
       this._code.nodeCmds.push(

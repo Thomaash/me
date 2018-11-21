@@ -407,6 +407,38 @@ export default function (input) {
         if (pyNotNull(args.xterms)) {
           jsonProps.spawnTerminals = pyBoolean(args.xterms)
         }
+      } else if (funcName === '.setCPUFrac') {
+        const hostname = varName
+        const item = {
+          id: 'script_import_' + ++lastId,
+          type: 'host',
+          hostname
+        }
+
+        if (pyNotNull(args.f)) {
+          item.cpuLimit = pyNumber(args.f)
+        }
+        if (pyNotNull(args.sched)) {
+          item.cpuScheduler = pyString(args.sched)
+        }
+
+        items.put(item)
+      } else if (funcName === '.setCPUs') {
+        const hostname = varName
+        const item = {
+          id: 'script_import_' + ++lastId,
+          type: 'host',
+          hostname
+        }
+
+        if (pyNotNull(args.cores)) {
+          item.cpuCores = pyString(args.cores)
+            .replace(/\s+/g, '')
+            .split(',')
+            .map(str => parseInt(str))
+        }
+
+        items.put(item)
       }
     },
     enterAssignment: assignmentCtx => {

@@ -41,3 +41,9 @@ const protocolsIP = [
   { value: 'upd', text: 'UDP' }
 ]
 export { protocolsIP }
+
+const schedulers = [
+  { value: 'cfs', text: 'CFS' },
+  { value: 'rt', text: 'RT' }
+]
+export { schedulers }

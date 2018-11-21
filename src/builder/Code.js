@@ -4,6 +4,7 @@ const metadata = [
   { attr: 'nodes', name: 'Add nodes' },
   { attr: 'links', name: 'Add links' },
   { attr: 'ports', name: 'Add interfaces' },
+  { attr: 'nodeLimits', name: 'Add node limits' },
   { attr: 'ips', name: 'Add IP addresses' },
   { attr: 'build', name: 'Build the network' },
   { attr: 'startControllers', name: 'Start controllers' },

@@ -13,6 +13,7 @@ const errors = {
   maxValue: ({ max }) => `Has to be at most ${max}.`,
   minLength: ({ min }) => `Has to have at least ${min} character(s).`,
   minValue: ({ min }) => `Has to be at least ${min}.`,
+  naturalNumberList: () => 'Has to be a list of natural numbers.',
   port: () => 'Has to be valid port (1-65535).',
   required: () => 'Can\'n be left empty.',
   timeWithUnit: () => 'Has to be expressed as time + unit (e.g. 10ms or 443us).'
