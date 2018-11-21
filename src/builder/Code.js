@@ -1,5 +1,6 @@
 const metadata = [
   { attr: 'imports', name: 'Imports', silent: true },
+  { attr: 'preInit', name: 'Prepare workspace' },
   { attr: 'init', name: 'Initialize Mininet' },
   { attr: 'nodes', name: 'Add nodes' },
   { attr: 'links', name: 'Add links' },
@@ -22,13 +23,12 @@ export default class {
   constructor () {
     this.imports = [
       'from mininet.cli import CLI',
-      'from mininet.log import setLogLevel, info, debug',
       'from mininet.net import Mininet',
       'import mininet.link',
+      'import mininet.log',
       'import mininet.node'
     ]
     this.init = [
-      'setLogLevel(\'info\')',
       () => `net = Mininet(${this.mininetArgs.join(', ')})`,
       'cli = CLI(net, script=\'/dev/null\')'
     ]
@@ -69,7 +69,7 @@ export default class {
           `# ${name} {{{`,
           '',
           ...(silent ? [] : [
-            `info('\\n*** ${name}\\n')`,
+            `mininet.log.info('\\n*** ${name}\\n')`,
             ''
           ]),
           ...arr,

@@ -337,6 +337,9 @@ export default function (input) {
         )
       ) {
         beforeCLIRun = false
+      } else if (funcName === '.setLogLevel' || funcName === 'setLogLevel') {
+        // Log level
+        jsonProps.logLevel = pyString(args[0])
       }
     }
   })

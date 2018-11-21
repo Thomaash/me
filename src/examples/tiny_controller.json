@@ -1,6 +1,7 @@
 {
     "version": 0,
     "startScript": "# Ping between all hosts.\npingall\n",
+    "logLevel": "debug",
     "items": [
         {
             "id": "adc7b0a0-51e5-4678-a4bc-458ac91baed5",

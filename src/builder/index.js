@@ -84,6 +84,13 @@ export default class {
       })
     })
 
+    // Log level
+    if (this._data.logLevel) {
+      this._code.preInit.push(
+        `mininet.log.setLogLevel('${this._data.logLevel}')`
+      )
+    }
+
     // Scripts
     if (this._data.startScript) {
       this._code.globalStartCmds.push(
@@ -305,7 +312,7 @@ export default class {
     return script.split('\n')
       .filter(line => !/^(#|$)/.test(line))
       .map(line => [
-        `debug('${nodeVar || '[mininet]'}> ${line}\\n')`,
+        `mininet.log.debug('${nodeVar || '[mininet]'}> ${line}\\n')`,
         nodeVar
           ? `${nodeVar}.cmdPrint('${line}')`
           : `cli.onecmd('${line}')`

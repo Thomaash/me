@@ -4,6 +4,9 @@
       <v-flex xs12 lg6 :class="{ 'pr-4': $vuetify.breakpoint.lgAndUp }">
         <v-layout wrap>
           <v-flex xs12>
+            <v-select label="Log Level" :items="logLevels" v-model="logLevel" clearable/>
+          </v-flex>
+          <v-flex xs12>
             <v-text-field label="IP Base" v-model="ipBase" :error-messages="errors.ipBase" clearable/>
           </v-flex>
           <v-flex xs12>
@@ -41,6 +44,7 @@
 import ThreeStateCheckbox from '@/components/ThreeStateCheckbox'
 import errors from '@/validation/errors'
 import { ipWithMask, port } from '@/validation/rules'
+import { logLevels } from '@/selects'
 
 function ComputedStoreProperty (key) {
   this.get = function () {
@@ -57,12 +61,16 @@ export default {
   name: 'Script',
   mixins: [errors],
   components: { ThreeStateCheckbox },
+  data: () => ({
+    logLevels
+  }),
   computed: {
     autoSetMAC: new ComputedStoreProperty('autoSetMAC'),
     autoStaticARP: new ComputedStoreProperty('autoStaticARP'),
     inNamespace: new ComputedStoreProperty('inNamespace'),
     ipBase: new ComputedStoreProperty('ipBase'),
     listenPortBase: new ComputedStoreProperty('listenPortBase'),
+    logLevel: new ComputedStoreProperty('logLevel'),
     spawnTerminals: new ComputedStoreProperty('spawnTerminals'),
     startScript: new ComputedStoreProperty('startScript'),
     stopScript: new ComputedStoreProperty('stopScript')

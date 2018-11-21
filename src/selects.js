@@ -47,3 +47,13 @@ const schedulers = [
   { value: 'rt', text: 'RT' }
 ]
 export { schedulers }
+
+const logLevels = [
+  { value: 'debug', text: 'Debug' },
+  { value: 'info', text: 'Info' },
+  { value: 'output', text: 'Output' },
+  { value: 'warning', text: 'Warning' },
+  { value: 'error', text: 'Error' },
+  { value: 'critical', text: 'Critical' }
+]
+export { logLevels }

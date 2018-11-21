@@ -4,24 +4,23 @@
 # Imports {{{
 
 from mininet.cli import CLI
-from mininet.log import setLogLevel, info, debug
 from mininet.net import Mininet
 import mininet.link
+import mininet.log
 import mininet.node
 
 # }}}
 # Initialize Mininet {{{
 
-info('\n*** Initialize Mininet\n')
+mininet.log.info('\n*** Initialize Mininet\n')
 
-setLogLevel('info')
 net = Mininet(build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink, topo=None)
 cli = CLI(net, script='/dev/null')
 
 # }}}
 # Add nodes {{{
 
-info('\n*** Add nodes\n')
+mininet.log.info('\n*** Add nodes\n')
 
 c1 = net.addController('c1', controller=mininet.node.RemoteController, ip='127.0.0.1', port=6653)
 c2 = net.addController('c2', controller=mininet.node.RemoteController, ip='127.0.0.1', port=6633)
@@ -45,7 +44,7 @@ s3 = net.addSwitch('s3', cls=mininet.node.OVSSwitch)
 # }}}
 # Add links {{{
 
-info('\n*** Add links\n')
+mininet.log.info('\n*** Add links\n')
 
 net.addLink(s1, s2, intfName1='s1-eth5', intfName2='s2-eth0', bw=100, delay='10ms', max_queue_size=42, jitter='5ms')
 net.addLink(s1, h1, intfName1='s1-eth0', intfName2='h1-eth0')
@@ -67,7 +66,7 @@ net.addLink(h4, h3, intfName1='h4-eth0', intfName2='h3-eth1', bw=10)
 # }}}
 # Add IP addresses {{{
 
-info('\n*** Add IP addresses\n')
+mininet.log.info('\n*** Add IP addresses\n')
 
 h1.intf('h1-eth0').ip = '172.18.1.1'
 h1.intf('h1-eth0').prefixLen = 16
@@ -131,14 +130,14 @@ h4.cmd('ip a a fc00::4/32 dev h4-eth1')
 # }}}
 # Build the network {{{
 
-info('\n*** Build the network\n')
+mininet.log.info('\n*** Build the network\n')
 
 net.build()
 
 # }}}
 # Start controllers {{{
 
-info('\n*** Start controllers\n')
+mininet.log.info('\n*** Start controllers\n')
 
 c1.start()
 c2.start()
@@ -146,7 +145,7 @@ c2.start()
 # }}}
 # Start switches {{{
 
-info('\n*** Start switches\n')
+mininet.log.info('\n*** Start switches\n')
 
 s1.start([c1])
 s2.start([c2])
@@ -155,22 +154,22 @@ s3.start([c2])
 # }}}
 # Run global startup commands {{{
 
-info('\n*** Run global startup commands\n')
+mininet.log.info('\n*** Run global startup commands\n')
 
-debug('[mininet]> pingall\n')
+mininet.log.debug('[mininet]> pingall\n')
 cli.onecmd('pingall')
 
 # }}}
 # Start CLI {{{
 
-info('\n*** Start CLI\n')
+mininet.log.info('\n*** Start CLI\n')
 
 cli.run()
 
 # }}}
 # Finish {{{
 
-info('\n*** Finish\n')
+mininet.log.info('\n*** Finish\n')
 
 net.stop()
 

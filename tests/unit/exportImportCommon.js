@@ -41,6 +41,7 @@ const types = {
   ipBase: 'string',
   items: 'array',
   listenPortBase: 'number',
+  logLevel: 'string',
   spawnTerminals: 'boolean',
   startScript: 'string',
   stopScript: 'string',
