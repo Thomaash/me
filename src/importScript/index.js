@@ -78,14 +78,14 @@ function processArgsCtx (argsCtx) {
 
 function pyString (str) {
   if (!/^'.*'$/.test(str)) {
-    throw new TypeError('Expected string.')
+    throw new TypeError(`Expected string, got: “${str}”`)
   } else {
     return str.substr(1, str.length - 2)
   }
 }
 function pyNumber (str) {
   if (isNaN(str)) {
-    throw new TypeError('Expected number.')
+    throw new TypeError(`Expected number, got: “${str}”`)
   } else {
     return str * 1
   }
@@ -96,7 +96,7 @@ function pyBoolean (str) {
   } else if (str === 'False') {
     return false
   } else {
-    throw new TypeError('Expected boolean.')
+    throw new TypeError(`Expected boolean, got: “${str}”`)
   }
 }
 function pyNotNull (str) {
