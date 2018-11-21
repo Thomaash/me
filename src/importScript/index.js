@@ -90,7 +90,7 @@ export default function (input) {
   const scripts = {}
 
   const printer = new CustomListener({
-    enterArglist: (varName, funcName, args) => {
+    functionCall: (varName, funcName, args) => {
       if (funcName === '.onecmd') {
         // Script
         scriptLines.push(pyString(args[0]))
@@ -123,7 +123,7 @@ export default function (input) {
         }
 
         links.push(item)
-      } else if (funcName === '.start') {
+      } else if (funcName === '.start' && Array.isArray(args[0])) {
         // Association switch → controller
         const hostnameTo = varName
         args[0].forEach(hostnameFrom => {

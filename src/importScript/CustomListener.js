@@ -2,26 +2,18 @@ import { Python2Listener } from './generated/Python2Listener'
 
 import { pyString } from './pyTypes'
 
-function CustomListener ({ enterArglist, enterAssignment }) {
+function CustomListener ({ functionCall }) {
   Python2Listener.call(this)
   this.visited = new Set()
   this.vars = Object.create(null)
-  this.enterArglistCb = enterArglist
-  this.enterAssignmentCb = enterAssignment
+  this.functionCallCb = functionCall
   return this
 }
+
 CustomListener.prototype = Object.create(Python2Listener.prototype)
 CustomListener.prototype.constructor = CustomListener
-CustomListener.prototype.enterArglist = function (ctx) {
-  if (this.visited.has(ctx)) {
-    return
-  }
-  this.visited.add(ctx)
 
-  const { funcName, varName } = this.processArgsCtx(ctx)
-  const args = this.preprocessArgs(ctx)
-  this.enterArglistCb(varName, funcName, args)
-}
+// Process variables
 CustomListener.prototype.enterExpr_stmt = function (ctx) {
   if (ctx.children.length === 3 && ctx.children[1].getText() === '=') {
     const name = ctx.children[0].getText()
@@ -29,9 +21,10 @@ CustomListener.prototype.enterExpr_stmt = function (ctx) {
     this.vars[name] = value
   }
 }
-CustomListener.prototype.processArgsCtx = function (argsCtx) {
-  const funcCtx = argsCtx.parentCtx.parentCtx
-  const funcNameIndex = funcCtx.children.indexOf(argsCtx.parentCtx) - 1
+
+CustomListener.prototype.processTrailer = function (trailerCtx) {
+  const funcCtx = trailerCtx.parentCtx
+  const funcNameIndex = funcCtx.children.indexOf(trailerCtx) - 1
   const funcName = funcCtx.children[funcNameIndex].getText()
 
   let varName
@@ -49,6 +42,7 @@ CustomListener.prototype.processArgsCtx = function (argsCtx) {
 
   return { varName, funcName }
 }
+
 CustomListener.prototype.preprocessArgs = function (argsCtx) {
   return argsCtx.children.map(child => {
     if (!child.children) {
@@ -103,7 +97,24 @@ CustomListener.prototype.preprocessArgs = function (argsCtx) {
       acc[val[0]] = val[2]
     }
     return acc
-  }, {})
+  }, Object.create(null))
+}
+
+CustomListener.prototype.enterTrailer = function (ctx) {
+  if (this.visited.has(ctx)) {
+    return
+  }
+  this.visited.add(ctx)
+
+  const ctxText = ctx.getText()
+  if (ctxText.startsWith('(') && ctxText.endsWith(')')) {
+    const { funcName, varName } = this.processTrailer(ctx)
+    const args = ctx.children.length === 3
+      ? this.preprocessArgs(ctx.children[1])
+      : Object.create(null)
+
+    this.functionCallCb(varName, funcName, args)
+  }
 }
 
 export default CustomListener
