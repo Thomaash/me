@@ -1,3 +1,5 @@
+import { expect } from 'chai'
+
 function getCleanItems (items, typeOnly) {
   return items.filter(node =>
     !typeOnly ||
@@ -48,3 +50,24 @@ const types = {
   version: 'number'
 }
 export { types }
+
+function testTypes (json) {
+  describe('Types', () => {
+    Object.keys(json).forEach(key => {
+      it(key, () => {
+        expect(types, `Unknown property ${key}.`).to.have.own.property(key)
+        const type = types[key]
+        expect(json[key], `Property ${key} is not a ${type}.`).to.be.a(type)
+      })
+    })
+  })
+
+  describe('Mandatory properties', () => {
+    ;['version', 'items'].forEach(key => {
+      it(key, () => {
+        expect(json, `Missing property.`).to.have.own.property(key)
+      })
+    })
+  })
+}
+export { testTypes }

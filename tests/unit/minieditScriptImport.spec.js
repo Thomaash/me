@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
 import importScript from '../../src/importScript'
-import { getCleanItems, types } from './exportImportCommon.js'
+import { getCleanItems, testTypes } from './exportImportCommon.js'
 
 import minieditScript from './minieditScriptImport.script.py'
 
@@ -55,18 +55,7 @@ describe('Import Miniedit script', () => {
   }].forEach(({ script, name, props, amounts, items: expectedItems }) => describe(name, () => {
     const json = importScript(script)
 
-    it('Types', () => {
-      Object.keys(json).forEach(key => {
-        expect(types, `Unknown property ${key}.`).to.have.own.property(key)
-        const type = types[key]
-        expect(json[key], `Property ${key} is not a ${type}.`).to.be.a(type)
-      })
-    })
-
-    it('Mandatory properties', () => {
-      expect(json, `There has to be a version.`).to.have.own.property('version')
-      expect(json, `There have to be items.`).to.have.own.property('items')
-    })
+    testTypes(json)
 
     describe('Root properties', () => {
       Object.keys(props).forEach(key => {
