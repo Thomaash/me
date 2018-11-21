@@ -29,10 +29,10 @@
       <v-flex xs12 lg6 :class="{ 'pl-4': $vuetify.breakpoint.lgAndUp }">
         <v-layout wrap>
           <v-flex xs12>
-            <v-textarea label="Startup Script" v-model="startScript" autofocus auto-grow/>
+            <v-textarea label="Startup Script" v-model="startScript" auto-grow/>
           </v-flex>
           <v-flex xs12>
-            <v-textarea label="Shutdown Script" v-model="stopScript" autofocus auto-grow/>
+            <v-textarea label="Shutdown Script" v-model="stopScript" auto-grow/>
           </v-flex>
         </v-layout>
       </v-flex>
