@@ -13,7 +13,7 @@ import medium1Controller from '../../src/examples/medium_1_controller'
 import medium2Controllers from '../../src/examples/medium_2_controllers'
 
 import minieditScript from './minieditScriptImport.script.py'
-const miniedit = importScript(minieditScript)
+const miniedit = importScript(minieditScript).data
 
 describe('Export import script', () => {
   ;[
@@ -27,7 +27,7 @@ describe('Export import script', () => {
     { json: miniedit, name: 'miniedit' }
   ].forEach(({ json: data1, name }) => describe(name, () => {
     const script1 = new Builder(JSON.parse(JSON.stringify(data1))).build()
-    const data2 = importScript(script1)
+    const data2 = importScript(script1).data
     const script2 = new Builder(JSON.parse(JSON.stringify(data2))).build()
 
     testTypes(data2)

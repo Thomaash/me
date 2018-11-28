@@ -26,6 +26,7 @@ CustomListener.prototype.processTrailer = function (trailerCtx) {
   const funcCtx = trailerCtx.parentCtx
   const funcNameIndex = funcCtx.children.indexOf(trailerCtx) - 1
   const funcName = funcCtx.children[funcNameIndex].getText()
+  const funcText = funcCtx.getText()
 
   let varName
   if (
@@ -40,7 +41,7 @@ CustomListener.prototype.processTrailer = function (trailerCtx) {
     varName = null
   }
 
-  return { varName, funcName }
+  return { varName, funcName, funcText }
 }
 
 CustomListener.prototype.preprocessArgs = function (argsCtx) {
@@ -108,12 +109,12 @@ CustomListener.prototype.enterTrailer = function (ctx) {
 
   const ctxText = ctx.getText()
   if (ctxText.startsWith('(') && ctxText.endsWith(')')) {
-    const { funcName, varName } = this.processTrailer(ctx)
+    const { varName, funcName, funcText } = this.processTrailer(ctx)
     const args = ctx.children.length === 3
       ? this.preprocessArgs(ctx.children[1])
       : Object.create(null)
 
-    this.functionCallCb(varName, funcName, args)
+    this.functionCallCb(varName, funcName, args, funcText)
   }
 }
 

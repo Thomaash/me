@@ -157,7 +157,7 @@ export default {
     },
     importers () {
       function json (json) {
-        return JSON.parse(json)
+        return { data: JSON.parse(json), log: [] }
       }
       function python (script) {
         return importScript(script)
@@ -195,11 +195,12 @@ export default {
             this.importers[file.name.replace(/^.*(?=\.)/, '')]
           if (stringToImport) {
             const str = fr.result
-            const importData = stringToImport(str)
+            const { data, log } = stringToImport(str)
+            this.log = log
             if (stringToImport === this.importers.python) {
-              await this.confirmImport(importData, '<p>Importing scripts is highly unreliable. Imported project will be anything from <strong>incomplete</strong> to <strong>disfunctional</strong>.</p>')
+              await this.confirmImport(data, '<p>Importing scripts is highly unreliable. Imported project will be anything from <strong>incomplete</strong> to <strong>disfunctional</strong>.</p>')
             } else {
-              await this.confirmImport(importData)
+              await this.confirmImport(data)
             }
           } else {
             this.showAlert('error', `Unknown file format: “${file.type}”.`)

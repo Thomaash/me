@@ -53,7 +53,7 @@ describe('Import Miniedit script', () => {
       { type: 'switch', hostname: 's8', switchType: 'UserSwitch', inNamespace: true }
     ]
   }].forEach(({ script, name, props, amounts, items: expectedItems }) => describe(name, () => {
-    const json = importScript(script)
+    const json = importScript(script).data
 
     testTypes(json)
 
