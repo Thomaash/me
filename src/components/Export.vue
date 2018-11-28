@@ -47,7 +47,7 @@
             <v-list>
               <v-list-tile avatar v-for="(l, i) in log" :key="'export_log_' + i" @click="">
                 <v-list-tile-action>
-                  <v-checkbox v-model="logCbs[i]"/>
+                  <v-checkbox color="primary" v-model="logCbs[i]"/>
                 </v-list-tile-action>
                 <v-list-tile-content @click="$set(logCbs, i, !logCbs[i])">
                   <v-list-tile-title v-text="l.msg"/>
