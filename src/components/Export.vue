@@ -154,6 +154,23 @@ export default {
         }
         this.$store.commit('setWorking', { working: !!value })
       }
+    },
+    importers () {
+      function json (json) {
+        return JSON.parse(json)
+      }
+      function python (script) {
+        return importScript(script)
+      }
+      return {
+        '.json': json,
+        '.py': python,
+        'application/json': json,
+        'application/x-python-code': python,
+        'text/x-python': python,
+        json,
+        python
+      }
     }
   },
   methods: {
@@ -174,16 +191,18 @@ export default {
       fr.readAsBinaryString(file)
       fr.onloadend = async () => {
         try {
-          if (file.type === 'application/json') {
-            const json = fr.result
-            const importData = JSON.parse(json)
-            await this.confirmImport(importData)
-          } else if (file.type === 'text/x-python') {
-            const script = fr.result
-            const importData = importScript(script)
-            await this.confirmImport(importData, '<p>Importing scripts is highly unreliable. Imported project will be anything from <strong>incomplete</strong> to <strong>disfunctional</strong>.</p>')
+          const stringToImport = this.importers[file.type] ||
+            this.importers[file.name.replace(/^.*(?=\.)/, '')]
+          if (stringToImport) {
+            const str = fr.result
+            const importData = stringToImport(str)
+            if (stringToImport === this.importers.python) {
+              await this.confirmImport(importData, '<p>Importing scripts is highly unreliable. Imported project will be anything from <strong>incomplete</strong> to <strong>disfunctional</strong>.</p>')
+            } else {
+              await this.confirmImport(importData)
+            }
           } else {
-            this.showAlert('error', 'Unknown file format.')
+            this.showAlert('error', `Unknown file format: “${file.type}”.`)
           }
         } catch (error) {
           console.error(error)
