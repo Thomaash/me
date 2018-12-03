@@ -47,13 +47,13 @@
             <v-list>
               <v-list-tile avatar v-for="(l, i) in sortedLog" :key="'export_log_' + i" @click="">
                 <v-list-tile-action>
-                  <v-checkbox color="primary" v-model="logCbs[i]"/>
+                  <v-checkbox color="primary" v-model="logCbs[i]" hide-details/>
                 </v-list-tile-action>
                 <v-list-tile-content @click="$set(logCbs, i, !logCbs[i])">
                   <v-list-tile-title v-text="l.msg"/>
                 </v-list-tile-content>
                 <v-list-tile-avatar @click="selectInCanvas(l.item.id)">
-                  <v-icon v-text="'$vuetify.icons.' + l.severity"/>
+                  <v-icon :color="l.severity" v-text="'$vuetify.icons.' + l.severity"/>
                 </v-list-tile-avatar>
               </v-list-tile>
             </v-list>
