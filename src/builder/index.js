@@ -169,6 +169,26 @@ export default class {
     const fromNode = this._portToNode(fromPort)
     const toNode = this._portToNode(toPort)
 
+    if (!fromNode || !toNode) {
+      this._log(
+        `Failed to add ${link.type}/${link.hostname}: link can't be connected to disconnected port(s).`,
+        'warning',
+        link
+      )
+      ;[
+        ...(fromNode ? [] : [fromPort]),
+        ...(toNode ? [] : [toPort])
+      ].forEach(port => {
+        this._log(
+          `Failed to add ${port.type}/${port.hostname}: port can't be connected to a link but not to a node.`,
+          'warning',
+          port
+        )
+      })
+
+      return
+    }
+
     const fromDev = `${fromNode.hostname}-${fromPort.hostname}`
     const toDev = `${toNode.hostname}-${toPort.hostname}`
 
