@@ -7,6 +7,7 @@
       max-width="600px"
       :fullscreen="$vuetify.breakpoint.xsOnly"
       @keydown.esc="cancel"
+      @keydown.enter="save"
     >
       <v-card>
         <v-card-title primary-title style="flex-grow: 0;">
