@@ -150,7 +150,11 @@ export default {
         dummy: {
           shape: 'box',
           color: this.buildGroupColor(theme.dummy, '#fff', true),
-          font: { color: theme.dummy },
+          font: {
+            color: theme.dummy,
+            face: 'monospace',
+            align: 'left'
+          },
           borderWidth: 1
         },
         host: {

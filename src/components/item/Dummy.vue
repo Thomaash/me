@@ -3,7 +3,14 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-textarea label="Label" required v-model="item.hostname" autofocus auto-grow clearable/>
+          <v-textarea
+            auto-grow
+            autofocus
+            clearable
+            label="Label"
+            style="font-family: monospace;"
+            v-model="item.hostname"
+          />
         </v-flex>
       </v-layout>
     </v-container>

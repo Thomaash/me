@@ -5,12 +5,12 @@
       persistent
       scrollable
       max-width="600px"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
+      :fullscreen="fullscreen || $vuetify.breakpoint.xsOnly"
       @keydown.esc="cancel"
       @keydown.enter="save"
     >
       <v-card>
-        <v-card-title primary-title style="flex-grow: 0;">
+        <v-card-title primary-title style="flex-grow: 0;" @dblclick="fullscreen = !fullscreen">
           <v-icon v-text="'$vuetify.icons.net-' + themeType" class="mr-2"/>
           <h3 class="headline" v-text="headline"/>
         </v-card-title>
@@ -60,8 +60,9 @@ export default {
   components: { AssociationEdit, ControllerEdit, DummyEdit, HostEdit, LinkEdit, PortEdit, SwitchEdit },
   data: () => ({
     dialog: false,
-    valid: false,
-    item: {}
+    fullscreen: true,
+    item: {},
+    valid: false
   }),
   computed: {
     component () {
@@ -85,6 +86,7 @@ export default {
       this.item = JSON.parse(JSON.stringify(item))
       this.callback = callback
 
+      this.fullscreen = false
       this.dialog = true
     },
     save () {
