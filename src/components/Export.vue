@@ -45,7 +45,7 @@
             <h3 class="headline">Log</h3>
 
             <v-list>
-              <v-list-tile avatar v-for="(l, i) in log" :key="'export_log_' + i" @click="">
+              <v-list-tile avatar v-for="(l, i) in sortedLog" :key="'export_log_' + i" @click="">
                 <v-list-tile-action>
                   <v-checkbox color="primary" v-model="logCbs[i]"/>
                 </v-list-tile-action>
@@ -100,7 +100,12 @@ function download (filename, mimeOrHref, data) {
   document.body.removeChild(element)
 }
 
-const logPriority = ['error', 'warning', 'info']
+const logPriority = [
+  'error', 'warning', 'info'
+].reduce((acc, v, i) => {
+  acc[v] = i
+  return acc
+}, {})
 
 export default {
   name: 'Export',
@@ -154,6 +159,12 @@ export default {
         }
         this.$store.commit('setWorking', { working: !!value })
       }
+    },
+    sortedLog () {
+      return [...this.log].sort(
+        ({ severity: a }, { severity: b }) =>
+          logPriority[a] - logPriority[b]
+      )
     },
     importers () {
       function json (json) {
@@ -293,10 +304,6 @@ export default {
         download('mininet_network.py', 'text/x-python;charset=utf-8', script)
       } catch (error) {
         console.error(error)
-        this.log.sort(
-          ({ severity: a }, { severity: b }) =>
-            logPriority.indexOf(a) - logPriority.indexOf(b)
-        )
         this.showAlert('error', 'Script was not built.')
       } finally {
         this.working = false
