@@ -40,7 +40,7 @@
       </v-flex>
 
       <v-slide-y-transition mode="out-in">
-        <v-flex xs12 v-if="log.length">
+        <v-flex xs12 v-if="sortedLog.length">
           <section>
             <h3 class="headline">Log</h3>
 
@@ -261,9 +261,9 @@ export default {
         ids = this.logCbs
           .map((cb, i) => cb ? i : null)
           .filter(i => i !== null)
-          .map(i => this.log[i].item.id)
+          .map(i => this.sortedLog[i].item.id)
       } else {
-        ids = this.log.map(l => l.item.id)
+        ids = this.sortedLog.map(l => l.item.id)
       }
 
       this.$router.push({
