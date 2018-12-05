@@ -3,8 +3,8 @@ export * from 'vuelidate/lib/validators'
 
 const { req, withParams } = helpers
 
-const testMask4 = v => /^\d+$/.test(v) && v >= 0 && v <= 24
-const testMask6 = v => /^\d+$/.test(v) && v >= 0 && v <= 64
+const testMask4 = v => /^\d+$/.test(v) && v >= 0 && v <= 32
+const testMask6 = v => /^\d+$/.test(v) && v >= 0 && v <= 128
 
 const testIP4 = v => /^\d+\.\d+\.\d+\.\d+$/.test(v) &&
   v.split('.').every(p => p >= 0 && p <= 255)
