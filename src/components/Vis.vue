@@ -132,7 +132,7 @@ export default {
           if (!item) {
             // Node/edge adding mode is not turned off unless a node/edge is placed.
             this.stopEditMode()
-            return resolve()
+            return resolve({})
           }
 
           if (node.from && node.to) {
