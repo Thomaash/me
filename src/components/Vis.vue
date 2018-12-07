@@ -122,26 +122,28 @@ export default {
       this.newItemType = ''
       this.net.disableEditMode()
     },
-    editItem (node, callback) {
-      const oldItem = this.data.items[node.id] || {
-        id: node.id,
-        type: node.group
-      }
-      this.$emit('edit-item', oldItem, item => {
-        if (!item) {
-          // Node/edge adding mode is not turned off unless a node/edge is placed.
-          this.stopEditMode()
-          return callback()
+    editItem (node) {
+      return new Promise(resolve => {
+        const oldItem = this.data.items[node.id] || {
+          id: node.id,
+          type: node.group
         }
+        this.$emit('edit-item', oldItem, item => {
+          if (!item) {
+            // Node/edge adding mode is not turned off unless a node/edge is placed.
+            this.stopEditMode()
+            return resolve()
+          }
 
-        if (node.from && node.to) {
-          item.from = node.from
-          item.to = node.to
-        }
+          if (node.from && node.to) {
+            item.from = node.from
+            item.to = node.to
+          }
 
-        this.$store.commit('data/setItems', [item])
-        updateNode(node, item)
-        callback(node)
+          this.$store.commit('data/setItems', [item])
+          updateNode(node, item)
+          return resolve(node)
+        })
       })
     },
     commitPositions (ids) {
@@ -239,96 +241,98 @@ export default {
       this.net.setOptions({
         manipulation: {
           enabled: false,
-          addNode: (node, callback) => {
+          addNode: async (node, callback) => {
             node.group = this.newItemType
             this.newItemType = ''
 
-            this.editItem(node, edited => {
-              if (!edited) {
-                return callback()
-              }
+            const edited = await this.editItem(node)
+            if (!edited) {
+              return callback()
+            }
 
-              callback(edited)
+            callback(edited)
 
-              this.commitPositions([edited.id])
+            this.commitPositions([edited.id])
 
-              if (edited.group === 'port') {
-                const { x, y } = this.net.getPositions(edited.id)[edited.id]
-                const closest = this.getClosest(x, y, ['host', 'switch'])
-                if (closest.distance <= 500) {
-                  const closestId = closest.id
-                  const association = {
-                    id: vis.util.randomUUID(),
-                    from: closestId,
-                    to: edited.id
-                  }
-                  this.edges.add(association)
-                  this.$store.commit('data/setItems', [{
-                    id: association.id,
-                    type: 'association',
-                    from: association.from,
-                    to: association.to
-                  }])
+            if (edited.group === 'port') {
+              const { x, y } = this.net.getPositions(edited.id)[edited.id]
+              const closest = this.getClosest(x, y, ['host', 'switch'])
+              if (closest.distance <= 500) {
+                const closestId = closest.id
+                const association = {
+                  id: vis.util.randomUUID(),
+                  from: closestId,
+                  to: edited.id
                 }
+                this.edges.add(association)
+                this.$store.commit('data/setItems', [{
+                  id: association.id,
+                  type: 'association',
+                  from: association.from,
+                  to: association.to
+                }])
               }
+            }
 
-              const ports = portAmounts[edited.group] || 0
-              if (ports > 0) {
-                const coords = this.generateOrganizedPortCoors(edited, ports)
-                const items = []
-                for (let i = 0; i < ports; ++i) {
-                  const port = {
-                    label: `eth${i}`,
-                    group: 'port',
-                    ...coords[i]
-                  }
-                  this.nodes.add(port)
-                  items.push({
-                    id: port.id,
-                    hostname: port.label,
-                    type: 'port',
-                    ...coords[i]
-                  })
-
-                  const edge = {
-                    id: vis.util.randomUUID(),
-                    from: edited.id,
-                    to: port.id
-                  }
-                  this.edges.add(edge)
-                  items.push({
-                    id: edge.id,
-                    type: 'association',
-                    from: edge.from,
-                    to: edge.to
-                  })
+            const ports = portAmounts[edited.group] || 0
+            if (ports > 0) {
+              const coords = this.generateOrganizedPortCoors(edited, ports)
+              const items = []
+              for (let i = 0; i < ports; ++i) {
+                const port = {
+                  label: `eth${i}`,
+                  group: 'port',
+                  ...coords[i]
                 }
-                this.$store.commit('data/setItems', items)
+                this.nodes.add(port)
+                items.push({
+                  id: port.id,
+                  hostname: port.label,
+                  type: 'port',
+                  ...coords[i]
+                })
+
+                const edge = {
+                  id: vis.util.randomUUID(),
+                  from: edited.id,
+                  to: port.id
+                }
+                this.edges.add(edge)
+                items.push({
+                  id: edge.id,
+                  type: 'association',
+                  from: edge.from,
+                  to: edge.to
+                })
               }
-            })
+              this.$store.commit('data/setItems', items)
+            }
           },
-          editNode: (node, callback) => {
+          editNode: async (node, callback) => {
             this.newItemType = ''
-            this.editItem(node, callback)
+            const edited = await this.editItem(node)
+            callback(edited)
           },
-          addEdge: (edge, callback) => {
+          addEdge: async (edge, callback) => {
             this.orderNodes(edge)
             const type = this.getEdgeType(edge)
             if (this.isEdgeValid(edge, type)) {
               edge.id = edge.id || vis.util.randomUUID()
               edge.group = type
 
-              this.editItem(edge, callback)
+              const edited = await this.editItem(edge)
+              callback(edited)
             } else {
               callback()
             }
 
             this.newItemType = ''
           },
-          editEdge: (edge, callback) => {
+          editEdge: async (edge, callback) => {
             this.orderNodes(edge)
             if (this.isEdgeValid(edge, this.getEdgeType(edge))) {
-              this.editItem(edge, callback)
+              const edited = await this.editItem(edge)
+              callback(edited)
             } else {
               callback()
             }
@@ -341,10 +345,13 @@ export default {
       // Events
       this.net.on('deselectNode', deselectHandler.bind(null, this.net))
       this.net.on('deselectEdge', deselectHandler.bind(null, this.net))
-      this.net.on('doubleClick', event => {
+      this.net.on('doubleClick', async event => {
         if (event.nodes.length === 0 && event.edges.length === 1) {
           const id = event.edges[0]
-          this.editItem(this.edges.get(id), edge => edge ? this.edges.update(edge) : null)
+          const edited = await this.editItem(this.edges.get(id))
+          if (edited) {
+            this.edges.update(edited)
+          }
         } else if (event.nodes.length === 1) {
           this.net.editNode()
         }
