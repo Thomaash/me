@@ -3,8 +3,6 @@ import exporter from '@/exporter'
 
 import emptyData from '@/examples/empty'
 
-console.log(process.env)
-
 export default {
   namespaced: true,
   state: exporter.importData(emptyData),
