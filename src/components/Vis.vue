@@ -122,7 +122,7 @@ export default {
       this.newItemType = ''
       this.net.disableEditMode()
     },
-    editItem (node) {
+    editItem (node, commit) {
       return new Promise(resolve => {
         const oldItem = this.data.items[node.id] || {
           id: node.id,
@@ -139,10 +139,13 @@ export default {
             item.from = node.from
             item.to = node.to
           }
-
-          this.$store.commit('data/setItems', [item])
           updateNode(node, item)
-          return resolve(node)
+
+          if (commit !== false) {
+            this.$store.commit('data/setItems', [item])
+          }
+
+          return resolve({ node, item })
         })
       })
     },
@@ -182,8 +185,7 @@ export default {
       const dst = this.$store.state.data.items[edge.to].type
       return edgeTests[type](src, dst)
     },
-    generateOrganizedPortCoors (node, ports) {
-      const { x, y } = this.net.getPositions([node.id])[node.id]
+    generateOrganizedPortCoors ({ x, y }, ports) {
       const xOffset = ports <= 8 ? 50 : 30
       const yEvenOffset = ports <= 8 ? 0 : 25
       const portY = y + 70
@@ -199,7 +201,10 @@ export default {
         .map(id => this.nodes.get(id))
         .filter(node => node.group === 'port')
         .sort((n1, n2) => (n1.label || '').localeCompare(n2.label || ''))
-      const coords = this.generateOrganizedPortCoors(node, ports.length)
+      const coords = this.generateOrganizedPortCoors(
+        this.net.getPositions([node.id])[node.id],
+        ports.length
+      )
 
       ports.forEach((port, i) => {
         Object.assign(port, coords[i])
@@ -245,17 +250,18 @@ export default {
             node.group = this.newItemType
             this.newItemType = ''
 
-            const edited = await this.editItem(node)
+            const { node: edited, item } = await this.editItem(node, false)
             if (!edited) {
               return callback()
             }
 
+            item.x = edited.x
+            item.y = edited.y
             callback(edited)
-
-            this.commitPositions([edited.id])
+            const items = [item]
 
             if (edited.group === 'port') {
-              const { x, y } = this.net.getPositions(edited.id)[edited.id]
+              const { x, y } = edited
               const closest = this.getClosest(x, y, ['host', 'switch'])
               if (closest.distance <= 500) {
                 const closestId = closest.id
@@ -265,19 +271,18 @@ export default {
                   to: edited.id
                 }
                 this.edges.add(association)
-                this.$store.commit('data/setItems', [{
+                items.push({
                   id: association.id,
                   type: 'association',
                   from: association.from,
                   to: association.to
-                }])
+                })
               }
             }
 
             const ports = portAmounts[edited.group] || 0
             if (ports > 0) {
               const coords = this.generateOrganizedPortCoors(edited, ports)
-              const items = []
               for (let i = 0; i < ports; ++i) {
                 const port = {
                   label: `eth${i}`,
@@ -305,12 +310,13 @@ export default {
                   to: edge.to
                 })
               }
-              this.$store.commit('data/setItems', items)
             }
+
+            this.$store.commit('data/setItems', items)
           },
           editNode: async (node, callback) => {
             this.newItemType = ''
-            const edited = await this.editItem(node)
+            const { node: edited } = await this.editItem(node)
             callback(edited)
           },
           addEdge: async (edge, callback) => {
@@ -320,7 +326,7 @@ export default {
               edge.id = edge.id || vis.util.randomUUID()
               edge.group = type
 
-              const edited = await this.editItem(edge)
+              const { node: edited } = await this.editItem(edge)
               callback(edited)
             } else {
               callback()
@@ -331,7 +337,7 @@ export default {
           editEdge: async (edge, callback) => {
             this.orderNodes(edge)
             if (this.isEdgeValid(edge, this.getEdgeType(edge))) {
-              const edited = await this.editItem(edge)
+              const { node: edited } = await this.editItem(edge)
               callback(edited)
             } else {
               callback()
@@ -348,7 +354,7 @@ export default {
       this.net.on('doubleClick', async event => {
         if (event.nodes.length === 0 && event.edges.length === 1) {
           const id = event.edges[0]
-          const edited = await this.editItem(this.edges.get(id))
+          const { node: edited } = await this.editItem(this.edges.get(id))
           if (edited) {
             this.edges.update(edited)
           }
