@@ -180,23 +180,30 @@ export default {
       const dst = this.$store.state.data.items[edge.to].type
       return edgeTests[type](src, dst)
     },
+    generateOrganizedPortCoors (node, ports) {
+      const { x, y } = this.net.getPositions([node.id])[node.id]
+      const xOffset = ports <= 8 ? 50 : 30
+      const yEvenOffset = ports <= 8 ? 0 : 25
+      const portY = y + 70
+      const firstX = x - (ports - 1) * xOffset / 2
+
+      return [...Array(ports)].map((_v, i) => ({
+        x: firstX + xOffset * i,
+        y: portY + (i % 2 === 0 ? yEvenOffset : 0)
+      }))
+    },
     organizePorts (node) {
       const ports = this.net.getConnectedNodes(node.id)
         .map(id => this.nodes.get(id))
         .filter(node => node.group === 'port')
         .sort((n1, n2) => (n1.label || '').localeCompare(n2.label || ''))
-
-      const { x, y } = this.net.getPositions([node.id])[node.id]
-      const xOffset = ports.length <= 8 ? 50 : 30
-      const yEvenOffset = ports.length <= 8 ? 0 : 25
-      const portY = y + 70
-      const firstX = x - (ports.length - 1) * xOffset / 2
+      const coords = this.generateOrganizedPortCoors(node, ports.length)
 
       ports.forEach((port, i) => {
-        port.x = firstX + xOffset * i
-        port.y = portY + (i % 2 === 0 ? yEvenOffset : 0)
+        Object.assign(port, coords[i])
         this.nodes.update(port)
       })
+
       this.commitPositions(ports.map(({ id }) => id))
     },
     getClosest (x, y, types) {
@@ -267,17 +274,20 @@ export default {
 
               const ports = portAmounts[edited.group] || 0
               if (ports > 0) {
+                const coords = this.generateOrganizedPortCoors(edited, ports)
                 const items = []
                 for (let i = 0; i < ports; ++i) {
                   const port = {
                     label: `eth${i}`,
-                    group: 'port'
+                    group: 'port',
+                    ...coords[i]
                   }
                   this.nodes.add(port)
                   items.push({
                     id: port.id,
                     hostname: port.label,
-                    type: 'port'
+                    type: 'port',
+                    ...coords[i]
                   })
 
                   const edge = {
@@ -294,7 +304,6 @@ export default {
                   })
                 }
                 this.$store.commit('data/setItems', items)
-                this.organizePorts(edited)
               }
             })
           },
