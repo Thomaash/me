@@ -18,7 +18,8 @@ export default {
   name: 'VisCanvas',
   data: () => ({
     width: null,
-    height: null
+    height: null,
+    unsubscribe: null
   }),
   computed: {
     data () {
@@ -33,9 +34,63 @@ export default {
       return this.height == null
         ? undefined
         : `${this.height}px`
+    },
+    storeActions () {
+      return {
+        'data/setItems': items => {
+          console.log('set', items)
+
+          Object.values(items).forEach(item => {
+            if (this.isEdge(item.type)) {
+              this.edges.update(this.itemToEdge(item))
+            } else {
+              this.nodes.update(this.itemToNode(item))
+            }
+          })
+        },
+        'data/updateItems': updates => {
+          console.log('update', updates)
+
+          Object.values(updates).forEach(update => {
+            const item = {
+              ...this.data.items[update.id],
+              ...update
+            }
+
+            if (this.isEdge(item.type)) {
+              this.edges.update(this.itemToEdge(item))
+            } else {
+              this.nodes.update(this.itemToNode(item))
+            }
+          })
+        },
+        'data/removeItems': ids => {
+          console.log('remove', ids)
+
+          ids.forEach(id => {
+            this.nodes.remove(id)
+            this.edges.remove(id)
+          })
+        }
+      }
     }
   },
   methods: {
+    itemToNode (item) {
+      return updateNode({
+        id: item.id,
+        group: item.type,
+        x: item.x,
+        y: item.y
+      }, item)
+    },
+    itemToEdge (item) {
+      return updateNode({
+        id: item.id,
+        from: item.from,
+        to: item.to
+      }, item)
+    },
     toBlob (scale) {
       return new Promise(resolve => {
         scale = scale || 2
@@ -190,23 +245,14 @@ export default {
     const nodes = new vis.DataSet(
       items
         .filter(({ type }) => !this.isEdge(type))
-        .map(item => updateNode({
-          id: item.id,
-          group: item.type,
-          x: item.x,
-          y: item.y
-        }, item))
+        .map(this.itemToNode)
     )
 
     // Create an array with edges
     const edges = new vis.DataSet(
       items
         .filter(({ type }) => this.isEdge(type))
-        .map(item => updateNode({
-          id: item.id,
-          from: item.from,
-          to: item.to
-        }, item))
+        .map(this.itemToEdge)
     )
 
     // Create the network
@@ -216,6 +262,13 @@ export default {
     this.nodes = nodes
     this.edges = edges
     this.$emit('ready', { container, net, nodes, edges })
+
+    this.$store.subscribe(({ type, payload }, { data }) => {
+      ;(this.storeActions[type] || (() => {}))(payload, data)
+    })
+  },
+  beforeDestroy () {
+    this.unsubscribe && this.unsubscribe()
   }
 }
 </script>

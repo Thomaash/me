@@ -208,7 +208,6 @@ export default {
 
       ports.forEach((port, i) => {
         Object.assign(port, coords[i])
-        this.nodes.update(port)
       })
 
       this.commitPositions(ports.map(({ id }) => id))
@@ -270,7 +269,6 @@ export default {
                   from: closestId,
                   to: edited.id
                 }
-                this.edges.add(association)
                 items.push({
                   id: association.id,
                   type: 'association',
@@ -285,11 +283,11 @@ export default {
               const coords = this.generateOrganizedPortCoors(edited, ports)
               for (let i = 0; i < ports; ++i) {
                 const port = {
+                  id: vis.util.randomUUID(),
                   label: `eth${i}`,
                   group: 'port',
                   ...coords[i]
                 }
-                this.nodes.add(port)
                 items.push({
                   id: port.id,
                   hostname: port.label,
@@ -302,7 +300,6 @@ export default {
                   from: edited.id,
                   to: port.id
                 }
-                this.edges.add(edge)
                 items.push({
                   id: edge.id,
                   type: 'association',
@@ -354,10 +351,7 @@ export default {
       this.net.on('doubleClick', async event => {
         if (event.nodes.length === 0 && event.edges.length === 1) {
           const id = event.edges[0]
-          const { node: edited } = await this.editItem(this.edges.get(id))
-          if (edited) {
-            this.edges.update(edited)
-          }
+          await this.editItem(this.edges.get(id))
         } else if (event.nodes.length === 1) {
           this.net.editNode()
         }
