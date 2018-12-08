@@ -11,7 +11,7 @@
 
     <v-snackbar v-model="undoSnackbar.show">
       {{ undoSnackbar.text }}
-      <v-btn color="primary" flat @click="undo">
+      <v-btn color="primary" flat @click="commit('undo')">
         Undo
       </v-btn>
     </v-snackbar>
@@ -113,7 +113,7 @@ export default {
     },
     deleteSelected () {
       const { nodes, edges } = this.net.getSelection()
-      this.$store.dispatch('topology/removeItems', [...nodes, ...edges])
+      this.commit('removeItems', [...nodes, ...edges])
       this.net.deleteSelected()
 
       const count = nodes.length + edges.length
@@ -159,12 +159,16 @@ export default {
           updateNode(node, item)
 
           if (commit !== false) {
-            this.$store.dispatch('topology/replaceItems', [item])
+            this.commit('replaceItems', [item])
           }
 
           return resolve({ node, item })
         })
       })
+    },
+    commit (type, payload) {
+      this.undoSnackbar.show = false
+      this.$store.dispatch(`topology/${type}`, payload)
     },
     commitPositions (ids) {
       const positions = this.net.getPositions(ids)
@@ -172,7 +176,7 @@ export default {
         ...positions[id],
         id
       }))
-      this.$store.dispatch('topology/updateItems', updateItems)
+      this.commit('updateItems', updateItems)
     },
     commitUncommitedPositions () {
       const updated = this.nodes.get()
@@ -231,7 +235,7 @@ export default {
         ports.length
       )
 
-      this.$store.dispatch('topology/updateItems',
+      this.commit('updateItems',
         coords.map((coords, i) => ({
           ...coords,
           id: ports[i].id
@@ -254,10 +258,6 @@ export default {
     },
     keypress ({ key }) {
       (this[keybindings[key]] || (() => {}))()
-    },
-    undo () {
-      this.undoSnackbar.show = false
-      this.$store.dispatch('topology/undo')
     },
     init ({ container, net, nodes, edges }) {
       this.net = net
@@ -335,7 +335,7 @@ export default {
               }
             }
 
-            this.$store.dispatch('topology/replaceItems', items)
+            this.commit('replaceItems', items)
           },
           editNode: async (node, callback) => {
             this.newItemType = ''
