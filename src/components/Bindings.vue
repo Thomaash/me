@@ -48,7 +48,9 @@ export default {
       { combination: 'h', description: 'Add a host.' },
       { combination: 'l', description: 'Add a label.' },
       { combination: 'p', description: 'Add a port.' },
+      { combination: 'r', description: 'Redo undone change.' },
       { combination: 's', description: 'Add a switch.' },
+      { combination: 'u', description: 'Undo a change.' },
       { combination: 'z', description: 'Reset zoom.' }
     ],
     special: {

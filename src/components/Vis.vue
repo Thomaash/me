@@ -53,7 +53,9 @@ const keybindings = {
   'h': 'addHost',
   'l': 'addDummy',
   'p': 'addPort',
+  'r': 'redo',
   's': 'addSwitch',
+  'u': 'undo',
   'z': 'setScale'
 }
 
