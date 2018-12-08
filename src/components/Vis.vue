@@ -9,10 +9,10 @@
       <v-icon v-text="mouseTagIcon" color="black"/>
     </div>
 
-    <v-snackbar v-model="undoSnackbar.show">
-      {{ undoSnackbar.text }}
-      <v-btn color="primary" flat @click="commit('undo')">
-        Undo
+    <v-snackbar v-model="snackbar.show">
+      {{ snackbar.msg }}
+      <v-btn color="primary" flat @click="snackbar.action()">
+        {{ snackbar.btn }}
       </v-btn>
     </v-snackbar>
   </div>
@@ -66,9 +66,11 @@ export default {
       x: 0,
       y: 0
     },
-    undoSnackbar: {
+    snackbar: {
       show: false,
-      text: ''
+      msg: '',
+      btn: '',
+      action: () => {}
     }
   }),
   computed: {
@@ -119,8 +121,7 @@ export default {
         this.commit('removeItems', [...nodes, ...edges])
         this.net.deleteSelected()
 
-        this.undoSnackbar.show = true
-        this.undoSnackbar.text = `${count} item${count === 1 ? '' : 's'} deleted.`
+        this.showSnackbar(`${count} item${count === 1 ? '' : 's'} deleted.`, 'Undo', this.undo)
       }
     },
     fitAll () {
@@ -136,6 +137,36 @@ export default {
       this.net.moveTo({
         scale: scale != null ? scale : 1,
         animation: true
+      })
+    },
+    undo () {
+      try {
+        this.commit('undo')
+        this.showSnackbar('Undone.')
+      } catch (error) {
+        this.showSnackbar('Nothing more to undo.')
+      }
+    },
+    redo () {
+      try {
+        this.commit('redo')
+        this.showSnackbar('Redone.')
+      } catch (error) {
+        this.showSnackbar('Nothing more to redo.')
+      }
+    },
+    showSnackbar (msg, btn, action) {
+      this.snackbar.show = false
+      window.setTimeout(() => {
+        this.snackbar.show = true
+        this.snackbar.msg = msg || null
+        this.snackbar.btn = btn || 'Close'
+        this.snackbar.action = () => {
+          if (action) {
+            action()
+          }
+          this.snackbar.show = false
+        }
       })
     },
     stopEditMode () {
@@ -170,7 +201,7 @@ export default {
       })
     },
     commit (type, payload) {
-      this.undoSnackbar.show = false
+      this.snackbar.show = false
       this.$store.dispatch(`topology/${type}`, payload)
     },
     commitPositions (ids) {
