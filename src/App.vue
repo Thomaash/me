@@ -32,7 +32,7 @@
       />
     </v-toolbar>
     <v-content>
-      <v-alert v-model="alert.show" dismissible :type="alert.type" class="mt-0" transition="slide-y-transition">
+      <v-alert v-model="showAlert" dismissible :type="alert.type" class="mt-0" transition="slide-y-transition">
         {{ alert.text }}
       </v-alert>
       <v-slide-y-transition mode="out-in">
@@ -83,6 +83,16 @@ export default {
     },
     alert () {
       return this.$store.state.alert
+    },
+    showAlert: {
+      get () {
+        return this.alert.show
+      },
+      set (value) {
+        if (value === false) {
+          this.$store.commit('clearAlert')
+        }
+      }
     }
   }
 }
