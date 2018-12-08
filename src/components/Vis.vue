@@ -4,9 +4,17 @@
     <v-flex v-else class="text-xs-center" pa-5>
       <v-progress-circular :size="50" color="primary" indeterminate/>
     </v-flex>
+
     <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
       <v-icon v-text="mouseTagIcon" color="black"/>
     </div>
+
+    <v-snackbar v-model="undoSnackbar.show">
+      {{ undoSnackbar.text }}
+      <v-btn color="primary" flat @click="undo">
+        Undo
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -57,6 +65,10 @@ export default {
     mouseTag: {
       x: 0,
       y: 0
+    },
+    undoSnackbar: {
+      show: false,
+      text: ''
     }
   }),
   computed: {
@@ -103,6 +115,10 @@ export default {
       const { nodes, edges } = this.net.getSelection()
       this.$store.dispatch('topology/removeItems', [...nodes, ...edges])
       this.net.deleteSelected()
+
+      const count = nodes.length + edges.length
+      this.undoSnackbar.show = true
+      this.undoSnackbar.text = `${count} item${count === 1 ? '' : 's'} deleted.`
     },
     fitAll () {
       this.net.fit({ animation: true })
@@ -238,6 +254,10 @@ export default {
     },
     keypress ({ key }) {
       (this[keybindings[key]] || (() => {}))()
+    },
+    undo () {
+      this.undoSnackbar.show = false
+      this.$store.dispatch('topology/undo')
     },
     init ({ container, net, nodes, edges }) {
       this.net = net
