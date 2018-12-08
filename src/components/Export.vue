@@ -84,6 +84,7 @@ import exampleTinyPhysicalInterface from '@/examples/tiny_physical_interface'
 import exampleTinyTC from '@/examples/tiny_tc'
 import exporter from '@/exporter'
 import importScript from '@/importScript'
+import { mapGetters } from 'vuex'
 
 function download (filename, mimeOrHref, data) {
   const href = mimeOrHref && data
@@ -149,6 +150,9 @@ export default {
     } ]
   }),
   computed: {
+    ...mapGetters('topology', [
+      'data'
+    ]),
     working: {
       get () {
         return !!this.$store.state.working
@@ -247,7 +251,7 @@ export default {
         }
       )
       if (confirmed) {
-        this.$store.commit('data/importData', importData)
+        this.$store.commit('topology/importData', importData)
         this.showAlert('success', 'Successfully imported.')
       } else {
         this.showAlert('info', 'Import canceled.')
@@ -280,7 +284,7 @@ export default {
           'mininet_network.json',
           'application/json;charset=utf-8',
           JSON.stringify(
-            exporter.exportData(this.$store.state.data),
+            exporter.exportData(this.data),
             undefined,
             4
           )
@@ -297,7 +301,7 @@ export default {
         this.working = true
         this.log = []
 
-        const builder = new Builder(exporter.exportData(this.$store.state.data))
+        const builder = new Builder(exporter.exportData(this.data))
         this.log = builder.log
         const script = builder.build()
         this.showAlert('success', 'Script built.')

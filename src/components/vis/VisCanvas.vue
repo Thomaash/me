@@ -8,6 +8,7 @@
 import updateNode from './updateNode'
 import vis from 'vis'
 import { items as theme } from '@/theme'
+import { mapGetters } from 'vuex'
 
 import controllerImg from '@/assets/network/controller.svg'
 import hostImg from '@/assets/network/host.svg'
@@ -22,9 +23,9 @@ export default {
     unsubscribe: null
   }),
   computed: {
-    data () {
-      return this.$store.state.data
-    },
+    ...mapGetters('topology', [
+      'data'
+    ]),
     widthStyle () {
       return this.width == null
         ? undefined
@@ -37,39 +38,31 @@ export default {
     },
     storeActions () {
       return {
-        'data/setItems': items => {
-          console.log('set', items)
-
-          Object.values(items).forEach(item => {
-            if (this.isEdge(item.type)) {
-              this.edges.update(this.itemToEdge(item))
-            } else {
-              this.nodes.update(this.itemToNode(item))
-            }
-          })
-        },
-        'data/updateItems': updates => {
-          console.log('update', updates)
-
-          Object.values(updates).forEach(update => {
-            const item = {
-              ...this.data.items[update.id],
-              ...update
-            }
-
-            if (this.isEdge(item.type)) {
-              this.edges.update(this.itemToEdge(item))
-            } else {
-              this.nodes.update(this.itemToNode(item))
-            }
-          })
-        },
-        'data/removeItems': ids => {
-          console.log('remove', ids)
-
-          ids.forEach(id => {
+        'topology/applyChange': ({ remove, update, replace }) => {
+          remove && remove.forEach(id => {
             this.nodes.remove(id)
             this.edges.remove(id)
+          })
+
+          update && Object.values(update).forEach(itemUpdate => {
+            const item = {
+              ...this.data.items[itemUpdate.id],
+              ...itemUpdate
+            }
+
+            if (this.isEdge(item.type)) {
+              this.edges.update(this.itemToEdge(item))
+            } else {
+              this.nodes.update(this.itemToNode(item))
+            }
+          })
+
+          replace && Object.values(replace).forEach(item => {
+            if (this.isEdge(item.type)) {
+              this.edges.update(this.itemToEdge(item))
+            } else {
+              this.nodes.update(this.itemToNode(item))
+            }
           })
         }
       }
@@ -263,7 +256,7 @@ export default {
     this.edges = edges
     this.$emit('ready', { container, net, nodes, edges })
 
-    this.$store.subscribe(({ type, payload }, { data }) => {
+    this.unsubscribe = this.$store.subscribe(({ type, payload }, { data }) => {
       ;(this.storeActions[type] || (() => {}))(payload, data)
     })
   },

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import data from './data'
+import topology from './topology'
 import persist from './persist'
 
 Vue.use(Vuex)
@@ -29,7 +29,7 @@ export default new Vuex.Store({
   },
   actions: {},
   modules: {
-    data
+    topology
   },
   plugins: [persist.plugin]
 })

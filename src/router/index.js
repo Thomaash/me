@@ -4,6 +4,7 @@ import store from '@/store'
 
 import About from '@/components/About'
 import Canvas from '@/components/Canvas'
+import CanvasToolbar from '@/components/CanvasToolbar'
 import Export from '@/components/Export'
 import Home from '@/components/Home'
 import MininetSettings from '@/components/MininetSettings'
@@ -21,7 +22,10 @@ const router = new Router({
   }, {
     path: '/canvas/:ids?',
     name: 'Canvas',
-    component: Canvas
+    components: {
+      default: Canvas,
+      toolbar: CanvasToolbar
+    }
   }, {
     path: '/mininet_settings',
     name: 'MininetSettings',

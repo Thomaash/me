@@ -45,13 +45,14 @@ import ThreeStateCheckbox from '@/components/ThreeStateCheckbox'
 import errors from '@/validation/errors'
 import { ipWithMask, port } from '@/validation/rules'
 import { logLevels } from '@/selects'
+import { mapGetters } from 'vuex'
 
 function ComputedStoreProperty (key) {
   this.get = function () {
-    return this.$store.state.data[key]
+    return this.data[key]
   }
   this.set = function (value) {
-    this.$store.commit('data/setValues', {
+    this.$store.commit('topology/setValues', {
       [key]: value
     })
   }
@@ -65,6 +66,9 @@ export default {
     logLevels
   }),
   computed: {
+    ...mapGetters('topology', [
+      'data'
+    ]),
     autoSetMAC: new ComputedStoreProperty('autoSetMAC'),
     autoStaticARP: new ComputedStoreProperty('autoStaticARP'),
     inNamespace: new ComputedStoreProperty('inNamespace'),

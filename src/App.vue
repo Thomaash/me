@@ -15,7 +15,13 @@
     <v-toolbar color="primary" dark app extension-height="7">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"/>
       <v-toolbar-title v-text="title"/>
+
       <v-spacer/>
+
+      <v-slide-y-transition mode="out-in">
+        <router-view name="toolbar"/>
+      </v-slide-y-transition>
+
       <v-progress-linear
         v-show="progress.show"
         :indeterminate="progress.indeterminate === true"

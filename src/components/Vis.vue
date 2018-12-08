@@ -16,6 +16,7 @@ import VisCanvas from './vis/VisCanvas'
 import deselectHandler from './vis/deselectHandler'
 import updateNode from './vis/updateNode'
 import vis from 'vis'
+import { mapGetters } from 'vuex'
 import { selection as selectionTheme } from '@/theme'
 
 const portAmounts = {
@@ -59,9 +60,9 @@ export default {
     }
   }),
   computed: {
-    data () {
-      return this.$store.state.data
-    },
+    ...mapGetters('topology', [
+      'data'
+    ]),
     loading () {
       return this.$store.state.loading
     },
@@ -100,7 +101,7 @@ export default {
     },
     deleteSelected () {
       const { nodes, edges } = this.net.getSelection()
-      this.$store.commit('data/removeItems', [...nodes, ...edges])
+      this.$store.dispatch('topology/removeItems', [...nodes, ...edges])
       this.net.deleteSelected()
     },
     fitAll () {
@@ -142,7 +143,7 @@ export default {
           updateNode(node, item)
 
           if (commit !== false) {
-            this.$store.commit('data/setItems', [item])
+            this.$store.dispatch('topology/replaceItems', [item])
           }
 
           return resolve({ node, item })
@@ -155,7 +156,15 @@ export default {
         ...positions[id],
         id
       }))
-      this.$store.commit('data/updateItems', updateItems)
+      this.$store.dispatch('topology/updateItems', updateItems)
+    },
+    commitUncommitedPositions () {
+      const updated = this.nodes.get()
+        .filter(({ x, y }) => x == null || y == null)
+        .map(({ id }) => id)
+      if (updated.length) {
+        this.commitPositions(updated)
+      }
     },
     orderNodes (edge) {
       const src = this.data.items[edge.from].type
@@ -181,8 +190,8 @@ export default {
       }
     },
     isEdgeValid (edge, type) {
-      const src = this.$store.state.data.items[edge.from].type
-      const dst = this.$store.state.data.items[edge.to].type
+      const src = this.data.items[edge.from].type
+      const dst = this.data.items[edge.to].type
       return edgeTests[type](src, dst)
     },
     generateOrganizedPortCoors ({ x, y }, ports) {
@@ -206,15 +215,16 @@ export default {
         ports.length
       )
 
-      ports.forEach((port, i) => {
-        Object.assign(port, coords[i])
-      })
-
-      this.commitPositions(ports.map(({ id }) => id))
+      this.$store.dispatch('topology/updateItems',
+        coords.map((coords, i) => ({
+          ...coords,
+          id: ports[i].id
+        }))
+      )
     },
     getClosest (x, y, types) {
       const ids = this.nodes.getIds()
-        .filter(id => types.indexOf(this.$store.state.data.items[id].type) !== -1)
+        .filter(id => types.indexOf(this.data.items[id].type) !== -1)
       const positions = this.net.getPositions(ids)
       const distances = ids.map(id => Math.hypot(positions[id].x - x, positions[id].y - y))
       const closestIndex = distances.reduce((acc, val, i) => val < distances[acc] ? i : acc, 0)
@@ -235,11 +245,7 @@ export default {
       this.edges = edges
 
       // Save new positions if any missing
-      this.commitPositions(
-        nodes.get()
-          .filter(({ x, y }) => x == null || y == null)
-          .map(({ id }) => id)
-      )
+      this.commitUncommitedPositions()
 
       // Manipulation
       this.net.setOptions({
@@ -309,7 +315,7 @@ export default {
               }
             }
 
-            this.$store.commit('data/setItems', items)
+            this.$store.dispatch('topology/replaceItems', items)
           },
           editNode: async (node, callback) => {
             this.newItemType = ''
@@ -375,7 +381,7 @@ export default {
         if (event.nodes.length !== 1) {
           return
         }
-        const nodeItem = this.$store.state.data.items[event.nodes[0]]
+        const nodeItem = this.data.items[event.nodes[0]]
         if (!(nodeItem.type === 'host' || nodeItem.type === 'switch')) {
           return
         }
@@ -387,7 +393,7 @@ export default {
           toSelect.add(edge.from)
         })
         const toSelectFiltered = [...toSelect]
-          .filter(nodeId => this.$store.state.data.items[nodeId].type === 'port')
+          .filter(nodeId => this.data.items[nodeId].type === 'port')
         if (toSelectFiltered.length) {
           this.net.selectNodes([event.nodes[0], ...toSelectFiltered])
         }

@@ -7,30 +7,42 @@ import exampleData from '@/examples/medium_1_controller'
 localForage.config({
   name: 'Vuex',
   version: 1.0,
-  storeName: 'vuex'
+  storeName: 'vuex-me'
 })
 
 export default new VuexPersist({
   storage: localForage,
   asyncStorage: true,
   strictMode: false,
-  reducer: state => ({ data: state.data }),
+  reducer: state => ({ topology: state.topology }),
   async saveState (key, state, storage) {
     return storage.setItem(key, {
-      data: exporter.exportData(state.data)
+      topology: {
+        data: exporter.exportData(state.topology.data),
+        past: state.topology.past,
+        future: state.topology.future
+      }
     })
   },
   async restoreState (key, storage) {
     const state = await storage.getItem(key)
-    if (!state || !state.data || !state.data.items || !Array.isArray(state.data.items)) {
+    if (state && state.topology && state.topology.data && state.topology.data.items && Array.isArray(state.topology.data.items)) {
       return {
         loading: false,
-        data: exporter.importData(exampleData)
+        topology: {
+          data: exporter.importData(state.topology.data),
+          past: state.topology.past || [],
+          future: state.topology.future || []
+        }
       }
     } else {
       return {
         loading: false,
-        data: exporter.importData(state.data)
+        topology: {
+          data: exporter.importData(exampleData),
+          past: [],
+          future: []
+        }
       }
     }
   }
