@@ -39,31 +39,50 @@ export default {
     storeActions () {
       return {
         'topology/applyChange': ({ remove, update, replace }) => {
-          remove && remove.forEach(id => {
-            this.nodes.remove(id)
-            this.edges.remove(id)
-          })
+          const ids = [
+            ...(remove || []),
+            ...[...(update || []), ...(replace || [])]
+              .map(item => item.id)
+          ]
+          const nodes = []
+          const edges = []
 
-          update && Object.values(update).forEach(itemUpdate => {
-            const item = {
-              ...this.data.items[itemUpdate.id],
-              ...itemUpdate
-            }
+          if (update) {
+            Object.values(update).forEach(itemUpdate => {
+              const item = {
+                ...this.data.items[itemUpdate.id],
+                ...itemUpdate
+              }
 
-            if (this.isEdge(item.type)) {
-              this.edges.update(this.itemToEdge(item))
-            } else {
-              this.nodes.update(this.itemToNode(item))
-            }
-          })
+              if (this.isEdge(item.type)) {
+                edges.push(this.itemToEdge(item))
+              } else {
+                nodes.push(this.itemToNode(item))
+              }
+            })
+          }
 
-          replace && Object.values(replace).forEach(item => {
-            if (this.isEdge(item.type)) {
-              this.edges.update(this.itemToEdge(item))
-            } else {
-              this.nodes.update(this.itemToNode(item))
-            }
-          })
+          if (replace) {
+            Object.values(replace).forEach(item => {
+              if (this.isEdge(item.type)) {
+                edges.push(this.itemToEdge(item))
+              } else {
+                nodes.push(this.itemToNode(item))
+              }
+            })
+          }
+
+          // Update Vis
+          if (ids.length) {
+            this.nodes.remove(ids)
+            this.edges.remove(ids)
+          }
+          if (nodes.length) {
+            this.nodes.add(nodes)
+          }
+          if (edges.length) {
+            this.edges.add(edges)
+          }
         }
       }
     }
