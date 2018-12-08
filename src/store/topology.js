@@ -3,6 +3,8 @@ import exporter from '@/exporter'
 
 import emptyData from '@/examples/empty'
 
+const MAX_UNDO_LENGTH = 10
+
 function prepareUndoRedoChange (changeLogItem) {
   const change = {
     remove: [],
@@ -88,6 +90,9 @@ export default {
     },
     pushChange ({ past, future }, unit) {
       future.splice(0)
+      if (past.length >= MAX_UNDO_LENGTH) {
+        past.splice(0, past.length - MAX_UNDO_LENGTH)
+      }
       past.push(unit)
     },
     undoShift ({ past, future }) {
