@@ -113,12 +113,15 @@ export default {
     },
     deleteSelected () {
       const { nodes, edges } = this.net.getSelection()
-      this.commit('removeItems', [...nodes, ...edges])
-      this.net.deleteSelected()
-
       const count = nodes.length + edges.length
-      this.undoSnackbar.show = true
-      this.undoSnackbar.text = `${count} item${count === 1 ? '' : 's'} deleted.`
+
+      if (count) {
+        this.commit('removeItems', [...nodes, ...edges])
+        this.net.deleteSelected()
+
+        this.undoSnackbar.show = true
+        this.undoSnackbar.text = `${count} item${count === 1 ? '' : 's'} deleted.`
+      }
     },
     fitAll () {
       this.net.fit({ animation: true })
