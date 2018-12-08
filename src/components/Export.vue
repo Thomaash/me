@@ -213,7 +213,7 @@ export default {
             const { data, log } = stringToImport(str)
             this.log = log
             if (stringToImport === this.importers.python) {
-              await this.confirmImport(data, '<p>Importing scripts is highly unreliable. Imported project will be anything from <strong>incomplete</strong> to <strong>disfunctional</strong>.</p>')
+              await this.confirmImport(data, '<p>Importing scripts is highly unreliable. Imported project can be <strong>incomplete</strong> or <strong>dysfunctional</strong>.</p>')
             } else {
               await this.confirmImport(data)
             }
