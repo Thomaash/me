@@ -2,21 +2,22 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
   parserOptions: {
+    ecmaVersion: 2017,
+    parser: 'babel-eslint',
     sourceType: 'module'
   },
   env: {
     browser: true,
   },
-  // https://github.com/standard/standard/blob/master/docs/RULES-en.md
-  extends: 'standard',
-  // required to lint *.vue files
-  plugins: [
-    'html'
+  extends: [
+    'plugin:vue/recommended',
+    'standard'
   ],
+  plugins: [],
   // add your custom rules here
   rules: {
+    'vue/max-attributes-per-line': 'off',
     // allow async-await
     'generator-star-spacing': 'off',
     // allow debugger during development
