@@ -308,17 +308,18 @@ export default {
         manipulation: {
           enabled: false,
           addNode: async (node, callback) => {
+            callback() // Node will be added via reactivity from Vuex
+
             node.group = this.newItemType
             this.newItemType = ''
 
             const { node: edited, item } = await this.editItem(node, false)
             if (!edited) {
-              return callback()
+              return
             }
 
             item.x = edited.x
             item.y = edited.y
-            callback(edited)
             const items = [item]
 
             if (edited.group === 'port') {
@@ -379,16 +380,15 @@ export default {
             callback(edited)
           },
           addEdge: async (edge, callback) => {
+            callback() // Edge will be added via reactivity from Vuex
+
             this.orderNodes(edge)
             const type = this.getEdgeType(edge)
             if (this.isEdgeValid(edge, type)) {
               edge.id = edge.id || vis.util.randomUUID()
               edge.group = type
 
-              const { node: edited } = await this.editItem(edge)
-              callback(edited)
-            } else {
-              callback()
+              await this.editItem(edge)
             }
 
             this.newItemType = ''
