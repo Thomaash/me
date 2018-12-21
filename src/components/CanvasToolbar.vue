@@ -1,12 +1,12 @@
 <template>
   <v-menu bottom offset-y>
-    <v-btn v-show="show" dark icon slot="activator"><v-icon>mdi-dots-vertical</v-icon></v-btn>
+    <v-btn v-show="show" slot="activator" dark icon><v-icon>mdi-dots-vertical</v-icon></v-btn>
     <v-list>
-      <v-list-tile v-for="({ icon, text, action }, i) in items" :key="'canvas_toolbar_' + i" @click="">
+      <v-list-tile v-for="({ icon, text, action }, i) in items" :key="'canvas_toolbar_' + i" @click.prevent>
         <v-list-tile-avatar @click="action">
-          <v-icon v-text="icon"/>
+          <v-icon v-text="icon" />
         </v-list-tile-avatar>
-        <v-list-tile-title v-text="text" @click="action"/>
+        <v-list-tile-title @click="action" v-text="text" />
       </v-list-tile>
     </v-list>
   </v-menu>
@@ -31,7 +31,7 @@ export default {
     }]
   }),
   computed: {
-    ...mapGetters('topology', [ 'canUndo', 'canRedo' ]),
+    ...mapGetters('topology', ['canUndo', 'canRedo']),
     show () {
       return !!this.items.length
     },

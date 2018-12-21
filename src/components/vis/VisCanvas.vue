@@ -1,6 +1,6 @@
 <template>
-  <div ref="container" class="vis-container" :style="{ width: widthStyle, height: heightStyle }">
-    <div class="vis-root" ref="vis"/>
+  <div ref="container" :style="{ width: widthStyle, height: heightStyle }" class="vis-container">
+    <div ref="vis" class="vis-root" />
   </div>
 </template>
 
@@ -83,103 +83,6 @@ export default {
           if (edges.length) {
             this.edges.add(edges)
           }
-        }
-      }
-    }
-  },
-  methods: {
-    itemToNode (item) {
-      return updateNode({
-        id: item.id,
-        group: item.type,
-        x: item.x,
-        y: item.y
-      }, item)
-    },
-    itemToEdge (item) {
-      return updateNode({
-        id: item.id,
-        from: item.from,
-        to: item.to
-      }, item)
-    },
-    toBlob (scale) {
-      return new Promise(resolve => {
-        scale = scale || 2
-
-        const beforeDrawingHandler = ctx => {
-          const { x, y } = this.net.view.targetTranslation
-          const scale = this.net.view.targetScale
-          ctx.fillStyle = '#fff'
-          ctx.fillRect(
-            -x / scale - 1,
-            -y / scale - 1,
-            ctx.canvas.width / scale + 2,
-            ctx.canvas.height / scale + 2
-          )
-        }
-        const afterDrawingHandler = async (ctx) => {
-          this.net.off('beforeDrawing', beforeDrawingHandler)
-          this.net.off('afterDrawing', afterDrawingHandler)
-
-          const blob = await new Promise(resolve => {
-            ctx.canvas.toBlob(resolve, 'image/png')
-          })
-
-          resolve({
-            blob,
-            width: this.width,
-            height: this.height
-          })
-
-          this.width = null
-          this.height = null
-        }
-        const resizeHandler = () => {
-          this.net.off('resize', resizeHandler)
-
-          this.net.fit({ animation: false })
-          this.net.moveTo({ scale, animation: false })
-
-          this.net.on('beforeDrawing', beforeDrawingHandler)
-          this.net.on('afterDrawing', afterDrawingHandler)
-          this.net.redraw()
-        }
-
-        const coords = this.nodes.get().reduce((acc, { x, y }) => {
-          if (x < acc.sX) {
-            acc.sX = x
-          } else if (x > acc.eX) {
-            acc.eX = x
-          }
-          if (y < acc.sY) {
-            acc.sY = y
-          } else if (y > acc.eY) {
-            acc.eY = y
-          }
-
-          return acc
-        }, { sX: 0, eX: 0, sY: 0, eY: 0 })
-        this.net.on('resize', resizeHandler)
-        this.width = (coords.eX - coords.sX) * scale + 200 * scale
-        this.height = (coords.eY - coords.sY) * scale + 200 * scale
-      })
-    },
-    isEdge (type) {
-      return type === 'link' || type === 'association'
-    },
-    buildGroupColor (primary, bg, alwaysBorder) {
-      bg = bg || 'rgba(0, 0, 0, 0)'
-      return {
-        background: bg,
-        border: primary,
-        highlight: {
-          background: bg,
-          border: primary
-        },
-        hover: {
-          background: bg,
-          border: primary
         }
       }
     }
@@ -281,6 +184,103 @@ export default {
   },
   beforeDestroy () {
     this.unsubscribe && this.unsubscribe()
+  },
+  methods: {
+    itemToNode (item) {
+      return updateNode({
+        id: item.id,
+        group: item.type,
+        x: item.x,
+        y: item.y
+      }, item)
+    },
+    itemToEdge (item) {
+      return updateNode({
+        id: item.id,
+        from: item.from,
+        to: item.to
+      }, item)
+    },
+    toBlob (scale) {
+      return new Promise(resolve => {
+        scale = scale || 2
+
+        const beforeDrawingHandler = ctx => {
+          const { x, y } = this.net.view.targetTranslation
+          const scale = this.net.view.targetScale
+          ctx.fillStyle = '#fff'
+          ctx.fillRect(
+            -x / scale - 1,
+            -y / scale - 1,
+            ctx.canvas.width / scale + 2,
+            ctx.canvas.height / scale + 2
+          )
+        }
+        const afterDrawingHandler = async (ctx) => {
+          this.net.off('beforeDrawing', beforeDrawingHandler)
+          this.net.off('afterDrawing', afterDrawingHandler)
+
+          const blob = await new Promise(resolve => {
+            ctx.canvas.toBlob(resolve, 'image/png')
+          })
+
+          resolve({
+            blob,
+            width: this.width,
+            height: this.height
+          })
+
+          this.width = null
+          this.height = null
+        }
+        const resizeHandler = () => {
+          this.net.off('resize', resizeHandler)
+
+          this.net.fit({ animation: false })
+          this.net.moveTo({ scale, animation: false })
+
+          this.net.on('beforeDrawing', beforeDrawingHandler)
+          this.net.on('afterDrawing', afterDrawingHandler)
+          this.net.redraw()
+        }
+
+        const coords = this.nodes.get().reduce((acc, { x, y }) => {
+          if (x < acc.sX) {
+            acc.sX = x
+          } else if (x > acc.eX) {
+            acc.eX = x
+          }
+          if (y < acc.sY) {
+            acc.sY = y
+          } else if (y > acc.eY) {
+            acc.eY = y
+          }
+
+          return acc
+        }, { sX: 0, eX: 0, sY: 0, eY: 0 })
+        this.net.on('resize', resizeHandler)
+        this.width = (coords.eX - coords.sX) * scale + 200 * scale
+        this.height = (coords.eY - coords.sY) * scale + 200 * scale
+      })
+    },
+    isEdge (type) {
+      return type === 'link' || type === 'association'
+    },
+    buildGroupColor (primary, bg, alwaysBorder) {
+      bg = bg || 'rgba(0, 0, 0, 0)'
+      return {
+        background: bg,
+        border: primary,
+        highlight: {
+          background: bg,
+          border: primary
+        },
+        hover: {
+          background: bg,
+          border: primary
+        }
+      }
+    }
   }
 }
 </script>

@@ -6,13 +6,13 @@
           <h3 class="headline">Export</h3>
 
           <p>
-            <v-btn flat color="primary" :disabled="working" @click="downloadJSON">JSON</v-btn>
-            <v-btn flat color="primary" :disabled="working" @click="downloadScript">Python 2 script</v-btn>
-            <v-menu bottom offset-y :disabled="working">
-              <v-btn flat color="primary" slot="activator" :disabled="working">Image</v-btn>
+            <v-btn :disabled="working" flat color="primary" @click="downloadJSON">JSON</v-btn>
+            <v-btn :disabled="working" flat color="primary" @click="downloadScript">Python 2 script</v-btn>
+            <v-menu :disabled="working" bottom offset-y>
+              <v-btn slot="activator" :disabled="working" flat color="primary">Image</v-btn>
               <v-list>
-                <v-list-tile v-for="(imageSize, i) in imageSizes" :key="'imageSize' + i" @click="">
-                  <v-list-tile-title v-text="imageSize.title" @click="downloadImageStart(imageSize.data)"/>
+                <v-list-tile v-for="(imageSize, i) in imageSizes" :key="'imageSize' + i" @click.prevent>
+                  <v-list-tile-title @click="downloadImageStart(imageSize.data)" v-text="imageSize.title" />
                 </v-list-tile>
               </v-list>
             </v-menu>
@@ -25,35 +25,35 @@
           <h3 class="headline">Import</h3>
 
           <p>
-            <v-btn flat color="primary" :disabled="working" @click="importEmpty">Empty</v-btn>
-            <v-menu bottom offset-y :disabled="working">
-              <v-btn flat color="primary" slot="activator" :disabled="working">Examples</v-btn>
+            <v-btn :disabled="working" flat color="primary" @click="importEmpty">Empty</v-btn>
+            <v-menu :disabled="working" bottom offset-y>
+              <v-btn slot="activator" :disabled="working" flat color="primary">Examples</v-btn>
               <v-list>
-                <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click="">
-                  <v-list-tile-title v-text="example.title" @click="importData(example.data)"/>
+                <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click.prevent>
+                  <v-list-tile-title @click="importData(example.data)" v-text="example.title" />
                 </v-list-tile>
               </v-list>
             </v-menu>
-            <v-btn flat color="primary" :disabled="working" @click="uploadJSON">File</v-btn>
+            <v-btn :disabled="working" flat color="primary" @click="uploadJSON">File</v-btn>
           </p>
         </section>
       </v-flex>
 
       <v-slide-y-transition mode="out-in">
-        <v-flex xs12 v-if="sortedLog.length">
+        <v-flex v-if="sortedLog.length" xs12>
           <section>
             <h3 class="headline">Log</h3>
 
             <v-list>
-              <v-list-tile avatar v-for="(l, i) in sortedLog" :key="'export_log_' + i" @click="">
+              <v-list-tile v-for="(l, i) in sortedLog" :key="'export_log_' + i" avatar @click.prevent>
                 <v-list-tile-action>
-                  <v-checkbox color="primary" v-model="logCbs[i]" hide-details/>
+                  <v-checkbox v-model="logCbs[i]" color="primary" hide-details />
                 </v-list-tile-action>
                 <v-list-tile-content @click="$set(logCbs, i, !logCbs[i])">
-                  <v-list-tile-title v-text="l.msg"/>
+                  <v-list-tile-title v-text="l.msg" />
                 </v-list-tile-content>
                 <v-list-tile-avatar @click="selectInCanvas(l.item.id)">
-                  <v-icon :color="l.severity" v-text="'$vuetify.icons.' + l.severity"/>
+                  <v-icon :color="l.severity" v-text="'$vuetify.icons.' + l.severity" />
                 </v-list-tile-avatar>
               </v-list-tile>
             </v-list>
@@ -64,8 +64,8 @@
       </v-slide-y-transition>
 
       <div style="height: 0px; width: 0px; overflow: hidden;">
-        <input type="file" ref="fileInput" @input="uploadFile"/>
-        <VisCanvas v-if="visCanvasOn" @ready="downloadImageFinish" ref="visCanvas"/>
+        <input ref="fileInput" type="file" @input="uploadFile">
+        <VisCanvas v-if="visCanvasOn" ref="visCanvas" @ready="downloadImageFinish" />
       </div>
     </v-layout>
   </v-container>
@@ -147,7 +147,7 @@ export default {
     }, {
       title: 'Medium with 2 controllers',
       data: exampleMedium2C
-    } ]
+    }]
   }),
   computed: {
     ...mapGetters('topology', [

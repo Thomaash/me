@@ -1,12 +1,12 @@
 <template>
-  <div class="component-container" @mousemove="moveMouseTag" @drag="moveMouseTag" tabindex="0" @mouseover="focusRoot" @keyup="keypress">
-    <VisCanvas v-if="!loading" @ready="init"/>
+  <div class="component-container" tabindex="0" @mousemove="moveMouseTag" @drag="moveMouseTag" @mouseover="focusRoot" @keyup="keypress">
+    <VisCanvas v-if="!loading" @ready="init" />
     <v-flex v-else class="text-xs-center" pa-5>
-      <v-progress-circular :size="50" color="primary" indeterminate/>
+      <v-progress-circular :size="50" color="primary" indeterminate />
     </v-flex>
 
-    <div class="mouse-tag" v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}">
-      <v-icon v-text="mouseTagIcon" color="black"/>
+    <div v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}" class="mouse-tag">
+      <v-icon color="black" v-text="mouseTagIcon" />
     </div>
 
     <v-snackbar v-model="snackbar.show">
@@ -31,7 +31,7 @@ const portAmounts = {
   'host': 2,
   'switch': 6
 }
-const nodePriorities = [ 'dummy', 'controller', 'switch', 'host', 'port' ]
+const nodePriorities = ['dummy', 'controller', 'switch', 'host', 'port']
 const edgeTests = {
   'link': (src, dst) => src === 'port' && dst === 'port',
   'association': (src, dst) => (
@@ -85,6 +85,9 @@ export default {
     mouseTagIcon () {
       return '$vuetify.icons.net-' + this.newItemType
     }
+  },
+  mounted () {
+    this.focusRoot()
   },
   methods: {
     moveMouseTag ({ clientX: x, clientY: y }) {
@@ -480,9 +483,6 @@ export default {
       window.nodes = this.nodes
       window.edges = this.edges
     }
-  },
-  mounted () {
-    this.focusRoot()
   }
 }
 </script>
