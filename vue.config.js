@@ -1,5 +1,8 @@
 module.exports = {
   baseUrl: './',
+
+  transpileDependencies: ['vuex-persist'],
+
   chainWebpack: config => {
     config
       .module
