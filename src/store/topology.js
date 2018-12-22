@@ -91,7 +91,7 @@ export default {
     pushChange ({ past, future }, unit) {
       future.splice(0)
       if (past.length >= MAX_UNDO_LENGTH) {
-        past.splice(0, past.length - MAX_UNDO_LENGTH)
+        past.splice(0, past.length + 1 - MAX_UNDO_LENGTH)
       }
       past.push(unit)
     },
