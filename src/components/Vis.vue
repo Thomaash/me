@@ -181,32 +181,35 @@ export default {
       this.newItemType = ''
       this.net.disableEditMode()
     },
-    editItem (node, commit) {
-      return new Promise(resolve => {
-        const oldItem = this.data.items[node.id] || {
-          id: node.id,
-          type: node.group
-        }
-        this.$emit('edit-item', oldItem, item => {
-          if (!item) {
-            // Node/edge adding mode is not turned off unless a node/edge is placed.
-            this.stopEditMode()
-            return resolve({})
-          }
+    async editItem (node, commit) {
+      const oldItem = this.data.items[node.id] || {
+        id: node.id,
+        type: node.group
+      }
 
-          if (node.from && node.to) {
-            item.from = node.from
-            item.to = node.to
-          }
-          updateNode(node, item)
-
-          if (commit !== false) {
-            this.commit('replaceItems', [item])
-          }
-
-          return resolve({ node, item })
-        })
+      const item = await new Promise(resolve => {
+        this.$emit('edit-item', oldItem, resolve)
       })
+      // Ensure the root is focused (there were issues with broken keybindings).
+      this.focusRoot()
+
+      if (!item) {
+        // Node/edge adding mode is not turned off unless a node/edge is placed.
+        this.stopEditMode()
+        return {}
+      }
+
+      if (node.from && node.to) {
+        item.from = node.from
+        item.to = node.to
+      }
+      updateNode(node, item)
+
+      if (commit !== false) {
+        this.commit('replaceItems', [item])
+      }
+
+      return { node, item }
     },
     commit (type, payload) {
       this.snackbar.show = false
