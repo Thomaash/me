@@ -59,6 +59,9 @@ const keybindings = {
   'z': 'setScale'
 }
 
+const compare = new Intl.Collator(undefined, { numeric: true }).compare
+const compareItems = (a, b) => compare(a.label, b.label)
+
 export default {
   name: 'Vis',
   components: { VisCanvas },
@@ -268,7 +271,7 @@ export default {
       const ports = this.net.getConnectedNodes(node.id)
         .map(id => this.nodes.get(id))
         .filter(node => node.group === 'port')
-        .sort((n1, n2) => (n1.label || '').localeCompare(n2.label || ''))
+        .sort(compareItems)
       const coords = this.generateOrganizedPortCoors(
         this.net.getPositions([node.id])[node.id],
         ports.length
