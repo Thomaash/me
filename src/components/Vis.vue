@@ -41,6 +41,12 @@ const edgeTests = {
     (src === 'dummy')
   )
 }
+const baseHostnames = {
+  'controller': 'c1',
+  'host': 'h1',
+  'port': 'eth0',
+  'switch': 's1'
+}
 
 const keybindings = {
   'Delete': 'deleteSelected',
@@ -184,7 +190,8 @@ export default {
     async editItem (node, commit) {
       const oldItem = this.data.items[node.id] || {
         id: node.id,
-        type: node.group
+        type: node.group,
+        hostname: node.label
       }
 
       const item = await new Promise(resolve => {
@@ -270,10 +277,13 @@ export default {
         y: portY + (i % 2 === 0 ? yEvenOffset : 0)
       }))
     },
-    organizePorts (node) {
-      const ports = this.net.getConnectedNodes(node.id)
+    getConnectedNodes (id, type) {
+      return this.net.getConnectedNodes(id)
         .map(id => this.nodes.get(id))
-        .filter(node => node.group === 'port')
+        .filter(node => node.group === type)
+    },
+    organizePorts (node) {
+      const ports = this.getConnectedNodes(node.id, 'port')
         .sort(compareItems)
       const coords = this.generateOrganizedPortCoors(
         this.net.getPositions([node.id])[node.id],
@@ -287,16 +297,51 @@ export default {
         }))
       )
     },
-    getClosest (x, y, types) {
+    getNextHostname (hostnames, fallback) {
+      if (!hostnames.length) {
+        return fallback
+      }
+
+      const prevHostname = hostnames.sort(compare)[hostnames.length - 1]
+      const res = /^(.*?)(\d+)([^\d]*?)$/.exec(prevHostname)
+      if (res == null) {
+        return fallback
+      }
+
+      const [, pre, nm, post] = res
+      const nextLabel = `${pre}${+nm + 1}${post}`
+      return nextLabel
+    },
+    getNextFreeHostname (type, rootNodeId) {
+      if (type === 'port') { // Local namespace
+        if (rootNodeId == null) {
+          return baseHostnames[type]
+        }
+
+        return this.getNextHostname(
+          this.getConnectedNodes(rootNodeId, type)
+            .map(({ id }) => this.data.items[id].hostname),
+          baseHostnames[type]
+        )
+      } else { // Global namespace
+        return this.getNextHostname(
+          this.nodes.get()
+            .filter(node => node.group === type)
+            .map(({ id }) => this.data.items[id].hostname),
+          baseHostnames[type]
+        )
+      }
+    },
+    getClosestId (x, y, types, maxDistance) {
       const ids = this.nodes.getIds()
         .filter(id => types.indexOf(this.data.items[id].type) !== -1)
       const positions = this.net.getPositions(ids)
       const distances = ids.map(id => Math.hypot(positions[id].x - x, positions[id].y - y))
       const closestIndex = distances.reduce((acc, val, i) => val < distances[acc] ? i : acc, 0)
-      return {
-        id: ids[closestIndex],
-        distance: distances[closestIndex]
-      }
+
+      return distances[closestIndex] <= maxDistance
+        ? ids[closestIndex]
+        : null
     },
     focusRoot () {
       this.$el.focus()
@@ -322,6 +367,13 @@ export default {
             node.group = this.newItemType
             this.newItemType = ''
 
+            const closestId = node.group === 'port'
+              ? this.getClosestId(node.x, node.y, ['host', 'switch'], 500)
+              : null
+            node.label = baseHostnames[node.group]
+              ? node.label = this.getNextFreeHostname(node.group, closestId)
+              : ''
+
             const { node: edited, item } = await this.editItem(node, false)
             if (!edited) {
               return
@@ -331,23 +383,18 @@ export default {
             item.y = edited.y
             const items = [item]
 
-            if (edited.group === 'port') {
-              const { x, y } = edited
-              const closest = this.getClosest(x, y, ['host', 'switch'])
-              if (closest.distance <= 500) {
-                const closestId = closest.id
-                const association = {
-                  id: vis.util.randomUUID(),
-                  from: closestId,
-                  to: edited.id
-                }
-                items.push({
-                  id: association.id,
-                  type: 'association',
-                  from: association.from,
-                  to: association.to
-                })
+            if (closestId != null) {
+              const association = {
+                id: vis.util.randomUUID(),
+                from: closestId,
+                to: edited.id
               }
+              items.push({
+                id: association.id,
+                type: 'association',
+                from: association.from,
+                to: association.to
+              })
             }
 
             const ports = portAmounts[edited.group] || 0
@@ -396,6 +443,7 @@ export default {
             if (this.isEdgeValid(edge, type)) {
               edge.id = edge.id || vis.util.randomUUID()
               edge.group = type
+              edge.label = ''
 
               await this.editItem(edge)
             }
