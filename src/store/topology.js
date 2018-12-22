@@ -3,7 +3,7 @@ import exporter from '@/exporter'
 
 import emptyData from '@/examples/empty'
 
-const MAX_UNDO_LENGTH = 10
+const MAX_UNDO_LENGTH = 200
 
 function prepareUndoRedoChange (changeLogItem) {
   const change = {
