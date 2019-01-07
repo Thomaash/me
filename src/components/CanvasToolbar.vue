@@ -1,6 +1,8 @@
 <template>
   <v-menu bottom offset-y>
-    <v-btn v-show="show" slot="activator" dark icon><v-icon>mdi-dots-vertical</v-icon></v-btn>
+    <v-btn v-show="show" slot="activator" dark icon>
+      <v-icon>mdi-dots-vertical</v-icon>
+    </v-btn>
     <v-list>
       <v-list-tile v-for="({ icon, text, action }, i) in items" :key="'canvas_toolbar_' + i" @click.prevent>
         <v-list-tile-avatar @click="action">
