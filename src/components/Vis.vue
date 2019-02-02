@@ -5,7 +5,7 @@
       <v-progress-circular :size="50" color="primary" indeterminate />
     </v-flex>
 
-    <div v-if="newItemType !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}" class="mouse-tag">
+    <div v-if="newItem.type !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}" class="mouse-tag">
       <v-icon color="black" v-text="mouseTagIcon" />
     </div>
 
@@ -57,6 +57,7 @@ const keybindings = {
   'e': 'addEdge',
   'f': 'fitSelected',
   'h': 'addHost',
+  'i': 'addIPsDummy',
   'l': 'addDummy',
   'p': 'addPort',
   'r': 'redo',
@@ -69,7 +70,16 @@ export default {
   name: 'Vis',
   components: { VisCanvas },
   data: () => ({
-    newItemType: '',
+    newItem: {
+      type: null,
+      connectTo: null,
+      label: null,
+      set (type, connectTo, label) {
+        this.type = type || null
+        this.connectTo = connectTo || null
+        this.label = label || null
+      }
+    },
     mouseTag: {
       x: 0,
       y: 0
@@ -89,7 +99,7 @@ export default {
       return this.$store.state.loading
     },
     mouseTagIcon () {
-      return '$vuetify.icons.net-' + this.newItemType
+      return '$vuetify.icons.net-' + this.newItem.type
     }
   },
   mounted () {
@@ -101,27 +111,31 @@ export default {
       this.mouseTag.y = y
     },
     addEdge () {
-      this.newItemType = 'edge'
+      this.newItem.set('edge')
       this.net.addEdgeMode()
     },
     addController () {
-      this.newItemType = 'controller'
+      this.newItem.set('controller')
       this.net.addNodeMode()
     },
     addDummy () {
-      this.newItemType = 'dummy'
+      this.newItem.set('dummy')
+      this.net.addNodeMode()
+    },
+    addIPsDummy () {
+      this.newItem.set('dummy', ['port'], '{{IPS}}')
       this.net.addNodeMode()
     },
     addHost () {
-      this.newItemType = 'host'
+      this.newItem.set('host')
       this.net.addNodeMode()
     },
     addPort () {
-      this.newItemType = 'port'
+      this.newItem.set('port', ['host', 'switch'])
       this.net.addNodeMode()
     },
     addSwitch () {
-      this.newItemType = 'switch'
+      this.newItem.set('switch')
       this.net.addNodeMode()
     },
     deleteSelected () {
@@ -181,7 +195,7 @@ export default {
       })
     },
     stopEditMode () {
-      this.newItemType = ''
+      this.newItem.set()
       this.net.disableEditMode()
     },
     async editItem (node, commit) {
@@ -360,15 +374,20 @@ export default {
           addNode: async (node, callback) => {
             callback() // Node will be added via reactivity from Vuex
 
-            node.group = this.newItemType
-            this.newItemType = ''
+            const newItem = { ...this.newItem }
+            this.newItem.set()
 
-            const closestId = node.group === 'port'
-              ? this.getClosestId(node.x, node.y, ['host', 'switch'], 500)
+            node.group = newItem.type
+            node.label = newItem.label
+
+            const closestId = newItem.connectTo
+              ? this.getClosestId(node.x, node.y, newItem.connectTo, 500)
               : null
-            node.label = baseHostnames[node.group]
-              ? node.label = this.getNextFreeHostname(node.group, closestId)
-              : ''
+            node.label = newItem.label || (
+              baseHostnames[node.group]
+                ? this.getNextFreeHostname(node.group, closestId)
+                : ''
+            )
 
             const { node: edited, item } = await this.editItem(node, false)
             if (!edited) {
@@ -381,10 +400,17 @@ export default {
 
             if (closestId != null) {
               const association = {
-                id: vis.util.randomUUID(),
-                from: closestId,
-                to: edited.id
+                id: vis.util.randomUUID()
               }
+
+              if (nodePriorities.indexOf(item.type) > nodePriorities.indexOf(this.data.items[closestId].type)) {
+                association.from = closestId
+                association.to = edited.id
+              } else {
+                association.from = edited.id
+                association.to = closestId
+              }
+
               items.push({
                 id: association.id,
                 type: 'association',
@@ -427,9 +453,9 @@ export default {
             this.commit('replaceItems', items)
           },
           editNode: async (node, callback) => {
-            this.newItemType = ''
-            const { node: edited } = await this.editItem(node)
-            callback(edited)
+            this.newItem.set()
+            await this.editItem(node)
+            callback()
           },
           addEdge: async (edge, callback) => {
             callback() // Edge will be added via reactivity from Vuex
@@ -444,18 +470,18 @@ export default {
               await this.editItem(edge)
             }
 
-            this.newItemType = ''
+            this.newItem.set()
           },
           editEdge: async (edge, callback) => {
             this.orderNodes(edge)
             if (this.isEdgeValid(edge, this.getEdgeType(edge))) {
-              const { node: edited } = await this.editItem(edge)
-              callback(edited)
+              await this.editItem(edge)
+              callback()
             } else {
               callback()
             }
 
-            this.newItemType = ''
+            this.newItem.set()
           }
         }
       })

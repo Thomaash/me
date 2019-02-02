@@ -46,6 +46,7 @@ export default {
       { combination: 'e', description: 'Add an edge.' },
       { combination: 'f', description: 'Fit selected items into the viewport.' },
       { combination: 'h', description: 'Add a host.' },
+      { combination: 'i', description: 'Add an IPs label.' },
       { combination: 'l', description: 'Add a label.' },
       { combination: 'p', description: 'Add a port.' },
       { combination: 'r', description: 'Redo undone change.' },
