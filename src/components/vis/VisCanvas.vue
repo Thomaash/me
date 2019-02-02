@@ -5,8 +5,9 @@
 </template>
 
 <script>
-import updateNode from './updateNode'
+import generateTooltip from './generateTooltip'
 import vis from 'vis'
+import { compare, compareItems } from './locale'
 import { items as theme } from '@/theme'
 import { mapGetters } from 'vuex'
 
@@ -20,7 +21,40 @@ export default {
   data: () => ({
     width: null,
     height: null,
-    unsubscribe: null
+    unsubscribe: null,
+    labelPlaceholders: {
+      re: /{{.*}}/g,
+      replace: {
+        '{{HOSTNAMES}}' (item, neighbors) {
+          return neighbors.filter(item => /^(port|host|switch|controller)$/.test(item.type))
+            .map(item => item.hostname)
+            .sort(compare)
+            .join(', ')
+        },
+        '{{IPS}}' (item, neighbors) {
+          function formatIPs (ips) {
+            return !ips || !ips.length
+              ? 'no addresses'
+              : ips.join(', ')
+          }
+
+          const ports = neighbors.filter(item => item.type === 'port')
+            .map(item => ({ ...item, ips: item.ips || [] }))
+            .sort(compareItems)
+          if (ports.length === 0) {
+            return 'nothing connected'
+          } else if (ports.length === 1) {
+            return formatIPs(ports[0].ips)
+          } else {
+            return ports.map(item => `${item.hostname}: ${formatIPs(item.ips)}`)
+              .join('\n')
+          }
+        },
+        fallback (item, neighbors, match) {
+          return `unknown placeholder: ${match}`
+        }
+      }
+    }
   }),
   computed: {
     ...mapGetters('topology', [
@@ -46,6 +80,12 @@ export default {
           ]
           const nodes = []
           const edges = []
+
+          // Save old neighbors for label update
+          const updatedIds = new Set([].concat(
+            ...ids,
+            ...ids.map(id => this.net.getConnectedNodes(id))
+          ))
 
           if (update) {
             Object.values(update).forEach(itemUpdate => {
@@ -83,6 +123,15 @@ export default {
           if (edges.length) {
             this.edges.add(edges)
           }
+
+          // Save new neighbors for label update
+          ids.forEach(id =>
+            this.net.getConnectedNodes(id)
+              .forEach(id => updatedIds.add(id))
+          )
+
+          // Update label texts
+          this.updateLabels([...updatedIds].filter(id => this.data.items[id]))
         }
       }
     }
@@ -176,30 +225,61 @@ export default {
     this.net = net
     this.nodes = nodes
     this.edges = edges
-    this.$emit('ready', { container, net, nodes, edges })
+
+    // Some labels contains IPs and other info from connected nodes.
+    // Therefore this can't be done before the topology is built.
+    this.updateLabels()
 
     this.unsubscribe = this.$store.subscribe(({ type, payload }, { data }) => {
       ;(this.storeActions[type] || (() => {}))(payload, data)
     })
+
+    this.$emit('ready', { container, net, nodes, edges })
   },
   beforeDestroy () {
     this.unsubscribe && this.unsubscribe()
   },
   methods: {
     itemToNode (item) {
-      return updateNode({
+      return {
         id: item.id,
         group: item.type,
         x: item.x,
-        y: item.y
-      }, item)
+        y: item.y,
+        label: item.type === 'dummy' ? this.processLabel(item) : item.hostname,
+        title: generateTooltip(item)
+      }
     },
     itemToEdge (item) {
-      return updateNode({
+      return {
         id: item.id,
         from: item.from,
-        to: item.to
-      }, item)
+        to: item.to,
+        label: item.hostname,
+        title: generateTooltip(item)
+      }
+    },
+    processLabel (item) {
+      if (!this.net) {
+        return item.hostname
+      }
+
+      const neighbors = this.net.getConnectedNodes(item.id)
+        .map(id => this.data.items[id])
+      return item.hostname.replace(this.labelPlaceholders.re, match => {
+        return (
+          this.labelPlaceholders.replace[match.toUpperCase()] ||
+          this.labelPlaceholders.replace.fallback
+        )(item, neighbors, match)
+      })
+    },
+    updateLabels (ids) {
+      this.nodes.update(
+        (ids || this.nodes.getIds())
+          .map(id => this.data.items[id])
+          .filter(item => item.type === 'dummy')
+          .map(item => this.itemToNode(item))
+      )
     },
     toBlob (scale) {
       return new Promise(resolve => {

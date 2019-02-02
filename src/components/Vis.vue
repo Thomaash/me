@@ -22,8 +22,8 @@
 import RectangularSelection from './vis/RectangularSelection'
 import VisCanvas from './vis/VisCanvas'
 import deselectHandler from './vis/deselectHandler'
-import updateNode from './vis/updateNode'
 import vis from 'vis'
+import { compare, compareNodes } from './vis/locale'
 import { mapGetters } from 'vuex'
 import { selection as selectionTheme } from '@/theme'
 
@@ -64,9 +64,6 @@ const keybindings = {
   'u': 'undo',
   'z': 'setScale'
 }
-
-const compare = new Intl.Collator(undefined, { numeric: true }).compare
-const compareItems = (a, b) => compare(a.label, b.label)
 
 export default {
   name: 'Vis',
@@ -210,7 +207,6 @@ export default {
         item.from = node.from
         item.to = node.to
       }
-      updateNode(node, item)
 
       if (commit !== false) {
         this.commit('replaceItems', [item])
@@ -284,7 +280,7 @@ export default {
     },
     organizePorts (node) {
       const ports = this.getConnectedNodes(node.id, 'port')
-        .sort(compareItems)
+        .sort(compareNodes)
       const coords = this.generateOrganizedPortCoors(
         this.net.getPositions([node.id])[node.id],
         ports.length
