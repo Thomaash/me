@@ -75,10 +75,12 @@ export default {
       type: null,
       connectTo: null,
       label: null,
-      set (type, connectTo, label) {
+      noEdit: false,
+      set (type, connectTo, label, noEdit) {
         this.type = type || null
         this.connectTo = connectTo || null
         this.label = label || null
+        this.noEdit = noEdit || false
       }
     },
     mouseTag: {
@@ -124,11 +126,11 @@ export default {
       this.net.addNodeMode()
     },
     addIPsDummy () {
-      this.newItem.set('dummy', ['port', 'host', 'switch', 'controller'], '{{IPS}}')
+      this.newItem.set('dummy', ['port', 'host', 'switch', 'controller'], '{{IPS}}', true)
       this.net.addNodeMode()
     },
     addTypesDummy () {
-      this.newItem.set('dummy', ['switch', 'controller'], '{{TYPES}}')
+      this.newItem.set('dummy', ['switch', 'controller'], '{{TYPES}}', true)
       this.net.addNodeMode()
     },
     addHost () {
@@ -394,7 +396,16 @@ export default {
                 : ''
             )
 
-            const { node: edited, item } = await this.editItem(node, false)
+            const { node: edited, item } = newItem.noEdit
+              ? {
+                node,
+                item: {
+                  id: node.id,
+                  type: node.group,
+                  hostname: node.label
+                }
+              }
+              : await this.editItem(node, false)
             if (!edited) {
               return
             }
