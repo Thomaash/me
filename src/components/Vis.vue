@@ -123,7 +123,7 @@ export default {
       this.net.addNodeMode()
     },
     addIPsDummy () {
-      this.newItem.set('dummy', ['port'], '{{IPS}}')
+      this.newItem.set('dummy', ['port', 'host', 'switch', 'controller'], '{{IPS}}')
       this.net.addNodeMode()
     },
     addHost () {

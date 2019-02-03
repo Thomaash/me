@@ -32,21 +32,41 @@ export default {
             .join(', ')
         },
         '{{IPS}}' (item, neighbors) {
-          function formatIPs (ips) {
-            return !ips || !ips.length
-              ? 'no addresses'
-              : ips.join(', ')
-          }
+          const ips = neighbors.map(item => {
+            if (item.type === 'port') {
+              return {
+                hostname: item.hostname,
+                ips: item.ips
+                  ? item.ips.join('\n')
+                  : 'no addresses'
+              }
+            } else if (item.type === 'controller') {
+              return {
+                hostname: item.hostname,
+                ips: `${item.ip || '<default IP>'}:${item.port || '<default port>'}`
+              }
+            } else if (item.type === 'host') {
+              return {
+                hostname: item.hostname,
+                ips: item.defaultRoute || 'no default route'
+              }
+            } else if (item.type === 'switch') {
+              return {
+                hostname: item.hostname,
+                ips: item.ip || 'no address'
+              }
+            } else {
+              return null
+            }
+          }).filter(item => item != null).sort(compareItems)
 
-          const ports = neighbors.filter(item => item.type === 'port')
-            .map(item => ({ ...item, ips: item.ips || [] }))
-            .sort(compareItems)
-          if (ports.length === 0) {
+          if (ips.length === 0) {
             return 'nothing connected'
-          } else if (ports.length === 1) {
-            return formatIPs(ports[0].ips)
+          } else if (ips.length === 1) {
+            return ips[0].ips
           } else {
-            return ports.map(item => `${item.hostname}: ${formatIPs(item.ips)}`)
+            return ips
+              .map(({ hostname, ips }) => `${hostname}: ${ips}`)
               .join('\n')
           }
         },
