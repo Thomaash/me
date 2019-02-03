@@ -13,6 +13,8 @@
     "@babel/polyfill": "^7.2.5",
     "@mdi/font": "^2.6.95",
     "antlr4": "^4.7.2",
+    "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.0.9",
     "localforage": "^1.7.3",
     "roboto-fontface": "*",
     "vis": "^4.21.0",

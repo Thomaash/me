@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md>
     <v-layout wrap>
-      <v-flex xs12 md6>
+      <v-flex xs12 md7>
         <section>
           <h3 class="headline">Export</h3>
 
@@ -16,11 +16,12 @@
                 </v-list-tile>
               </v-list>
             </v-menu>
+            <v-btn :disabled="working" flat color="primary" @click="downloadAddressingPlan">Addressing plan</v-btn>
           </p>
         </section>
       </v-flex>
 
-      <v-flex xs12 md6>
+      <v-flex xs12 md5>
         <section>
           <h3 class="headline">Import</h3>
 
@@ -72,8 +73,13 @@
 </template>
 
 <script>
+import AddressingPlan from '@/builder/AddressingPlan'
 import Builder from '@/builder'
 import VisCanvas from '@/components/vis/VisCanvas'
+import exporter from '@/exporter'
+import importScript from '@/importScript'
+import { mapGetters } from 'vuex'
+
 import exampleEmpty from '@/examples/empty'
 import exampleMedium1C from '@/examples/medium_1_controller'
 import exampleMedium2C from '@/examples/medium_2_controllers'
@@ -82,9 +88,6 @@ import exampleTinyController from '@/examples/tiny_controller'
 import exampleTinyMininetConf from '@/examples/tiny_mininet_conf'
 import exampleTinyPhysicalInterface from '@/examples/tiny_physical_interface'
 import exampleTinyTC from '@/examples/tiny_tc'
-import exporter from '@/exporter'
-import importScript from '@/importScript'
-import { mapGetters } from 'vuex'
 
 function download (filename, mimeOrHref, data) {
   const href = mimeOrHref && data
@@ -342,6 +345,23 @@ export default {
           this.working = false
         }
       }, 100)
+    },
+    downloadAddressingPlan () {
+      try {
+        this.working = true
+        this.log = []
+
+        const ap = new AddressingPlan(exporter.exportData(this.data))
+        ap.build()
+        ap.exportPDF()
+
+        this.showAlert('success', 'Addressing plan built.')
+      } catch (error) {
+        console.error(error)
+        this.showAlert('error', 'Addressing plan was not built.')
+      } finally {
+        this.working = false
+      }
     }
   }
 }
