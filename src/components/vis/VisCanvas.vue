@@ -24,7 +24,7 @@ export default {
     height: null,
     unsubscribe: null,
     labelPlaceholders: {
-      re: /{{.*}}/g,
+      re: /{{[^{}]*}}/g,
       replace: {
         '{{HOSTNAMES}}' (item, neighbors) {
           return neighbors.filter(item => /^(port|host|switch|controller)$/.test(item.type))
@@ -274,7 +274,7 @@ export default {
     this.nodes = nodes
     this.edges = edges
 
-    // Some labels contains IPs and other info from connected nodes.
+    // Some labels contain placeholders for info from connected nodes.
     // Therefore this can't be done before the topology is built.
     this.updateLabels()
 
