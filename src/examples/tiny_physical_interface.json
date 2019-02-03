@@ -175,6 +175,58 @@
             "type": "link",
             "from": "f84b2ea0-0a16-4675-987a-af96ada63e8a",
             "to": "63cfebf1-fde4-4e36-917c-5937ae3cd418"
+        },
+        {
+            "id": "e4fc9c99-03c0-4a97-ad23-71c65e88c891",
+            "type": "dummy",
+            "hostname": "{{IPS}}",
+            "x": -180,
+            "y": 246
+        },
+        {
+            "id": "dd7f35f9-f064-4ffe-b52b-f16a364c704a",
+            "type": "association",
+            "from": "e4fc9c99-03c0-4a97-ad23-71c65e88c891",
+            "to": "52046764-961b-40ca-9c70-56e41e0891e4"
+        },
+        {
+            "id": "37ed4f60-a49c-4cf2-8bb7-393a5b462415",
+            "type": "dummy",
+            "hostname": "{{IPS}}",
+            "x": 112,
+            "y": 246
+        },
+        {
+            "id": "e00834a9-6992-45db-bec3-3f8d287cc791",
+            "type": "association",
+            "from": "37ed4f60-a49c-4cf2-8bb7-393a5b462415",
+            "to": "f84b2ea0-0a16-4675-987a-af96ada63e8a"
+        },
+        {
+            "id": "fb35e187-5d59-4df1-86e9-4654842e0080",
+            "type": "dummy",
+            "hostname": "{{TYPES}}",
+            "x": -29,
+            "y": -215
+        },
+        {
+            "id": "c1b093ef-d3d5-4d14-b261-9badcf927554",
+            "type": "association",
+            "from": "fb35e187-5d59-4df1-86e9-4654842e0080",
+            "to": "adc7b0a0-51e5-4678-a4bc-458ac91baed5"
+        },
+        {
+            "id": "bd1f1465-db1a-406b-8f9f-f927e1a37458",
+            "type": "dummy",
+            "hostname": "{{IPS}}",
+            "x": -31,
+            "y": 246
+        },
+        {
+            "id": "584973f3-258f-45cf-9d0f-887933d55be2",
+            "type": "association",
+            "from": "bd1f1465-db1a-406b-8f9f-f927e1a37458",
+            "to": "a4d61bf5-9bf8-4553-9209-9a51a2761956"
         }
     ]
 }

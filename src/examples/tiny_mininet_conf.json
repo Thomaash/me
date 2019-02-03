@@ -6,6 +6,7 @@
     "spawnTerminals": true,
     "inNamespace": false,
     "autoStaticARP": false,
+    "logLevel": "debug",
     "version": 0,
     "items": [
         {
@@ -177,6 +178,45 @@
             "type": "link",
             "from": "f84b2ea0-0a16-4675-987a-af96ada63e8a",
             "to": "63cfebf1-fde4-4e36-917c-5937ae3cd418"
+        },
+        {
+            "id": "3afae1a8-b62e-4397-9c68-b3f7f1543071",
+            "type": "dummy",
+            "hostname": "{{IPS}}",
+            "x": -171,
+            "y": 247
+        },
+        {
+            "id": "ceaafba4-fc21-4d8d-8468-ee236b6a1296",
+            "type": "association",
+            "from": "3afae1a8-b62e-4397-9c68-b3f7f1543071",
+            "to": "52046764-961b-40ca-9c70-56e41e0891e4"
+        },
+        {
+            "id": "e65540c2-d66a-4a66-a4c1-a92742cba378",
+            "type": "dummy",
+            "hostname": "{{IPS}}",
+            "x": 16,
+            "y": 245
+        },
+        {
+            "id": "a2006f37-3104-4fe4-b452-88562032fd64",
+            "type": "association",
+            "from": "e65540c2-d66a-4a66-a4c1-a92742cba378",
+            "to": "f84b2ea0-0a16-4675-987a-af96ada63e8a"
+        },
+        {
+            "id": "5f825a18-93c7-4b55-8716-89cc3232d203",
+            "type": "dummy",
+            "hostname": "{{TYPES}}",
+            "x": -31,
+            "y": -218
+        },
+        {
+            "id": "0488877a-7419-49f8-a7c6-b947930f74ce",
+            "type": "association",
+            "from": "5f825a18-93c7-4b55-8716-89cc3232d203",
+            "to": "adc7b0a0-51e5-4678-a4bc-458ac91baed5"
         }
     ]
 }

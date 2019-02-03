@@ -180,6 +180,45 @@
             "to": "63cfebf1-fde4-4e36-917c-5937ae3cd418",
             "hostname": "Lossy",
             "loss": 10
+        },
+        {
+            "id": "4b1fe894-c21d-4966-9a2b-d7ce82dacfda",
+            "type": "dummy",
+            "hostname": "{{IPS}}",
+            "x": -168,
+            "y": 245
+        },
+        {
+            "id": "3a78a708-e632-4da9-9ddb-9ac61956fdfe",
+            "type": "association",
+            "from": "4b1fe894-c21d-4966-9a2b-d7ce82dacfda",
+            "to": "52046764-961b-40ca-9c70-56e41e0891e4"
+        },
+        {
+            "id": "a39833fb-ab31-4db8-bbd7-1f1bfe29db12",
+            "type": "dummy",
+            "hostname": "{{IPS}}",
+            "x": 16,
+            "y": 244
+        },
+        {
+            "id": "e29b2b23-f5f3-4980-98df-8e5caeba5ee6",
+            "type": "association",
+            "from": "a39833fb-ab31-4db8-bbd7-1f1bfe29db12",
+            "to": "f84b2ea0-0a16-4675-987a-af96ada63e8a"
+        },
+        {
+            "id": "2f32df17-f287-4250-9bf6-ad3a85b7f3bf",
+            "type": "dummy",
+            "hostname": "{{TYPES}}",
+            "x": -32,
+            "y": -214
+        },
+        {
+            "id": "d7f15f98-14f6-44d0-ab95-4b84b3ea6e1d",
+            "type": "association",
+            "from": "2f32df17-f287-4250-9bf6-ad3a85b7f3bf",
+            "to": "adc7b0a0-51e5-4678-a4bc-458ac91baed5"
         }
     ]
 }
