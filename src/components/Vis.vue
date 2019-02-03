@@ -62,6 +62,7 @@ const keybindings = {
   'p': 'addPort',
   'r': 'redo',
   's': 'addSwitch',
+  't': 'addTypesDummy',
   'u': 'undo',
   'z': 'setScale'
 }
@@ -124,6 +125,10 @@ export default {
     },
     addIPsDummy () {
       this.newItem.set('dummy', ['port', 'host', 'switch', 'controller'], '{{IPS}}')
+      this.net.addNodeMode()
+    },
+    addTypesDummy () {
+      this.newItem.set('dummy', ['switch', 'controller'], '{{TYPES}}')
       this.net.addNodeMode()
     },
     addHost () {

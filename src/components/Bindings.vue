@@ -46,11 +46,12 @@ export default {
       { combination: 'e', description: 'Add an edge.' },
       { combination: 'f', description: 'Fit selected items into the viewport.' },
       { combination: 'h', description: 'Add a host.' },
-      { combination: 'i', description: 'Add an IPs label.' },
+      { combination: 'i', description: 'Add a label witch IPS placeholder (autoconnects to the closest).' },
       { combination: 'l', description: 'Add a label.' },
       { combination: 'p', description: 'Add a port.' },
       { combination: 'r', description: 'Redo undone change.' },
       { combination: 's', description: 'Add a switch.' },
+      { combination: 't', description: 'Add a label with TYPES placeholder (autoconnects to the closest).' },
       { combination: 'u', description: 'Undo a change.' },
       { combination: 'z', description: 'Reset zoom.' }
     ],

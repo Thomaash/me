@@ -8,6 +8,7 @@
 import generateTooltip from './generateTooltip'
 import vis from 'vis'
 import { compare, compareItems } from './locale'
+import { controllerTypesMap, switchTypesMap } from '@/selects'
 import { items as theme } from '@/theme'
 import { mapGetters } from 'vuex'
 
@@ -67,6 +68,33 @@ export default {
           } else {
             return ips
               .map(({ hostname, ips }) => `${hostname}: ${ips}`)
+              .join('\n')
+          }
+        },
+        '{{TYPES}}' (item, neighbors) {
+          const types = neighbors.map(item => {
+            if (item.type === 'controller') {
+              return {
+                hostname: item.hostname,
+                type: controllerTypesMap[item.controllerType] || item.controllerType
+              }
+            } else if (item.type === 'switch') {
+              return {
+                hostname: item.hostname,
+                type: switchTypesMap[item.switchType] || item.switchType
+              }
+            } else {
+              return null
+            }
+          }).filter(item => item != null).sort(compareItems)
+
+          if (types.length === 0) {
+            return 'nothing connected'
+          } else if (types.length === 1) {
+            return types[0].type
+          } else {
+            return types
+              .map(({ hostname, type }) => `${hostname}: ${type}`)
               .join('\n')
           }
         },

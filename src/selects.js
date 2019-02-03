@@ -57,3 +57,12 @@ const logLevels = [
   { value: 'critical', text: 'Critical' }
 ]
 export { logLevels }
+
+function reduceToMap (acc, val) {
+  acc[val.value] = val.text
+  return acc
+}
+const controllerTypesMap = controllerTypes.reduce(reduceToMap, Object.create(null))
+export { controllerTypesMap }
+const switchTypesMap = switchTypes.reduce(reduceToMap, Object.create(null))
+export { switchTypesMap }
