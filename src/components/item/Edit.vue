@@ -2,25 +2,25 @@
   <v-layout row justify-center>
     <v-dialog
       v-model="dialog"
+      :fullscreen="fullscreen || $vuetify.breakpoint.xsOnly"
       persistent
       scrollable
       max-width="600px"
-      :fullscreen="fullscreen || $vuetify.breakpoint.xsOnly"
       @keydown.esc="cancel"
       @keydown.enter="save"
     >
       <v-card>
         <v-card-title primary-title style="flex-grow: 0;" @dblclick="fullscreen = !fullscreen">
-          <v-icon v-text="'$vuetify.icons.net-' + themeType" class="mr-2"/>
-          <h3 class="headline" v-text="headline"/>
+          <v-icon class="mr-2" v-text="'$vuetify.icons.net-' + themeType" />
+          <h3 class="headline" v-text="headline" />
         </v-card-title>
         <v-card-text style="flex-grow: 1;">
-          <div v-model="item" @valid="v => valid = v" :is="component"/>
+          <div v-model="item" :is="component" @valid="v => valid = v" />
         </v-card-text>
         <v-card-actions style="flex-grow: 0;">
-          <v-spacer/>
+          <v-spacer />
           <v-btn color="primary" flat @click.native="cancel">Cancel</v-btn>
-          <v-btn color="primary" flat @click.native="save" :disabled="!valid">Save</v-btn>
+          <v-btn :disabled="!valid" color="primary" flat @click.native="save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -90,6 +90,10 @@ export default {
       this.dialog = true
     },
     save () {
+      if (!this.valid) {
+        return
+      }
+
       const item = JSON.parse(JSON.stringify(this.item))
       this.callback(item)
       this.close()
