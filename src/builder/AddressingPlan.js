@@ -35,7 +35,7 @@ export default class {
       planNode.length += port.ips.length
     })
   }
-  exportPDF () {
+  savePDF (filename) {
     const body = []
     Object.entries(this.plan).sort(compareEntries).forEach(([nodeHostname, node]) => {
       let firstInNode = true
@@ -65,7 +65,7 @@ export default class {
       head: [['Hostname', 'Port', 'Address']],
       body
     })
-    doc.save('addressing_plan.pdf')
+    doc.save(filename)
   }
 
   _portToNode (port) {

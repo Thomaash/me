@@ -142,7 +142,7 @@ export default {
       title: 'Tiny with traffic control',
       data: exampleTinyTC
     }, {
-      title: 'Tiny with Mininet Settings',
+      title: 'Tiny with Mininet settings',
       data: exampleTinyMininetConf
     }, {
       title: 'Medium with 1 controller',
@@ -282,16 +282,9 @@ export default {
       try {
         this.working = true
 
+        const json = JSON.stringify(exporter.exportData(this.data), undefined, 4)
         this.showAlert('success', 'Successfully exported.')
-        download(
-          'mininet_network.json',
-          'application/json;charset=utf-8',
-          JSON.stringify(
-            exporter.exportData(this.data),
-            undefined,
-            4
-          )
-        )
+        download(this.getFilename('json'), 'application/json;charset=utf-8', json)
       } catch (error) {
         console.error(error)
         this.showAlert('error', 'Export failed.')
@@ -308,7 +301,7 @@ export default {
         this.log = builder.log
         const script = builder.build()
         this.showAlert('success', 'Script built.')
-        download('mininet_network.py', 'text/x-python;charset=utf-8', script)
+        download(this.getFilename('py'), 'text/x-python;charset=utf-8', script)
       } catch (error) {
         console.error(error)
         this.showAlert('error', 'Script was not built.')
@@ -333,7 +326,7 @@ export default {
           if (blob) {
             this.showAlert('success', `Image rendered, size: ${size}.`)
             const url = URL.createObjectURL(blob)
-            download('mininet_network.png', url)
+            download(this.getFilename('png'), url)
             URL.revokeObjectURL(url)
           } else {
             this.showAlert('error', `Image rendering failed. Probably too large image for this browser, size: ${size}.`)
@@ -353,7 +346,7 @@ export default {
 
         const ap = new AddressingPlan(exporter.exportData(this.data))
         ap.build()
-        ap.exportPDF()
+        ap.savePDF(this.getFilename('pdf'))
 
         this.showAlert('success', 'Addressing plan built.')
       } catch (error) {
@@ -362,6 +355,9 @@ export default {
       } finally {
         this.working = false
       }
+    },
+    getFilename (extension) {
+      return `${this.data.projectName || 'mininet_network'}.${extension}`
     }
   }
 }

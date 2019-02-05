@@ -1,5 +1,6 @@
 {
     "version": 0,
+    "projectName": "Mininet network - Medium with 1 controller",
     "startScript": "# Ping between all hosts.\npingall\n",
     "items": [
         {

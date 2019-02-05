@@ -1,6 +1,7 @@
 {
     "version": 0,
     "startScript": "# Ping between all hosts.\npingall\n",
+    "projectName": "Mininet network - Tiny with remote controller",
     "logLevel": "debug",
     "items": [
         {

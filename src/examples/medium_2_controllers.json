@@ -1,6 +1,7 @@
 {
     "version": 0,
     "startScript": "# Ping between all hosts.\npingall\n",
+    "projectName": "Mininet network - Medium with 2 controllers",
     "items": [
         {
             "id": "0b285be7-23f8-45ba-a26b-c792cdf1b67d",

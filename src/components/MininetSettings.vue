@@ -4,6 +4,9 @@
       <v-flex :class="{ 'pr-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
         <v-layout wrap>
           <v-flex xs12>
+            <v-text-field v-model="projectName" label="Project Name" clearable />
+          </v-flex>
+          <v-flex xs12>
             <v-select v-model="logLevel" :items="logLevels" label="Log Level" clearable />
           </v-flex>
           <v-flex xs12>
@@ -75,6 +78,7 @@ export default {
     ipBase: new ComputedStoreProperty('ipBase'),
     listenPortBase: new ComputedStoreProperty('listenPortBase'),
     logLevel: new ComputedStoreProperty('logLevel'),
+    projectName: new ComputedStoreProperty('projectName'),
     spawnTerminals: new ComputedStoreProperty('spawnTerminals'),
     startScript: new ComputedStoreProperty('startScript'),
     stopScript: new ComputedStoreProperty('stopScript')
