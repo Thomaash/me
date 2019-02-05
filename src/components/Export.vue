@@ -346,7 +346,7 @@ export default {
 
         const ap = new AddressingPlan(exporter.exportData(this.data))
         ap.build()
-        ap.savePDF(this.getFilename('pdf'))
+        ap.savePDF(this.data.projectName, this.getFilename('pdf'))
 
         this.showAlert('success', 'Addressing plan built.')
       } catch (error) {

@@ -35,7 +35,7 @@ export default class {
       planNode.length += port.ips.length
     })
   }
-  savePDF (filename) {
+  savePDF (headline, filename) {
     const body = []
     Object.entries(this.plan).sort(compareEntries).forEach(([nodeHostname, node]) => {
       let firstInNode = true
@@ -59,12 +59,22 @@ export default class {
     })
 
     const doc = new JsPDF()
+
+    doc.setProperties({ title: headline })
+    doc.viewerPreferences({ 'DisplayDocTitle': true })
+
+    doc.setFontSize(18)
+    doc.text(headline, 14, 20)
+    doc.setFontSize(11)
+
     doc.autoTable({
+      startY: 30,
       theme: 'grid',
       headStyles: { fillColor: theme.primary },
       head: [['Hostname', 'Port', 'Address']],
       body
     })
+
     doc.save(filename)
   }
 
