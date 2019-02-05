@@ -1,6 +1,6 @@
 {
     "startScript": "# Ping between all hosts.\npingall\n",
-    "projectName": "Mininet network - Tiny with mininet settings",
+    "projectName": "Mininet network - Tiny with Mininet settings",
     "ipBase": "192.168.1.0/8",
     "listenPortBase": 6634,
     "autoSetMAC": true,
