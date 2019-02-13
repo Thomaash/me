@@ -48,7 +48,7 @@ export default {
       { combination: 'h', description: 'Add a host.' },
       { combination: 'i', description: 'Add a label witch IPS placeholder (autoconnects to the closest).' },
       { combination: 'l', description: 'Add a label.' },
-      { combination: 'p', description: 'Add a port.' },
+      { combination: 'p', description: 'Add a port (autoconnects to the closest).' },
       { combination: 'r', description: 'Redo undone change.' },
       { combination: 's', description: 'Add a switch.' },
       { combination: 't', description: 'Add a label with TYPES placeholder (autoconnects to the closest).' },
