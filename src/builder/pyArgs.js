@@ -10,19 +10,19 @@ function pyArg (test, value, type, pre) {
 }
 
 function pyArgPre (...args) {
-  if (args.length === 4) {
+  if (args.length === 4) { // test, value, type, name
     const name = args.pop()
     return pyArg(...args, `${name}=`)
   } else if (args.length === 3) {
-    if (typeof args[2] === 'string') {
+    if (typeof args[2] === 'string') { // value, type, name
       const name = args.pop()
       return pyArg(true, ...args, `${name}=`)
-    } else {
+    } else { // test, value, type
       return pyArg(...args, '')
     }
-  } else if (args.length === 2) {
+  } else if (args.length === 2) { // value, type
     return pyArg(true, ...args, '')
-  } else if (args.length === 1) {
+  } else if (args.length === 1) { // value
     return pyArg(true, ...args, null, '')
   } else {
     throw new TypeError(`Invalid number of arguments: ${args.length}.`)
