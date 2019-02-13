@@ -6,9 +6,8 @@
 
 <script>
 import generateTooltip from './generateTooltip'
+import labelPlaceholders from './placeholders'
 import vis from 'vis'
-import { compare, compareItems } from './locale'
-import { controllerTypesMap, switchTypesMap } from '@/selects'
 import { items as theme } from '@/theme'
 import { mapGetters } from 'vuex'
 
@@ -23,86 +22,7 @@ export default {
     width: null,
     height: null,
     unsubscribe: null,
-    labelPlaceholders: {
-      re: /{{[^{}]*}}/g,
-      replace: {
-        '{{HOSTNAMES}}' (item, neighbors) {
-          return neighbors.filter(item => /^(port|host|switch|controller)$/.test(item.type))
-            .map(item => item.hostname)
-            .sort(compare)
-            .join(', ')
-        },
-        '{{IPS}}' (item, neighbors) {
-          const ips = neighbors.map(item => {
-            if (item.type === 'port') {
-              return {
-                hostname: item.hostname,
-                ips: item.ips
-                  ? item.ips.join('\n')
-                  : 'no addresses'
-              }
-            } else if (item.type === 'controller') {
-              return {
-                hostname: item.hostname,
-                ips: `${item.ip || '<default IP>'}:${item.port || '<default port>'}`
-              }
-            } else if (item.type === 'host') {
-              return {
-                hostname: item.hostname,
-                ips: item.defaultRoute || 'no default route'
-              }
-            } else if (item.type === 'switch') {
-              return {
-                hostname: item.hostname,
-                ips: item.ip || 'no address'
-              }
-            } else {
-              return null
-            }
-          }).filter(item => item != null).sort(compareItems)
-
-          if (ips.length === 0) {
-            return 'nothing connected'
-          } else if (ips.length === 1) {
-            return ips[0].ips
-          } else {
-            return ips
-              .map(({ hostname, ips }) => `${hostname}: ${ips}`)
-              .join('\n')
-          }
-        },
-        '{{TYPES}}' (item, neighbors) {
-          const types = neighbors.map(item => {
-            if (item.type === 'controller') {
-              return {
-                hostname: item.hostname,
-                type: controllerTypesMap[item.controllerType] || item.controllerType
-              }
-            } else if (item.type === 'switch') {
-              return {
-                hostname: item.hostname,
-                type: switchTypesMap[item.switchType] || item.switchType
-              }
-            } else {
-              return null
-            }
-          }).filter(item => item != null).sort(compareItems)
-
-          if (types.length === 0) {
-            return 'nothing connected'
-          } else if (types.length === 1) {
-            return types[0].type
-          } else {
-            return types
-              .map(({ hostname, type }) => `${hostname}: ${type}`)
-              .join('\n')
-          }
-        },
-        fallback (item, neighbors, match) {
-          return `unknown placeholder: ${match}`
-        }
-      }
-    }
+    labelPlaceholders
   }),
   computed: {
     ...mapGetters('topology', [
