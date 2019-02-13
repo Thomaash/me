@@ -5,9 +5,9 @@
     <v-data-table :headers="headers" :items="items" hide-actions hide-headers>
       <template slot="items" slot-scope="props">
         <td class="bindings">
-          <span v-for="c in parse(props.item.combination)" :is="c.tag" v-text="c.text" :title="c.title" class="with-title"/>
+          <span :is="c.tag" v-for="(c, i) in parse(props.item.combination)" :key="i" :title="c.title" class="with-title" v-text="c.text" />
         </td>
-        <td v-text="props.item.description"/>
+        <td v-text="props.item.description" />
       </template>
     </v-data-table>
   </section>
@@ -84,6 +84,13 @@ export default {
     simpleKeyRE: /^[a-z]$/,
     timer: null
   }),
+  mounted () {
+    this.update()
+    this.timer = window.setInterval(() => this.update(), 2000)
+  },
+  beforeDestroy () {
+    window.clearInterval(this.timer)
+  },
   methods: {
     parse (str) {
       return str.split(' ').map(val => {
@@ -103,13 +110,6 @@ export default {
       this.special[':item'].text = '$vuetify.icons.net-' + this.itemIcons[this.iconsIndex % this.itemIcons.length]
       this.special[':swho'].text = '$vuetify.icons.net-' + this.swhoIcons[this.iconsIndex % this.swhoIcons.length]
     }
-  },
-  mounted () {
-    this.update()
-    this.timer = window.setInterval(() => this.update(), 2000)
-  },
-  beforeDestroy () {
-    window.clearInterval(this.timer)
   }
 }
 </script>
