@@ -2,7 +2,7 @@
   <section>
     <h3 class="headline">Bindings</h3>
 
-    <v-data-table :headers="headers" :items="items" hide-actions hide-headers>
+    <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort>
       <template slot="items" slot-scope="props">
         <td class="bindings">
           <span :is="c.tag" v-for="(c, i) in parse(props.item.combination)" :key="i" :title="c.title" class="with-title" v-text="c.text" />
@@ -18,8 +18,8 @@ export default {
   name: 'Bindings',
   data: () => ({
     headers: [
-      { text: 'Combination', value: 'name', sortable: false },
-      { text: 'Description', value: 'description', sortable: false }
+      { text: 'Combination', value: 'combination' },
+      { text: 'Description', value: 'description' }
     ],
     items: [
       { combination: 'LMB :node', description: 'Place a new node.' },
