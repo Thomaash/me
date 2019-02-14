@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import Edit from '@/components/item/Edit'
+import Edit from '@/components/Edit'
 import Vis from '@/components/Vis'
 import { items as theme } from '@/theme'
 

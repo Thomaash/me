@@ -28,13 +28,13 @@
 </template>
 
 <script>
-import AssociationEdit from './Associtaion'
-import ControllerEdit from './Controller'
-import DummyEdit from './Dummy'
-import HostEdit from './Host'
-import LinkEdit from './Link'
-import PortEdit from './Port'
-import SwitchEdit from './Switch'
+import AssociationEdit from './edit/Associtaion'
+import ControllerEdit from './edit/Controller'
+import DummyEdit from './edit/Dummy'
+import HostEdit from './edit/Host'
+import LinkEdit from './edit/Link'
+import PortEdit from './edit/Port'
+import SwitchEdit from './edit/Switch'
 
 const typeComponentMap = {
   'association': 'AssociationEdit',
