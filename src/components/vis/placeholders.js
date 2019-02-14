@@ -1,5 +1,5 @@
 import { compare, compareItems } from './locale'
-import { controllerTypesMap, switchTypesMap } from '@/selects'
+import { controllerTypesMap, switchTypesMap } from '@/components/selects'
 
 function buildOutputString (items, left, right) {
   if (items.length === 0) {

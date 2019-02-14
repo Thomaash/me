@@ -32,7 +32,7 @@
 import common from './common'
 import errors from '@/validation/errors'
 import { required, hostname, ip, between, decimal, naturalNumberList } from '@/validation/rules'
-import { schedulers } from '@/selects'
+import { schedulers } from '@/components/selects'
 
 export default {
   name: 'HostEdit',

@@ -25,7 +25,7 @@
 <script>
 import common from './common'
 import errors from '@/validation/errors'
-import { controllerTypes, protocolsIP } from '@/selects'
+import { controllerTypes, protocolsIP } from '@/components/selects'
 import { required, hostname, ip, port } from '@/validation/rules'
 
 export default {

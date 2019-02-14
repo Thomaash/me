@@ -1,4 +1,4 @@
-import { controllerTypesMap, switchTypesMap } from '@/selects'
+import { controllerTypesMap, switchTypesMap } from '@/components/selects'
 
 function fixUnit (str) {
   const res = /^(\d+)(\D*)$/.exec(str)

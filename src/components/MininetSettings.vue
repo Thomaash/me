@@ -47,7 +47,7 @@
 import ThreeStateCheckbox from '@/components/ThreeStateCheckbox'
 import errors from '@/validation/errors'
 import { ipWithMask, port } from '@/validation/rules'
-import { logLevels } from '@/selects'
+import { logLevels } from '@/components/selects'
 import { mapGetters } from 'vuex'
 
 function ComputedStoreProperty (key) {
