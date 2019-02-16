@@ -12,7 +12,7 @@ import MininetSettings from '@/components/MininetSettings'
 Vue.use(Router)
 
 const router = new Router({
-  routes: [ {
+  routes: [{
     path: '/',
     redirect: { name: 'Home' }
   }, {
@@ -38,7 +38,7 @@ const router = new Router({
     path: '/about',
     name: 'About',
     component: About
-  } ]
+  }]
 })
 
 router.beforeEach((to, from, next) => {

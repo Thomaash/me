@@ -3,13 +3,13 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable/>
+          <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="IPs" v-model="ips" :error-messages="errors.item.ips" auto-grow clearable/>
+          <v-textarea label="IPs" v-model="ips" :error-messages="errors.item.ips" auto-grow clearable />
         </v-flex>
         <v-flex xs12>
-          <v-switch color="primary" label="Physical" v-model="item.physical"/>
+          <v-switch color="primary" label="Physical" v-model="item.physical" />
         </v-flex>
       </v-layout>
     </v-container>

@@ -15,9 +15,10 @@ export default new Vuex.Store({
   },
   mutations: {
     setWorking (state, { working, curr, max }) {
-      state.working = !!working
       if (!isNaN(curr) && !isNaN(max)) {
         state.working = { curr, max }
+      } else {
+        state.working = !!working
       }
     },
     setAlert (state, { type, text }) {

@@ -1,12 +1,12 @@
 <template>
   <v-container grid-list-md>
     <v-layout wrap>
-      <Logo/>
+      <Logo />
       <v-flex xs12>
-        <Description full/>
+        <Description full />
       </v-flex>
       <v-flex xs12>
-        <License/>
+        <License />
       </v-flex>
     </v-layout>
   </v-container>

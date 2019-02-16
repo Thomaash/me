@@ -77,11 +77,11 @@ function parse (input) {
 }
 
 function fixNextHostDev (set, hostDev) {
-  let [host, dev] = hostDev.split('-')
+  const [host, dev] = hostDev.split('-')
   if (dev == null) {
     let i = 0
     do {
-      dev = `eth${i}`
+      const dev = `eth${i}`
       hostDev = `${host}-${dev}`
       ++i
     } while (set.has(hostDev))

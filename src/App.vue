@@ -4,22 +4,22 @@
       <v-list>
         <v-list-tile value="true" v-for="(item, i) in items" :key="i" :to="item.to">
           <v-list-tile-action>
-            <v-icon v-html="item.icon"/>
+            <v-icon v-html="item.icon" />
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"/>
+            <v-list-tile-title v-text="item.title" />
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="primary" dark app extension-height="7">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"/>
-      <v-toolbar-title v-text="title"/>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+      <v-toolbar-title v-text="title" />
 
-      <v-spacer/>
+      <v-spacer />
 
       <v-slide-y-transition mode="out-in">
-        <router-view name="toolbar"/>
+        <router-view name="toolbar" />
       </v-slide-y-transition>
 
       <v-progress-linear
@@ -36,7 +36,7 @@
         {{ alert.text }}
       </v-alert>
       <v-slide-y-transition mode="out-in">
-        <router-view/>
+        <router-view />
       </v-slide-y-transition>
     </v-content>
   </v-app>
