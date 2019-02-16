@@ -1,47 +1,138 @@
 <template>
   <v-container grid-list-md>
     <v-layout wrap>
-      <v-flex xs12 md7>
-        <section>
-          <h3 class="headline">Export</h3>
-
-          <p>
-            <v-btn :disabled="working" flat color="primary" @click="downloadJSON">JSON</v-btn>
-            <v-btn :disabled="working" flat color="primary" @click="downloadScript">Python 2 script</v-btn>
-            <v-menu :disabled="working" bottom offset-y>
-              <v-btn slot="activator" :disabled="working" flat color="primary">Image</v-btn>
-              <v-list>
-                <v-list-tile v-for="(imageSize, i) in imageSizes" :key="'imageSize' + i" @click.prevent>
-                  <v-list-tile-title @click="downloadImageStart(imageSize.data)" v-text="imageSize.title" />
-                </v-list-tile>
-              </v-list>
-            </v-menu>
-            <v-btn :disabled="working" flat color="primary" @click="downloadAddressingPlan">Addressing plan</v-btn>
-          </p>
-        </section>
+      <v-flex xs12>
+        <h3 class="headline">Import</h3>
       </v-flex>
 
-      <v-flex xs12 md5>
-        <section>
-          <h3 class="headline">Import</h3>
+      <v-flex xs12 md6 lg4>
+        <v-btn
+          :disabled="working"
+          outline
+          block
+          color="primary"
+          @click="importData(emptyProject)"
+        >
+          Empty
+        </v-btn>
+      </v-flex>
+      <v-flex xs12 md6 lg4>
+        <v-menu :disabled="working" bottom offset-y full-width>
+          <v-btn slot="activator" :disabled="working" outline block color="primary">Examples</v-btn>
+          <v-list>
+            <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click.prevent>
+              <v-list-tile-title @click="importData(example.data)" v-text="example.title" />
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </v-flex>
+      <v-flex xs12 md6 lg4>
+        <v-btn
+          :disabled="working"
+          outline
+          block
+          color="primary"
+          @click="uploadJSON"
+        >
+          File
+        </v-btn>
+      </v-flex>
 
-          <p>
-            <v-btn :disabled="working" flat color="primary" @click="importEmpty">Empty</v-btn>
-            <v-menu :disabled="working" bottom offset-y>
-              <v-btn slot="activator" :disabled="working" flat color="primary">Examples</v-btn>
-              <v-list>
-                <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click.prevent>
-                  <v-list-tile-title @click="importData(example.data)" v-text="example.title" />
-                </v-list-tile>
-              </v-list>
-            </v-menu>
-            <v-btn :disabled="working" flat color="primary" @click="uploadJSON">File</v-btn>
-          </p>
-        </section>
+      <v-flex xs12 pt-5>
+        <h3 class="headline">Export</h3>
+      </v-flex>
+
+      <v-flex xs12 sm4>
+        <v-btn :disabled="working" outline block color="primary" @click="downloadJSON">JSON</v-btn>
+      </v-flex>
+      <v-flex xs12 sm4>
+        <v-btn :disabled="working" outline block color="primary" @click="downloadScript">Python 2 script</v-btn>
+      </v-flex>
+      <v-flex xs12 sm4>
+        <v-btn :disabled="working" outline block color="primary" @click="downloadAddressingPlan">Addressing plan</v-btn>
+      </v-flex>
+
+      <v-flex xs12 pt-4>
+        <h3>Image</h3>
+      </v-flex>
+
+      <v-flex xs12 sm6 lg3>
+        <v-text-field
+          :disabled="working"
+          label="Width on screen"
+          type="number"
+          :min="0"
+          :step="0.1"
+          v-model.number="imageMetadata.widthScreenCm"
+          suffix="cm"
+        />
+      </v-flex>
+      <v-flex xs12 sm6 lg3>
+        <v-text-field
+            :disabled="working"
+            label="Height on screen"
+            type="number"
+            :min="0"
+            v-model.number="imageMetadata.heightScreenCm"
+            suffix="cm"
+          />
+      </v-flex>
+      <v-flex xs12 sm6 lg3>
+        <v-text-field
+          :disabled="working"
+          label="Width on paper"
+          type="number"
+          :min="0"
+          v-model.number="imageMetadata.widthPaperCm"
+          suffix="cm"
+        />
+      </v-flex>
+      <v-flex xs12 sm6 lg3>
+        <v-text-field
+          :disabled="working"
+          label="Height on paper"
+          type="number"
+          :min="0"
+          v-model.number="imageMetadata.heightPaperCm"
+          suffix="cm"
+        />
+      </v-flex>
+
+      <v-flex xs12 sm6 md4>
+        <v-text-field
+          :disabled="working"
+          label="Width"
+          type="number"
+          :min="0"
+          v-model.number="imageMetadata.widthPx"
+          suffix="px"
+        />
+      </v-flex>
+      <v-flex xs12 sm6 md4>
+        <v-text-field
+          :disabled="working"
+          label="Height"
+          type="number"
+          :min="0"
+          v-model.number="imageMetadata.heightPx"
+          suffix="px"
+        />
+      </v-flex>
+
+      <v-flex xs12 sm12 md4 mt-2>
+        <v-btn
+          :disabled="working"
+          outline
+          block
+          color="primary"
+          @click= "downloadImageStart"
+        >
+          Render image
+        </v-btn>
       </v-flex>
 
       <v-slide-y-transition mode="out-in">
-        <v-flex v-if="sortedLog.length" xs12>
+        <v-flex v-if="sortedLog.length" xs12 pt-5>
           <section>
             <h3 class="headline">Log</h3>
 
@@ -59,13 +150,13 @@
               </v-list-tile>
             </v-list>
 
-            <v-btn flat color="primary" @click="selectInCanvas()">Select in the Canvas</v-btn>
+            <v-btn outline color="primary" @click="selectInCanvas()">Select in the Canvas</v-btn>
           </section>
         </v-flex>
       </v-slide-y-transition>
 
       <div style="height: 0px; width: 0px; overflow: hidden;">
-        <input ref="fileInput" type="file" @input="uploadFile">
+        <input ref="fileInput" type="file" :accept="importAccept" @input="uploadFile" @change="uploadFile" />
         <VisCanvas v-if="visCanvasOn" ref="visCanvas" @ready="downloadImageFinish" />
       </div>
     </v-layout>
@@ -118,22 +209,66 @@ export default {
     log: [],
     logCbs: [],
     visCanvasOn: false,
-    imageScale: 2,
-    imageSizes: [{
-      title: 'Small',
-      data: 1
-    }, {
-      title: 'Medium',
-      data: 2
-    }, {
-      title: 'Large',
-      data: 4
-    }],
+    imageMetadata: {
+      width: 2000,
+      height: 1000,
+      scale: 1,
+      screenDpcm: 38,
+      paperDpcm: 120,
+
+      get widthPx () {
+        return Math.ceil(this.width * this.scale)
+      },
+      set widthPx (v) {
+        this.scale = v / this.width
+      },
+      get heightPx () {
+        return Math.ceil(this.height * this.scale)
+      },
+      set heightPx (v) {
+        this.scale = v / this.height
+      },
+
+      get widthScreenCm () {
+        return Math.round((
+          Math.ceil(this.width * this.scale) / this.screenDpcm
+        ) * 100) / 100
+      },
+      set widthScreenCm (v) {
+        this.scale = v * this.screenDpcm / this.width
+      },
+      get heightScreenCm () {
+        return Math.round((
+          Math.ceil(this.height * this.scale) / this.screenDpcm
+        ) * 100) / 100
+      },
+      set heightScreenCm (v) {
+        this.scale = v * this.screenDpcm / this.height
+      },
+
+      get widthPaperCm () {
+        return Math.round((
+          Math.ceil(this.width * this.scale) / this.paperDpcm
+        ) * 100) / 100
+      },
+      set widthPaperCm (v) {
+        this.scale = v * this.paperDpcm / this.width
+      },
+      get heightPaperCm () {
+        return Math.round((
+          Math.ceil(this.height * this.scale) / this.paperDpcm
+        ) * 100) / 100
+      },
+      set heightPaperCm (v) {
+        this.scale = v * this.paperDpcm / this.height
+      }
+    },
+    emptyProject: exampleEmpty,
     examples: [{
       title: 'Tiny without controller',
       data: exampleTiny
     }, {
-      title: 'Tiny with remote controller',
+      title: 'Tiny with controller',
       data: exampleTinyController
     }, {
       title: 'Tiny with physical interface',
@@ -152,8 +287,14 @@ export default {
       data: exampleMedium2C
     }]
   }),
+  watch: {
+    data () {
+      this.updateImageMetadata()
+    }
+  },
   computed: {
     ...mapGetters('topology', [
+      'boundingBox',
       'data'
     ]),
     working: {
@@ -189,6 +330,11 @@ export default {
         json,
         python
       }
+    },
+    importAccept () {
+      return Object.keys(this.importers)
+        .filter(key => /(^.|\/)/.test(key))
+        .join(',')
     }
   },
   methods: {
@@ -204,6 +350,14 @@ export default {
 
       const input = this.$refs.fileInput
       const file = input.files[0]
+      input.value = ''
+
+      // Some browsers emit input, some change and some both.
+      // Return if the file was already collected by the other event handler.
+      if (!file) {
+        this.working = false
+        return
+      }
 
       const fr = new FileReader()
       fr.readAsBinaryString(file)
@@ -230,16 +384,11 @@ export default {
           this.working = false
         }
       }
-
-      input.value = ''
     },
     async importData (data) {
       this.working = true
       await this.confirmImport(data)
       this.working = false
-    },
-    importEmpty () {
-      this.importData(exampleEmpty)
     },
     async confirmImport (importData, text) {
       const confirmed = await this.$confirm(
@@ -309,31 +458,33 @@ export default {
         this.working = false
       }
     },
-    downloadImageStart (scale) {
+    downloadImageStart () {
       this.working = true
-      this.imageScale = scale
       this.visCanvasOn = true
     },
     downloadImageFinish () {
-      // The timeout prevents glitches like missing node icons.
+      // The timeout prevents glitches like missing node icons, especially in Firefox.
       window.setTimeout(async () => {
         try {
-          const { blob, width, height } = await this.$refs.visCanvas.toBlob(this.imageScale)
+          const { blob, sizeString } = await this.$refs.visCanvas.toBlob(
+            this.imageMetadata.scale,
+            progress => {
+              this.$store.commit('setWorking', {
+                working: true,
+                curr: progress,
+                max: 1
+              })
+            }
+          )
           this.visCanvasOn = false
 
-          const size = `${width.toLocaleString()}\xa0×\xa0${height.toLocaleString()}\xa0px (${((width * height) / 1e6).toLocaleString()}\xa0Mpx)`
-
-          if (blob) {
-            this.showAlert('success', `Image rendered, size: ${size}.`)
-            const url = URL.createObjectURL(blob)
-            download(this.getFilename('png'), url)
-            URL.revokeObjectURL(url)
-          } else {
-            this.showAlert('error', `Image rendering failed. Probably too large image for this browser, size: ${size}.`)
-          }
+          this.showAlert('success', `Image rendered, size: ${sizeString}.`)
+          const url = URL.createObjectURL(blob)
+          download(this.getFilename('png'), url)
+          URL.revokeObjectURL(url)
         } catch (error) {
           console.error(error)
-          this.showAlert('error', 'Image rendering failed.')
+          this.showAlert('error', `Image rendering failed. Probably too large image for this browser.`)
         } finally {
           this.working = false
         }
@@ -358,7 +509,16 @@ export default {
     },
     getFilename (extension) {
       return `${this.data.projectName || 'mininet_network'}.${extension}`
+    },
+    updateImageMetadata () {
+      const bb = this.boundingBox()
+      this.imageMetadata.scale = 1
+      this.imageMetadata.width = bb.width
+      this.imageMetadata.height = bb.height
     }
+  },
+  mounted () {
+    this.updateImageMetadata()
   }
 }
 </script>

@@ -41,6 +41,54 @@ export default {
     },
     canRedo (state) {
       return state.future.length
+    },
+    boundingBox: (state) => ({ margin = 100, scale = 1 } = {}) => {
+      const items = Object.values(state.data.items)
+      const emptyBB = { sX: 0, eX: 0, sY: 0, eY: 0, width: 0, height: 0 }
+
+      if (!items.length) {
+        return emptyBB
+      }
+
+      // Find the highest and lowest x and y item center coordinates
+      const bb = items.reduce((acc, { x, y }) => {
+        if (x < acc.sX) {
+          acc.sX = x
+        } else if (x > acc.eX) {
+          acc.eX = x
+        }
+        if (y < acc.sY) {
+          acc.sY = y
+        } else if (y > acc.eY) {
+          acc.eY = y
+        }
+
+        return acc
+      }, { ...emptyBB })
+
+      // Add margin
+      bb.sX -= margin
+      bb.sY -= margin
+      bb.eX += margin
+      bb.eY += margin
+
+      // Apply scale
+      bb.sX *= scale
+      bb.sY *= scale
+      bb.eX *= scale
+      bb.eY *= scale
+
+      // Round to integers
+      bb.sX = Math.ceil(Math.abs(bb.sX)) * Math.sign(bb.sX)
+      bb.sY = Math.ceil(Math.abs(bb.sY)) * Math.sign(bb.sY)
+      bb.eX = Math.ceil(Math.abs(bb.eX)) * Math.sign(bb.eX)
+      bb.eY = Math.ceil(Math.abs(bb.eY)) * Math.sign(bb.eY)
+
+      // Compute size
+      bb.width = bb.eX - bb.sX
+      bb.height = bb.eY - bb.sY
+
+      return bb
     }
   },
   mutations: {

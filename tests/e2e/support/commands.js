@@ -40,7 +40,7 @@ Cypress.Commands.add(
   () => {
     cy.meClickMenu('Export')
 
-    cy.get(':nth-child(2) > section > p > :nth-child(1) > .v-btn__content').click()
+    cy.get(':nth-child(2) > .v-btn > .v-btn__content').click()
     cy.get('.v-card__actions > .primary--text > .v-btn__content').click()
     cy.contains('.v-alert > div', 'Successfully imported')
   }

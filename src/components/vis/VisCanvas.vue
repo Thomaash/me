@@ -21,12 +21,13 @@ export default {
   data: () => ({
     width: null,
     height: null,
-    unsubscribe: null,
+    cleanUpCallbacks: [],
     labelPlaceholders
   }),
   computed: {
     ...mapGetters('topology', [
-      'data'
+      'data',
+      'boundingBox'
     ]),
     widthStyle () {
       return this.width == null
@@ -111,11 +112,18 @@ export default {
         enabled: false
       },
       nodes: {
+        // Invisible border, 0 makes selected border dissapear
         borderWidth: 0.0001,
         borderWidthSelected: 2,
         shapeProperties: {
           borderRadius: 6,
           useBorderWithImage: true
+        },
+        scaling: {
+          label: {
+            // Don't hide labels while zooming in too much (useful for image export)
+            maxVisible: Number.MAX_SAFE_INTEGER
+          }
         }
       },
       edges: {
@@ -198,14 +206,20 @@ export default {
     // Therefore this can't be done before the topology is built.
     this.updateLabels()
 
-    this.unsubscribe = this.$store.subscribe(({ type, payload }, { data }) => {
+    this.cleanUpCallbacks.push(this.$store.subscribe(({ type, payload }, { data }) => {
       ;(this.storeActions[type] || (() => {}))(payload, data)
-    })
+    }))
 
     this.$emit('ready', { container, net, nodes, edges })
   },
   beforeDestroy () {
-    this.unsubscribe && this.unsubscribe()
+    this.cleanUpCallbacks.forEach(clb => {
+      try {
+        clb()
+      } catch (error) {
+        console.error(error)
+      }
+    })
   },
   methods: {
     itemToNode (item) {
@@ -249,66 +263,192 @@ export default {
           .map(item => this.itemToNode(item))
       )
     },
-    toBlob (scale) {
-      return new Promise(resolve => {
-        scale = scale || 2
+    async toBlob (scale = 2, progressObserver = () => {}) {
+      const bb = await this.boundingBox({ scale })
 
-        const beforeDrawingHandler = ctx => {
-          const { x, y } = this.net.view.targetTranslation
-          const scale = this.net.view.targetScale
-          ctx.fillStyle = '#fff'
-          ctx.fillRect(
-            -x / scale - 1,
-            -y / scale - 1,
-            ctx.canvas.width / scale + 2,
-            ctx.canvas.height / scale + 2
-          )
+      const beforeDrawingHandler = ctx => {
+        const { x, y } = this.net.view.targetTranslation
+        const scale = this.net.view.targetScale
+        ctx.fillStyle = '#fff'
+        ctx.fillRect(
+          -x / scale - 1,
+          -y / scale - 1,
+          ctx.canvas.width / scale + 2,
+          ctx.canvas.height / scale + 2
+        )
+      }
+
+      this.net.on('beforeDrawing', beforeDrawingHandler)
+
+      const sizeString = `${bb.width.toLocaleString()}\xa0×\xa0${bb.height.toLocaleString()}\xa0px (${((bb.width * bb.height) / 1e6).toLocaleString()}\xa0Mpx)`
+
+      let res
+      try {
+        this.$store.commit('setAlert', { type: 'info', text: `Rendering image using fast native method, size: ${sizeString}.` })
+        res = await this._toBlobNative(bb, scale, progressObserver)
+      } catch (error) {
+        this.$store.commit('setAlert', { type: 'info', text: `Rendering image using slow fallback method, size: ${sizeString}.` })
+        res = await this._toBlobJimp(bb, scale, progressObserver)
+      } finally {
+        this.net.off('beforeDrawing', beforeDrawingHandler)
+      }
+
+      return {
+        ...res,
+        sizeString
+      }
+    },
+    async _toBlobNative (bb, scale, progressObserver) {
+      // Resize the canvas to image size
+      await new Promise(resolve => {
+        const handler = () => {
+          this.net.off('resize', handler)
+          resolve()
         }
-        const afterDrawingHandler = async (ctx) => {
-          this.net.off('beforeDrawing', beforeDrawingHandler)
-          this.net.off('afterDrawing', afterDrawingHandler)
 
-          const blob = await new Promise(resolve => {
-            ctx.canvas.toBlob(resolve, 'image/png')
-          })
+        this.net.on('resize', handler)
+        this.width = bb.width
+        this.height = bb.height
+      })
 
-          resolve({
-            blob,
-            width: this.width,
-            height: this.height
-          })
+      // Fit all items into the view and scale accordingly
+      this.net.fit()
+      this.net.moveTo({
+        scale,
+        animation: false
+      })
 
-          this.width = null
-          this.height = null
-        }
-        const resizeHandler = () => {
-          this.net.off('resize', resizeHandler)
-
-          this.net.fit({ animation: false })
-          this.net.moveTo({ scale, animation: false })
-
-          this.net.on('beforeDrawing', beforeDrawingHandler)
-          this.net.on('afterDrawing', afterDrawingHandler)
-          this.net.redraw()
+      // Render image blob
+      const blob = await new Promise(resolve => {
+        const handler = ctx => {
+          this.net.off('afterDrawing', handler)
+          ctx.canvas.toBlob(resolve, 'image/png')
         }
 
-        const coords = this.nodes.get().reduce((acc, { x, y }) => {
-          if (x < acc.sX) {
-            acc.sX = x
-          } else if (x > acc.eX) {
-            acc.eX = x
+        this.net.on('afterDrawing', handler)
+        this.net.redraw()
+      })
+
+      this.width = null
+      this.height = null
+
+      if (blob) {
+        return {
+          blob,
+          width: bb.width,
+          height: bb.height
+        }
+      } else {
+        throw new Error('Image size is probably out of limits.')
+      }
+    },
+    _toBlobJimp (bb, scale, progressObserver) {
+      return new Promise(async (resolve, reject) => {
+        const tileSize = 1000
+
+        // Compute the number of columns and rows of tiles
+        const cols = Math.ceil(bb.width / tileSize)
+        const rows = Math.ceil(bb.height / tileSize)
+
+        // Offset for Vis coordinates, Vis always points to the center, not topleft corner
+        const offset = {
+          x: -(bb.sX + tileSize / 2),
+          y: -(bb.sY + tileSize / 2)
+        }
+
+        // Init the worker and it's clean up function
+        const worker = new Worker('./JoinImages.worker.js', { type: 'module' })
+        const terminateWorker = () => {
+          this.cleanUpCallbacks.splice(this.cleanUpCallbacks.indexOf(terminateWorker), 1)
+          worker.terminate()
+        }
+        this.cleanUpCallbacks.push(terminateWorker)
+
+        worker.onmessage = event => {
+          const { progress, blob, errorMsg } = event.data
+          progressObserver(progress)
+          if (progress === 1) {
+            if (blob) {
+              resolve({
+                blob,
+                width: bb.width,
+                height: bb.height
+              })
+            } else {
+              reject(new Error(`Image rendering failed: ${errorMsg}.`))
+            }
+
+            terminateWorker()
+            this.width = null
+            this.height = null
           }
-          if (y < acc.sY) {
-            acc.sY = y
-          } else if (y > acc.eY) {
-            acc.eY = y
+        }
+
+        // Prepare empty image in the worker
+        worker.postMessage({
+          type: 'init',
+          payload: {
+            width: bb.width,
+            height: bb.height,
+            tileSize,
+            cols,
+            rows
+          }
+        })
+
+        // Resize the canvas to tile size
+        await new Promise(resolve => {
+          const handler = () => {
+            this.net.off('resize', handler)
+            resolve()
           }
 
-          return acc
-        }, { sX: 0, eX: 0, sY: 0, eY: 0 })
-        this.net.on('resize', resizeHandler)
-        this.width = (coords.eX - coords.sX) * scale + 200 * scale
-        this.height = (coords.eY - coords.sY) * scale + 200 * scale
+          this.net.on('resize', handler)
+          this.width = tileSize
+          this.height = tileSize
+        })
+
+        // Apply scale
+        this.net.moveTo({
+          scale,
+          animation: false
+        })
+
+        // Render the tiles
+        for (let row = 0; row < rows; ++row) {
+          for (let col = 0; col < cols; ++col) {
+            // Move the viewport
+            this.net.moveTo({
+              position: { x: 0, y: 0 },
+              offset: {
+                x: offset.x - tileSize * col,
+                y: offset.y - tileSize * row
+              },
+              animation: false
+            })
+
+            // Render image blob
+            const blob = await new Promise(resolve => {
+              const handler = ctx => {
+                this.net.off('afterDrawing', handler)
+                ctx.canvas.toBlob(resolve, 'image/png')
+              }
+
+              this.net.on('afterDrawing', handler)
+              this.net.redraw()
+            })
+
+            // Send the tile blob to the worker
+            worker.postMessage({
+              type: 'add-tile',
+              payload: {
+                blob,
+                col,
+                row
+              }
+            })
+          }
+        }
       })
     },
     isEdge (type) {

@@ -7,10 +7,10 @@
     </p>
 
     <p v-if="full">
-      <v-btn flat color="primary" target="_blank" href="https://github.com/Thomaash/me">
+      <v-btn outline color="primary" target="_blank" href="https://github.com/Thomaash/me">
         Repository
       </v-btn>
-      <v-btn flat color="primary" target="_blank" href="https://github.com/Thomaash/me/issues/new">
+      <v-btn outline color="primary" target="_blank" href="https://github.com/Thomaash/me/issues/new">
         New Issue
       </v-btn>
     </p>
