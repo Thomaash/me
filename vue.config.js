@@ -1,3 +1,5 @@
+const WorkerPlugin = require('worker-plugin')
+
 module.exports = {
   publicPath: './',
 
@@ -8,8 +10,12 @@ module.exports = {
       .module
       .rule('txt')
       .test(/(\.(txt|py)$|^[^.]+$)/)
-      .use('raw-loader')
+      .use('raw')
       .loader('raw-loader')
       .end()
+
+    config
+      .plugin('worker-plugin')
+      .use(WorkerPlugin)
   }
 }
