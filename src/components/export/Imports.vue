@@ -7,6 +7,7 @@
         block
         color="primary"
         @click="importData(emptyProject)"
+        data-cy="import-empty"
       >
         Empty
       </v-btn>

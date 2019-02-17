@@ -9,7 +9,7 @@
       @keydown.esc="cancel"
       @keydown.enter="save"
     >
-      <v-card>
+      <v-card :data-cy="`edit-${item.type}`">
         <v-card-title primary-title style="flex-grow: 0;" @dblclick="fullscreen = !fullscreen">
           <v-icon class="mr-2" v-text="'$vuetify.icons.net-' + themeType" />
           <h3 class="headline" v-text="headline" />
@@ -19,8 +19,8 @@
         </v-card-text>
         <v-card-actions style="flex-grow: 0;">
           <v-spacer />
-          <v-btn color="primary" flat @click.native="cancel">Cancel</v-btn>
-          <v-btn :disabled="!valid" color="primary" flat @click.native="save">Save</v-btn>
+          <v-btn color="primary" flat @click.native="cancel" data-cy="edit-cancel">Cancel</v-btn>
+          <v-btn :disabled="!valid" color="primary" flat @click.native="save" data-cy="edit-save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

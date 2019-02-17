@@ -3,7 +3,7 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable />
+          <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
           <v-textarea label="IPs" v-model="ips" :error-messages="errors.item.ips" auto-grow clearable />

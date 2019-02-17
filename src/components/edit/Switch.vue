@@ -3,7 +3,7 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Hostname" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" />
+          <v-text-field label="Hostname" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
           <v-select label="Type" :items="switchTypes" v-model="item.switchType" clearable />

@@ -3,7 +3,7 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Label" v-model="item.hostname" autofocus clearable />
+          <v-text-field label="Label" v-model="item.hostname" autofocus clearable data-cy="edit-hostname" />
         </v-flex>
       </v-layout>
     </v-container>

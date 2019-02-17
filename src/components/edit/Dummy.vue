@@ -10,6 +10,7 @@
             label="Label"
             style="font-family: monospace;"
             v-model="item.hostname"
+            data-cy="edit-hostname"
           />
         </v-flex>
       </v-layout>

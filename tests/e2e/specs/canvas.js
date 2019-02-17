@@ -18,39 +18,43 @@ describe('Canvas', () => {
         cy.get('.vis-root')
           .trigger('mousemove', { button: 0, clientX: 50, clientY: 50 })
           .trigger('mousemove', { button: 0, clientX: 150, clientY: 50 })
-        cy.get('.mouse-tag')
       })
 
       it('Place the item', () => {
         cy.get('canvas')
           .meVisClick({ x: 150, y: 150 })
-        const header = cy.contains('h3', heading)
-        cy.get('input')
-          .should('have.value', hostname)
-
-        cy.focused()
-          .type('{enter}')
-        header
-          .should('not.exist')
       })
 
-      it('Test the items\'s existence', () => {
-        // Cypress seems to be too fast sometimes
-        cy.wait(1500)
+      it('Save the item', () => {
+        cy.get(`[data-cy=edit-${type}]`)
+          .get('[data-cy=edit-save]')
+          .click()
+        cy.get(`[data-cy=edit-${type}]`)
+          .should('not.exist')
+        cy.wait(500) // Animation causing problems, maybe?
+      })
 
+      it('Open edit dialog', () => {
         cy.get('canvas')
           .meVisClick({ x: 150, y: 150, repeat: 2 })
-        const header = cy.contains('h3', heading)
-        cy.get('input')
-          .should('have.value', hostname)
-
-        cy.focused()
-          .type('{enter}')
-        header
-          .should('not.exist')
+        cy.get(`[data-cy=edit-${type}]`)
       })
 
-      it(`Delete the ${type}`, () => {
+      it('Test item\'s hostname', () => {
+        cy.get('[data-cy=edit-hostname]')
+          .should('have.value', hostname)
+      })
+
+      it('Close edit dialog', () => {
+        cy.get(`[data-cy=edit-${type}]`)
+          .get('[data-cy=edit-cancel]')
+          .click()
+        cy.get(`[data-cy=edit-${type}]`)
+          .should('not.exist')
+        cy.wait(500) // Animation causing problems, maybe?
+      })
+
+      it('Delete the item', () => {
         cy.get('canvas')
           .meVisClick({ x: 150, y: 150 })
 
