@@ -42,16 +42,9 @@ export default {
     canRedo (state) {
       return state.future.length
     },
-    boundingBox: (state) => ({ margin = 100, scale = 1 } = {}) => {
-      const items = Object.values(state.data.items)
-      const emptyBB = { sX: 0, eX: 0, sY: 0, eY: 0, width: 0, height: 0 }
-
-      if (!items.length) {
-        return emptyBB
-      }
-
+    boundingBox: (state) => {
       // Find the highest and lowest x and y item center coordinates
-      const bb = items.reduce((acc, { x, y }) => {
+      const rawBB = Object.values(state.data.items).reduce((acc, { x, y }) => {
         if (x < acc.sX) {
           acc.sX = x
         } else if (x > acc.eX) {
@@ -64,31 +57,40 @@ export default {
         }
 
         return acc
-      }, { ...emptyBB })
+      }, { sX: 0, eX: 0, sY: 0, eY: 0 })
 
-      // Add margin
-      bb.sX -= margin
-      bb.sY -= margin
-      bb.eX += margin
-      bb.eY += margin
+      return ({ margin = 100, scale = 1 } = {}) => {
+        const bb = { ...rawBB, width: 0, height: 0 }
 
-      // Apply scale
-      bb.sX *= scale
-      bb.sY *= scale
-      bb.eX *= scale
-      bb.eY *= scale
+        // Empty project
+        if (bb.sX === bb.eX && bb.sY === bb.eY) {
+          return bb
+        }
 
-      // Round to integers
-      bb.sX = Math.ceil(Math.abs(bb.sX)) * Math.sign(bb.sX)
-      bb.sY = Math.ceil(Math.abs(bb.sY)) * Math.sign(bb.sY)
-      bb.eX = Math.ceil(Math.abs(bb.eX)) * Math.sign(bb.eX)
-      bb.eY = Math.ceil(Math.abs(bb.eY)) * Math.sign(bb.eY)
+        // Add margin
+        bb.sX -= margin
+        bb.sY -= margin
+        bb.eX += margin
+        bb.eY += margin
 
-      // Compute size
-      bb.width = bb.eX - bb.sX
-      bb.height = bb.eY - bb.sY
+        // Apply scale
+        bb.sX *= scale
+        bb.sY *= scale
+        bb.eX *= scale
+        bb.eY *= scale
 
-      return bb
+        // Round to integers
+        bb.sX = Math.ceil(Math.abs(bb.sX)) * Math.sign(bb.sX)
+        bb.sY = Math.ceil(Math.abs(bb.sY)) * Math.sign(bb.sY)
+        bb.eX = Math.ceil(Math.abs(bb.eX)) * Math.sign(bb.eX)
+        bb.eY = Math.ceil(Math.abs(bb.eY)) * Math.sign(bb.eY)
+
+        // Compute size
+        bb.width = bb.eX - bb.sX
+        bb.height = bb.eY - bb.sY
+
+        return bb
+      }
     }
   },
   mutations: {
