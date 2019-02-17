@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md>
     <v-layout wrap>
-      <v-flex xs12 pb-5>
+      <v-flex xs12 py-5>
         <h3 class="headline">Import</h3>
 
         <Imports @log="l => log = l" />

@@ -30,11 +30,19 @@
         slot="extension"
         color="accent"
       />
-    </v-toolbar>
-    <v-content>
-      <v-alert v-model="showAlert" dismissible :type="alert.type" class="mt-0" transition="slide-y-transition">
+
+      <v-alert
+        v-model="showAlert"
+        dismissible
+        :type="alert.type"
+        class="mt-0 alert"
+        transition="slide-y-transition"
+        slot="extension"
+      >
         {{ alert.text }}
       </v-alert>
+    </v-toolbar>
+    <v-content>
       <v-slide-y-transition mode="out-in">
         <router-view />
       </v-slide-y-transition>
@@ -99,17 +107,35 @@ export default {
 </script>
 
 <style>
-html::-webkit-scrollbar {width: 0px !important;}
-::selection {background: #80CBC4;}
+html::-webkit-scrollbar {
+  width: 0px !important;
+}
+::selection {
+  background: #80CBC4;
+}
 
-section {margin-bottom: 3em;}
+section {
+  margin-bottom: 3em;
+}
 section > h1,
 section > h2,
 section > h3,
 section > h4,
 section > h5,
-section > h6
-{margin-bottom: 16px;}
+section > h6 {
+  margin-bottom: 16px;
+}
 
-.v-toolbar__extension {padding: 0px;}
+.v-toolbar__extension {
+  position: relative;
+  padding: 0px;
+}
+
+.alert {
+  position: absolute;
+  top: 7px;
+  left: 0px;
+  right: 0px;
+  z-index: -1;
+}
 </style>
