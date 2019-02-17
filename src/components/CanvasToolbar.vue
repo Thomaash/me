@@ -1,5 +1,5 @@
 <template>
-  <v-menu bottom offset-y>
+  <v-menu bottom left offset-y>
     <v-btn v-show="show" slot="activator" dark icon>
       <v-icon>mdi-dots-vertical</v-icon>
     </v-btn>
