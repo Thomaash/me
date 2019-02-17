@@ -275,6 +275,11 @@ export default {
         bb.height = height
       }
 
+      // Rendering zero sized images doesn't work nor makes sense
+      if (!bb.width || !bb.height) {
+        throw new RangeError('Image has to have non-zero size.')
+      }
+
       const beforeDrawingHandler = ctx => {
         const { x, y } = this.net.view.targetTranslation
         const scale = this.net.view.targetScale

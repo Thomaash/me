@@ -2,7 +2,7 @@
   <v-layout row wrap>
     <v-flex xs12 sm6 lg3>
       <v-text-field
-        :disabled="working"
+        :disabled="disabled"
         label="Width on screen"
         type="number"
         :min="0"
@@ -14,7 +14,7 @@
     </v-flex>
     <v-flex xs12 sm6 lg3>
       <v-text-field
-        :disabled="working"
+        :disabled="disabled"
         label="Height on screen"
         type="number"
         :min="0"
@@ -26,7 +26,7 @@
     </v-flex>
     <v-flex xs12 sm6 lg3>
       <v-text-field
-        :disabled="working"
+        :disabled="disabled"
         label="Width on paper"
         type="number"
         :min="0"
@@ -38,7 +38,7 @@
     </v-flex>
     <v-flex xs12 sm6 lg3>
       <v-text-field
-        :disabled="working"
+        :disabled="disabled"
         label="Height on paper"
         type="number"
         :min="0"
@@ -51,7 +51,7 @@
 
     <v-flex xs12 sm6 md4>
       <v-text-field
-        :disabled="working"
+        :disabled="disabled"
         label="Width"
         type="number"
         :min="0"
@@ -63,7 +63,7 @@
     </v-flex>
     <v-flex xs12 sm6 md4>
       <v-text-field
-        :disabled="working"
+        :disabled="disabled"
         label="Height"
         type="number"
         :min="0"
@@ -76,7 +76,7 @@
 
     <v-flex xs12 sm12 md4 mt-2>
       <v-btn
-        :disabled="working"
+        :disabled="disabled"
         outline
         block
         color="primary"
@@ -198,6 +198,12 @@ export default {
       'boundingBox'
     ]),
 
+    disabled () {
+      return this.working ||
+        this.width === 0 ||
+        this.height === 0
+    },
+
     width () {
       return this.boundingBox().width
     },
@@ -228,18 +234,25 @@ export default {
         }
       })
       this.scale = scale
+    },
+    recomputeAll (scale) {
+      Object.keys(this.size).forEach(key => {
+        this.size[key] = this.valuesToString[key](
+          this.scaleValues[key](scale)
+        )
+      })
     }
   },
   watch: {
     width () {
-      this.recompute('widthPx', this.width, true)
+      this.recomputeAll(1)
     },
     height () {
-      this.recompute('heightPx', this.height, true)
+      this.recomputeAll(1)
     }
   },
   mounted () {
-    this.recompute('widthPx', this.width, true)
+    this.recomputeAll(1)
   }
 }
 </script>
