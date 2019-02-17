@@ -2,7 +2,7 @@
   <section>
     <h3 class="headline">Bindings</h3>
 
-    <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort>
+    <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort class="elevation-1">
       <template slot="items" slot-scope="props">
         <td class="bindings">
           <span :is="c.tag" v-for="(c, i) in parse(props.item.combination)" :key="i" :title="c.title" class="with-title" v-text="c.text" />

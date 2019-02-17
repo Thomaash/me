@@ -6,7 +6,7 @@
       Placeholders can be used in labels to display information about connected node or nodes.
     </p>
 
-    <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort>
+    <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort class="elevation-1">
       <template slot="items" slot-scope="props">
         <td v-text="props.item.name" />
         <td v-text="props.item.description" />
