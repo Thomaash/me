@@ -164,11 +164,6 @@ export default {
       data: exampleMedium2C
     }]
   }),
-  watch: {
-    data () {
-      this.updateImageMetadata()
-    }
-  },
   computed: {
     ...mapGetters('topology', [
       'data'
