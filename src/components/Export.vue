@@ -5,7 +5,7 @@
         <h3 class="headline">Import</h3>
       </v-flex>
 
-      <v-flex xs12 md6 lg4>
+      <v-flex xs12 sm4>
         <v-btn
           :disabled="working"
           outline
@@ -16,7 +16,7 @@
           Empty
         </v-btn>
       </v-flex>
-      <v-flex xs12 md6 lg4>
+      <v-flex xs12 sm4>
         <v-menu :disabled="working" bottom offset-y full-width>
           <v-btn slot="activator" :disabled="working" outline block color="primary">Examples</v-btn>
           <v-list>
@@ -26,7 +26,7 @@
           </v-list>
         </v-menu>
       </v-flex>
-      <v-flex xs12 md6 lg4>
+      <v-flex xs12 sm4>
         <v-btn
           :disabled="working"
           outline

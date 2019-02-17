@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 sm6 lg3>
+    <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
         label="Width on screen"
@@ -12,19 +12,7 @@
         suffix="cm"
       />
     </v-flex>
-    <v-flex xs12 sm6 lg3>
-      <v-text-field
-        :disabled="disabled"
-        label="Height on screen"
-        type="number"
-        :min="0"
-        :step="0.1"
-        :value="size.heightScreenCm"
-        @input="v => recompute('heightScreenCm', v)"
-        suffix="cm"
-      />
-    </v-flex>
-    <v-flex xs12 sm6 lg3>
+    <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
         label="Width on paper"
@@ -36,20 +24,7 @@
         suffix="cm"
       />
     </v-flex>
-    <v-flex xs12 sm6 lg3>
-      <v-text-field
-        :disabled="disabled"
-        label="Height on paper"
-        type="number"
-        :min="0"
-        :step="0.1"
-        :value="size.heightPaperCm"
-        @input="v => recompute('heightPaperCm', v)"
-        suffix="cm"
-      />
-    </v-flex>
-
-    <v-flex xs12 sm6 md4>
+    <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
         label="Width"
@@ -61,7 +36,32 @@
         suffix="px"
       />
     </v-flex>
-    <v-flex xs12 sm6 md4>
+
+    <v-flex xs12 sm4>
+      <v-text-field
+        :disabled="disabled"
+        label="Height on screen"
+        type="number"
+        :min="0"
+        :step="0.1"
+        :value="size.heightScreenCm"
+        @input="v => recompute('heightScreenCm', v)"
+        suffix="cm"
+      />
+    </v-flex>
+    <v-flex xs12 sm4>
+      <v-text-field
+        :disabled="disabled"
+        label="Height on paper"
+        type="number"
+        :min="0"
+        :step="0.1"
+        :value="size.heightPaperCm"
+        @input="v => recompute('heightPaperCm', v)"
+        suffix="cm"
+      />
+    </v-flex>
+    <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
         label="Height"
@@ -74,7 +74,7 @@
       />
     </v-flex>
 
-    <v-flex xs12 sm12 md4 mt-2>
+    <v-flex xs12>
       <v-btn
         :disabled="disabled"
         outline
