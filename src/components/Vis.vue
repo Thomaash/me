@@ -1,5 +1,5 @@
 <template>
-  <div class="component-container" tabindex="0" @mousemove="moveMouseTag" @drag="moveMouseTag" @mouseover="focusRoot" @keyup="keypress">
+  <div class="component-container" tabindex="0" @mousemove="moveMouseTag" @drag="moveMouseTag" @mouseover="focusRoot" @keydown="keypress">
     <VisCanvas v-if="!loading" @ready="init" />
     <v-flex v-else class="text-xs-center" pa-5>
       <v-progress-circular :size="50" color="primary" indeterminate />
@@ -48,23 +48,29 @@ const baseHostnames = {
   'switch': 's1'
 }
 
+// [ctrl][key]
 const keybindings = {
-  'Delete': 'deleteSelected',
-  'Escape': 'stopEditMode',
-  'a': 'fitAll',
-  'c': 'addController',
-  'd': 'deleteSelected',
-  'e': 'addEdge',
-  'f': 'fitSelected',
-  'h': 'addHost',
-  'i': 'addIPsDummy',
-  'l': 'addDummy',
-  'p': 'addPort',
-  'r': 'redo',
-  's': 'addSwitch',
-  't': 'addTypesDummy',
-  'u': 'undo',
-  'z': 'setScale'
+  false: {
+    'Delete': 'deleteSelected',
+    'Escape': 'stopEditMode',
+    'a': 'fitAll',
+    'c': 'addController',
+    'd': 'deleteSelected',
+    'e': 'addEdge',
+    'f': 'fitSelected',
+    'h': 'addHost',
+    'i': 'addIPsDummy',
+    'l': 'addDummy',
+    'p': 'addPort',
+    'r': 'redo',
+    's': 'addSwitch',
+    't': 'addTypesDummy',
+    'u': 'undo',
+    'z': 'setScale'
+  },
+  true: {
+    'a': 'selectAll'
+  }
 }
 
 export default {
@@ -155,6 +161,12 @@ export default {
 
         this.showSnackbar(`${count} item${count === 1 ? '' : 's'} deleted.`, 'Undo', this.undo)
       }
+    },
+    selectAll () {
+      this.net.setSelection({
+        nodes: this.nodes.getIds(),
+        edges: this.edges.getIds()
+      })
     },
     fitAll () {
       this.net.fit({ animation: true })
@@ -363,8 +375,12 @@ export default {
     focusRoot () {
       this.$el.focus()
     },
-    keypress ({ key }) {
-      (this[keybindings[key]] || (() => {}))()
+    keypress (event) {
+      const attr = keybindings[event.ctrlKey][event.key]
+      if (attr) {
+        event.preventDefault()
+        this[attr]()
+      }
     },
     init ({ container, net, nodes, edges }) {
       this.net = net

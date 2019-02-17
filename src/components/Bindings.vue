@@ -53,7 +53,9 @@ export default {
       { combination: 's', description: 'Add a switch.' },
       { combination: 't', description: 'Add a label with TYPES placeholder (autoconnects to the closest).' },
       { combination: 'u', description: 'Undo a change.' },
-      { combination: 'z', description: 'Reset zoom.' }
+      { combination: 'z', description: 'Reset zoom.' },
+
+      { combination: 'ctrl + a', description: 'Select all.' }
     ],
     special: {
       '@': { tag: 'span', text: ' @ ', title: 'On' },
