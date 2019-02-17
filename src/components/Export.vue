@@ -56,79 +56,8 @@
         <h3>Image</h3>
       </v-flex>
 
-      <v-flex xs12 sm6 lg3>
-        <v-text-field
-          :disabled="working"
-          label="Width on screen"
-          type="number"
-          :min="0"
-          :step="0.1"
-          v-model.number="imageMetadata.widthScreenCm"
-          suffix="cm"
-        />
-      </v-flex>
-      <v-flex xs12 sm6 lg3>
-        <v-text-field
-            :disabled="working"
-            label="Height on screen"
-            type="number"
-            :min="0"
-            v-model.number="imageMetadata.heightScreenCm"
-            suffix="cm"
-          />
-      </v-flex>
-      <v-flex xs12 sm6 lg3>
-        <v-text-field
-          :disabled="working"
-          label="Width on paper"
-          type="number"
-          :min="0"
-          v-model.number="imageMetadata.widthPaperCm"
-          suffix="cm"
-        />
-      </v-flex>
-      <v-flex xs12 sm6 lg3>
-        <v-text-field
-          :disabled="working"
-          label="Height on paper"
-          type="number"
-          :min="0"
-          v-model.number="imageMetadata.heightPaperCm"
-          suffix="cm"
-        />
-      </v-flex>
-
-      <v-flex xs12 sm6 md4>
-        <v-text-field
-          :disabled="working"
-          label="Width"
-          type="number"
-          :min="0"
-          v-model.number="imageMetadata.widthPx"
-          suffix="px"
-        />
-      </v-flex>
-      <v-flex xs12 sm6 md4>
-        <v-text-field
-          :disabled="working"
-          label="Height"
-          type="number"
-          :min="0"
-          v-model.number="imageMetadata.heightPx"
-          suffix="px"
-        />
-      </v-flex>
-
-      <v-flex xs12 sm12 md4 mt-2>
-        <v-btn
-          :disabled="working"
-          outline
-          block
-          color="primary"
-          @click= "downloadImageStart"
-        >
-          Render image
-        </v-btn>
+      <v-flex xs12>
+        <ImageConfig :working="working" @render="downloadImageStart" />
       </v-flex>
 
       <v-slide-y-transition mode="out-in">
@@ -166,6 +95,7 @@
 <script>
 import AddressingPlan from '@/builder/AddressingPlan'
 import Builder from '@/builder'
+import ImageConfig from './export/ImageConfig'
 import VisCanvas from '@/components/vis/VisCanvas'
 import exporter from '@/exporter'
 import importScript from '@/importScript'
@@ -204,65 +134,12 @@ const logPriority = [
 
 export default {
   name: 'Export',
-  components: { VisCanvas },
+  components: { ImageConfig, VisCanvas },
   data: () => ({
     log: [],
     logCbs: [],
     visCanvasOn: false,
-    imageMetadata: {
-      width: 2000,
-      height: 1000,
-      scale: 1,
-      screenDpcm: 38,
-      paperDpcm: 120,
-
-      get widthPx () {
-        return Math.ceil(this.width * this.scale)
-      },
-      set widthPx (v) {
-        this.scale = v / this.width
-      },
-      get heightPx () {
-        return Math.ceil(this.height * this.scale)
-      },
-      set heightPx (v) {
-        this.scale = v / this.height
-      },
-
-      get widthScreenCm () {
-        return Math.round((
-          Math.ceil(this.width * this.scale) / this.screenDpcm
-        ) * 100) / 100
-      },
-      set widthScreenCm (v) {
-        this.scale = v * this.screenDpcm / this.width
-      },
-      get heightScreenCm () {
-        return Math.round((
-          Math.ceil(this.height * this.scale) / this.screenDpcm
-        ) * 100) / 100
-      },
-      set heightScreenCm (v) {
-        this.scale = v * this.screenDpcm / this.height
-      },
-
-      get widthPaperCm () {
-        return Math.round((
-          Math.ceil(this.width * this.scale) / this.paperDpcm
-        ) * 100) / 100
-      },
-      set widthPaperCm (v) {
-        this.scale = v * this.paperDpcm / this.width
-      },
-      get heightPaperCm () {
-        return Math.round((
-          Math.ceil(this.height * this.scale) / this.paperDpcm
-        ) * 100) / 100
-      },
-      set heightPaperCm (v) {
-        this.scale = v * this.paperDpcm / this.height
-      }
-    },
+    imageScale: 1,
     emptyProject: exampleEmpty,
     examples: [{
       title: 'Tiny without controller',
@@ -294,7 +171,6 @@ export default {
   },
   computed: {
     ...mapGetters('topology', [
-      'boundingBox',
       'data'
     ]),
     working: {
@@ -458,8 +334,9 @@ export default {
         this.working = false
       }
     },
-    downloadImageStart () {
+    downloadImageStart (scale) {
       this.working = true
+      this.imageScale = scale
       this.visCanvasOn = true
     },
     downloadImageFinish () {
@@ -467,7 +344,7 @@ export default {
       window.setTimeout(async () => {
         try {
           const { blob, sizeString } = await this.$refs.visCanvas.toBlob(
-            this.imageMetadata.scale,
+            this.imageScale,
             progress => {
               this.$store.commit('setWorking', {
                 working: true,
@@ -509,16 +386,7 @@ export default {
     },
     getFilename (extension) {
       return `${this.data.projectName || 'mininet_network'}.${extension}`
-    },
-    updateImageMetadata () {
-      const bb = this.boundingBox()
-      this.imageMetadata.scale = 1
-      this.imageMetadata.width = bb.width
-      this.imageMetadata.height = bb.height
     }
-  },
-  mounted () {
-    this.updateImageMetadata()
   }
 }
 </script>
