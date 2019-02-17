@@ -57,7 +57,7 @@
       </v-flex>
 
       <v-flex xs12>
-        <ImageConfig :working="working" @render="downloadImageStart" />
+        <ImageConfig :working="working" @render="downloadImage" />
       </v-flex>
 
       <v-slide-y-transition mode="out-in">
@@ -86,7 +86,7 @@
 
       <div style="height: 0px; width: 0px; overflow: hidden;">
         <input ref="fileInput" type="file" :accept="importAccept" @input="uploadFile" @change="uploadFile" />
-        <VisCanvas v-if="visCanvasOn" ref="visCanvas" @ready="downloadImageFinish" />
+        <VisCanvas v-if="visCanvasOn" ref="visCanvas" @ready="visCanvasResolve" />
       </div>
     </v-layout>
   </v-container>
@@ -139,7 +139,7 @@ export default {
     log: [],
     logCbs: [],
     visCanvasOn: false,
-    imageScale: 1,
+    visCanvasResolve: () => {},
     emptyProject: exampleEmpty,
     examples: [{
       title: 'Tiny without controller',
@@ -334,38 +334,39 @@ export default {
         this.working = false
       }
     },
-    downloadImageStart (scale) {
-      this.working = true
-      this.imageScale = scale
-      this.visCanvasOn = true
-    },
-    downloadImageFinish () {
-      // The timeout prevents glitches like missing node icons, especially in Firefox.
-      window.setTimeout(async () => {
-        try {
-          const { blob, sizeString } = await this.$refs.visCanvas.toBlob(
-            this.imageScale,
-            progress => {
-              this.$store.commit('setWorking', {
-                working: true,
-                curr: progress,
-                max: 1
-              })
-            }
-          )
-          this.visCanvasOn = false
+    async downloadImage (scale) {
+      try {
+        this.working = true
+        await new Promise(resolve => {
+          this.visCanvasResolve = resolve
+          this.visCanvasOn = true
+        })
 
-          this.showAlert('success', `Image rendered, size: ${sizeString}.`)
-          const url = URL.createObjectURL(blob)
-          download(this.getFilename('png'), url)
-          URL.revokeObjectURL(url)
-        } catch (error) {
-          console.error(error)
-          this.showAlert('error', `Image rendering failed. Probably too large image for this browser.`)
-        } finally {
-          this.working = false
-        }
-      }, 100)
+        // The timeout prevents glitches like missing node icons, especially in Firefox.
+        await new Promise(resolve => window.setTimeout(resolve, 100))
+
+        const { blob, sizeString } = await this.$refs.visCanvas.toBlob(
+          scale,
+          progress => {
+            this.$store.commit('setWorking', {
+              working: true,
+              curr: progress,
+              max: 1
+            })
+          }
+        )
+        this.visCanvasOn = false
+
+        this.showAlert('success', `Image rendered, size: ${sizeString}.`)
+        const url = URL.createObjectURL(blob)
+        download(this.getFilename('png'), url)
+        URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error(error)
+        this.showAlert('error', `Image rendering failed. Probably too large image for this browser.`)
+      } finally {
+        this.working = false
+      }
     },
     downloadAddressingPlan () {
       try {
