@@ -329,7 +329,7 @@ export default {
         this.working = false
       }
     },
-    async downloadImage (scale) {
+    async downloadImage (size) {
       try {
         this.working = true
         await new Promise(resolve => {
@@ -341,7 +341,7 @@ export default {
         await new Promise(resolve => window.setTimeout(resolve, 100))
 
         const { blob, sizeString } = await this.$refs.visCanvas.toBlob(
-          scale,
+          size,
           progress => {
             this.$store.commit('setWorking', {
               working: true,

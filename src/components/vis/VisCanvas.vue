@@ -263,8 +263,17 @@ export default {
           .map(item => this.itemToNode(item))
       )
     },
-    async toBlob (scale = 2, progressObserver = () => {}) {
+    async toBlob ({ width, height, scale } = { scale: 1 }, progressObserver = () => {}) {
       const bb = await this.boundingBox({ scale })
+
+      // Solve rounding issues (usually ±1 px)
+      // Ensures that the user gets the size they see
+      if (width) {
+        bb.width = width
+      }
+      if (height) {
+        bb.height = height
+      }
 
       const beforeDrawingHandler = ctx => {
         const { x, y } = this.net.view.targetTranslation

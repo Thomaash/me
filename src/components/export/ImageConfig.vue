@@ -7,19 +7,22 @@
         type="number"
         :min="0"
         :step="0.1"
-        v-model.number="widthScreenCm"
+        :value="size.widthScreenCm"
+        @input="v => recompute('widthScreenCm', v)"
         suffix="cm"
       />
     </v-flex>
     <v-flex xs12 sm6 lg3>
       <v-text-field
-          :disabled="working"
-          label="Height on screen"
-          type="number"
-          :min="0"
-          v-model.number="heightScreenCm"
-          suffix="cm"
-        />
+        :disabled="working"
+        label="Height on screen"
+        type="number"
+        :min="0"
+        :step="0.1"
+        :value="size.heightScreenCm"
+        @input="v => recompute('heightScreenCm', v)"
+        suffix="cm"
+      />
     </v-flex>
     <v-flex xs12 sm6 lg3>
       <v-text-field
@@ -27,7 +30,9 @@
         label="Width on paper"
         type="number"
         :min="0"
-        v-model.number="widthPaperCm"
+        :step="0.1"
+        :value="size.widthPaperCm"
+        @input="v => recompute('widthPaperCm', v)"
         suffix="cm"
       />
     </v-flex>
@@ -37,7 +42,9 @@
         label="Height on paper"
         type="number"
         :min="0"
-        v-model.number="heightPaperCm"
+        :step="0.1"
+        :value="size.heightPaperCm"
+        @input="v => recompute('heightPaperCm', v)"
         suffix="cm"
       />
     </v-flex>
@@ -48,7 +55,9 @@
         label="Width"
         type="number"
         :min="0"
-        v-model.number="widthPx"
+        :step="1"
+        :value="size.widthPx"
+        @input="v => recompute('widthPx', v)"
         suffix="px"
       />
     </v-flex>
@@ -58,7 +67,9 @@
         label="Height"
         type="number"
         :min="0"
-        v-model.number="heightPx"
+        :step="1"
+        :value="size.heightPx"
+        @input="v => recompute('heightPx', v)"
         suffix="px"
       />
     </v-flex>
@@ -69,7 +80,7 @@
         outline
         block
         color="primary"
-        @click="$emit('render', scale)"
+        @click="$emit('render', { width: +size.widthPx, height: +size.heightPx, scale })"
       >
         Render image
       </v-btn>
@@ -79,6 +90,89 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
+const SCREEN_DPCM = 38
+const PAPER_DPCM = 120
+
+class ValuesToScale {
+  constructor (width, height) {
+    this.width = width
+    this.height = height
+  }
+
+  widthScreenCm (v) {
+    return this.widthPx(v * SCREEN_DPCM)
+  }
+  widthPaperCm (v) {
+    return this.widthPx(v * PAPER_DPCM)
+  }
+  widthPx (v) {
+    return v / this.width
+  }
+
+  heightScreenCm (v) {
+    return this.heightPx(v * SCREEN_DPCM)
+  }
+  heightPaperCm (v) {
+    return this.heightPx(v * PAPER_DPCM)
+  }
+  heightPx (v) {
+    return v / this.height
+  }
+}
+
+class ScaleValues {
+  constructor (width, height) {
+    this.width = width
+    this.height = height
+  }
+
+  widthScreenCm (s) {
+    return this.widthPx(s) / SCREEN_DPCM
+  }
+  widthPaperCm (s) {
+    return this.widthPx(s) / PAPER_DPCM
+  }
+  widthPx (s) {
+    return Math.ceil(s * this.width)
+  }
+
+  heightScreenCm (s) {
+    return this.heightPx(s) / SCREEN_DPCM
+  }
+  heightPaperCm (s) {
+    return this.heightPx(s) / PAPER_DPCM
+  }
+  heightPx (s) {
+    return Math.ceil(s * this.height)
+  }
+}
+
+class ValuesToString {
+  constructor (precision) {
+    this.precision = precision
+  }
+
+  widthScreenCm (v) {
+    return v.toFixed(this.precision)
+  }
+  widthPaperCm (v) {
+    return v.toFixed(this.precision)
+  }
+  widthPx (v) {
+    return v.toFixed(0)
+  }
+
+  heightScreenCm (v) {
+    return v.toFixed(this.precision)
+  }
+  heightPaperCm (v) {
+    return v.toFixed(this.precision)
+  }
+  heightPx (v) {
+    return v.toFixed(0)
+  }
+}
 
 export default {
   name: 'ImageConfig',
@@ -90,8 +184,14 @@ export default {
   },
   data: () => ({
     scale: 1,
-    screenDpcm: 38,
-    paperDpcm: 120
+    size: {
+      widthScreenCm: 0,
+      widthPaperCm: 0,
+      widthPx: 0,
+      heightScreenCm: 0,
+      heightPaperCm: 0,
+      heightPx: 0
+    }
   }),
   computed: {
     ...mapGetters('topology', [
@@ -105,64 +205,38 @@ export default {
       return this.boundingBox().height
     },
 
-    widthPx: {
-      get () {
-        return Math.ceil(this.width * this.scale)
-      },
-      set  (v) {
-        this.scale = v / this.width
-      }
+    valuesToScale () {
+      return new ValuesToScale(this.width, this.height)
     },
-    heightPx: {
-      get () {
-        return Math.ceil(this.height * this.scale)
-      },
-      set  (v) {
-        this.scale = v / this.height
-      }
+    scaleValues () {
+      return new ScaleValues(this.width, this.height)
     },
-
-    widthScreenCm: {
-      get () {
-        return Math.round((
-          Math.ceil(this.width * this.scale) / this.screenDpcm
-        ) * 100) / 100
-      },
-      set  (v) {
-        this.scale = v * this.screenDpcm / this.width
-      }
-    },
-    heightScreenCm: {
-      get () {
-        return Math.round((
-          Math.ceil(this.height * this.scale) / this.screenDpcm
-        ) * 100) / 100
-      },
-      set  (v) {
-        this.scale = v * this.screenDpcm / this.height
-      }
-    },
-
-    widthPaperCm: {
-      get () {
-        return Math.round((
-          Math.ceil(this.width * this.scale) / this.paperDpcm
-        ) * 100) / 100
-      },
-      set  (v) {
-        this.scale = v * this.paperDpcm / this.width
-      }
-    },
-    heightPaperCm: {
-      get () {
-        return Math.round((
-          Math.ceil(this.height * this.scale) / this.paperDpcm
-        ) * 100) / 100
-      },
-      set  (v) {
-        this.scale = v * this.paperDpcm / this.height
-      }
+    valuesToString () {
+      return new ValuesToString(2)
     }
+  },
+  methods: {
+    recompute (initiator, value) {
+      const scale = this.valuesToScale[initiator](+value)
+      Object.keys(this.size).forEach(key => {
+        if (key === initiator) {
+          this.size[key] = `${value}`
+        } else {
+          this.size[key] = this.valuesToString[key](
+            this.scaleValues[key](scale)
+          )
+        }
+      })
+      this.scale = scale
+    }
+  },
+  watch: {
+    width () {
+      this.recompute('widthPx', this.width, true)
+    }
+  },
+  mounted () {
+    this.recompute('widthPx', this.width, true)
   }
 }
 </script>
