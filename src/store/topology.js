@@ -44,26 +44,45 @@ export default {
     },
     boundingBox: (state) => {
       // Find the highest and lowest x and y item center coordinates
-      const rawBB = Object.values(state.data.items).reduce((acc, { x, y }) => {
-        if (x < acc.sX) {
-          acc.sX = x
-        } else if (x > acc.eX) {
-          acc.eX = x
-        }
-        if (y < acc.sY) {
-          acc.sY = y
-        } else if (y > acc.eY) {
-          acc.eY = y
+      const rawBB = (() => {
+        const items = Object.values(state.data.items)
+
+        if (!items.length) {
+          return { sX: 0, eX: 0, sY: 0, eY: 0, empty: true }
         }
 
-        return acc
-      }, { sX: 0, eX: 0, sY: 0, eY: 0 })
+        // Edges don't have x and y coordinates
+        // There can't be an edge without a node
+        const first = items.find(({ x, y }) => x != null && y != null)
+        return items.reduce((acc, { x, y }) => {
+          if (x < acc.sX) {
+            acc.sX = x
+          } else if (x > acc.eX) {
+            acc.eX = x
+          }
+          if (y < acc.sY) {
+            acc.sY = y
+          } else if (y > acc.eY) {
+            acc.eY = y
+          }
+
+          return acc
+        }, {
+          // Some item's position has to be used
+          // If some other values were used they would be included as an imaginary item
+          sX: first.x,
+          eX: first.x,
+          sY: first.y,
+          eY: first.y,
+          empty: false
+        })
+      })()
 
       return ({ margin = 100, scale = 1 } = {}) => {
         const bb = { ...rawBB, width: 0, height: 0 }
 
         // Empty project
-        if (bb.sX === bb.eX && bb.sY === bb.eY) {
+        if (bb.empty) {
           return bb
         }
 
