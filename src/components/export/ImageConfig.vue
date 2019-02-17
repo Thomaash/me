@@ -233,6 +233,9 @@ export default {
   watch: {
     width () {
       this.recompute('widthPx', this.width, true)
+    },
+    height () {
+      this.recompute('heightPx', this.height, true)
     }
   },
   mounted () {
