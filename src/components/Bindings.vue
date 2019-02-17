@@ -37,9 +37,6 @@ export default {
       { combination: 'ctrl + RMBd', description: 'Remove nodes from the selection.' },
       { combination: 'shift + RMBd', description: 'Add nodes to the selection.' },
 
-      { combination: 'del', description: 'Delete selected items.' },
-      { combination: 'esc', description: 'Stop editing edges or adding items.' },
-
       { combination: 'a', description: 'Fit all items into the viewport.' },
       { combination: 'c', description: 'Add a controller.' },
       { combination: 'd', description: 'Delete selected items.' },
@@ -49,13 +46,16 @@ export default {
       { combination: 'i', description: 'Add a label witch IPS placeholder (autoconnects to the closest).' },
       { combination: 'l', description: 'Add a label.' },
       { combination: 'p', description: 'Add a port (autoconnects to the closest).' },
-      { combination: 'r', description: 'Redo undone change.' },
       { combination: 's', description: 'Add a switch.' },
       { combination: 't', description: 'Add a label with TYPES placeholder (autoconnects to the closest).' },
-      { combination: 'u', description: 'Undo a change.' },
       { combination: 'z', description: 'Reset zoom.' },
 
-      { combination: 'ctrl + a', description: 'Select all.' }
+      { combination: 'ctrl + a', description: 'Select all.' },
+      { combination: 'ctrl + y', description: 'Redo undone change.' },
+      { combination: 'ctrl + z', description: 'Undo a change.' },
+
+      { combination: 'del', description: 'Delete selected items.' },
+      { combination: 'esc', description: 'Stop editing edges or adding items.' }
     ],
     special: {
       '@': { tag: 'span', text: ' @ ', title: 'On' },

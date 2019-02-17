@@ -62,14 +62,14 @@ const keybindings = {
     'i': 'addIPsDummy',
     'l': 'addDummy',
     'p': 'addPort',
-    'r': 'redo',
     's': 'addSwitch',
     't': 'addTypesDummy',
-    'u': 'undo',
     'z': 'setScale'
   },
   true: {
-    'a': 'selectAll'
+    'a': 'selectAll',
+    'y': 'redo',
+    'z': 'undo'
   }
 }
 
