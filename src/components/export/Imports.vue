@@ -27,14 +27,20 @@
         outline
         block
         color="primary"
-        @click="uploadJSON"
+        @click="openFileChooser"
       >
         File
       </v-btn>
     </v-flex>
 
     <div style="height: 0px; width: 0px; overflow: hidden;">
-      <input ref="fileInput" type="file" :accept="importAccept" @input="uploadFile" @change="uploadFile" />
+      <input
+        ref="fileInput"
+        type="file"
+        :accept="importAccept"
+        @input="retrieveFile"
+        @change="retrieveFile"
+      />
     </div>
   </v-layout>
 </template>
@@ -121,11 +127,11 @@ export default {
     showAlert (type, text) {
       this.$store.commit('setAlert', { type, text })
     },
-    uploadJSON () {
+    openFileChooser () {
       const input = this.$refs.fileInput
       input.click()
     },
-    uploadFile () {
+    retrieveFile () {
       this.working = true
 
       const input = this.$refs.fileInput
