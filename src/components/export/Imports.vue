@@ -132,8 +132,6 @@ export default {
       input.click()
     },
     retrieveFile () {
-      this.working = true
-
       const input = this.$refs.fileInput
       const file = input.files[0]
       input.value = ''
@@ -141,9 +139,10 @@ export default {
       // Some browsers emit input, some change and some both.
       // Return if the file was already collected by the other event handler.
       if (!file) {
-        this.working = false
         return
       }
+
+      this.working = true
 
       const fr = new FileReader()
       fr.readAsBinaryString(file)
