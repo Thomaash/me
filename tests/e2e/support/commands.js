@@ -43,7 +43,7 @@ Cypress.Commands.add(
     'host': 3,
     'switch': 4,
     'controller': 5,
-    'label': 6,
+    'dummy': 6,
     'delete': 7
   }
   Cypress.Commands.add(
