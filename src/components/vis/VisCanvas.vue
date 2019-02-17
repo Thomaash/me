@@ -263,7 +263,7 @@ export default {
           .map(item => this.itemToNode(item))
       )
     },
-    async toBlob ({ width, height, scale } = { scale: 1 }, progressObserver = () => {}) {
+    async toBlob ({ width, height, scale } = { scale: 1 }, fallback = false, progressObserver = () => {}) {
       const bb = await this.boundingBox({ scale })
 
       // Solve rounding issues (usually ±1 px)
@@ -294,22 +294,14 @@ export default {
 
       this.net.on('beforeDrawing', beforeDrawingHandler)
 
-      const sizeString = `${bb.width.toLocaleString()}\xa0×\xa0${bb.height.toLocaleString()}\xa0px (${((bb.width * bb.height) / 1e6).toLocaleString()}\xa0Mpx)`
-
-      let res
       try {
-        this.$store.commit('setAlert', { type: 'info', text: `Rendering image using fast native method, size: ${sizeString}.` })
-        res = await this._toBlobNative(bb, scale, progressObserver)
+        return fallback
+          ? await this._toBlobJimp(bb, scale, progressObserver)
+          : await this._toBlobNative(bb, scale, progressObserver)
       } catch (error) {
-        this.$store.commit('setAlert', { type: 'info', text: `Rendering image using slow fallback method, size: ${sizeString}.` })
-        res = await this._toBlobJimp(bb, scale, progressObserver)
+        throw error
       } finally {
         this.net.off('beforeDrawing', beforeDrawingHandler)
-      }
-
-      return {
-        ...res,
-        sizeString
       }
     },
     async _toBlobNative (bb, scale, progressObserver) {

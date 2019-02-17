@@ -108,9 +108,55 @@ export default {
       }
     },
     async downloadImage (size) {
+      const sizeString = `${size.width.toLocaleString()}\xa0×\xa0${size.height.toLocaleString()}\xa0px (${((size.width * size.height) / 1e6).toLocaleString()}\xa0Mpx)`
+
       try {
         this.working = true
         this.$emit('log', [])
+
+        const { blob } = await this.tryRenderingMethods(size, sizeString)
+
+        this.showAlert('success', `Image rendered, size: ${sizeString}.`)
+        const url = URL.createObjectURL(blob)
+        download(this.getFilename('png'), url)
+        URL.revokeObjectURL(url)
+      } catch (error) {
+        this.showAlert(
+          'error',
+          `Image rendering failed. Probably too large image for this browser, size: ${sizeString}.`
+        )
+      } finally {
+        this.working = false
+      }
+    },
+    async tryRenderingMethods (size, sizeString) {
+      try {
+        return await this.renderImage(size, sizeString, false)
+      } catch (error) {
+        const confirmed = await this.$confirm(
+          '<p>Fallback method can be used to bypass your browsers limitations, but it is <strong>very slow</strong> and <strong>needs a lot of memory</strong>.</p>',
+          {
+            buttonFalseText: 'Give up',
+            buttonTrueText: 'Try fallback method',
+            icon: this.$vuetify.icons.error,
+            title: 'Rendering failed',
+            width: 600
+          }
+        )
+
+        if (confirmed) {
+          return this.renderImage(size, sizeString, true)
+        } else {
+          throw error
+        }
+      }
+    },
+    async renderImage (size, sizeString, fallback) {
+      try {
+        this.showAlert(
+          'info',
+          `Rendering image using ${fallback ? 'slow fallback' : 'fast native'} method, size: ${sizeString}.`
+        )
 
         await new Promise(resolve => {
           this.visCanvasResolve = resolve
@@ -120,8 +166,9 @@ export default {
         // The timeout prevents glitches like missing node icons, especially in Firefox.
         await new Promise(resolve => window.setTimeout(resolve, 100))
 
-        const { blob, sizeString } = await this.$refs.visCanvas.toBlob(
+        return await this.$refs.visCanvas.toBlob(
           size,
+          fallback,
           progress => {
             this.$store.commit('setWorking', {
               working: true,
@@ -130,17 +177,10 @@ export default {
             })
           }
         )
-        this.visCanvasOn = false
-
-        this.showAlert('success', `Image rendered, size: ${sizeString}.`)
-        const url = URL.createObjectURL(blob)
-        download(this.getFilename('png'), url)
-        URL.revokeObjectURL(url)
       } catch (error) {
-        console.error(error)
-        this.showAlert('error', `Image rendering failed. Probably too large image for this browser.`)
+        throw error
       } finally {
-        this.working = false
+        this.visCanvasOn = false
       }
     },
     downloadAddressingPlan () {
