@@ -425,7 +425,7 @@ export default {
       const { nodes, edges } = this.net.getSelection()
 
       let ids
-      if (nodes.length && edges.length) {
+      if (nodes.length || edges.length) {
         ids = [
           ...nodes,
           ...edges
