@@ -3,25 +3,25 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Hostname" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" data-cy="edit-hostname" />
+          <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Hostname" autofocus data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="Default Route" v-model="item.defaultRoute" :error-messages="errors.item.defaultRoute" clearable />
+          <v-text-field v-model="item.defaultRoute" :error-messages="errors.item.defaultRoute" label="Default Route" clearable />
         </v-flex>
         <v-flex xs12 md6>
-          <v-select label="Scheduler" :items="schedulers" v-model="item.cpuScheduler" clearable />
+          <v-select :items="schedulers" v-model="item.cpuScheduler" label="Scheduler" clearable />
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field label="CPU Utilization Limit" v-model.number="item.cpuLimit" type="number" min="0" max="1" step=".01" :error-messages="errors.item.cpuLimit" clearable />
+          <v-text-field v-model.number="item.cpuLimit" :error-messages="errors.item.cpuLimit" label="CPU Utilization Limit" type="number" min="0" max="1" step=".01" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="CPU cores" v-model="cpuCoresStr" :error-messages="errors.item.cpuCores" clearable />
+          <v-text-field v-model="cpuCoresStr" :error-messages="errors.item.cpuCores" label="CPU cores" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="Startup Script" v-model="item.startScript" auto-grow clearable />
+          <v-textarea v-model="item.startScript" label="Startup Script" auto-grow clearable />
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="Shutdown Script" v-model="item.stopScript" auto-grow clearable />
+          <v-textarea v-model="item.stopScript" label="Shutdown Script" auto-grow clearable />
         </v-flex>
       </v-layout>
     </v-container>

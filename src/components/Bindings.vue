@@ -5,7 +5,7 @@
     <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort class="elevation-1">
       <template slot="items" slot-scope="props">
         <td class="bindings">
-          <span :is="c.tag" v-for="(c, i) in parse(props.item.combination)" :key="i" :title="c.title" class="with-title" v-text="c.text" />
+          <span v-for="(c, i) in parse(props.item.combination)" :is="c.tag" :key="i" :title="c.title" class="with-title" v-text="c.text" />
         </td>
         <td v-text="props.item.description" />
       </template>

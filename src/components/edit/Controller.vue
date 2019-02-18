@@ -3,19 +3,19 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Label" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable data-cy="edit-hostname" />
+          <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Label" autofocus clearable data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
-          <v-select label="Type" :items="controllerTypes" v-model="item.controllerType" clearable />
+          <v-select :items="controllerTypes" v-model="item.controllerType" label="Type" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="IP" v-model="item.ip" :error-messages="errors.item.ip" clearable />
+          <v-text-field v-model="item.ip" :error-messages="errors.item.ip" label="IP" clearable />
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field label="Port" v-model.number="item.port" type="number" min="1" max="65535" :error-messages="errors.item.port" clearable />
+          <v-text-field v-model.number="item.port" :error-messages="errors.item.port" label="Port" type="number" min="1" max="65535" clearable />
         </v-flex>
         <v-flex xs12 md6>
-          <v-select label="Protocol" :items="protocolsIP" v-model="item.protocol" clearable />
+          <v-select :items="protocolsIP" v-model="item.protocol" label="Protocol" clearable />
         </v-flex>
       </v-layout>
     </v-container>

@@ -3,61 +3,61 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Hostname" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" data-cy="edit-hostname" />
+          <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Hostname" autofocus data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
-          <v-select label="Type" :items="switchTypes" v-model="item.switchType" clearable />
+          <v-select :items="switchTypes" v-model="item.switchType" label="Type" clearable />
         </v-flex>
         <v-flex xs12 md3>
-          <ThreeStateCheckbox label="STP" v-model="item.stp" />
+          <ThreeStateCheckbox v-model="item.stp" label="STP" />
         </v-flex>
         <v-flex xs12 md9>
-          <v-text-field label="STP Priority" v-model.number="item.stpPriority" type="number" step="4096" min="0" max="65535" :error-messages="errors.item.stpPriority" clearable />
+          <v-text-field v-model.number="item.stpPriority" :error-messages="errors.item.stpPriority" label="STP Priority" type="number" step="4096" min="0" max="65535" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="IP" v-model="item.ip" :error-messages="errors.item.ip" clearable />
+          <v-text-field v-model="item.ip" :error-messages="errors.item.ip" label="IP" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="DPCTL Port" v-model.number="item.dpctlPort" type="number" min="1" max="65535" :error-messages="errors.item.dpctlPort" clearable />
+          <v-text-field v-model.number="item.dpctlPort" :error-messages="errors.item.dpctlPort" label="DPCTL Port" type="number" min="1" max="65535" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-select label="Protocol" :items="protocolsOF" v-model="item.protocol" clearable />
+          <v-select :items="protocolsOF" v-model="item.protocol" label="Protocol" clearable />
         </v-flex>
         <v-flex xs12 md6>
-          <v-select label="Datapath" :items="datapaths" v-model="item.datapath" clearable />
+          <v-select :items="datapaths" v-model="item.datapath" label="Datapath" clearable />
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field label="Datapath ID" v-model="item.dpid" type="text" :error-messages="errors.item.dpid" clearable />
+          <v-text-field v-model="item.dpid" :error-messages="errors.item.dpid" label="Datapath ID" type="text" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="Ofdatapath arguments" v-model="item.dpopts" clearable />
+          <v-text-field v-model="item.dpopts" label="Ofdatapath arguments" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="Reconnect Timeout" v-model.number="item.reconnectms" type="number" min="0" suffix="ms" :error-messages="errors.item.reconnectms" clearable />
+          <v-text-field v-model.number="item.reconnectms" :error-messages="errors.item.reconnectms" label="Reconnect Timeout" type="number" min="0" suffix="ms" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-select label="Fail Mode" :items="failModes" v-model="item.failMode" clearable />
+          <v-select :items="failModes" v-model="item.failMode" label="Fail Mode" clearable />
         </v-flex>
         <v-flex xs12>
-          <ThreeStateCheckbox label="Inband" v-model="item.inband" />
+          <ThreeStateCheckbox v-model="item.inband" label="Inband" />
         </v-flex>
         <v-flex xs12>
-          <ThreeStateCheckbox label="In Namespace" v-model="item.inNamespace" />
+          <ThreeStateCheckbox v-model="item.inNamespace" label="In Namespace" />
         </v-flex>
         <v-flex xs12>
-          <ThreeStateCheckbox label="Batch" v-model="item.batch" />
+          <ThreeStateCheckbox v-model="item.batch" label="Batch" />
         </v-flex>
         <v-flex xs12>
-          <ThreeStateCheckbox label="Verbose" v-model="item.verbose" />
+          <ThreeStateCheckbox v-model="item.verbose" label="Verbose" />
         </v-flex>
         <v-flex xs12>
-          <v-text-field label="Additional Switch Options" v-model="item.opts" clearable />
+          <v-text-field v-model="item.opts" label="Additional Switch Options" clearable />
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="Startup Script" v-model="item.startScript" auto-grow clearable />
+          <v-textarea v-model="item.startScript" label="Startup Script" auto-grow clearable />
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="Shutdown Script" v-model="item.stopScript" auto-grow clearable />
+          <v-textarea v-model="item.stopScript" label="Shutdown Script" auto-grow clearable />
         </v-flex>
       </v-layout>
     </v-container>
@@ -73,8 +73,8 @@ import { switchTypes, failModes, datapaths, protocolsOF } from '@/components/sel
 
 export default {
   name: 'SwitchEdit',
-  mixins: [common, errors],
   components: { ThreeStateCheckbox },
+  mixins: [common, errors],
   data: () => ({
     valid: false,
     item: {},

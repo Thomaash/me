@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" persistent enable-resize-watcher fixed app>
       <v-list>
-        <v-list-tile value="true" v-for="(item, i) in items" :key="i" :to="item.to">
+        <v-list-tile v-for="(item, i) in drawerItems" :key="i" :to="item.to" value="true">
           <v-list-tile-action>
             <v-icon v-html="item.icon" />
           </v-list-tile-action>
@@ -24,20 +24,20 @@
 
       <v-progress-linear
         v-show="progress.show"
+        slot="extension"
         :indeterminate="progress.indeterminate === true"
         :value="progress.value"
         class="ma-0"
-        slot="extension"
         color="accent"
       />
 
       <v-alert
+        slot="extension"
         v-model="showAlert"
-        dismissible
         :type="alert.type"
+        dismissible
         class="mt-0 alert"
         transition="slide-y-transition"
-        slot="extension"
       >
         {{ alert.text }}
       </v-alert>

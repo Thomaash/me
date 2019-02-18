@@ -21,7 +21,10 @@
 export default {
   name: 'Description',
   props: {
-    full: Boolean
+    full: {
+      type: Boolean,
+      default: false
+    }
   }
 }
 </script>

@@ -14,7 +14,7 @@
       </v-flex>
 
       <v-slide-y-transition mode="out-in">
-        <v-flex xs12 pb-5 v-if="log.length">
+        <v-flex v-if="log.length" xs12 pb-5>
           <h3 class="headline">Log</h3>
 
           <Log :log="log" />

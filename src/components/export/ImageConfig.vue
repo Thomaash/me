@@ -3,74 +3,74 @@
     <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
-        label="Width on screen"
-        type="number"
         :min="0"
         :step="0.1"
         :value="size.widthScreenCm"
-        @input="v => recompute('widthScreenCm', v)"
+        label="Width on screen"
+        type="number"
         suffix="cm"
+        @input="v => recompute('widthScreenCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
-        label="Width on paper"
-        type="number"
         :min="0"
         :step="0.1"
         :value="size.widthPaperCm"
-        @input="v => recompute('widthPaperCm', v)"
+        label="Width on paper"
+        type="number"
         suffix="cm"
+        @input="v => recompute('widthPaperCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
-        label="Width"
-        type="number"
         :min="0"
         :step="1"
         :value="size.widthPx"
-        @input="v => recompute('widthPx', v)"
+        label="Width"
+        type="number"
         suffix="px"
+        @input="v => recompute('widthPx', v)"
       />
     </v-flex>
 
     <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
-        label="Height on screen"
-        type="number"
         :min="0"
         :step="0.1"
         :value="size.heightScreenCm"
-        @input="v => recompute('heightScreenCm', v)"
+        label="Height on screen"
+        type="number"
         suffix="cm"
+        @input="v => recompute('heightScreenCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
-        label="Height on paper"
-        type="number"
         :min="0"
         :step="0.1"
         :value="size.heightPaperCm"
-        @input="v => recompute('heightPaperCm', v)"
+        label="Height on paper"
+        type="number"
         suffix="cm"
+        @input="v => recompute('heightPaperCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
         :disabled="disabled"
-        label="Height"
-        type="number"
         :min="0"
         :step="1"
         :value="size.heightPx"
-        @input="v => recompute('heightPx', v)"
+        label="Height"
+        type="number"
         suffix="px"
+        @input="v => recompute('heightPx', v)"
       />
     </v-flex>
 
@@ -221,6 +221,17 @@ export default {
       return new ValuesToString(2)
     }
   },
+  watch: {
+    width () {
+      this.recomputeAll(1)
+    },
+    height () {
+      this.recomputeAll(1)
+    }
+  },
+  mounted () {
+    this.recomputeAll(1)
+  },
   methods: {
     recompute (initiator, value) {
       const scale = this.valuesToScale[initiator](+value)
@@ -242,17 +253,6 @@ export default {
         )
       })
     }
-  },
-  watch: {
-    width () {
-      this.recomputeAll(1)
-    },
-    height () {
-      this.recomputeAll(1)
-    }
-  },
-  mounted () {
-    this.recomputeAll(1)
   }
 }
 </script>

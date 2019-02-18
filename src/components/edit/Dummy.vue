@@ -4,12 +4,12 @@
       <v-layout wrap>
         <v-flex xs12>
           <v-textarea
+            v-model="item.hostname"
             auto-grow
             autofocus
             clearable
             label="Label"
             style="font-family: monospace;"
-            v-model="item.hostname"
             data-cy="edit-hostname"
           />
         </v-flex>

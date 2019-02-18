@@ -1,12 +1,12 @@
 <template>
   <v-checkbox
-    readonly
-    class="primary--text"
     :title="state.title"
     :label="label"
     :input-value="state.value === true"
     :indeterminate="state.value === false"
     :color="color"
+    readonly
+    class="primary--text"
     on-icon="$vuetify.icons.checkboxTrue"
     off-icon="$vuetify.icons.checkboxUndefined"
     indeterminate-icon="$vuetify.icons.checkboxFalse"
@@ -17,7 +17,10 @@
 <script>
 export default {
   props: {
-    value: Boolean,
+    value: {
+      type: Boolean,
+      default: false
+    },
     color: {
       type: String,
       default: 'primary'

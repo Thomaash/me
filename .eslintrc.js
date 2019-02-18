@@ -12,6 +12,7 @@ module.exports = {
   },
   extends: [
     'plugin:vue-libs/recommended',
+    'plugin:vue/recommended',
     'standard'
   ],
   plugins: [

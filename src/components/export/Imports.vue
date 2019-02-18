@@ -6,8 +6,8 @@
         outline
         block
         color="primary"
-        @click="importData(emptyProject)"
         data-cy="import-empty"
+        @click="importData(emptyProject)"
       >
         Empty
       </v-btn>
@@ -37,11 +37,11 @@
     <div style="height: 0px; width: 0px; overflow: hidden;">
       <input
         ref="fileInput"
-        type="file"
         :accept="importAccept"
+        type="file"
         @input="retrieveFile"
         @change="retrieveFile"
-      />
+      >
     </div>
   </v-layout>
 </template>

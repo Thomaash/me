@@ -3,13 +3,13 @@
     <v-container grid-list-md>
       <v-layout wrap>
         <v-flex xs12>
-          <v-text-field label="Dev Name" v-model="item.hostname" autofocus :error-messages="errors.item.hostname" clearable data-cy="edit-hostname" />
+          <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Dev Name" autofocus clearable data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
-          <v-textarea label="IPs" v-model="ips" :error-messages="errors.item.ips" auto-grow clearable />
+          <v-textarea v-model="ips" :error-messages="errors.item.ips" label="IPs" auto-grow clearable />
         </v-flex>
         <v-flex xs12>
-          <v-switch color="primary" label="Physical" v-model="item.physical" />
+          <v-switch v-model="item.physical" color="primary" label="Physical" />
         </v-flex>
       </v-layout>
     </v-container>
@@ -28,14 +28,6 @@ export default {
     valid: false,
     item: {}
   }),
-  watch: {
-    'item.physical' (val) {
-      if (val === false) {
-        // Omit physical property if false
-        delete this.$delete(this.item, 'physical')
-      }
-    }
-  },
   computed: {
     ips: {
       get () {
@@ -47,6 +39,14 @@ export default {
         } else {
           this.$delete(this.item, 'ips')
         }
+      }
+    }
+  },
+  watch: {
+    'item.physical' (val) {
+      if (val === false) {
+        // Omit physical property if false
+        delete this.$delete(this.item, 'physical')
       }
     }
   },
