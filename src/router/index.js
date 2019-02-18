@@ -35,8 +35,9 @@ const router = new Router({
     path: '/canvas/:ids?',
     name: 'Canvas',
     meta: {
-      title (to) {
-        return `Canvas${selectionTitleSuffix(to.params.ids)}`
+      title: 'Canvas',
+      subtitle (to) {
+        return selectionTitleSuffix(to.params.ids)
       }
     },
     components: {
@@ -47,9 +48,10 @@ const router = new Router({
     path: '/canvas/:x/:y/:scale/:ids?',
     name: 'CanvasPosition',
     meta: {
-      title (to) {
+      title: 'Canvas',
+      subtitle (to) {
         const { x, y, scale, ids } = to.params
-        return `Canvas at position ${x}\u{a0}×\u{a0}${y} scaled to ${(scale * 100).toFixed(0)}\u{a0}% ${selectionTitleSuffix(ids)}`
+        return ` at position ${x}\u{a0}×\u{a0}${y} scaled to ${(scale * 100).toFixed(0)}\u{a0}%${selectionTitleSuffix(ids)}`
       }
     },
     components: {

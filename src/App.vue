@@ -76,9 +76,14 @@ export default {
       title: 'About',
       to: { name: 'About' }
     }],
-    title: 'Mininet Editor'
+    appName: 'Mininet Editor'
   }),
   computed: {
+    documentTitle () {
+      const { title, subtitle } = this.$route.meta
+      const subtitleStr = subtitle ? subtitle(this.$route) : ''
+      return `${this.appName} | ${title}${subtitleStr}`
+    },
     progress () {
       const working = this.$store.state.working
       return {
@@ -104,20 +109,19 @@ export default {
     }
   },
   watch: {
-    '$route': {
+    'documentTitle': {
       handler (to) {
-        this.updateTitle(to)
+        this.updateDocumentTitle()
       },
       deep: true
     }
   },
   mounted () {
-    this.updateTitle(this.$route)
+    this.updateDocumentTitle()
   },
   methods: {
-    updateTitle (to) {
-      const title = to.meta.title
-      document.title = `Mininet Editor | ${typeof title === 'function' ? title(to) : title}`
+    updateDocumentTitle () {
+      document.title = this.documentTitle
     }
   }
 }
