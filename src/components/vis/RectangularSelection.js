@@ -61,7 +61,7 @@ export default class {
   _orderPair (a, b) {
     return a < b ? [a, b] : [b, a]
   }
-  _selectNodes (mode) {
+  _selectNodes (mode, event) {
     const { startX, startY, endX, endY } = this._rectCanvas
 
     const selected = this._nodes.get().filter(({ id }) => {
@@ -70,6 +70,21 @@ export default class {
     }).map(({ id }) => id)
 
     this._network.selectNodes(this._prepareNodeSelection(selected, mode))
+
+    // Fabricate select event
+    // It should be fired because this is user interaction
+    const pointerDOM = {
+      x: event.offsetX,
+      y: event.offsetY
+    }
+    this._network.emit('select', {
+      ...this._network.getSelection(),
+      event,
+      pointer: {
+        DOM: pointerDOM,
+        canvas: this._network.DOMtoCanvas(pointerDOM)
+      }
+    })
   }
   _prepareNodeSelection (curr, mode) {
     if (mode === 'set') {
@@ -110,7 +125,7 @@ export default class {
       // Select nodes
       this._drag = false
       this._network.redraw()
-      this._selectNodes(keysModeMap[ctrlKey][shiftKey])
+      this._selectNodes(keysModeMap[ctrlKey][shiftKey], event)
     }
   }
   _afterDrawingListener (ctx) {
