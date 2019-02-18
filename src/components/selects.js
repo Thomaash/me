@@ -38,7 +38,7 @@ export { controllerTypes }
 
 const protocolsIP = [
   { value: 'tcp', text: 'TCP' },
-  { value: 'upd', text: 'UDP' }
+  { value: 'ssl', text: 'SSL' }
 ]
 export { protocolsIP }
 
