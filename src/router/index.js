@@ -27,6 +27,13 @@ const router = new Router({
       toolbar: CanvasToolbar
     }
   }, {
+    path: '/canvas/:x/:y/:scale/:ids?',
+    name: 'CanvasPosition',
+    components: {
+      default: Canvas,
+      toolbar: CanvasToolbar
+    }
+  }, {
     path: '/mininet_settings',
     name: 'MininetSettings',
     component: MininetSettings

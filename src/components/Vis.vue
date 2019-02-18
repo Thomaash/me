@@ -27,6 +27,17 @@ import { compare, compareNodes } from './vis/locale'
 import { mapGetters } from 'vuex'
 import { selection as selectionTheme } from '@/theme'
 
+function delayCall (fn, delay) {
+  let timeout = null
+  return () => {
+    window.clearTimeout(timeout)
+    timeout = window.setTimeout(() => {
+      fn()
+      timeout = null
+    }, delay)
+  }
+}
+
 const portAmounts = {
   'host': 2,
   'switch': 6
@@ -160,6 +171,7 @@ export default {
         this.net.deleteSelected()
 
         this.showSnackbar(`${count} item${count === 1 ? '' : 's'} deleted.`, 'Undo', this.undo)
+        this.updateURLSelection()
       }
     },
     selectAll () {
@@ -167,21 +179,26 @@ export default {
         nodes: this.nodes.getIds(),
         edges: this.edges.getIds()
       })
+      this.updateURLPosition()
+      this.updateURLSelection()
     },
     fitAll () {
       this.net.fit({ animation: true })
+      this.clearURLPosition()
     },
-    fitSelected (animate) {
+    fitSelected (animate = true) {
       this.net.fit({
         nodes: this.net.getSelectedNodes(),
-        animation: animate == null ? true : !!animate
+        animation: animate
       })
+      this.clearURLPosition()
     },
     setScale (scale) {
       this.net.moveTo({
         scale: scale != null ? scale : 1,
         animation: true
       })
+      this.updateURLPosition()
     },
     undo () {
       try {
@@ -382,6 +399,68 @@ export default {
         this[attr]()
       }
     },
+    clearURLPosition () {
+      this.$router.push({
+        name: 'Canvas',
+        params: {
+          ids: this.$route.params.ids
+        }
+      })
+    },
+    updateURLPosition () {
+      const { x, y } = this.net.getViewPosition()
+      const scale = this.net.getScale()
+
+      this.$router.push({
+        name: 'CanvasPosition',
+        params: {
+          ids: this.$route.params.ids,
+          x: Math.round(x),
+          y: Math.round(y),
+          scale: Math.round(scale * 1000) / 1000 || 0.001
+        }
+      })
+    },
+    updateURLSelection () {
+      const { nodes, edges } = this.net.getSelection()
+
+      let ids
+      if (nodes.length && edges.length) {
+        ids = [
+          ...nodes,
+          ...edges
+        ].join(',')
+      } else {
+        ids = null
+      }
+
+      this.$router.push({
+        params: {
+          ...this.$route.params,
+          ids
+        }
+      })
+    },
+    applyURL () {
+      const { ids, x, y, scale } = this.$route.params
+
+      if (ids) {
+        const idsArray = ids.split(',')
+        this.net.setSelection({
+          nodes: idsArray.filter(id => this.nodes.get(id)),
+          edges: idsArray.filter(id => this.edges.get(id))
+        })
+      }
+
+      if (x != null && y != null && scale != null) {
+        this.net.moveTo({
+          position: { x, y },
+          scale
+        })
+      } else {
+        this.fitSelected(false)
+      }
+    },
     init ({ container, net, nodes, edges }) {
       this.net = net
       this.nodes = nodes
@@ -566,21 +645,14 @@ export default {
         }
       })
 
-      // Focus item, focus again in case of immediate resize.
-      const idsParam = this.$route.params.ids
-      if (idsParam) {
-        const ids = idsParam.split(',')
-        const fitSelection = animate => {
-          this.net.setSelection({
-            nodes: ids.filter(id => this.nodes.get(id)),
-            edges: ids.filter(id => this.edges.get(id))
-          })
-          this.fitSelected(animate)
-        }
-        this.net.on('resize', fitSelection)
-        window.setTimeout(() => this.net.off('resize', fitSelection), 4000)
-        fitSelection(false)
-      }
+      // URL changing events
+      this.net.on('dragEnd', this.updateURLPosition)
+      this.net.on('select', this.updateURLPosition)
+      this.net.on('select', this.updateURLSelection)
+      this.net.on('zoom', delayCall(this.updateURLPosition, 200))
+
+      // Focus items
+      this.applyURL()
 
       // Set rectangular selection up
       const rs = new RectangularSelection(container, this.net, this.nodes, selectionTheme)
