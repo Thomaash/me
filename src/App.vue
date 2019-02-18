@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" persistent enable-resize-watcher fixed app>
       <v-list>
-        <v-list-tile v-for="(item, i) in drawerItems" :key="i" :to="item.to" value="true">
+        <v-list-tile v-for="(item, i) in drawerItems" :key="i" :to="item.to" :data-cy="`drawer-${item.to.name}`" value="true">
           <v-list-tile-action>
             <v-icon v-html="item.icon" />
           </v-list-tile-action>

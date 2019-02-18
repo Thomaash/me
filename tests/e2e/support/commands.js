@@ -74,36 +74,20 @@ Cypress.Commands.add(
   'meClickMenu',
   { prevSubject: false },
   (name) => {
-    const urlMap = {
-      'Home': {
-        selector: '.v-navigation-drawer > .v-list > :nth-child(1) > .v-list__tile > .v-list__tile__content',
-        hash: '#/home'
-      },
-      'Canvas': {
-        selector: '.v-navigation-drawer > .v-list > :nth-child(2) > .v-list__tile > .v-list__tile__content',
-        hash: '#/canvas'
-      },
-      'MininetSettings': {
-        selector: '.v-navigation-drawer > .v-list > :nth-child(3) > .v-list__tile > .v-list__tile__content',
-        hash: '#/mininet_settings'
-      },
-      'Export': {
-        selector: '.v-navigation-drawer > .v-list > :nth-child(4) > .v-list__tile > .v-list__tile__content',
-        hash: '#/export'
-      },
-      'About': {
-        selector: '.v-navigation-drawer > .v-list > :nth-child(5) > .v-list__tile > .v-list__tile__content',
-        hash: '#/about'
-      }
+    const hashMap = {
+      'Home': '#/home',
+      'Canvas': '#/canvas',
+      'MininetSettings': '#/mininet_settings',
+      'Export': '#/export',
+      'About': '#/about'
     }
 
     if (name) {
-      const { selector, hash } = urlMap[name]
-      cy.get(selector).click()
-      cy.hash().should('eq', hash)
+      cy.get(`[data-cy=drawer-${name}]`).click()
+      cy.hash().should('eq', hashMap[name])
     } else {
-      Object.values(urlMap).forEach(({ selector, hash }) => {
-        cy.get(selector).click()
+      Object.entries(hashMap).forEach(([name, hash]) => {
+        cy.get(`[data-cy=drawer-${name}]`).click()
         cy.hash().should('eq', hash)
       })
     }
