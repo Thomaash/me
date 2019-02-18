@@ -102,6 +102,23 @@ export default {
         }
       }
     }
+  },
+  watch: {
+    '$route': {
+      handler (to) {
+        this.updateTitle(to)
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.updateTitle(this.$route)
+  },
+  methods: {
+    updateTitle (to) {
+      const title = to.meta.title
+      document.title = `Mininet Editor | ${typeof title === 'function' ? title(to) : title}`
+    }
   }
 }
 </script>
