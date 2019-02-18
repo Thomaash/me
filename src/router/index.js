@@ -28,7 +28,9 @@ const router = new Router({
     path: '/home',
     name: 'Home',
     meta: {
-      title: 'Home'
+      title: 'Home',
+      drawer: true,
+      icon: 'mdi-home'
     },
     component: Home
   }, {
@@ -38,7 +40,9 @@ const router = new Router({
       title: 'Canvas',
       subtitle (to) {
         return selectionTitleSuffix(to.params.ids)
-      }
+      },
+      drawer: true,
+      icon: 'mdi-map'
     },
     components: {
       default: Canvas,
@@ -62,21 +66,27 @@ const router = new Router({
     path: '/mininet_settings',
     name: 'MininetSettings',
     meta: {
-      title: 'Mininet Settings'
+      title: 'Mininet Settings',
+      drawer: true,
+      icon: 'mdi-tune'
     },
     component: MininetSettings
   }, {
     path: '/export',
     name: 'Export',
     meta: {
-      title: 'Export/Import'
+      title: 'Export/Import',
+      drawer: true,
+      icon: 'mdi-content-save'
     },
     component: Export
   }, {
     path: '/about',
     name: 'About',
     meta: {
-      title: 'About'
+      title: 'About',
+      drawer: true,
+      icon: 'mdi-information'
     },
     component: About
   }]

@@ -55,27 +55,6 @@ export default {
   name: 'App',
   data: () => ({
     drawer: true,
-    items: [{
-      icon: 'mdi-home',
-      title: 'Home',
-      to: { name: 'Home' }
-    }, {
-      icon: 'mdi-map',
-      title: 'Canvas',
-      to: { name: 'Canvas' }
-    }, {
-      icon: 'mdi-tune',
-      title: 'Mininet Settings',
-      to: { name: 'MininetSettings' }
-    }, {
-      icon: 'mdi-content-save',
-      title: 'Export/Import',
-      to: { name: 'Export' }
-    }, {
-      icon: 'mdi-information',
-      title: 'About',
-      to: { name: 'About' }
-    }],
     appName: 'Mininet Editor'
   }),
   computed: {
@@ -83,6 +62,15 @@ export default {
       const { title, subtitle } = this.$route.meta
       const subtitleStr = subtitle ? subtitle(this.$route) : ''
       return `${this.appName} | ${title}${subtitleStr}`
+    },
+    drawerItems () {
+      return this.$router.options.routes
+        .filter(route => route.meta && route.meta.drawer)
+        .map(({ name, meta }) => ({
+          title: meta.title,
+          icon: meta.icon,
+          to: { name }
+        }))
     },
     progress () {
       const working = this.$store.state.working
