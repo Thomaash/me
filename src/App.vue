@@ -14,7 +14,7 @@
     </v-navigation-drawer>
     <v-toolbar color="primary" dark app extension-height="7">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title v-text="appName" />
 
       <v-spacer />
 
