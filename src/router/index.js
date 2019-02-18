@@ -50,6 +50,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   store.commit('clearAlert')
+  store.commit('setWorking', { working: false })
   next()
 })
 

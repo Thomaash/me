@@ -26,7 +26,6 @@ export default new Vuex.Store({
     },
     clearAlert (state) {
       state.alert.show = false
-      state.working = false
     }
   },
   actions: {},
