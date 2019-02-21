@@ -60,12 +60,16 @@ export default {
         if (item.type === 'controller') {
           return {
             hostname: item.hostname,
-            types: [controllerTypesMap[item.controllerType] || item.controllerType]
+            types: item.controllerType
+              ? [controllerTypesMap[item.controllerType] || item.controllerType]
+              : ['default type']
           }
         } else if (item.type === 'switch') {
           return {
             hostname: item.hostname,
-            types: [switchTypesMap[item.switchType] || item.switchType]
+            types: item.switchType
+              ? [switchTypesMap[item.switchType] || item.switchType]
+              : ['default type']
           }
         } else {
           return null
