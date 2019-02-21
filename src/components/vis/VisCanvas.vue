@@ -252,7 +252,7 @@ export default {
         return (
           this.labelPlaceholders.replace[match.toUpperCase()] ||
           this.labelPlaceholders.replace.fallback
-        )(item, neighbors, match)
+        )(neighbors, match)
       })
     },
     updateLabels (ids) {

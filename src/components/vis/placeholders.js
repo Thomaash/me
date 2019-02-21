@@ -18,13 +18,13 @@ function buildOutputString (items, left, right) {
 export default {
   re: /{{[^{}]*}}/g,
   replace: {
-    '{{HOSTNAMES}}' (item, neighbors) {
+    '{{HOSTNAMES}}' (neighbors) {
       return neighbors.filter(item => /^(port|host|switch|controller)$/.test(item.type))
         .map(item => item.hostname)
         .sort(compare)
         .join(', ')
     },
-    '{{IPS}}' (item, neighbors) {
+    '{{IPS}}' (neighbors) {
       const items = neighbors.map(item => {
         if (item.type === 'port') {
           return {
@@ -55,7 +55,7 @@ export default {
 
       return buildOutputString(items, 'hostname', 'ips')
     },
-    '{{TYPES}}' (item, neighbors) {
+    '{{TYPES}}' (neighbors) {
       const items = neighbors.map(item => {
         if (item.type === 'controller') {
           return {
@@ -74,7 +74,7 @@ export default {
 
       return buildOutputString(items, 'hostname', 'types')
     },
-    fallback (item, neighbors, match) {
+    fallback (neighbors, match) {
       return `unknown placeholder: ${match}`
     }
   }
