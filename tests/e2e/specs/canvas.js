@@ -42,9 +42,8 @@ describe('Canvas', () => {
         '2001:db8::ff00:42:8329/1'
       ]
     },
-    switchProps: {
-      'edit-physical': [
-      ]
+    checkboxProps: {
+      'edit-physical': checkboxPropsFromUnset.setTrue // Can't be unset (it's a switch)
     }
   }, {
     type: 'host',
