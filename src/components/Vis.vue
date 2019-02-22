@@ -9,10 +9,15 @@
       <v-icon color="black" v-text="mouseTagIcon" />
     </div>
 
-    <v-snackbar v-model="snackbar.show" data-cy="vis-snackbar">
-      {{ snackbar.msg }}
-      <v-btn color="primary" flat @click="snackbar.action()">
-        {{ snackbar.btn }}
+    <v-snackbar
+      :data-cy-type="snackbar.type"
+      :data-cy-values="JSON.stringify(snackbar.values)"
+      v-model="snackbar.show"
+      data-cy="vis-snackbar"
+    >
+      {{ snackbar.message }}
+      <v-btn color="primary" flat @click="snackbar.actionFunction()">
+        {{ snackbar.actionName }}
       </v-btn>
     </v-snackbar>
   </div>
@@ -37,6 +42,14 @@ function delayCall (fn = () => {}, delay = 0) {
     }, delay)
   }
 }
+
+const snackbarMsgGenerator = new Map([
+  ['undone', () => 'Undone.'],
+  ['redone', () => 'Redone.'],
+  ['nothing-to-undo', () => 'Nothing more to undo.'],
+  ['nothing-to-redo', () => 'Nothing more to redo.'],
+  ['items-deleted', count => `${count} item${count === 1 ? '' : 's'} deleted.`]
+])
 
 const portAmounts = {
   'host': 2,
@@ -106,9 +119,18 @@ export default {
     },
     snackbar: {
       show: false,
-      msg: '',
-      btn: '',
-      action: () => {}
+      type: undefined,
+      values: undefined,
+      actionName: undefined,
+      actionFunction: undefined,
+      get message () {
+        const fn = snackbarMsgGenerator.get(this.type)
+        if (fn) {
+          return fn(...this.values)
+        } else {
+          return 'Unknown message type.'
+        }
+      }
     }
   }),
   computed: {
@@ -170,7 +192,7 @@ export default {
         this.commit('removeItems', [...nodes, ...edges])
         this.net.deleteSelected()
 
-        this.showSnackbar(`${count} item${count === 1 ? '' : 's'} deleted.`, 'Undo', this.undo)
+        this.showSnackbar('items-deleted', [count], 'Undo', this.undo)
         this.updateURLSelection()
       }
     },
@@ -203,31 +225,35 @@ export default {
     undo () {
       try {
         this.commit('undo')
-        this.showSnackbar('Undone.')
+        this.showSnackbar('undone')
       } catch (error) {
-        this.showSnackbar('Nothing more to undo.')
+        this.showSnackbar('nothing-to-undo')
       }
     },
     redo () {
       try {
         this.commit('redo')
-        this.showSnackbar('Redone.')
+        this.showSnackbar('redone')
       } catch (error) {
-        this.showSnackbar('Nothing more to redo.')
+        this.showSnackbar('nothing-to-redo')
       }
     },
-    showSnackbar (msg, btn, action) {
+    showSnackbar (
+      type,
+      values = [],
+      actionName = 'Close',
+      actionFunction = () => {
+        this.snackbar.show = false
+      }
+    ) {
+      this.snackbar.type = type
+      this.snackbar.values = values
+      this.snackbar.actionName = actionName
+      this.snackbar.actionFunction = actionFunction
+
       this.snackbar.show = false
       window.setTimeout(() => {
         this.snackbar.show = true
-        this.snackbar.msg = msg || null
-        this.snackbar.btn = btn || 'Close'
-        this.snackbar.action = () => {
-          if (action) {
-            action()
-          }
-          this.snackbar.show = false
-        }
       })
     },
     stopEditMode () {
@@ -265,7 +291,6 @@ export default {
       return { node, item }
     },
     commit (type, payload) {
-      this.snackbar.show = false
       this.$store.dispatch(`topology/${type}`, payload)
     },
     commitPositions (ids) {

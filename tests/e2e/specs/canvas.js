@@ -63,9 +63,9 @@ describe('Canvas', () => {
 
         cy.meVisFabClick('delete')
 
-        cy.get('.v-snack__content')
         cy.get('[data-cy=vis-snackbar]')
-          .contains(`${itemsToDelete} item${itemsToDelete === 1 ? '' : 's'} deleted`)
+          .should('have.attr', 'data-cy-type', 'items-deleted')
+          .should('have.attr', 'data-cy-values', `[${itemsToDelete}]`)
       })
     })
   })
