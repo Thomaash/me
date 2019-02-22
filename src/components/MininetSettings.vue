@@ -4,38 +4,38 @@
       <v-flex :class="{ 'pr-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
         <v-layout wrap>
           <v-flex xs12>
-            <v-text-field v-model="projectName" label="Project Name" clearable />
+            <v-text-field v-model="projectName" label="Project Name" clearable data-cy="mininet-settings-project-name" />
           </v-flex>
-          <v-flex xs12>
+          <v-flex xs12 data-cy="mininet-settings-log-level">
             <v-select v-model="logLevel" :items="logLevels" label="Log Level" clearable />
           </v-flex>
           <v-flex xs12>
-            <v-text-field v-model="ipBase" :error-messages="errors.ipBase" label="IP Base" clearable />
+            <v-text-field v-model="ipBase" :error-messages="errors.ipBase" label="IP Base" clearable data-cy="mininet-settings-ip-base" />
           </v-flex>
           <v-flex xs12>
-            <v-text-field v-model.number="listenPortBase" :error-messages="errors.listenPortBase" label="Base Listening Port" type="number" min="1" max="65535" clearable />
+            <v-text-field v-model.number="listenPortBase" :error-messages="errors.listenPortBase" label="Base Listening Port" type="number" min="1" max="65535" clearable data-cy="mininet-settings-listen-port-base" />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="autoSetMAC" label="Automatic MAC Addresses" />
+            <ThreeStateCheckbox v-model="autoSetMAC" label="Automatic MAC Addresses" data-cy="mininet-settings-auto-set-mac" />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="autoStaticARP" label="Automatic Static ARP" />
+            <ThreeStateCheckbox v-model="autoStaticARP" label="Automatic Static ARP" data-cy="mininet-settings-auto-static-arp" />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="inNamespace" label="In Namespace" />
+            <ThreeStateCheckbox v-model="inNamespace" label="In Namespace" data-cy="mininet-settings-in-namespace" />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="spawnTerminals" label="Spawn Terminals" />
+            <ThreeStateCheckbox v-model="spawnTerminals" label="Spawn Terminals" data-cy="mininet-settings-spawn-terminals" />
           </v-flex>
         </v-layout>
       </v-flex>
       <v-flex :class="{ 'pl-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
         <v-layout wrap>
           <v-flex xs12>
-            <v-textarea v-model="startScript" label="Startup Script" auto-grow />
+            <v-textarea v-model="startScript" label="Startup Script" auto-grow clearable data-cy="mininet-settings-start-script" />
           </v-flex>
           <v-flex xs12>
-            <v-textarea v-model="stopScript" label="Shutdown Script" auto-grow />
+            <v-textarea v-model="stopScript" label="Shutdown Script" auto-grow clearable data-cy="mininet-settings-stop-script" />
           </v-flex>
         </v-layout>
       </v-flex>
