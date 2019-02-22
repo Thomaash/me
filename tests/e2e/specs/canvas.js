@@ -1,5 +1,19 @@
 describe('Canvas', () => {
   const itemPosition = { x: 150, y: 150 }
+  const checkboxPropsFromUnset = {
+    setTrue: {
+      clicks: 1,
+      ariaChecked: 'true'
+    },
+    setFalse: {
+      clicks: 2,
+      ariaChecked: 'mixed'
+    },
+    unset: {
+      clicks: 3,
+      ariaChecked: 'false'
+    }
+  }
 
   function openEditDialog (expectedType) {
     it('Open edit dialog', () => {
@@ -28,7 +42,7 @@ describe('Canvas', () => {
         '2001:db8::ff00:42:8329/1'
       ]
     },
-    otherProps: {
+    switchProps: {
       'edit-physical': [
       ]
     }
@@ -53,7 +67,7 @@ describe('Canvas', () => {
         'pingall'
       ]
     },
-    otherProps: {
+    selectProps: {
       'edit-cpu-scheduler': [
       ]
     }
@@ -90,24 +104,21 @@ describe('Canvas', () => {
         'pingall'
       ]
     },
-    otherProps: {
+    checkboxProps: {
+      'edit-stp': checkboxPropsFromUnset.setTrue,
+      'edit-inband': checkboxPropsFromUnset.unset,
+      'edit-in-namespace': checkboxPropsFromUnset.setFalse,
+      'edit-batch': checkboxPropsFromUnset.setTrue,
+      'edit-verbose': checkboxPropsFromUnset.unset
+    },
+    selectProps: {
       'edit-switch-type': [
-      ],
-      'edit-stp': [
       ],
       'edit-protocol': [
       ],
       'edit-datapath': [
       ],
       'edit-fail-mode': [
-      ],
-      'edit-inband': [
-      ],
-      'edit-in-namespace': [
-      ],
-      'edit-batch': [
-      ],
-      'edit-verbose': [
       ]
     }
   }, {
@@ -122,7 +133,7 @@ describe('Canvas', () => {
         '65535'
       ]
     },
-    otherProps: {
+    selectProps: {
       'edit-controller-type': [
       ],
       'edit-protocol': [
@@ -132,7 +143,7 @@ describe('Canvas', () => {
     type: 'dummy',
     hostname: '',
     itemsToDelete: 1
-  }].forEach(({ type, hostname, itemsToDelete = 1, textProps = {} }) => {
+  }].forEach(({ type, hostname, itemsToDelete = 1, textProps = {}, checkboxProps = {} }) => {
     describe(type, () => {
       it('Enter add mode', () => {
         cy.meVisFabClick(type)
@@ -174,6 +185,15 @@ describe('Canvas', () => {
         })
       })
 
+      it('Change item\'s checkbox properties', () => {
+        Object.entries(checkboxProps).forEach(([key, { clicks }]) => {
+          for (let i = 0; i < clicks; ++i) {
+            cy.get(`[data-cy=${key}] input`)
+              .click({ force: true }) // The input is hidden but works
+          }
+        })
+      })
+
       it('Save edit dialog', () => {
         cy.get(`[data-cy=edit-${type}]`)
           .get('[data-cy=edit-save]')
@@ -192,6 +212,13 @@ describe('Canvas', () => {
         Object.entries(textProps).forEach(([key, values]) => {
           cy.get(`[data-cy=${key}]`)
             .should('have.value', values.join('\n'))
+        })
+      })
+
+      it('Test item\'s checkbox properties', () => {
+        Object.entries(checkboxProps).forEach(([key, { ariaChecked }]) => {
+          cy.get(`[data-cy=${key}] input`)
+            .should('have.attr', 'aria-checked', ariaChecked)
         })
       })
 
