@@ -7,11 +7,11 @@ describe('Canvas', () => {
     },
     setFalse: {
       clicks: 2,
-      ariaChecked: 'mixed'
+      ariaChecked: 'false'
     },
     unset: {
       clicks: 3,
-      ariaChecked: 'false'
+      ariaChecked: 'mixed'
     }
   }
 

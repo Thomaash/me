@@ -3,13 +3,13 @@
     :title="state.title"
     :label="label"
     :input-value="state.value === true"
-    :indeterminate="state.value === false"
+    :indeterminate="state.value === undefined"
     :color="color"
     readonly
     class="primary--text"
     on-icon="$vuetify.icons.checkboxTrue"
-    off-icon="$vuetify.icons.checkboxUndefined"
-    indeterminate-icon="$vuetify.icons.checkboxFalse"
+    off-icon="$vuetify.icons.checkboxFalse"
+    indeterminate-icon="$vuetify.icons.checkboxUndefined"
     @click="cycle"
   />
 </template>
