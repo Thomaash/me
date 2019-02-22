@@ -151,7 +151,18 @@ describe('Canvas', () => {
     itemsToDelete: 1,
     textProps: {
       'edit-hostname': [
-        'test'
+        'Moving along…',
+        '',
+        "That's a popular name today. Little “e”, big “B”?",
+        "Bender, this is Fry's decision… and he made it wrong.",
+        "So it's time for us to interfere in his life.",
+        "You're going back for the Countess, aren't you?",
+        '',
+        "We're rescuing ya.",
+        "Yeah, and if you were the pope they'd be all, “Straighten your pope hat. ” And “Put on your good vestments. ”",
+        'Who am I making this out to?',
+        'Belligerent and numerous.',
+        "I don't want to be rescued."
       ]
     }
   }].forEach(({
