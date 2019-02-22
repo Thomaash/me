@@ -6,16 +6,16 @@
           <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Label" autofocus clearable data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
-          <v-select :items="controllerTypes" v-model="item.controllerType" label="Type" clearable />
+          <v-select :items="controllerTypes" v-model="item.controllerType" label="Type" clearable data-cy="edit-controller-type" />
         </v-flex>
         <v-flex xs12>
-          <v-text-field v-model="item.ip" :error-messages="errors.item.ip" label="IP" clearable />
+          <v-text-field v-model="item.ip" :error-messages="errors.item.ip" label="IP" clearable data-cy="edit-ip" />
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field v-model.number="item.port" :error-messages="errors.item.port" label="Port" type="number" min="1" max="65535" clearable />
+          <v-text-field v-model.number="item.port" :error-messages="errors.item.port" label="Port" type="number" min="1" max="65535" clearable data-cy="edit-port" />
         </v-flex>
         <v-flex xs12 md6>
-          <v-select :items="protocolsIP" v-model="item.protocol" label="Protocol" clearable />
+          <v-select :items="protocolsIP" v-model="item.protocol" label="Protocol" clearable data-cy="edit-protocol" />
         </v-flex>
       </v-layout>
     </v-container>

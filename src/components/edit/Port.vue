@@ -6,10 +6,10 @@
           <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Dev Name" autofocus clearable data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
-          <v-textarea v-model="ips" :error-messages="errors.item.ips" label="IPs" auto-grow clearable />
+          <v-textarea v-model="ips" :error-messages="errors.item.ips" label="IPs" auto-grow clearable data-cy="edit-ips" />
         </v-flex>
         <v-flex xs12>
-          <v-switch v-model="item.physical" color="primary" label="Physical" />
+          <v-switch v-model="item.physical" color="primary" label="Physical" data-cy="edit-physical" />
         </v-flex>
       </v-layout>
     </v-container>

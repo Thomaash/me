@@ -6,22 +6,22 @@
           <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Hostname" autofocus data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12>
-          <v-text-field v-model="item.defaultRoute" :error-messages="errors.item.defaultRoute" label="Default Route" clearable />
+          <v-text-field v-model="item.defaultRoute" :error-messages="errors.item.defaultRoute" label="Default Route" clearable data-cy="edit-default-route" />
         </v-flex>
         <v-flex xs12 md6>
-          <v-select :items="schedulers" v-model="item.cpuScheduler" label="Scheduler" clearable />
+          <v-select :items="schedulers" v-model="item.cpuScheduler" label="Scheduler" clearable data-cy="edit-cpu-scheduler" />
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field v-model.number="item.cpuLimit" :error-messages="errors.item.cpuLimit" label="CPU Utilization Limit" type="number" min="0" max="1" step=".01" clearable />
+          <v-text-field v-model.number="item.cpuLimit" :error-messages="errors.item.cpuLimit" label="CPU Utilization Limit" type="number" min="0" max="1" step=".01" clearable data-cy="edit-cpu-limit" />
         </v-flex>
         <v-flex xs12>
-          <v-text-field v-model="cpuCoresStr" :error-messages="errors.item.cpuCores" label="CPU cores" clearable />
+          <v-text-field v-model="cpuCoresStr" :error-messages="errors.item.cpuCores" label="CPU cores" clearable data-cy="edit-cpu-cores-str" />
         </v-flex>
         <v-flex xs12>
-          <v-textarea v-model="item.startScript" label="Startup Script" auto-grow clearable />
+          <v-textarea v-model="item.startScript" label="Startup Script" auto-grow clearable data-cy="edit-start-script" />
         </v-flex>
         <v-flex xs12>
-          <v-textarea v-model="item.stopScript" label="Shutdown Script" auto-grow clearable />
+          <v-textarea v-model="item.stopScript" label="Shutdown Script" auto-grow clearable data-cy="edit-stop-script" />
         </v-flex>
       </v-layout>
     </v-container>
