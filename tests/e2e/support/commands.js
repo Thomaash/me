@@ -78,6 +78,53 @@ Cypress.Commands.add(
 )
 
 Cypress.Commands.add(
+  'meSetVuetifyInputs',
+  { prevSubject: false },
+  ({ textProps = {}, checkboxProps = {}, selectProps = {} }) => {
+    Object.entries(textProps).forEach(([key, values]) => {
+      cy.get(`[data-cy=${key}]`)
+        .clear()
+        .type(values.join('{enter}'))
+    })
+
+    Object.entries(checkboxProps).forEach(([key, { clicks }]) => {
+      for (let i = 0; i < clicks; ++i) {
+        cy.get(`[data-cy=${key}] input`)
+          .click({ force: true }) // The input is hidden but works
+      }
+    })
+
+    Object.entries(selectProps).forEach(([key, value]) => {
+      cy.get(`[data-cy=${key}] input`)
+        .click({ force: true }) // The input is hidden but works
+      cy.contains(value)
+        .click()
+    })
+  }
+)
+
+Cypress.Commands.add(
+  'meTestVuetifyInputs',
+  { prevSubject: false },
+  ({ textProps = {}, checkboxProps = {}, selectProps = {} }) => {
+    Object.entries(textProps).forEach(([key, values]) => {
+      cy.get(`[data-cy=${key}]`)
+        .should('have.value', values.join('\n'))
+    })
+
+    Object.entries(checkboxProps).forEach(([key, { ariaChecked }]) => {
+      cy.get(`[data-cy=${key}] input`)
+        .should('have.attr', 'aria-checked', ariaChecked)
+    })
+
+    Object.entries(selectProps).forEach(([key, value]) => {
+      cy.get(`[data-cy=${key}]`)
+        .contains(value)
+    })
+  }
+)
+
+Cypress.Commands.add(
   'meClickMenu',
   { prevSubject: false },
   (name) => {

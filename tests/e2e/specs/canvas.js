@@ -34,6 +34,9 @@ describe('Canvas', () => {
     hostname: 'eth0',
     itemsToDelete: 1,
     textProps: {
+      'edit-hostname': [
+        'test'
+      ],
       'edit-ips': [
         '172.16.0.7/16',
         '172.16.0.7/32',
@@ -50,6 +53,9 @@ describe('Canvas', () => {
     hostname: 'h1',
     itemsToDelete: 5,
     textProps: {
+      'edit-hostname': [
+        'test'
+      ],
       'edit-default-route': [
         '172.16.0.1'
       ],
@@ -60,7 +66,8 @@ describe('Canvas', () => {
         '2'
       ],
       'edit-start-script': [
-        'ping 172.16.0.1'
+        'ping 172.16.0.1',
+        'ping 172.16.0.2'
       ],
       'edit-stop-script': [
         'pingall'
@@ -74,6 +81,9 @@ describe('Canvas', () => {
     hostname: 's1',
     itemsToDelete: 13,
     textProps: {
+      'edit-hostname': [
+        'test'
+      ],
       'edit-stp-priority': [
         '12288'
       ],
@@ -99,7 +109,8 @@ describe('Canvas', () => {
         'ping 172.16.0.1'
       ],
       'edit-stop-script': [
-        'pingall'
+        'pingall',
+        '# good bye'
       ]
     },
     checkboxProps: {
@@ -120,6 +131,9 @@ describe('Canvas', () => {
     hostname: 'c1',
     itemsToDelete: 1,
     textProps: {
+      'edit-hostname': [
+        'test'
+      ],
       'edit-ip': [
         '172.16.15.4'
       ],
@@ -134,7 +148,12 @@ describe('Canvas', () => {
   }, {
     type: 'dummy',
     hostname: '',
-    itemsToDelete: 1
+    itemsToDelete: 1,
+    textProps: {
+      'edit-hostname': [
+        'test'
+      ]
+    }
   }].forEach(({
     type,
     hostname,
@@ -173,33 +192,8 @@ describe('Canvas', () => {
           .should('have.value', hostname)
       })
 
-      it('Change item\'s text properties', () => {
-        cy.get('[data-cy=edit-hostname]')
-          .clear()
-          .type('changed')
-
-        Object.entries(textProps).forEach(([key, values]) => {
-          cy.get(`[data-cy=${key}]`)
-            .type(values.join('{enter}'))
-        })
-      })
-
-      it('Change item\'s checkbox properties', () => {
-        Object.entries(checkboxProps).forEach(([key, { clicks }]) => {
-          for (let i = 0; i < clicks; ++i) {
-            cy.get(`[data-cy=${key}] input`)
-              .click({ force: true }) // The input is hidden but works
-          }
-        })
-      })
-
-      it('Change item\'s select properties', () => {
-        Object.entries(selectProps).forEach(([key, value]) => {
-          cy.get(`[data-cy=${key}] input`)
-            .click({ force: true }) // The input is hidden but works
-          cy.contains(value)
-            .click()
-        })
+      it('Change items\' properties', () => {
+        cy.meSetVuetifyInputs({ textProps, checkboxProps, selectProps })
       })
 
       it('Save edit dialog', () => {
@@ -213,28 +207,8 @@ describe('Canvas', () => {
 
       openEditDialog(type)
 
-      it('Test item\'s text properties', () => {
-        cy.get('[data-cy=edit-hostname]')
-          .should('have.value', 'changed')
-
-        Object.entries(textProps).forEach(([key, values]) => {
-          cy.get(`[data-cy=${key}]`)
-            .should('have.value', values.join('\n'))
-        })
-      })
-
-      it('Test item\'s checkbox properties', () => {
-        Object.entries(checkboxProps).forEach(([key, { ariaChecked }]) => {
-          cy.get(`[data-cy=${key}] input`)
-            .should('have.attr', 'aria-checked', ariaChecked)
-        })
-      })
-
-      it('Test item\'s select properties', () => {
-        Object.entries(selectProps).forEach(([key, value]) => {
-          cy.get(`[data-cy=${key}]`)
-            .contains(value)
-        })
+      it('Test items\' properties', () => {
+        cy.meTestVuetifyInputs({ textProps, checkboxProps, selectProps })
       })
 
       it('Cancel edit dialog', () => {

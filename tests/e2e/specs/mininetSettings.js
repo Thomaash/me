@@ -32,7 +32,7 @@ describe('Mininet settings', () => {
       'mininet-settings-listen-port-base': [
         '1564'
       ],
-      'mininet-settings-start-script': [...Array(40)].map((_, i) =>
+      'mininet-settings-start-script': [...Array(8)].map((_, i) =>
         `ping 172.16.77.${60 + i}`
       ),
       'mininet-settings-stop-script': [
@@ -55,29 +55,8 @@ describe('Mininet settings', () => {
     selectProps = {}
   }) => {
     describe(name, () => {
-      it('Change item\'s text properties', () => {
-        Object.entries(textProps).forEach(([key, values]) => {
-          cy.get(`[data-cy=${key}]`)
-            .type(values.join('{enter}'))
-        })
-      })
-
-      it('Change item\'s checkbox properties', () => {
-        Object.entries(checkboxProps).forEach(([key, { clicks }]) => {
-          for (let i = 0; i < clicks; ++i) {
-            cy.get(`[data-cy=${key}] input`)
-              .click({ force: true }) // The input is hidden but works
-          }
-        })
-      })
-
-      it('Change item\'s select properties', () => {
-        Object.entries(selectProps).forEach(([key, value]) => {
-          cy.get(`[data-cy=${key}] input`)
-            .click({ force: true }) // The input is hidden but works
-          cy.contains(value)
-            .click()
-        })
+      it('Change the properties', () => {
+        cy.meSetVuetifyInputs({ textProps, checkboxProps, selectProps })
       })
 
       it('Navigate away and back', () => {
@@ -85,25 +64,8 @@ describe('Mininet settings', () => {
         cy.meClickMenu('mininet-settings')
       })
 
-      it('Test item\'s text properties', () => {
-        Object.entries(textProps).forEach(([key, values]) => {
-          cy.get(`[data-cy=${key}]`)
-            .should('have.value', values.join('\n'))
-        })
-      })
-
-      it('Test item\'s checkbox properties', () => {
-        Object.entries(checkboxProps).forEach(([key, { ariaChecked }]) => {
-          cy.get(`[data-cy=${key}] input`)
-            .should('have.attr', 'aria-checked', ariaChecked)
-        })
-      })
-
-      it('Test item\'s select properties', () => {
-        Object.entries(selectProps).forEach(([key, value]) => {
-          cy.get(`[data-cy=${key}]`)
-            .contains(value)
-        })
+      it('Test the properties', () => {
+        cy.meTestVuetifyInputs({ textProps, checkboxProps, selectProps })
       })
     })
   })
