@@ -69,7 +69,7 @@ Cypress.Commands.add(
   'meImportEmpty',
   { prevSubject: false },
   () => {
-    cy.meClickMenu('Export')
+    cy.meClickMenu('export')
 
     cy.get('[data-cy=import-empty]').click()
     cy.get('.v-card__actions > .primary--text > .v-btn__content').click()
@@ -82,11 +82,11 @@ Cypress.Commands.add(
   { prevSubject: false },
   (name) => {
     const hashMap = {
-      'Home': '#/home',
-      'Canvas': '#/canvas',
-      'MininetSettings': '#/mininet_settings',
-      'Export': '#/export',
-      'About': '#/about'
+      'home': '#/home',
+      'canvas': '#/canvas',
+      'mininet-settings': '#/mininet_settings',
+      'export': '#/export',
+      'about': '#/about'
     }
 
     if (name) {

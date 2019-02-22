@@ -10,7 +10,7 @@ describe('Basic', () => {
   })
 
   it('Canvas page', () => {
-    cy.meClickMenu('Canvas')
+    cy.meClickMenu('canvas')
     cy.get('canvas')
   })
 
