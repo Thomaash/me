@@ -27,7 +27,7 @@ import { compare, compareNodes } from './vis/locale'
 import { mapGetters } from 'vuex'
 import { selection as selectionTheme } from '@/theme'
 
-function delayCall (fn, delay) {
+function delayCall (fn = () => {}, delay = 0) {
   let timeout = null
   return () => {
     window.clearTimeout(timeout)
@@ -646,9 +646,9 @@ export default {
       })
 
       // URL changing events
-      this.net.on('dragEnd', this.updateURLPosition)
-      this.net.on('select', this.updateURLPosition)
-      this.net.on('select', this.updateURLSelection)
+      this.net.on('dragEnd', delayCall(this.updateURLPosition))
+      this.net.on('select', delayCall(this.updateURLPosition))
+      this.net.on('select', delayCall(this.updateURLSelection))
       this.net.on('zoom', delayCall(this.updateURLPosition, 200))
 
       // Focus items
