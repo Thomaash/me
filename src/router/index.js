@@ -34,37 +34,40 @@ const router = new Router({
     },
     component: Home
   }, {
-    path: '/canvas/:ids?',
+    path: '/canvas',
     name: 'Canvas',
     meta: {
       title: 'Canvas',
-      subtitle (to) {
-        return selectionTitleSuffix(to.params.ids)
-      },
       drawer: true,
       icon: 'mdi-map'
     },
     components: {
       default: Canvas,
       toolbar: CanvasToolbar
-    }
-  }, {
-    path: '/canvas/:x/:y/:scale/:ids?',
-    name: 'CanvasPosition',
-    meta: {
-      title: 'Canvas',
-      subtitle (to) {
-        const { x, y, scale, ids } = to.params
-        return ` at position ${x}\u{a0}×\u{a0}${y} scaled to ${(scale * 100).toFixed(0)}\u{a0}%${selectionTitleSuffix(ids)}`
-      }
     },
-    components: {
-      default: Canvas,
-      toolbar: CanvasToolbar
-    }
+    children: [{
+      path: ':ids?',
+      name: 'Canvas without position',
+      meta: {
+        title: 'Canvas',
+        subtitle (to) {
+          return selectionTitleSuffix(to.params.ids)
+        }
+      }
+    }, {
+      path: ':x/:y/:scale/:ids?',
+      name: 'Canvas with position',
+      meta: {
+        title: 'Canvas',
+        subtitle (to) {
+          const { x, y, scale, ids } = to.params
+          return ` at position ${x}\u{a0}×\u{a0}${y} scaled to ${(scale * 100).toFixed(0)}\u{a0}%${selectionTitleSuffix(ids)}`
+        }
+      }
+    }]
   }, {
     path: '/mininet_settings',
-    name: 'MininetSettings',
+    name: 'Mininet settings',
     meta: {
       title: 'Mininet Settings',
       drawer: true,
@@ -93,8 +96,17 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  store.commit('clearAlert')
-  store.commit('setWorking', { working: false })
+  // Clear the alert and working state if changing between routes
+  // but not if they are child routes with the same parent.
+  if (
+    to.matched.length === 0 ||
+    from.matched.length === 0 ||
+    to.matched[0].name !== from.matched[0].name
+  ) {
+    store.commit('clearAlert')
+    store.commit('setWorking', { working: false })
+  }
+
   next()
 })
 

@@ -426,7 +426,7 @@ export default {
     },
     clearURLPosition () {
       this.$router.push({
-        name: 'Canvas',
+        name: 'Canvas without position',
         params: {
           ids: this.$route.params.ids
         }
@@ -437,7 +437,7 @@ export default {
       const scale = this.net.getScale()
 
       this.$router.push({
-        name: 'CanvasPosition',
+        name: 'Canvas with position',
         params: {
           ids: this.$route.params.ids,
           x: Math.round(x),
