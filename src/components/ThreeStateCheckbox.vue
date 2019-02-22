@@ -19,7 +19,7 @@ export default {
   props: {
     value: {
       type: Boolean,
-      default: false
+      default: undefined
     },
     color: {
       type: String,
@@ -45,9 +45,7 @@ export default {
   methods: {
     cycle () {
       const curr = this.state.index
-      const next = curr >= 0
-        ? (curr + 1) % this.states.length
-        : 0
+      const next = (curr + 1) % this.states.length
       this.$emit('input', this.states[next].value)
     }
   }
