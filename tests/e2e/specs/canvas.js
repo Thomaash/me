@@ -67,8 +67,7 @@ describe('Canvas', () => {
       ]
     },
     selectProps: {
-      'edit-cpu-scheduler': [
-      ]
+      'edit-cpu-scheduler': 'CFS'
     }
   }, {
     type: 'switch',
@@ -111,14 +110,10 @@ describe('Canvas', () => {
       'edit-verbose': checkboxPropsFromUnset.unset
     },
     selectProps: {
-      'edit-switch-type': [
-      ],
-      'edit-protocol': [
-      ],
-      'edit-datapath': [
-      ],
-      'edit-fail-mode': [
-      ]
+      'edit-switch-type': 'OVS Switch',
+      'edit-protocol': 'OpenFlow 1.3',
+      'edit-datapath': 'User',
+      'edit-fail-mode': 'Secure'
     }
   }, {
     type: 'controller',
@@ -133,16 +128,21 @@ describe('Canvas', () => {
       ]
     },
     selectProps: {
-      'edit-controller-type': [
-      ],
-      'edit-protocol': [
-      ]
+      'edit-controller-type': 'Remote Controller',
+      'edit-protocol': 'SSL'
     }
   }, {
     type: 'dummy',
     hostname: '',
     itemsToDelete: 1
-  }].forEach(({ type, hostname, itemsToDelete = 1, textProps = {}, checkboxProps = {} }) => {
+  }].forEach(({
+    type,
+    hostname,
+    itemsToDelete = 1,
+    textProps = {},
+    checkboxProps = {},
+    selectProps = {}
+  }) => {
     describe(type, () => {
       it('Enter add mode', () => {
         cy.meVisFabClick(type)
@@ -193,6 +193,15 @@ describe('Canvas', () => {
         })
       })
 
+      it('Change item\'s select properties', () => {
+        Object.entries(selectProps).forEach(([key, value]) => {
+          cy.get(`[data-cy=${key}] input`)
+            .click({ force: true }) // The input is hidden but works
+          cy.contains(value)
+            .click()
+        })
+      })
+
       it('Save edit dialog', () => {
         cy.get(`[data-cy=edit-${type}]`)
           .get('[data-cy=edit-save]')
@@ -218,6 +227,13 @@ describe('Canvas', () => {
         Object.entries(checkboxProps).forEach(([key, { ariaChecked }]) => {
           cy.get(`[data-cy=${key}] input`)
             .should('have.attr', 'aria-checked', ariaChecked)
+        })
+      })
+
+      it('Test item\'s select properties', () => {
+        Object.entries(selectProps).forEach(([key, value]) => {
+          cy.get(`[data-cy=${key}]`)
+            .contains(value)
         })
       })
 

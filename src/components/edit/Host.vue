@@ -8,8 +8,8 @@
         <v-flex xs12>
           <v-text-field v-model="item.defaultRoute" :error-messages="errors.item.defaultRoute" label="Default Route" clearable data-cy="edit-default-route" />
         </v-flex>
-        <v-flex xs12 md6>
-          <v-select :items="schedulers" v-model="item.cpuScheduler" label="Scheduler" clearable data-cy="edit-cpu-scheduler" />
+        <v-flex xs12 md6 data-cy="edit-cpu-scheduler">
+          <v-select :items="schedulers" v-model="item.cpuScheduler" label="Scheduler" clearable />
         </v-flex>
         <v-flex xs12 md6>
           <v-text-field v-model.number="item.cpuLimit" :error-messages="errors.item.cpuLimit" label="CPU Utilization Limit" type="number" min="0" max="1" step=".01" clearable data-cy="edit-cpu-limit" />
