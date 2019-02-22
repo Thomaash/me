@@ -1,6 +1,6 @@
 <template>
   <div class="component-container" tabindex="0" @mousemove="moveMouseTag" @drag="moveMouseTag" @mouseover="focusRoot" @keydown="keypress">
-    <VisCanvas v-if="!loading" @ready="init" />
+    <VisCanvas v-if="!loading" data-cy="vis" @ready="init" />
     <v-flex v-else class="text-xs-center" pa-5>
       <v-progress-circular :size="50" color="primary" indeterminate />
     </v-flex>
@@ -9,7 +9,7 @@
       <v-icon color="black" v-text="mouseTagIcon" />
     </div>
 
-    <v-snackbar v-model="snackbar.show">
+    <v-snackbar v-model="snackbar.show" data-cy="vis-snackbar">
       {{ snackbar.msg }}
       <v-btn color="primary" flat @click="snackbar.action()">
         {{ snackbar.btn }}

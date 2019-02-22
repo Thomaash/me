@@ -24,7 +24,7 @@ describe('Canvas', () => {
       })
 
       it('Place the item', () => {
-        cy.get('canvas')
+        cy.get('[data-cy=vis] canvas')
           .meVisClick(itemPosition)
       })
 
@@ -38,7 +38,7 @@ describe('Canvas', () => {
       })
 
       it('Open edit dialog', () => {
-        cy.get('canvas')
+        cy.get('[data-cy=vis] canvas')
           .meVisClick({ ...itemPosition, dbl: true })
         cy.get(`[data-cy=edit-${type}]`)
       })
@@ -58,12 +58,13 @@ describe('Canvas', () => {
       })
 
       it('Delete the items', () => {
-        cy.get('canvas')
+        cy.get('[data-cy=vis] canvas')
           .trigger('keydown', { ctrlKey: true, key: 'a' })
 
         cy.meVisFabClick('delete')
 
         cy.get('.v-snack__content')
+        cy.get('[data-cy=vis-snackbar]')
           .contains(`${itemsToDelete} item${itemsToDelete === 1 ? '' : 's'} deleted`)
       })
     })
