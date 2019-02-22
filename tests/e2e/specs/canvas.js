@@ -182,7 +182,6 @@ describe('Canvas', () => {
           .click()
         cy.get(`[data-cy=edit-${type}]`)
           .should('not.exist')
-        cy.wait(500) // Animation causing problems, maybe?
       })
 
       openEditDialog(type)
@@ -202,7 +201,6 @@ describe('Canvas', () => {
           .click()
         cy.get(`[data-cy=edit-${type}]`)
           .should('not.exist')
-        cy.wait(500) // Animation causing problems, maybe?
       })
 
       openEditDialog(type)
@@ -217,7 +215,6 @@ describe('Canvas', () => {
           .click()
         cy.get(`[data-cy=edit-${type}]`)
           .should('not.exist')
-        cy.wait(500) // Animation causing problems, maybe?
       })
 
       it('Delete the items', () => {
