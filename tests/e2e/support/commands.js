@@ -27,8 +27,15 @@
 Cypress.Commands.add(
   'meVisClick',
   { prevSubject: 'element' },
-  (subject, { button = 0, x = 0, y = 0, repeat = 1 }) => {
-    for (let i = 0; i < repeat; ++i) {
+  (subject, { button = 0, x = 0, y = 0, dbl = false }) => {
+    if (dbl) {
+      // Force reduces the time between events and therefore the risk of them being interpreted as two independent clicks
+      cy.wrap(subject)
+        .trigger('pointerdown', { button, clientX: x, clientY: y })
+        .trigger('pointerup', { button, clientX: x, clientY: y, force: true })
+        .trigger('pointerdown', { button, clientX: x, clientY: y, force: true })
+        .trigger('pointerup', { button, clientX: x, clientY: y, force: true })
+    } else {
       cy.wrap(subject)
         .trigger('pointerdown', { button, clientX: x, clientY: y })
         .trigger('pointerup', { button, clientX: x, clientY: y })

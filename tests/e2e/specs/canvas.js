@@ -1,4 +1,6 @@
 describe('Canvas', () => {
+  const itemPosition = { x: 150, y: 150 }
+
   it('Clean the canvas', () => {
     cy.visit('/')
     cy.meImportEmpty()
@@ -18,12 +20,12 @@ describe('Canvas', () => {
 
         cy.get('.vis-root')
           .trigger('mousemove', { button: 0, clientX: 50, clientY: 50 })
-          .trigger('mousemove', { button: 0, clientX: 150, clientY: 50 })
+          .trigger('mousemove', { button: 0, clientX: 250, clientY: 100 })
       })
 
       it('Place the item', () => {
         cy.get('canvas')
-          .meVisClick({ x: 150, y: 150 })
+          .meVisClick(itemPosition)
       })
 
       it('Save the item', () => {
@@ -37,7 +39,7 @@ describe('Canvas', () => {
 
       it('Open edit dialog', () => {
         cy.get('canvas')
-          .meVisClick({ x: 150, y: 150, repeat: 2 })
+          .meVisClick({ ...itemPosition, dbl: true })
         cy.get(`[data-cy=edit-${type}]`)
       })
 
