@@ -7,8 +7,8 @@ describe('Canvas', () => {
 
   ;[
     { type: 'port', hostname: 'eth0', itemsToDelete: 1 },
-    { type: 'host', hostname: 'h1', itemsToDelete: 3 },
-    { type: 'switch', hostname: 's1', itemsToDelete: 7 },
+    { type: 'host', hostname: 'h1', itemsToDelete: 5 },
+    { type: 'switch', hostname: 's1', itemsToDelete: 13 },
     { type: 'controller', hostname: 'c1', itemsToDelete: 1 },
     { type: 'dummy', hostname: '', itemsToDelete: 1 }
   ].forEach(({ type, hostname, itemsToDelete }) => {
@@ -55,9 +55,9 @@ describe('Canvas', () => {
         cy.wait(500) // Animation causing problems, maybe?
       })
 
-      it('Delete the item', () => {
+      it('Delete the items', () => {
         cy.get('canvas')
-          .meVisClick({ x: 150, y: 150 })
+          .trigger('keydown', { ctrlKey: true, key: 'a' })
 
         cy.meVisFabClick('delete')
 
