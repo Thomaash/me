@@ -50,13 +50,18 @@ export default {
       },
       set (val) {
         if (val == null) {
-          delete this.item.cpuCores
+          this.$delete(this.item, 'cpuCores')
         } else {
-          this.item.cpuCores = val
-            .split(/\s*[\s,]\s*/g)
-            .map(str => isNaN(str) ? str : parseInt(str))
-            .sort((a, b) => a - b)
-            .filter((value, index, array) => array[index - 1] !== value)
+          const re = /^\d+$/
+          this.$set(
+            this.item,
+            'cpuCores',
+            val
+              .split(/\s*[\s,]\s*/g)
+              .map(str => re.test(str) ? +str : NaN)
+              .sort((a, b) => a - b)
+              .filter((value, index, array) => array[index - 1] !== value)
+          )
         }
       }
     }
