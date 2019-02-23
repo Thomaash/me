@@ -43,6 +43,16 @@ Cypress.Commands.add(
   }
 )
 
+Cypress.Commands.add(
+  'meVisAddItem',
+  { prevSubject: false },
+  (type, position = { x: 150, y: 150 }) => {
+    cy.meVisFabClick(type)
+    cy.get('[data-cy=vis] canvas')
+      .meVisClick(position)
+  }
+)
+
 ;(() => {
   const buttons = {
     'edge': 1,
