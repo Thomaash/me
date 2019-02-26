@@ -145,6 +145,9 @@ export default {
       })
 
       update && update.forEach(item => {
+        if (item.id == null) {
+          throw new Error('Items have to have ids.')
+        }
         const saved = sd.items[item.id]
         Object.keys(item).forEach(key => {
           Vue.set(saved, key, item[key])
@@ -166,10 +169,20 @@ export default {
       past.push(unit)
     },
     undoShift ({ past, future }) {
-      future.push(past.pop())
+      if (past.length) {
+        if (future.length >= MAX_UNDO_LENGTH) {
+          future.shift()
+        }
+        future.push(past.pop())
+      }
     },
     redoShift ({ past, future }) {
-      past.push(future.pop())
+      if (future.length) {
+        if (past.length >= MAX_UNDO_LENGTH) {
+          past.shift()
+        }
+        past.push(future.pop())
+      }
     }
   },
   actions: {
