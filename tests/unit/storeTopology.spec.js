@@ -211,11 +211,11 @@ describe('Store topology', () => {
         }
         const nB = {
           ...oB,
-          hostname: 'vB'
+          hostname: 'B'
         }
         const uC = {
           id: oC.id,
-          hostname: 'vC'
+          hostname: 'C'
         }
 
         mutations.applyChange(state, {
