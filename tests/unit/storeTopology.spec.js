@@ -236,6 +236,8 @@ describe('Store topology', () => {
         expect(state.data.items)
           .to.have.own.property(nA.id, nA, 'New A should be added')
         expect(state.data.items)
+          .to.have.own.property(nB.id, nB, 'New B should replace original B')
+        expect(state.data.items)
           .to.have.own.property(oC.id, oC, 'Original C should still be present (just altered)')
           .that.has.own.property('hostname', uC.hostname, 'Updated C should have the new hostname')
         expect(state.data.items)
