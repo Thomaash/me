@@ -203,20 +203,25 @@ describe('Store topology', () => {
         const state = getMockStateWithTopo()
 
         const originalValues = Object.values(state.data.items)
-        const [ovA, vR, ovU] = originalValues
-        const vA = {
-          ...ovA,
+        const [oA, oB, oC, oD] = originalValues
+        const oACopy = { ...oA }
+        const nA = {
+          ...oA,
           id: 'A'
         }
-        const vU = {
-          id: ovU.id,
-          hostname: 'vU'
+        const nB = {
+          ...oB,
+          hostname: 'vB'
+        }
+        const uC = {
+          id: oC.id,
+          hostname: 'vC'
         }
 
         mutations.applyChange(state, {
-          replace: [vA],
-          remove: [vR.id],
-          update: [vU]
+          replace: [nA, nB],
+          remove: [oD.id],
+          update: [uC]
         })
 
         expect(state)
@@ -226,13 +231,15 @@ describe('Store topology', () => {
           .that.is.an('object')
 
         expect(state.data.items)
-          .to.have.own.property(vA.id)
-          .that.equals(vA)
+          .to.have.own.property(oA.id, oA, 'Original A should still be present')
+          .that.deep.equals(oACopy, 'Original A shouldn\'t be changed in any way')
         expect(state.data.items)
-          .to.have.own.property(vU.id)
-          .that.has.own.property('hostname', vU.hostname)
+          .to.have.own.property(nA.id, nA, 'New A should be added')
         expect(state.data.items)
-          .to.not.have.own.property(vR.id)
+          .to.have.own.property(oC.id, oC, 'Original C should still be present (just altered)')
+          .that.has.own.property('hostname', uC.hostname, 'Updated C should have the new hostname')
+        expect(state.data.items)
+          .to.not.have.own.property(oD.id, oD, 'D shoudn\'t exist anymore')
       })
 
       it('With missing id', () => {
