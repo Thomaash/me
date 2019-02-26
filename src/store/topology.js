@@ -4,6 +4,7 @@ import exporter from '@/exporter'
 import emptyData from '@/examples/empty'
 
 const MAX_UNDO_LENGTH = 200
+export { MAX_UNDO_LENGTH }
 
 function prepareUndoRedoChange (changeLogItem) {
   const change = {
@@ -42,7 +43,7 @@ export default {
     canRedo (state) {
       return state.future.length
     },
-    boundingBox: (state) => {
+    boundingBox (state) {
       // Find the highest and lowest x and y item center coordinates
       const rawBB = (() => {
         const items = Object.values(state.data.items)
