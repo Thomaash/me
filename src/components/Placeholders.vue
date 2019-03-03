@@ -8,7 +8,7 @@
 
     <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort class="elevation-1">
       <template slot="items" slot-scope="props">
-        <td v-text="props.item.name" />
+        <td class="monospace" v-text="props.item.name" />
         <td v-text="props.item.description" />
         <td v-text="props.item.multiline" />
       </template>

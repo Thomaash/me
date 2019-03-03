@@ -138,6 +138,10 @@ section > h6 {
 .monospace {
   font-family: 'Source Code Pro', monospace !important;
 }
+kbd {
+  font-family: 'Source Code Pro', monospace !important;
+  font-weight: normal;
+}
 .monospace-input input,
 .monospace-input textarea {
   font-family: 'Source Code Pro', monospace !important;

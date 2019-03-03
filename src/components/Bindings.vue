@@ -5,7 +5,14 @@
     <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort class="elevation-1">
       <template slot="items" slot-scope="props">
         <td class="bindings">
-          <span v-for="(c, i) in parse(props.item.combination)" :is="c.tag" :key="i" :title="c.title" class="with-title" v-text="c.text" />
+          <span
+            v-for="(c, i) in parse(props.item.combination)"
+            :is="c.tag"
+            :key="i"
+            :title="c.title"
+            class="with-title monospace"
+            v-text="c.text"
+          />
         </td>
         <td v-text="props.item.description" />
       </template>
@@ -22,8 +29,8 @@ export default {
       { text: 'Description', value: 'description' }
     ],
     items: [
-      { combination: 'LMB :node', description: 'Place a new node.' },
-      { combination: 'LMB :port', description: 'Place a new port (connects to a nearby switch or host).' },
+      { combination: 'LMB - :node', description: 'Place a new node.' },
+      { combination: 'LMB - :port', description: 'Place a new port (connects to a nearby switch or host).' },
       { combination: 'LMB @ :item', description: 'Select the node or edge.' },
       { combination: 'LMB2 @ :item', description: 'Edit the item.' },
       { combination: 'LMBd :edge', description: 'Connect two nodes with a link or an association.' },
@@ -60,6 +67,7 @@ export default {
     special: {
       '@': { tag: 'span', text: ' @ ', title: 'On' },
       '+': { tag: 'span', text: ' + ', title: 'Both together' },
+      '-': { tag: 'span', text: ' ', title: 'With' },
 
       'LMB': { tag: 'kbd', text: 'LMB', title: 'Left mouse button click' },
       'LMB2': { tag: 'kbd', text: '2·LMB', title: 'Double left mouse button click' },
@@ -117,6 +125,10 @@ export default {
 </script>
 
 <style scoped>
-.v-icon {height: 1ex;}
-.with-title {cursor: help;}
+.bindings > * {
+  vertical-align: middle;
+}
+.with-title {
+  cursor: help;
+}
 </style>
