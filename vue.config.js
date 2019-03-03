@@ -15,6 +15,16 @@ module.exports = {
       .end()
 
     config
+      .module
+      .rule('styl')
+      .test(/\.styl$/)
+      .use('stylus')
+      .loader('style-loader')
+      .loader('css-loader')
+      .loader('stylus-loader')
+      .end()
+
+    config
       .plugin('worker-plugin')
       .use(WorkerPlugin)
   }

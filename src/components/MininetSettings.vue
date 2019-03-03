@@ -4,38 +4,93 @@
       <v-flex :class="{ 'pr-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
         <v-layout wrap>
           <v-flex xs12>
-            <v-text-field v-model="projectName" label="Project Name" clearable data-cy="mininet-settings-project-name" />
+            <v-text-field
+              v-model="projectName"
+              clearable
+              data-cy="mininet-settings-project-name"
+              label="Project Name"
+            />
           </v-flex>
           <v-flex xs12 data-cy="mininet-settings-log-level">
-            <v-select v-model="logLevel" :items="logLevels" label="Log Level" clearable />
+            <v-select
+              :items="logLevels"
+              v-model="logLevel"
+              clearable
+              label="Log Level"
+            />
           </v-flex>
           <v-flex xs12>
-            <v-text-field v-model="ipBase" :error-messages="errors.ipBase" label="IP Base" clearable data-cy="mininet-settings-ip-base" />
+            <v-text-field
+              :error-messages="errors.ipBase"
+              v-model="ipBase"
+              clearable
+              data-cy="mininet-settings-ip-base"
+              label="IP Base"
+            />
           </v-flex>
           <v-flex xs12>
-            <v-text-field v-model.number="listenPortBase" :error-messages="errors.listenPortBase" label="Base Listening Port" type="number" min="1" max="65535" clearable data-cy="mininet-settings-listen-port-base" />
+            <v-text-field
+              :error-messages="errors.listenPortBase"
+              v-model.number="listenPortBase"
+              clearable
+              data-cy="mininet-settings-listen-port-base"
+              label="Base Listening Port"
+              max="65535"
+              min="1"
+              type="number"
+            />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="autoSetMAC" label="Automatic MAC Addresses" data-cy="mininet-settings-auto-set-mac" />
+            <ThreeStateCheckbox
+              v-model="autoSetMAC"
+              data-cy="mininet-settings-auto-set-mac"
+              label="Automatic MAC Addresses"
+            />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="autoStaticARP" label="Automatic Static ARP" data-cy="mininet-settings-auto-static-arp" />
+            <ThreeStateCheckbox
+              v-model="autoStaticARP"
+              data-cy="mininet-settings-auto-static-arp"
+              label="Automatic Static ARP"
+            />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="inNamespace" label="In Namespace" data-cy="mininet-settings-in-namespace" />
+            <ThreeStateCheckbox
+              v-model="inNamespace"
+              data-cy="mininet-settings-in-namespace"
+              label="In Namespace"
+            />
           </v-flex>
           <v-flex xs12>
-            <ThreeStateCheckbox v-model="spawnTerminals" label="Spawn Terminals" data-cy="mininet-settings-spawn-terminals" />
+            <ThreeStateCheckbox
+              v-model="spawnTerminals"
+              data-cy="mininet-settings-spawn-terminals"
+              label="Spawn Terminals"
+            />
           </v-flex>
         </v-layout>
       </v-flex>
       <v-flex :class="{ 'pl-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
         <v-layout wrap>
           <v-flex xs12>
-            <v-textarea v-model="startScript" label="Startup Script" auto-grow clearable data-cy="mininet-settings-start-script" />
+            <v-textarea
+              v-model="startScript"
+              auto-grow
+              class="monospace-input"
+              clearable
+              data-cy="mininet-settings-start-script"
+              label="Startup Script"
+            />
           </v-flex>
           <v-flex xs12>
-            <v-textarea v-model="stopScript" label="Shutdown Script" auto-grow clearable data-cy="mininet-settings-stop-script" />
+            <v-textarea
+              v-model="stopScript"
+              auto-grow
+              class="monospace-input"
+              clearable
+              data-cy="mininet-settings-stop-script"
+              label="Shutdown Script"
+            />
           </v-flex>
         </v-layout>
       </v-flex>

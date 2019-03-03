@@ -115,6 +115,9 @@ export default {
         // Invisible border, 0 makes selected border dissapear
         borderWidth: 0.0001,
         borderWidthSelected: 2,
+        font: {
+          face: 'Source Sans Pro'
+        },
         shapeProperties: {
           borderRadius: 6,
           useBorderWithImage: true
@@ -147,7 +150,7 @@ export default {
           color: this.buildGroupColor(theme.dummy, '#fff', true),
           font: {
             color: theme.dummy,
-            face: 'monospace',
+            face: 'Source Code Pro',
             align: 'left'
           },
           borderWidth: 1

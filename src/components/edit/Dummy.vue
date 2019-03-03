@@ -7,10 +7,10 @@
             v-model="item.hostname"
             auto-grow
             autofocus
+            class="monospace-input"
             clearable
-            label="Label"
-            style="font-family: monospace;"
             data-cy="edit-hostname"
+            label="Label"
           />
         </v-flex>
       </v-layout>

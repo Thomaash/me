@@ -14,7 +14,7 @@
     </v-navigation-drawer>
     <v-toolbar color="primary" dark app extension-height="7">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="appName" />
+      <v-toolbar-title style="font-weight: 300; font-size: 24px; letter-spacing: unset;" v-text="appName" />
 
       <v-spacer />
 
@@ -133,6 +133,14 @@ section > h4,
 section > h5,
 section > h6 {
   margin-bottom: 16px;
+}
+
+.monospace {
+  font-family: 'Source Code Pro', monospace !important;
+}
+.monospace-input input,
+.monospace-input textarea {
+  font-family: 'Source Code Pro', monospace !important;
 }
 
 .v-toolbar__extension {
