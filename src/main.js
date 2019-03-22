@@ -8,6 +8,7 @@ import VuetifyConfirm from 'vuetify-confirm'
 import router from './router'
 import store from './store'
 import { vuetify as theme } from './theme'
+import './registerServiceWorker'
 
 Vue.use(Vuetify, {
   theme,

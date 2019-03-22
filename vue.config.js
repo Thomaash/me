@@ -27,5 +27,12 @@ module.exports = {
     config
       .plugin('worker-plugin')
       .use(WorkerPlugin)
+  },
+
+  pwa: {
+    msTileColor: '#009688',
+    name: 'Mininet Editor',
+    themeColor: '#009688',
+    workboxPluginMode: 'GenerateSW'
   }
 }
