@@ -1,6 +1,6 @@
 <template>
   <v-card class="circle my-5">
-    <img src="@/assets/icon.svg">
+    <img src="@/assets/icon.svg" alt="Mininet Editor logo">
   </v-card>
 </template>
 
