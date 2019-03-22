@@ -1,4 +1,4 @@
-![Mininet Editor Logo](https://github.com/Thomaash/me/raw/master/public/android-chrome-384x384.png)
+![Mininet Editor Logo](https://github.com/Thomaash/me/raw/master/public/img/icons/android-chrome-384x384.png)
 
 # Mininet Editor
 SDN topology editor in your web browser with Mininet export.
