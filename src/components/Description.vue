@@ -3,7 +3,15 @@
     <h3 class="headline">Description</h3>
 
     <p>
-      GUI topology editor for Mininet with Python script export.
+      SDN topology editor in your web browser with Mininet export.
+    </p>
+
+    <p>
+      Exports JSONs (whole projects), Python scripts (Mininet emulation), addressing plans and topology images.
+      <br>
+      Imports JSONs and Python scripts.
+      <br>
+      Persists projects even if the browser is closed and also works offline.
     </p>
 
     <p v-if="full">

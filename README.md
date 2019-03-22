@@ -1,7 +1,11 @@
 ![Mininet Editor Logo](https://github.com/Thomaash/me/raw/master/public/android-chrome-384x384.png)
 
 # Mininet Editor
-GUI topology editor for Mininet with Python script export.
+SDN topology editor in your web browser with Mininet export.
+
+Exports JSONs (whole projects), Python scripts (Mininet emulation), addressing plans and topology images.\
+Imports JSONs and Python scripts.\
+Persists projects even if the browser is closed and also works offline.
 
 ## Available online
 https://thomaash.github.io/me/
