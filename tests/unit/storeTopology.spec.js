@@ -128,6 +128,26 @@ describe('Store topology', () => {
             width: 7249
           })
       })
+
+      it('Without positions (from script import)', () => {
+        const state = getMockStateWithTopo()
+
+        Object.keys(state.data.items).forEach(id => {
+          delete state.data.items[id].x
+          delete state.data.items[id].y
+        })
+
+        expect(getters.boundingBox(state)())
+          .to.deep.equal({
+            eX: 0,
+            eY: 0,
+            empty: true,
+            height: 0,
+            sX: 0,
+            sY: 0,
+            width: 0
+          })
+      })
     })
   })
 

@@ -45,16 +45,19 @@ export default {
     },
     boundingBox (state) {
       // Find the highest and lowest x and y item center coordinates
+      // This can be cached until the state changes
       const rawBB = (() => {
         const items = Object.values(state.data.items)
 
-        if (!items.length) {
+        // Edges don't have x and y coordinates
+        // There can be nodes without coordinates (script import)
+        const firstWithCoords = items.find(({ x, y }) => x != null && y != null)
+
+        // Nothing can be done if there are no nodes with coordinates
+        if (!firstWithCoords) {
           return { sX: 0, eX: 0, sY: 0, eY: 0, empty: true }
         }
 
-        // Edges don't have x and y coordinates
-        // There can't be an edge without a node
-        const first = items.find(({ x, y }) => x != null && y != null)
         return items.reduce((acc, { x, y }) => {
           if (x < acc.sX) {
             acc.sX = x
@@ -71,14 +74,15 @@ export default {
         }, {
           // Some item's position has to be used
           // If some other values were used they would be included as an imaginary item
-          sX: first.x,
-          eX: first.x,
-          sY: first.y,
-          eY: first.y,
+          sX: firstWithCoords.x,
+          eX: firstWithCoords.x,
+          sY: firstWithCoords.y,
+          eY: firstWithCoords.y,
           empty: false
         })
       })()
 
+      // This has to be reevaluated every time because of arguments
       return ({ margin = 100, scale = 1 } = {}) => {
         const bb = { ...rawBB, width: 0, height: 0 }
 
