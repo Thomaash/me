@@ -48,6 +48,7 @@
 
 <script>
 import importScript from '@/importScript'
+import scriptImportWarning from './scriptImportWarning.txt'
 import { mapGetters } from 'vuex'
 
 import exampleEmpty from '@/examples/empty'
@@ -156,7 +157,7 @@ export default {
             const { data, log } = stringToImport(str)
             this.$emit('log', log)
             if (stringToImport === this.importers.python) {
-              await this.confirmImport(data, '<p>Importing scripts is highly unreliable. Imported project can be <strong>incomplete</strong> or <strong>dysfunctional</strong>.</p>')
+              await this.confirmImport(data, scriptImportWarning)
             } else {
               await this.confirmImport(data)
             }
