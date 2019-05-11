@@ -53,27 +53,16 @@ Cypress.Commands.add(
   }
 )
 
-;(() => {
-  const buttons = {
-    'edge': 1,
-    'port': 2,
-    'host': 3,
-    'switch': 4,
-    'controller': 5,
-    'dummy': 6,
-    'delete': 7
+Cypress.Commands.add(
+  'meVisFabClick',
+  { prevSubject: false },
+  (button) => {
+    cy.get('[data-cy=fab-activator]')
+      .click()
+    cy.get(`[data-cy=fab-${button}]`)
+      .click()
   }
-  Cypress.Commands.add(
-    'meVisFabClick',
-    { prevSubject: false },
-    (button) => {
-      cy.get('.v-speed-dial > button')
-        .click()
-      cy.get(`.v-speed-dial__list > button:nth-child(${buttons[button]})`)
-        .click()
-    }
-  )
-})()
+)
 
 Cypress.Commands.add(
   'meImportEmpty',
