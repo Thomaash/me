@@ -4,13 +4,13 @@ import {
   localForage,
   mutationFilter,
   pickModules,
-  replace
+  shallowMerge
 } from 'vuex-ltm'
 
 export const ltm = new LTM({
   execute: executeWithDelay(2000),
   filter: mutationFilter([/^topology\//]),
-  merge: replace,
+  merge: shallowMerge,
   reduce: pickModules(['topology']),
   storage: localForage({
     name: 'Vuex',
