@@ -1,29 +1,30 @@
 <template>
   <div class="component-container" tabindex="0" @mousemove="moveMouseTag" @drag="moveMouseTag" @mouseover="focusRoot" @keydown="keypress">
-    <VisCanvas v-if="!loading" data-cy="vis" @ready="init" />
-    <v-flex v-else class="text-xs-center" pa-5>
-      <v-progress-circular :size="50" color="primary" indeterminate />
-    </v-flex>
+    <LoadingSpinner v-if="loading !== false" />
+    <template v-else>
+      <VisCanvas data-cy="vis" @ready="init" />
 
-    <div v-if="newItem.type !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}" class="mouse-tag">
-      <v-icon color="black" v-text="mouseTagIcon" />
-    </div>
+      <div v-if="newItem.type !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}" class="mouse-tag">
+        <v-icon color="black" v-text="mouseTagIcon" />
+      </div>
 
-    <v-snackbar
-      :data-cy-type="snackbar.type"
-      :data-cy-values="JSON.stringify(snackbar.values)"
-      v-model="snackbar.show"
-      data-cy="vis-snackbar"
-    >
-      {{ snackbar.message }}
-      <v-btn color="primary" flat @click="snackbar.actionFunction()">
-        {{ snackbar.actionName }}
-      </v-btn>
-    </v-snackbar>
+      <v-snackbar
+        :data-cy-type="snackbar.type"
+        :data-cy-values="JSON.stringify(snackbar.values)"
+        v-model="snackbar.show"
+        data-cy="vis-snackbar"
+      >
+        {{ snackbar.message }}
+        <v-btn color="primary" flat @click="snackbar.actionFunction()">
+          {{ snackbar.actionName }}
+        </v-btn>
+      </v-snackbar>
+    </template>
   </div>
 </template>
 
 <script>
+import LoadingSpinner from '@/components/LoadingSpinner'
 import RectangularSelection from './vis/RectangularSelection'
 import VisCanvas from './vis/VisCanvas'
 import deselectHandler from './vis/deselectHandler'
@@ -99,7 +100,7 @@ const keybindings = {
 
 export default {
   name: 'Vis',
-  components: { VisCanvas },
+  components: { LoadingSpinner, VisCanvas },
   data: () => ({
     newItem: {
       type: null,

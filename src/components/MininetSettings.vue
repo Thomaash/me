@@ -1,104 +1,108 @@
 <template>
   <v-container grid-list-md>
-    <v-layout wrap>
-      <v-flex :class="{ 'pr-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
-        <v-layout wrap>
-          <v-flex xs12>
-            <v-text-field
-              v-model="projectName"
-              clearable
-              data-cy="mininet-settings-project-name"
-              label="Project Name"
-            />
-          </v-flex>
-          <v-flex xs12 data-cy="mininet-settings-log-level">
-            <v-select
-              :items="logLevels"
-              v-model="logLevel"
-              clearable
-              label="Log Level"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <v-text-field
-              :error-messages="errors.ipBase"
-              v-model="ipBase"
-              clearable
-              data-cy="mininet-settings-ip-base"
-              label="IP Base"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <v-text-field
-              :error-messages="errors.listenPortBase"
-              v-model.number="listenPortBase"
-              clearable
-              data-cy="mininet-settings-listen-port-base"
-              label="Base Listening Port"
-              max="65535"
-              min="1"
-              type="number"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <ThreeStateCheckbox
-              v-model="autoSetMAC"
-              data-cy="mininet-settings-auto-set-mac"
-              label="Automatic MAC Addresses"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <ThreeStateCheckbox
-              v-model="autoStaticARP"
-              data-cy="mininet-settings-auto-static-arp"
-              label="Automatic Static ARP"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <ThreeStateCheckbox
-              v-model="inNamespace"
-              data-cy="mininet-settings-in-namespace"
-              label="In Namespace"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <ThreeStateCheckbox
-              v-model="spawnTerminals"
-              data-cy="mininet-settings-spawn-terminals"
-              label="Spawn Terminals"
-            />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex :class="{ 'pl-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
-        <v-layout wrap>
-          <v-flex xs12>
-            <v-textarea
-              v-model="startScript"
-              auto-grow
-              class="monospace-input"
-              clearable
-              data-cy="mininet-settings-start-script"
-              label="Startup Script"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <v-textarea
-              v-model="stopScript"
-              auto-grow
-              class="monospace-input"
-              clearable
-              data-cy="mininet-settings-stop-script"
-              label="Shutdown Script"
-            />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+    <LoadingSpinner v-if="loading !== false" />
+    <template v-else>
+      <v-layout wrap>
+        <v-flex :class="{ 'pr-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-text-field
+                v-model="projectName"
+                clearable
+                data-cy="mininet-settings-project-name"
+                label="Project Name"
+              />
+            </v-flex>
+            <v-flex xs12 data-cy="mininet-settings-log-level">
+              <v-select
+                :items="logLevels"
+                v-model="logLevel"
+                clearable
+                label="Log Level"
+              />
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field
+                :error-messages="errors.ipBase"
+                v-model="ipBase"
+                clearable
+                data-cy="mininet-settings-ip-base"
+                label="IP Base"
+              />
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field
+                :error-messages="errors.listenPortBase"
+                v-model.number="listenPortBase"
+                clearable
+                data-cy="mininet-settings-listen-port-base"
+                label="Base Listening Port"
+                max="65535"
+                min="1"
+                type="number"
+              />
+            </v-flex>
+            <v-flex xs12>
+              <ThreeStateCheckbox
+                v-model="autoSetMAC"
+                data-cy="mininet-settings-auto-set-mac"
+                label="Automatic MAC Addresses"
+              />
+            </v-flex>
+            <v-flex xs12>
+              <ThreeStateCheckbox
+                v-model="autoStaticARP"
+                data-cy="mininet-settings-auto-static-arp"
+                label="Automatic Static ARP"
+              />
+            </v-flex>
+            <v-flex xs12>
+              <ThreeStateCheckbox
+                v-model="inNamespace"
+                data-cy="mininet-settings-in-namespace"
+                label="In Namespace"
+              />
+            </v-flex>
+            <v-flex xs12>
+              <ThreeStateCheckbox
+                v-model="spawnTerminals"
+                data-cy="mininet-settings-spawn-terminals"
+                label="Spawn Terminals"
+              />
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex :class="{ 'pl-4': $vuetify.breakpoint.lgAndUp }" xs12 lg6>
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-textarea
+                v-model="startScript"
+                auto-grow
+                class="monospace-input"
+                clearable
+                data-cy="mininet-settings-start-script"
+                label="Startup Script"
+              />
+            </v-flex>
+            <v-flex xs12>
+              <v-textarea
+                v-model="stopScript"
+                auto-grow
+                class="monospace-input"
+                clearable
+                data-cy="mininet-settings-stop-script"
+                label="Shutdown Script"
+              />
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </template>
   </v-container>
 </template>
 
 <script>
+import LoadingSpinner from '@/components/LoadingSpinner'
 import ThreeStateCheckbox from '@/components/ThreeStateCheckbox'
 import errors from '@/validation/errors'
 import { ipWithMask, port } from '@/validation/rules'
@@ -118,7 +122,7 @@ function ComputedStoreProperty (key) {
 
 export default {
   name: 'Script',
-  components: { ThreeStateCheckbox },
+  components: { LoadingSpinner, ThreeStateCheckbox },
   mixins: [errors],
   data: () => ({
     logLevels
@@ -127,6 +131,9 @@ export default {
     ...mapGetters('topology', [
       'data'
     ]),
+    loading () {
+      return this.$store.state.loading
+    },
     autoSetMAC: new ComputedStoreProperty('autoSetMAC'),
     autoStaticARP: new ComputedStoreProperty('autoStaticARP'),
     inNamespace: new ComputedStoreProperty('inNamespace'),
