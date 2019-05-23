@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import config from '@/store/config'
+import { config } from '@/store/config'
 
 const { mutations } = config
 

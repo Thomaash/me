@@ -1,13 +1,13 @@
 import { expect } from 'chai'
 
-import config, { MAX_UNDO_LENGTH } from '@/store/topology'
+import { MAX_UNDO_LENGTH, topology } from '@/store/topology'
 import exampleMedium2Controllers from '@/examples/medium_2_controllers'
 import exampleTiny from '@/examples/tiny'
 import exporter from '@/exporter'
 
-const { getters, mutations } = config
+const { getters, mutations } = topology
 
-const initState = JSON.stringify(config.state)
+const initState = JSON.stringify(topology.state)
 function getMockState (...states) {
   return Object.assign(
     JSON.parse(initState),
