@@ -12,7 +12,7 @@ export const ltm = new LTM({
   filter: mutationFilter([/^topology\//]),
   merge: shallowMerge,
   reduce: pickModules(['topology']),
-  storage: localForage({
+  storage: localForage('vuex-me', {
     name: 'Vuex',
     version: 1.0,
     storeName: 'vuex-me'
