@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import exporter from '@/exporter'
 
-import emptyData from '@/examples/empty'
+import exampleData from '@/examples/medium_1_controller'
 
 const MAX_UNDO_LENGTH = 200
 export { MAX_UNDO_LENGTH }
@@ -26,10 +26,10 @@ function prepareUndoRedoChange (changeLogItem) {
   return change
 }
 
-export default {
+export const topology = {
   namespaced: true,
   state: {
-    data: exporter.importData(emptyData),
+    data: exporter.importData(exampleData),
     past: [],
     future: []
   },

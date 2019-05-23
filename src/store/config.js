@@ -1,7 +1,8 @@
-import topology from './topology'
-import persist from './persist'
+import { ltm } from './persist'
+import { topology } from './topology'
 
-export default {
+export const ready = ltm.ready
+export const config = {
   strict: process.env.NODE_ENV === 'development',
   state: {
     loading: true,
@@ -9,6 +10,9 @@ export default {
     alert: { show: false }
   },
   mutations: {
+    loaded (state) {
+      state.loading = false
+    },
     setWorking (state, { working, curr, max }) {
       if (!isNaN(curr) && !isNaN(max)) {
         state.working = { curr, max }
@@ -27,5 +31,5 @@ export default {
   modules: {
     topology
   },
-  plugins: [persist.plugin]
+  plugins: [ltm.plugin]
 }
