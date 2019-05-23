@@ -151,7 +151,9 @@ kbd {
   position: relative;
   padding: 0px;
 }
+</style>
 
+<style scoped>
 .alert {
   position: absolute;
   top: 7px;
