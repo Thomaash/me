@@ -15,7 +15,7 @@ describe('Mininet settings', () => {
   }
 
   it('Clean the project', () => {
-    cy.visit('/')
+    cy.meOpen()
     cy.meImportEmpty()
     cy.meClickMenu('mininet-settings')
   })

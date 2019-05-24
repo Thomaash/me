@@ -1,35 +1,51 @@
 export default function ({ name, type, field, values }) {
   describe(name, () => {
-    it('Init', () => {
-      cy.visit('/#/canvas')
+    describe('Init', () => {
+      it('Open new empty canvas', () => {
+        cy.meOpen()
+        cy.meImportEmpty()
+        cy.meClickMenu('canvas')
+      })
 
-      cy.get('[data-cy=vis] canvas')
-        .trigger('keydown', { ctrlKey: true, key: 'a' })
+      it('Place the item', () => {
+        cy.get('[data-cy=vis] canvas')
+          .trigger('keydown', { ctrlKey: true, key: 'a' })
 
-      cy.meVisFabClick('delete')
+        cy.meVisFabClick('delete')
 
-      cy.meVisAddItem(type)
+        cy.meVisAddItem(type)
+      })
     })
 
-    values.forEach(({ valid, values, expectedValue }) => {
-      describe(values.join(', '), () => {
-        it('Change properties', () => {
-          cy.meSetVuetifyInputs({ textProps: {
-            [field]: values
-          } })
-        })
-
-        if (expectedValue != null) {
-          it(`Expected: ${expectedValue}`, () => {
-            cy.get(`[data-cy=${field}]`)
-              .should('have.value', expectedValue)
+    describe('Test the values', () => {
+      values.forEach(({ valid, values, expectedValue }) => {
+        describe(values.join(', '), () => {
+          it('Change properties', () => {
+            cy.meSetVuetifyInputs({ textProps: {
+              [field]: values
+            } })
           })
-        }
 
-        it(`Is ${valid ? '' : 'in'}valid?`, () => {
-          cy.get('[data-cy=edit-save]')
-            .should(valid ? 'not.be.disabled' : 'be.disabled')
+          if (expectedValue != null) {
+            it(`Expected: ${expectedValue}`, () => {
+              cy.get(`[data-cy=${field}]`)
+                .should('have.value', expectedValue)
+            })
+          }
+
+          it(`Is ${valid ? '' : 'in'}valid?`, () => {
+            cy.get('[data-cy=edit-save]')
+              .should(valid ? 'not.be.disabled' : 'be.disabled')
+          })
         })
+      })
+    })
+
+    describe('Close', () => {
+      it('Cancel', () => {
+        cy.get(`[data-cy=edit-${type}]`)
+          .get('[data-cy=edit-cancel]')
+          .click()
       })
     })
   })

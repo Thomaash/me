@@ -24,7 +24,7 @@ describe('Canvas', () => {
   }
 
   it('Clean the canvas', () => {
-    cy.visit('/')
+    cy.meOpen()
     cy.meImportEmpty()
     cy.meClickMenu('canvas')
   })

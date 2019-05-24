@@ -38,7 +38,7 @@ Cypress.Commands.add(
     } else {
       cy.wrap(subject)
         .trigger('pointerdown', { button, clientX: x, clientY: y })
-        .trigger('pointerup', { button, clientX: x, clientY: y })
+        .trigger('pointerup', { button, clientX: x, clientY: y, force: true })
     }
   }
 )
@@ -144,5 +144,17 @@ Cypress.Commands.add(
         cy.hash().should('eq', hash)
       })
     }
+  }
+)
+
+Cypress.Commands.add(
+  'meOpen',
+  { prevSubject: false },
+  () => {
+    cy.location('hostname').then(hostname => {
+      if (!hostname) {
+        return cy.visit('/')
+      }
+    })
   }
 )

@@ -1,6 +1,6 @@
 describe('Basic', () => {
   it('Home page', () => {
-    cy.visit('/')
+    cy.meOpen('/')
     cy.contains('h3', 'Description')
     cy.contains('h3', 'Bindings')
   })
