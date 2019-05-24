@@ -41,6 +41,9 @@ export default {
     },
     storeActions () {
       return {
+        'topology/importData': () => {
+          this.replaceItems()
+        },
         'topology/applyChange': ({ remove, update, replace }) => {
           const ids = [
             ...(remove || []),
@@ -176,34 +179,15 @@ export default {
       }
     }
 
-    // Preprocess items
-    const items = Object.keys(this.data.items)
-      .map(id => {
-        const node = JSON.parse(JSON.stringify(this.data.items[id]))
-        node.id = id
-        return node
-      })
-
-    // Create an array with nodes
-    const nodes = new vis.DataSet(
-      items
-        .filter(({ type }) => !this.isEdge(type))
-        .map(this.itemToNode)
-    )
-
-    // Create an array with edges
-    const edges = new vis.DataSet(
-      items
-        .filter(({ type }) => this.isEdge(type))
-        .map(this.itemToEdge)
-    )
+    // Create and fill datasets
+    const nodes = this.nodes = new vis.DataSet()
+    const edges = this.edges = new vis.DataSet()
+    // It's necessary to load the items now, otherwise the network would be labeld as ready before the items are visible.
+    this.replaceItems()
 
     // Create the network
     const net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
-
     this.net = net
-    this.nodes = nodes
-    this.edges = edges
 
     // Some labels contain placeholders for info from connected nodes.
     // Therefore this can't be done before the topology is built.
@@ -265,6 +249,33 @@ export default {
           .filter(item => item.type === 'dummy')
           .map(item => this.itemToNode(item))
       )
+    },
+    replaceItems () {
+      // Preprocess items
+      const items = Object.keys(this.data.items)
+        .map(id => {
+          const node = JSON.parse(JSON.stringify(this.data.items[id]))
+          node.id = id
+          return node
+        })
+
+      // Nodes
+      this.nodes.clear()
+      this.nodes.add(items
+        .filter(({ type }) => !this.isEdge(type))
+        .map(this.itemToNode))
+
+      // Edges
+      this.edges.clear()
+      this.edges.add(items
+        .filter(({ type }) => this.isEdge(type))
+        .map(this.itemToEdge))
+
+      // Some labels contain placeholders for info from connected nodes.
+      // Therefore this can't be done before the topology is built.
+      if (this.net) {
+        this.updateLabels()
+      }
     },
     async toBlob ({ width, height, scale } = { scale: 1 }, fallback = false, progressObserver = () => {}) {
       const bb = await this.boundingBox({ scale })

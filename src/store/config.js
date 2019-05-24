@@ -1,4 +1,5 @@
 import { ltm } from './persist'
+import { syncPlugin } from './sync'
 import { topology } from './topology'
 
 export const ready = ltm.ready
@@ -31,5 +32,8 @@ export const config = {
   modules: {
     topology
   },
-  plugins: [ltm.plugin]
+  plugins: [
+    ltm.plugin,
+    syncPlugin
+  ]
 }

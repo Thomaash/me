@@ -695,8 +695,6 @@ export default {
 
 <style scoped>
 .component-container {position: relative; width: 100%; height: 100%;}
-/* Content resizing glitch workaround. */
-.component-container {max-height: calc(100vh - 64px);}
 
 .mouse-tag {position: fixed; margin: 1em;}
 </style>

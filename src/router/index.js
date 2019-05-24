@@ -4,7 +4,7 @@ import store from '@/store'
 
 import About from '@/components/About'
 import Canvas from '@/components/Canvas'
-import CanvasToolbar from '@/components/CanvasToolbar'
+import TopologyToolbar from '@/components/TopologyToolbar'
 import Export from '@/components/Export'
 import Home from '@/components/Home'
 import MininetSettings from '@/components/MininetSettings'
@@ -20,9 +20,10 @@ function selectionTitleSuffix (ids) {
   return ` with ${length} selected item${length === 1 ? '' : 's'}`
 }
 
-const router = new Router({
-  routes: [{
+function createRoutes (mapper = v => v) {
+  return [{
     path: '/',
+    name: '/',
     redirect: { name: 'Home' }
   }, {
     path: '/home',
@@ -43,7 +44,12 @@ const router = new Router({
     },
     components: {
       default: Canvas,
-      toolbar: CanvasToolbar
+      toolbar: TopologyToolbar
+    },
+    props: {
+      toolbar: {
+        undoRedo: true
+      }
     },
     children: [{
       path: ':ids?',
@@ -73,7 +79,10 @@ const router = new Router({
       drawer: true,
       icon: 'mdi-tune'
     },
-    component: MininetSettings
+    components: {
+      default: MininetSettings,
+      toolbar: TopologyToolbar
+    }
   }, {
     path: '/export',
     name: 'Export',
@@ -82,7 +91,10 @@ const router = new Router({
       drawer: true,
       icon: 'mdi-content-save'
     },
-    component: Export
+    components: {
+      default: Export,
+      toolbar: TopologyToolbar
+    }
   }, {
     path: '/about',
     name: 'About',
@@ -92,10 +104,59 @@ const router = new Router({
       icon: 'mdi-information'
     },
     component: About
-  }]
-})
+  }].map(mapper)
+}
+
+function createNormalRoute (route) {
+  if (route.meta == null) {
+    route.meta = {}
+  }
+  route.meta.isView = false
+
+  if (route.children != null) {
+    route.children = route.children.map(createNormalRoute)
+  }
+
+  return route
+}
+
+function createViewRoute (route) {
+  route.name = `View | ${route.name}`
+
+  if (route.path.startsWith('/')) {
+    route.path = `/view${route.path}`
+  }
+
+  if (route.meta == null) {
+    route.meta = {}
+  }
+  route.meta.drawer = false
+  route.meta.isView = true
+
+  if (route.redirect != null) {
+    route.redirect.name = `View | ${route.redirect.name}`
+  }
+
+  if (route.children != null) {
+    route.children = route.children.map(createViewRoute)
+  }
+
+  return route
+}
+
+const routes = [
+  ...createRoutes(createNormalRoute),
+  ...createRoutes(createViewRoute)
+]
+
+export const router = new Router({ routes })
 
 router.beforeEach((to, from, next) => {
+  // Stay in view mode
+  if (!to.meta.isView && from.meta.isView) {
+    return next(`/view${to.fullPath}`)
+  }
+
   // Clear the alert and working state if changing between routes
   // but not if they are child routes with the same parent.
   if (

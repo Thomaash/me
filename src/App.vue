@@ -1,47 +1,51 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" persistent enable-resize-watcher fixed app>
-      <v-list>
-        <v-list-tile v-for="(item, i) in drawerItems" :key="i" :to="item.to" :data-cy="`drawer-${item.to.name.toLowerCase().replace(' ', '-')}`" value="true">
-          <v-list-tile-action>
-            <v-icon v-html="item.icon" />
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title" />
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar color="primary" dark app extension-height="7">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title style="font-weight: 300; font-size: 24px; letter-spacing: unset;" v-text="appName" />
+    <template v-if="isView !== true">
+      <v-navigation-drawer v-model="drawer" persistent enable-resize-watcher fixed app>
+        <v-list>
+          <v-list-tile v-for="(item, i) in drawerItems" :key="i" :to="item.to" :data-cy="`drawer-${item.to.name.toLowerCase().replace(' ', '-')}`" value="true">
+            <v-list-tile-action>
+              <v-icon v-html="item.icon" />
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title v-text="item.title" />
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-navigation-drawer>
 
-      <v-spacer />
+      <v-toolbar color="primary" dark app extension-height="7">
+        <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+        <v-toolbar-title style="font-weight: 300; font-size: 24px; letter-spacing: unset;" v-text="appName" />
 
-      <v-slide-y-transition mode="out-in">
-        <router-view name="toolbar" />
-      </v-slide-y-transition>
+        <v-spacer />
 
-      <v-progress-linear
-        v-show="progress.show"
-        slot="extension"
-        :indeterminate="progress.indeterminate === true"
-        :value="progress.value"
-        class="ma-0"
-        color="accent"
-      />
+        <v-slide-y-transition mode="out-in">
+          <router-view name="toolbar" />
+        </v-slide-y-transition>
 
-      <v-alert
-        slot="extension"
-        v-model="showAlert"
-        :type="alert.type"
-        dismissible
-        class="mt-0 alert"
-        transition="slide-y-transition"
-      >
-        {{ alert.text }}
-      </v-alert>
-    </v-toolbar>
+        <v-progress-linear
+          v-show="progress.show"
+          slot="extension"
+          :indeterminate="progress.indeterminate === true"
+          :value="progress.value"
+          class="ma-0"
+          color="accent"
+        />
+
+        <v-alert
+          slot="extension"
+          v-model="showAlert"
+          :type="alert.type"
+          dismissible
+          class="mt-0 alert"
+          transition="slide-y-transition"
+        >
+          {{ alert.text }}
+        </v-alert>
+      </v-toolbar>
+    </template>
+
     <v-content>
       <v-slide-y-transition mode="out-in">
         <router-view />
@@ -94,6 +98,9 @@ export default {
           this.$store.commit('clearAlert')
         }
       }
+    },
+    isView () {
+      return this.$route.meta.isView
     }
   },
   watch: {

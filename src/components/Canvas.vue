@@ -4,7 +4,7 @@
     <template v-else>
       <Vis ref="vis" @edit-item="editItem" />
       <Edit ref="edit" />
-      <v-speed-dial v-model="fab" bottom right open-on-hover style="position: fixed">
+      <v-speed-dial v-if="!isView" v-model="fab" bottom right open-on-hover style="position: fixed">
         <v-btn slot="activator" v-model="fab" fab dark color="primary" data-cy="fab-activator">
           <v-icon>mdi-chevron-up</v-icon>
           <v-icon>mdi-chevron-down</v-icon>
@@ -51,6 +51,9 @@ export default {
   computed: {
     loading () {
       return this.$store.state.loading
+    },
+    isView () {
+      return this.$route.meta.isView
     }
   },
   methods: {
