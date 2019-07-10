@@ -6,8 +6,8 @@
       <template slot="items" slot-scope="props">
         <td class="bindings">
           <span
-            v-for="(c, i) in parse(props.item.combination)"
             :is="c.tag"
+            v-for="(c, i) in parse(props.item.combination)"
             :key="i"
             :title="c.title"
             class="with-title monospace"

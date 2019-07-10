@@ -2,8 +2,8 @@
   <div>
     <v-btn
       v-for="({ icon, text, action, enabled }, i) in items"
-      :disabled="!enabled"
       :key="i"
+      :disabled="!enabled"
       dark
       icon
       @click="action"

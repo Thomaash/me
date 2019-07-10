@@ -6,7 +6,7 @@
           <v-text-field v-model="item.hostname" :error-messages="errors.item.hostname" label="Hostname" autofocus data-cy="edit-hostname" />
         </v-flex>
         <v-flex xs12 data-cy="edit-switch-type">
-          <v-select :items="switchTypes" v-model="item.switchType" label="Type" clearable />
+          <v-select v-model="item.switchType" :items="switchTypes" label="Type" clearable />
         </v-flex>
         <v-flex xs12 md3>
           <ThreeStateCheckbox v-model="item.stp" label="STP" data-cy="edit-stp" />
@@ -21,10 +21,10 @@
           <v-text-field v-model.number="item.dpctlPort" :error-messages="errors.item.dpctlPort" label="DPCTL Port" type="number" min="1" max="65535" clearable data-cy="edit-dpctl-port" />
         </v-flex>
         <v-flex xs12 data-cy="edit-protocol">
-          <v-select :items="protocolsOF" v-model="item.protocol" label="Protocol" clearable />
+          <v-select v-model="item.protocol" :items="protocolsOF" label="Protocol" clearable />
         </v-flex>
         <v-flex xs12 md6 data-cy="edit-datapath">
-          <v-select :items="datapaths" v-model="item.datapath" label="Datapath" clearable />
+          <v-select v-model="item.datapath" :items="datapaths" label="Datapath" clearable />
         </v-flex>
         <v-flex xs12 md6>
           <v-text-field v-model="item.dpid" :error-messages="errors.item.dpid" label="Datapath ID" type="text" clearable data-cy="edit-dpid" />
@@ -36,7 +36,7 @@
           <v-text-field v-model.number="item.reconnectms" :error-messages="errors.item.reconnectms" label="Reconnect Timeout" type="number" min="0" suffix="ms" clearable data-cy="edit-reconnect-ms" />
         </v-flex>
         <v-flex xs12 data-cy="edit-fail-mode">
-          <v-select :items="failModes" v-model="item.failMode" label="Fail Mode" clearable />
+          <v-select v-model="item.failMode" :items="failModes" label="Fail Mode" clearable />
         </v-flex>
         <v-flex xs12>
           <ThreeStateCheckbox v-model="item.inband" label="Inband" data-cy="edit-inband" />

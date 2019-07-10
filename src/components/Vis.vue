@@ -9,9 +9,9 @@
       </div>
 
       <v-snackbar
+        v-model="snackbar.show"
         :data-cy-type="snackbar.type"
         :data-cy-values="JSON.stringify(snackbar.values)"
-        v-model="snackbar.show"
         data-cy="vis-snackbar"
       >
         {{ snackbar.message }}

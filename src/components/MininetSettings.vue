@@ -15,16 +15,16 @@
             </v-flex>
             <v-flex xs12 data-cy="mininet-settings-log-level">
               <v-select
-                :items="logLevels"
                 v-model="logLevel"
+                :items="logLevels"
                 clearable
                 label="Log Level"
               />
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                :error-messages="errors.ipBase"
                 v-model="ipBase"
+                :error-messages="errors.ipBase"
                 clearable
                 data-cy="mininet-settings-ip-base"
                 label="IP Base"
@@ -32,8 +32,8 @@
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                :error-messages="errors.listenPortBase"
                 v-model.number="listenPortBase"
+                :error-messages="errors.listenPortBase"
                 clearable
                 data-cy="mininet-settings-listen-port-base"
                 label="Base Listening Port"
