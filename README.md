@@ -1,4 +1,4 @@
-![Mininet Editor Logo](https://github.com/Thomaash/me/raw/master/public/img/icons/android-chrome-384x384.png)
+![Mininet Editor Logo](./public/img/icons/android-chrome-384x384.png)
 
 # Mininet Editor
 SDN topology editor in your web browser with Mininet export.
@@ -9,6 +9,20 @@ Persists projects even if the browser is closed and also works offline.
 
 ## Available online
 https://thomaash.github.io/me/
+
+## Screenshots
+
+### Canvas
+![Canvas](./readme-assets/canvas.png)
+
+### Canvas and Views
+![Canvas and Views](./readme-assets/canvas-and-views.png)
+
+### Export and Import
+![Export and Import](./readme-assets/export.png)
+
+### Exported Addressing Plan
+![Exported Addressing Plan](./readme-assets/addressing-plan.png)
 
 ## Features
 - PWA
