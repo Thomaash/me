@@ -7,7 +7,7 @@
 <script>
 import generateTooltip from './generateTooltip'
 import labelPlaceholders from './placeholders'
-import vis from 'vis'
+import vis from 'vis-network'
 import { items as theme } from '@/theme'
 import { mapGetters } from 'vuex'
 
