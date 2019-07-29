@@ -480,8 +480,8 @@ export default {
 
       if (x != null && y != null && scale != null) {
         this.net.moveTo({
-          position: { x, y },
-          scale
+          position: { x: +x, y: +y },
+          scale: +scale
         })
       } else {
         this.fitSelected(false)
