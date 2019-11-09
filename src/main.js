@@ -1,5 +1,8 @@
-import './main.styl'
+import 'source-sans-pro/source-sans-pro.css'
+import 'source-code-pro/source-code-pro.css'
 import '@mdi/font/css/materialdesignicons.css'
+import './main.sass'
+
 import App from './App'
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
