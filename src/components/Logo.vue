@@ -11,6 +11,6 @@ export default {
 </script>
 
 <style scoped>
-.circle {border-radius: 100%; margin: 0 auto; width: 100%; max-width: 20em;}
-.circle img {width: 100%; height: 100%;}
+.circle { border-radius: 100% !important; margin: 0 auto; width: 100%; max-width: 20em; }
+.circle img { width: 100%; height: 100%; }
 </style>

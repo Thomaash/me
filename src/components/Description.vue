@@ -15,10 +15,10 @@
     </p>
 
     <p v-if="full">
-      <v-btn outlined color="primary" target="_blank" href="https://github.com/Thomaash/me">
+      <v-btn class="ma-2" outlined color="primary" target="_blank" href="https://github.com/Thomaash/me">
         Repository
       </v-btn>
-      <v-btn outlined color="primary" target="_blank" href="https://github.com/Thomaash/me/issues/new">
+      <v-btn class="ma-2" outlined color="primary" target="_blank" href="https://github.com/Thomaash/me/issues/new">
         New Issue
       </v-btn>
     </p>
