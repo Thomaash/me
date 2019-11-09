@@ -28,7 +28,7 @@ import LoadingSpinner from '@/components/LoadingSpinner'
 import RectangularSelection from './vis/RectangularSelection'
 import VisCanvas from './vis/VisCanvas'
 import deselectHandler from './vis/deselectHandler'
-import vis from 'vis-network'
+import { util as visUtil } from 'vis-network/standalone/esm/vis-network'
 import { compare, compareNodes } from './vis/locale'
 import { mapGetters } from 'vuex'
 import { selection as selectionTheme } from '@/theme'
@@ -548,7 +548,7 @@ export default {
 
             if (closestId != null) {
               const association = {
-                id: vis.util.randomUUID()
+                id: visUtil.randomUUID()
               }
 
               if (nodePriorities.indexOf(item.type) > nodePriorities.indexOf(this.data.items[closestId].type)) {
@@ -572,7 +572,7 @@ export default {
               const coords = this.generateOrganizedPortCoors(edited, ports)
               for (let i = 0; i < ports; ++i) {
                 const port = {
-                  id: vis.util.randomUUID(),
+                  id: visUtil.randomUUID(),
                   label: `eth${i}`,
                   group: 'port',
                   ...coords[i]
@@ -585,7 +585,7 @@ export default {
                 })
 
                 const edge = {
-                  id: vis.util.randomUUID(),
+                  id: visUtil.randomUUID(),
                   from: edited.id,
                   to: port.id
                 }
@@ -611,7 +611,7 @@ export default {
             this.orderNodes(edge)
             const type = this.getEdgeType(edge)
             if (this.isEdgeValid(edge, type)) {
-              edge.id = edge.id || vis.util.randomUUID()
+              edge.id = edge.id || visUtil.randomUUID()
               edge.group = type
               edge.label = ''
 

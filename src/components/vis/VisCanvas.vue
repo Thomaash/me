@@ -7,7 +7,7 @@
 <script>
 import generateTooltip from './generateTooltip'
 import labelPlaceholders from './placeholders'
-import vis from 'vis-network'
+import { DataSet, Network } from 'vis-network/standalone/esm/vis-network'
 import { items as theme } from '@/theme'
 import { mapGetters } from 'vuex'
 
@@ -180,13 +180,13 @@ export default {
     }
 
     // Create and fill datasets
-    const nodes = this.nodes = new vis.DataSet()
-    const edges = this.edges = new vis.DataSet()
+    const nodes = this.nodes = new DataSet()
+    const edges = this.edges = new DataSet()
     // It's necessary to load the items now, otherwise the network would be labeld as ready before the items are visible.
     this.replaceItems()
 
     // Create the network
-    const net = new vis.Network(this.$refs.vis, { nodes, edges }, options)
+    const net = new Network(this.$refs.vis, { nodes, edges }, options)
     this.net = net
 
     // Some labels contain placeholders for info from connected nodes.
