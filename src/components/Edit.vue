@@ -19,8 +19,8 @@
         </v-card-text>
         <v-card-actions style="flex-grow: 0;">
           <v-spacer />
-          <v-btn color="primary" flat data-cy="edit-cancel" @click.native="cancel">Cancel</v-btn>
-          <v-btn :disabled="!valid" color="primary" flat data-cy="edit-save" @click.native="save">Save</v-btn>
+          <v-btn color="primary" text data-cy="edit-cancel" @click.native="cancel">Cancel</v-btn>
+          <v-btn :disabled="!valid" color="primary" text data-cy="edit-save" @click.native="save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

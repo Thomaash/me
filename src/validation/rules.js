@@ -40,61 +40,52 @@ const testIP6WithMask = v => {
 const testIP = v => testIP4(v) || testIP6(v)
 const testIPWithMask = v => testIP4WithMask(v) || testIP6WithMask(v)
 
-const hostname = withParams(
+export const hostname = withParams(
   { type: 'hostname' },
   v => !req(v) || /^[a-zA-Z][a-zA-Z0-9]*$/.test(v)
 )
-export { hostname }
 
-const ip = withParams(
+export const ip = withParams(
   { type: 'ip' },
   v => !req(v) || testIP(v)
 )
-export { ip }
 
-const ipWithMask = withParams(
+export const ipWithMask = withParams(
   { type: 'ipWithMask' },
   v => !req(v) || testIPWithMask(v)
 )
-export { ipWithMask }
 
-const ipsWithMasks = withParams(
+export const ipsWithMasks = withParams(
   { type: 'ipsWithMasks' },
   v => !req(v) || v.every(testIPWithMask)
 )
-export { ipsWithMasks }
 
-const port = withParams(
+export const port = withParams(
   { type: 'port' },
   v => !req(v) || (
     integer(v) &&
-  between(1, 65535)(v)
+    between(1, 65535)(v)
   )
 )
-export { port }
 
-const timeWithUnit = withParams(
+export const timeWithUnit = withParams(
   { type: 'timeWithUnit' },
   v => !req(v) || (
     /^\d+(|m|u)s$/.test(v)
   )
 )
-export { timeWithUnit }
 
-const divisible = divisor => withParams(
+export const divisible = divisor => withParams(
   { type: 'divisible', divisor },
   v => !req(v) || v % divisor === 0
 )
-export { divisible }
 
-const hexData = withParams(
+export const hexData = withParams(
   { type: 'hexData' },
   v => !req(v) || /^[0-9a-fA-F]*$/.test(v)
 )
-export { hexData }
 
-const naturalNumberList = withParams(
+export const naturalNumberList = withParams(
   { type: 'naturalNumberList' },
   v => !req(v) || v.every(nm => /^[0-9]+$/.test(nm))
 )
-export { naturalNumberList }

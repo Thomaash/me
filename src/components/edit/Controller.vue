@@ -12,7 +12,7 @@
           <v-text-field v-model="item.ip" :error-messages="errors.item.ip" label="IP" clearable data-cy="edit-ip" />
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field v-model.number="item.port" :error-messages="errors.item.port" label="Port" type="number" min="1" max="65535" clearable data-cy="edit-port" />
+          <v-text-field ref="port" v-model.number="item.port" :rules="[badNumberRule('port')]" :error-messages="errors.item.port" label="Port" type="number" min="1" max="65535" clearable data-cy="edit-port" />
         </v-flex>
         <v-flex xs12 md6 data-cy="edit-protocol">
           <v-select v-model="item.protocol" :items="protocolsIP" label="Protocol" clearable />

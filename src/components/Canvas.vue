@@ -5,10 +5,12 @@
       <Vis ref="vis" @edit-item="editItem" />
       <Edit ref="edit" />
       <v-speed-dial v-if="!isView" v-model="fab" bottom right open-on-hover style="position: fixed">
-        <v-btn slot="activator" v-model="fab" fab dark color="primary" data-cy="fab-activator">
-          <v-icon>mdi-chevron-up</v-icon>
-          <v-icon>mdi-chevron-down</v-icon>
-        </v-btn>
+        <template v-slot:activator>
+          <v-btn v-model="fab" fab dark color="primary" data-cy="fab-activator">
+            <v-icon v-if="fab">mdi-chevron-down</v-icon>
+            <v-icon v-else>mdi-chevron-up</v-icon>
+          </v-btn>
+        </template>
         <v-btn :color="theme.edge" fab dark small title="Edge" data-cy="fab-edge" @click="$refs.vis.addEdge()">
           <v-icon>$vuetify.icons.net-edge</v-icon>
         </v-btn>

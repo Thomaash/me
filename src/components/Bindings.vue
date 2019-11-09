@@ -2,7 +2,7 @@
   <section>
     <h3 class="headline">Bindings</h3>
 
-    <v-data-table :headers="headers" :items="items" hide-actions disable-initial-sort class="elevation-1">
+    <v-data-table :headers="headers" :items="items" :items-per-page="items.length" :sort-by="[]" hide-default-footer hide-actions class="elevation-1">
       <template slot="items" slot-scope="props">
         <td class="bindings">
           <span

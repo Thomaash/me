@@ -1,21 +1,8 @@
 <template>
   <v-app>
     <template v-if="isView !== true">
-      <v-navigation-drawer v-model="drawer" persistent enable-resize-watcher fixed app>
-        <v-list>
-          <v-list-tile v-for="(item, i) in drawerItems" :key="i" :to="item.to" :data-cy="`drawer-${item.to.name.toLowerCase().replace(' ', '-')}`" value="true">
-            <v-list-tile-action>
-              <v-icon v-html="item.icon" />
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title v-text="item.title" />
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-navigation-drawer>
-
-      <v-toolbar color="primary" dark app extension-height="7">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+      <v-app-bar color="primary" dark app extension-height="7">
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title style="font-weight: 300; font-size: 24px; letter-spacing: unset;" v-text="appName" />
 
         <v-spacer />
@@ -43,7 +30,20 @@
         >
           {{ alert.text }}
         </v-alert>
-      </v-toolbar>
+      </v-app-bar>
+
+      <v-navigation-drawer v-model="drawer" persistent enable-resize-watcher fixed app>
+        <v-list>
+          <v-list-item v-for="(item, i) in drawerItems" :key="i" :to="item.to" :data-cy="`drawer-${item.to.name.toLowerCase().replace(' ', '-')}`" value="true" color="primary">
+            <v-list-item-action>
+              <v-icon v-html="item.icon" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
     </template>
 
     <v-content>

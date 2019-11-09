@@ -40,6 +40,16 @@ export default {
   computed: {
     errors () {
       return prepErrors(this.$v)
+    },
+    badNumberRule () {
+      return (ref) => {
+        if (this.$refs[ref]) {
+          return () => this.$refs[ref].badInput ? 'Has to be valid number.' : true
+        } else {
+          // Don't try to report errors if the ref wasn't initialized yet.
+          return true
+        }
+      }
     }
   }
 }

@@ -12,7 +12,7 @@
           <v-select v-model="item.cpuScheduler" :items="schedulers" label="Scheduler" clearable />
         </v-flex>
         <v-flex xs12 md6>
-          <v-text-field v-model.number="item.cpuLimit" :error-messages="errors.item.cpuLimit" label="CPU Utilization Limit" type="number" min="0" max="1" step=".01" clearable data-cy="edit-cpu-limit" />
+          <v-text-field ref="itemCPULimit" v-model.number="item.cpuLimit" :rules="[badNumberRule('itemCPULimit')]" :error-messages="errors.item.cpuLimit" label="CPU Utilization Limit" type="number" min="0" max="1" step=".01" clearable data-cy="edit-cpu-limit" />
         </v-flex>
         <v-flex xs12>
           <v-text-field v-model="cpuCoresStr" :error-messages="errors.item.cpuCores" label="CPU cores" clearable data-cy="edit-cpu-cores-str" />

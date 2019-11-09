@@ -2,22 +2,22 @@
   <v-layout row wrap>
     <v-flex xs12>
       <v-list>
-        <v-list-tile v-for="(l, i) in sortedLog" :key="'export_log_' + i" avatar @click.prevent>
-          <v-list-tile-action>
+        <v-list-item v-for="(l, i) in sortedLog" :key="'export_log_' + i" @click.prevent>
+          <v-list-item-action>
             <v-checkbox v-model="logCbs[i]" color="primary" hide-details />
-          </v-list-tile-action>
-          <v-list-tile-content @click="$set(logCbs, i, !logCbs[i])">
-            <v-list-tile-title v-text="l.msg" />
-          </v-list-tile-content>
-          <v-list-tile-avatar @click="selectInCanvas(l.item.id)">
+          </v-list-item-action>
+          <v-list-item-content @click="$set(logCbs, i, !logCbs[i])">
+            <v-list-item-title v-text="l.msg" />
+          </v-list-item-content>
+          <v-list-item-avatar @click="selectInCanvas(l.item.id)">
             <v-icon :color="l.severity" v-text="'$vuetify.icons.' + l.severity" />
-          </v-list-tile-avatar>
-        </v-list-tile>
+          </v-list-item-avatar>
+        </v-list-item>
       </v-list>
     </v-flex>
 
     <v-flex xs12>
-      <v-btn outline block color="primary" @click="selectInCanvas()">Select in the Canvas</v-btn>
+      <v-btn outlined block color="primary" @click="selectInCanvas()">Select in the Canvas</v-btn>
     </v-flex>
   </v-layout>
 </template>

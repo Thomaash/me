@@ -3,7 +3,10 @@ const WorkerPlugin = require('worker-plugin')
 module.exports = {
   publicPath: './',
 
-  transpileDependencies: ['vuex-ltm'],
+  transpileDependencies: [
+    'vuetify',
+    'vuex-ltm'
+  ],
 
   chainWebpack: config => {
     config

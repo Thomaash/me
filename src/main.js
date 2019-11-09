@@ -11,39 +11,51 @@ import VuetifyConfirm from 'vuetify-confirm'
 import router from './router'
 import store from './store'
 import { vuetify as theme } from './theme'
+
 import './registerServiceWorker'
 
-Vue.use(Vuetify, {
-  theme,
-  iconfont: 'mdi',
+Vue.use(Vuetify)
+const vuetify = new Vuetify({
+  theme: {
+    themes: {
+      light: theme
+    }
+  },
   icons: {
-    'success': 'mdi-check-circle',
-    'info': 'mdi-information',
-    'warning': 'mdi-alert',
-    'error': 'mdi-alert-octagon',
+    iconfont: 'mdi',
+    values: {
+      'success': 'mdi-check-circle',
+      'info': 'mdi-information',
+      'warning': 'mdi-alert',
+      'error': 'mdi-alert-octagon',
 
-    'checkboxFalse': 'mdi-close-box',
-    'checkboxTrue': 'mdi-checkbox-marked',
-    'checkboxUndefined': 'mdi-checkbox-blank-outline',
+      'checkboxFalse': 'mdi-close-box',
+      'checkboxTrue': 'mdi-checkbox-marked',
+      'checkboxUndefined': 'mdi-checkbox-blank-outline',
 
-    'net-controller': 'mdi-developer-board',
-    'net-dummy': 'mdi-label',
-    'net-edge': 'mdi-ethernet-cable',
-    'net-host': 'mdi-laptop',
-    'net-label': 'mdi-label',
-    'net-port': 'mdi-ethernet',
-    'net-switch': 'mdi-switch'
+      'net-controller': 'mdi-developer-board',
+      'net-dummy': 'mdi-label',
+      'net-edge': 'mdi-ethernet-cable',
+      'net-host': 'mdi-laptop',
+      'net-label': 'mdi-label',
+      'net-port': 'mdi-ethernet',
+      'net-switch': 'mdi-switch'
+    }
   }
 })
+
 Vue.use(Vuelidate)
-Vue.use(VuetifyConfirm)
+Vue.use(VuetifyConfirm, { vuetify })
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+
   router,
   store,
+  vuetify,
+
   render: h => h(App)
 })

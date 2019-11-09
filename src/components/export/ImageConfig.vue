@@ -2,10 +2,13 @@
   <v-layout row wrap>
     <v-flex xs12 sm4>
       <v-text-field
+        ref="sizeWidthScreenCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
         :value="size.widthScreenCm"
+        :error-messages="errors.size.widthScreenCm"
+        :rules="[badNumberRule('sizeWidthScreenCm')]"
         label="Width on screen"
         type="number"
         suffix="cm"
@@ -14,10 +17,13 @@
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
+        ref="sizeWidthPaperCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
         :value="size.widthPaperCm"
+        :error-messages="errors.size.widthPaperCm"
+        :rules="[badNumberRule('sizeWidthPaperCm')]"
         label="Width on paper"
         type="number"
         suffix="cm"
@@ -26,10 +32,13 @@
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
+        ref="sizeWidthPx"
         :disabled="disabled"
-        :min="0"
+        :min="1"
         :step="1"
         :value="size.widthPx"
+        :error-messages="errors.size.widthPx"
+        :rules="[badNumberRule('sizeWidthPx')]"
         label="Width"
         type="number"
         suffix="px"
@@ -39,10 +48,13 @@
 
     <v-flex xs12 sm4>
       <v-text-field
+        ref="sizeHeightScreenCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
         :value="size.heightScreenCm"
+        :error-messages="errors.size.heightScreenCm"
+        :rules="[badNumberRule('sizeHeightScreenCm')]"
         label="Height on screen"
         type="number"
         suffix="cm"
@@ -51,10 +63,13 @@
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
+        ref="sizeHeightPaperCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
         :value="size.heightPaperCm"
+        :error-messages="errors.size.heightPaperCm"
+        :rules="[badNumberRule('sizeHeightPaperCm')]"
         label="Height on paper"
         type="number"
         suffix="cm"
@@ -63,10 +78,13 @@
     </v-flex>
     <v-flex xs12 sm4>
       <v-text-field
+        ref="sizeHeightPx"
         :disabled="disabled"
-        :min="0"
+        :min="1"
         :step="1"
         :value="size.heightPx"
+        :error-messages="errors.size.heightPx"
+        :rules="[badNumberRule('sizeHeightPx')]"
         label="Height"
         type="number"
         suffix="px"
@@ -76,8 +94,8 @@
 
     <v-flex xs12>
       <v-btn
-        :disabled="disabled"
-        outline
+        :disabled="disabled || invalid"
+        outlined
         block
         color="primary"
         @click="$emit('render', { width: +size.widthPx, height: +size.heightPx, scale })"
@@ -89,6 +107,8 @@
 </template>
 
 <script>
+import { decimal, integer, minValue } from '@/validation/rules'
+import errors from '@/validation/errors'
 import { mapGetters } from 'vuex'
 
 const SCREEN_DPCM = 38
@@ -176,6 +196,7 @@ class ValuesToString {
 
 export default {
   name: 'ImageConfig',
+  mixins: [errors],
   props: {
     working: {
       required: true,
@@ -200,8 +221,18 @@ export default {
 
     disabled () {
       return this.working ||
-        this.width === 0 ||
-        this.height === 0
+        this.width <= 0 ||
+        this.height <= 0
+    },
+    invalid () {
+      return (
+        this.$v.size.heightPaperCm.$invalid ||
+        this.$v.size.heightPx.$invalid ||
+        this.$v.size.heightScreenCm.$invalid ||
+        this.$v.size.widthPaperCm.$invalid ||
+        this.$v.size.widthPx.$invalid ||
+        this.$v.size.widthScreenCm.$invalid
+      )
     },
 
     width () {
@@ -252,6 +283,16 @@ export default {
           this.scaleValues[key](scale)
         )
       })
+    }
+  },
+  validations: {
+    size: {
+      heightPaperCm: { decimal, minValue: minValue(0) },
+      heightPx: { integer, minValue: minValue(1) },
+      heightScreenCm: { decimal, minValue: minValue(0) },
+      widthPaperCm: { decimal, minValue: minValue(0) },
+      widthPx: { integer, minValue: minValue(1) },
+      widthScreenCm: { decimal, minValue: minValue(0) }
     }
   }
 }

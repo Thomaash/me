@@ -3,7 +3,7 @@
     <v-flex xs12 sm4>
       <v-btn
         :disabled="working"
-        outline
+        outlined
         block
         color="primary"
         data-cy="import-empty"
@@ -13,19 +13,21 @@
       </v-btn>
     </v-flex>
     <v-flex xs12 sm4>
-      <v-menu :disabled="working" bottom offset-y full-width>
-        <v-btn slot="activator" :disabled="working" outline block color="primary">Examples</v-btn>
+      <v-menu :disabled="working" bottom offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn :disabled="working" outlined block color="primary" v-on="on">Examples</v-btn>
+        </template>
         <v-list>
-          <v-list-tile v-for="(example, i) in examples" :key="'example' + i" @click.prevent>
-            <v-list-tile-title @click="importData(example.data)" v-text="example.title" />
-          </v-list-tile>
+          <v-list-item v-for="(example, i) in examples" :key="'example' + i" @click.stop>
+            <v-list-item-title @click="importData(example.data)" v-text="example.title" />
+          </v-list-item>
         </v-list>
       </v-menu>
     </v-flex>
     <v-flex xs12 sm4>
       <v-btn
         :disabled="working"
-        outline
+        outlined
         block
         color="primary"
         @click="openFileChooser"

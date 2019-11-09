@@ -1,13 +1,13 @@
 <template>
   <v-layout wrap>
     <v-flex xs12 sm4>
-      <v-btn :disabled="working" outline block color="primary" @click="downloadJSON">JSON</v-btn>
+      <v-btn :disabled="working" outlined block color="primary" @click="downloadJSON">JSON</v-btn>
     </v-flex>
     <v-flex xs12 sm4>
-      <v-btn :disabled="working" outline block color="primary" @click="downloadScript">Python 2 script</v-btn>
+      <v-btn :disabled="working" outlined block color="primary" @click="downloadScript">Python 2 script</v-btn>
     </v-flex>
     <v-flex xs12 sm4>
-      <v-btn :disabled="working" outline block color="primary" @click="downloadAddressingPlan">Addressing plan</v-btn>
+      <v-btn :disabled="working" outlined block color="primary" @click="downloadAddressingPlan">Addressing plan</v-btn>
     </v-flex>
 
     <v-flex xs12 pt-4>

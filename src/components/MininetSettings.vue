@@ -32,7 +32,9 @@
             </v-flex>
             <v-flex xs12>
               <v-text-field
+                ref="listenPortBase"
                 v-model.number="listenPortBase"
+                :rules="[badNumberRule('listenPortBase')]"
                 :error-messages="errors.listenPortBase"
                 clearable
                 data-cy="mininet-settings-listen-port-base"

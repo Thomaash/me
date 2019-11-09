@@ -8,8 +8,8 @@
         <v-flex xs12>
           <v-textarea v-model="ips" :error-messages="errors.item.ips" label="IPs" auto-grow clearable data-cy="edit-ips" />
         </v-flex>
-        <v-flex xs12>
-          <v-switch v-model="item.physical" color="primary" label="Physical" data-cy="edit-physical" />
+        <v-flex xs12 data-cy="edit-physical">
+          <v-switch v-model="item.physical" color="primary" label="Physical" />
         </v-flex>
       </v-layout>
     </v-container>

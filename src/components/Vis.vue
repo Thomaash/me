@@ -15,7 +15,7 @@
         data-cy="vis-snackbar"
       >
         {{ snackbar.message }}
-        <v-btn color="primary" flat @click="snackbar.actionFunction()">
+        <v-btn color="primary" text @click="snackbar.actionFunction()">
           {{ snackbar.actionName }}
         </v-btn>
       </v-snackbar>
