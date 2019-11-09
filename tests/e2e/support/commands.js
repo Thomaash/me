@@ -58,7 +58,7 @@ Cypress.Commands.add(
   { prevSubject: false },
   (button) => {
     cy.get('[data-cy=fab-activator]')
-      .click()
+      .trigger('mouseenter')
     cy.get(`[data-cy=fab-${button}]`)
       .click()
   }

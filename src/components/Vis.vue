@@ -426,12 +426,14 @@ export default {
       }
     },
     clearURLPosition () {
-      this.$router.push({
-        name: 'Canvas without position',
-        params: {
-          ids: this.$route.params.ids
-        }
-      })
+      if (this.$route.name !== 'Canvas without position') {
+        this.$router.push({
+          name: 'Canvas without position',
+          params: {
+            ids: this.$route.params.ids
+          }
+        })
+      }
     },
     updateURLPosition () {
       const { x, y } = this.net.getViewPosition()

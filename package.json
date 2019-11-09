@@ -12,7 +12,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.4.4",
+    "@babel/polyfill": "^7.7.0",
     "@mdi/font": "^4.2.95",
     "antlr4": "^4.7.2",
     "jimp": "^0.6.7",
@@ -33,12 +33,12 @@
     "vuex-shared-mutations": "^1.0.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.11.0",
-    "@vue/cli-plugin-e2e-cypress": "^3.11.0",
-    "@vue/cli-plugin-eslint": "^3.11.0",
-    "@vue/cli-plugin-pwa": "^3.11.0",
-    "@vue/cli-plugin-unit-mocha": "^3.11.0",
-    "@vue/cli-service": "^3.11.0",
+    "@vue/cli-plugin-babel": "^4.0.5",
+    "@vue/cli-plugin-e2e-cypress": "^4.0.5",
+    "@vue/cli-plugin-eslint": "^4.0.5",
+    "@vue/cli-plugin-pwa": "^4.0.5",
+    "@vue/cli-plugin-unit-mocha": "^4.0.5",
+    "@vue/cli-service": "^4.0.5",
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-eslint": "^10.0.3",
