@@ -425,21 +425,30 @@ export default {
         this[attr]()
       }
     },
-    clearURLPosition () {
-      if (this.$route.name !== 'Canvas without position') {
-        this.$router.push({
-          name: 'Canvas without position',
-          params: {
-            ids: this.$route.params.ids
-          }
-        })
+    async routerPush (...args) {
+      try {
+        return await this.$router.push(...args)
+      } catch (error) {
+        if (error.name === 'NavigationDuplicated') {
+          // We're already where we want to be so no problem.
+        } else {
+          throw error
+        }
       }
+    },
+    clearURLPosition () {
+      return this.routerPush({
+        name: 'Canvas without position',
+        params: {
+          ids: this.$route.params.ids
+        }
+      })
     },
     updateURLPosition () {
       const { x, y } = this.net.getViewPosition()
       const scale = this.net.getScale()
 
-      this.$router.push({
+      return this.routerPush({
         name: 'Canvas with position',
         params: {
           ids: this.$route.params.ids,
@@ -462,7 +471,7 @@ export default {
         ids = null
       }
 
-      this.$router.push({
+      return this.routerPush({
         params: {
           ...this.$route.params,
           ids
