@@ -104,7 +104,7 @@ export default {
     }
   },
   watch: {
-    'documentTitle': {
+    documentTitle: {
       handler (to) {
         this.updateDocumentTitle()
       },

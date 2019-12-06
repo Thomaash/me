@@ -11,28 +11,28 @@ function addAlpha (hex, alpha) {
 }
 
 const vuetify = {
-  'primary': colors.teal.base,
-  'secondary': colors.teal.lighten1,
-  'accent': colors.amber.darken1,
-  'error': colors.red.base,
-  'warning': colors.orange.base,
-  'info': colors.blue.base,
-  'success': colors.green.base
+  primary: colors.teal.base,
+  secondary: colors.teal.lighten1,
+  accent: colors.amber.darken1,
+  error: colors.red.base,
+  warning: colors.orange.base,
+  info: colors.blue.base,
+  success: colors.green.base
 }
 export { vuetify }
 
 const items = {
-  'controller': colors.purple.base,
-  'dummy': colors.grey.darken4,
-  'edge': colors.cyan.base,
-  'host': colors.orange.base,
-  'port': colors.green.base,
-  'switch': colors.indigo.base
+  controller: colors.purple.base,
+  dummy: colors.grey.darken4,
+  edge: colors.cyan.base,
+  host: colors.orange.base,
+  port: colors.green.base,
+  switch: colors.indigo.base
 }
 export { items }
 
 const selection = {
-  'background': addAlpha(colors.teal.base, 0.25),
-  'border': addAlpha(colors.teal.base, 0.75)
+  background: addAlpha(colors.teal.base, 0.25),
+  border: addAlpha(colors.teal.base, 0.75)
 }
 export { selection }

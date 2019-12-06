@@ -21,9 +21,11 @@ export default function ({ name, type, field, values }) {
       values.forEach(({ valid, values, expectedValue }) => {
         describe(values.join(', '), () => {
           it('Change properties', () => {
-            cy.meSetVuetifyInputs({ textProps: {
-              [field]: values
-            } })
+            cy.meSetVuetifyInputs({
+              textProps: {
+                [field]: values
+              }
+            })
           })
 
           if (expectedValue != null) {

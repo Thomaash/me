@@ -142,7 +142,7 @@ describe('Placeholders', () => {
       hostname: 'eth3'
     }])
 
-    expect(text).to.equal(switchTypesMap['OVSBridge'])
+    expect(text).to.equal(switchTypesMap.OVSBridge)
   })
 
   it('TYPES (many)', () => {
@@ -173,9 +173,9 @@ describe('Placeholders', () => {
 
     expect(text).to.equal([
       'c0:  default type',
-      `c2:  ${controllerTypesMap['RemoteController']}`,
-      `c12: ${controllerTypesMap['OVSController']}`,
-      `s1:  ${switchTypesMap['OVSBridge']}`,
+      `c2:  ${controllerTypesMap.RemoteController}`,
+      `c12: ${controllerTypesMap.OVSController}`,
+      `s1:  ${switchTypesMap.OVSBridge}`,
       's2:  default type'
     ].join('\n'))
   })

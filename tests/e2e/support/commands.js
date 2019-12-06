@@ -94,7 +94,7 @@ Cypress.Commands.add(
     })
 
     Object.entries(selectProps).forEach(([key, value]) => {
-      cy.get(`[data-cy=${key}] input`)
+      cy.get(`[data-cy=${key}] input[type=text]`)
         .click({ force: true }) // The input is hidden but works
       cy.contains(value)
         .click()
@@ -128,11 +128,11 @@ Cypress.Commands.add(
   { prevSubject: false },
   (name) => {
     const hashMap = {
-      'home': '#/home',
-      'canvas': '#/canvas',
+      home: '#/home',
+      canvas: '#/canvas',
       'mininet-settings': '#/mininet_settings',
-      'export': '#/export',
-      'about': '#/about'
+      export: '#/export',
+      about: '#/about'
     }
 
     if (name) {

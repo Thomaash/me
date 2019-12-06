@@ -69,17 +69,17 @@ export default {
       '+': { tag: 'span', text: ' + ', title: 'Both together' },
       '-': { tag: 'span', text: ' ', title: 'With' },
 
-      'LMB': { tag: 'kbd', text: 'LMB', title: 'Left mouse button click' },
-      'LMB2': { tag: 'kbd', text: '2·LMB', title: 'Double left mouse button click' },
-      'LMBd': { tag: 'kbd', text: 'LMB →', title: 'Drag with left mouse button pressed' },
-      'LMBlp': { tag: 'kbd', text: '   LMB   ', title: 'Long press left mouse button' },
-      'RMBd': { tag: 'kbd', text: 'RMB →', title: 'Drag with right mouse button pressed' },
+      LMB: { tag: 'kbd', text: 'LMB', title: 'Left mouse button click' },
+      LMB2: { tag: 'kbd', text: '2·LMB', title: 'Double left mouse button click' },
+      LMBd: { tag: 'kbd', text: 'LMB →', title: 'Drag with left mouse button pressed' },
+      LMBlp: { tag: 'kbd', text: '   LMB   ', title: 'Long press left mouse button' },
+      RMBd: { tag: 'kbd', text: 'RMB →', title: 'Drag with right mouse button pressed' },
 
-      'ctrl': { tag: 'kbd', text: 'Ctrl', title: 'Control' },
-      'shift': { tag: 'kbd', text: 'Shift', title: 'Shift' },
+      ctrl: { tag: 'kbd', text: 'Ctrl', title: 'Control' },
+      shift: { tag: 'kbd', text: 'Shift', title: 'Shift' },
 
-      'del': { tag: 'kbd', text: 'Del', title: 'Delete' },
-      'esc': { tag: 'kbd', text: 'Esc', title: 'Escape' },
+      del: { tag: 'kbd', text: 'Del', title: 'Delete' },
+      esc: { tag: 'kbd', text: 'Esc', title: 'Escape' },
 
       ':edge': { tag: 'v-icon', text: '$vuetify.icons.net-edge', title: 'Link or association' },
       ':item': { tag: 'v-icon', text: '$vuetify.icons.net-host', title: 'Port, host, switch, controller, label, link or association' },

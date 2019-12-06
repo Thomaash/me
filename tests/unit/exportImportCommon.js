@@ -65,7 +65,7 @@ function testTypes (json) {
   describe('Mandatory properties', () => {
     ;['version', 'items'].forEach(key => {
       it(key, () => {
-        expect(json, `Missing property.`).to.have.own.property(key)
+        expect(json, 'Missing property.').to.have.own.property(key)
       })
     })
   })

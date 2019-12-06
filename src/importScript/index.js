@@ -14,9 +14,11 @@ class Items {
     this._indexMap = Object.create(null)
     this._lastId = -1
   }
+
   nextId () {
     return 'script_import_' + ++this._lastId
   }
+
   put (item) {
     if (item.id == null) {
       item.id = this.nextId()
@@ -46,6 +48,7 @@ class Items {
       this.array.push(item)
     }
   }
+
   get (hostname) {
     return this.array[this._indexMap[hostname]]
   }
@@ -60,6 +63,7 @@ class IPs {
           : [ips]
       ))
   }
+
   $get (nodename, portname) {
     const node = this[nodename] || (this[nodename] = {})
     const port = node[portname] || (node[portname] = [])

@@ -18,7 +18,7 @@ class ImageJoiner {
     this.tileSize = tileSize
     this.tilesAdded = 0
 
-    this.ready = new Promise(async (resolve, reject) => {
+    this.ready = (async (resolve, reject) => {
       try {
         this.image = await new Jimp(this.width, this.height)
         this.image.rgba(true) // Aplha is a waste of memory, but it doesn't work without it
@@ -29,7 +29,7 @@ class ImageJoiner {
       } catch (error) {
         reject(error)
       }
-    })
+    })()
   }
 
   async addTile (blob, col, row) {

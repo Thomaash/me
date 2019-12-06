@@ -13,6 +13,7 @@ export default class {
   constructor (data) {
     this.data = data
   }
+
   build () {
     const items = new Items(this.data.items)
 
@@ -35,6 +36,7 @@ export default class {
       planNode.length += port.ips.length
     })
   }
+
   savePDF (headline, filename) {
     const body = []
     Object.entries(this.plan).sort(compareEntries).forEach(([nodeHostname, node]) => {
@@ -61,7 +63,7 @@ export default class {
     const doc = new JsPDF()
 
     doc.setProperties({ title: headline })
-    doc.viewerPreferences({ 'DisplayDocTitle': true })
+    doc.viewerPreferences({ DisplayDocTitle: true })
 
     doc.setFontSize(18)
     doc.text(headline, 14, 20)
@@ -81,6 +83,7 @@ export default class {
   _portToNode (port) {
     return this._getNeighbors(port, ['host', 'switch'])[0]
   }
+
   _getNeighbors (node, types) {
     const nodes = new Set()
     node.$associations

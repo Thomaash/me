@@ -14,6 +14,7 @@ export default class {
     this._items = new Items(data.items)
     this._code = new Code()
   }
+
   build () {
     ;[
       // Nodes (stop on hostname conflict)
@@ -129,6 +130,7 @@ export default class {
     this._code.nodes.push(`${controller.hostname} = net.addController(${args.join(', ')})`)
     this._code.startControllers.push(`${controller.hostname}.start()`)
   }
+
   _addHost (host) {
     this._addHostname(host)
 
@@ -159,6 +161,7 @@ export default class {
 
     this._addNodeScripts(host.hostname, host.startScript, host.stopScript)
   }
+
   _addLink (link) {
     const fromPort = this._items.map.port[link.from]
     const toPort = this._items.map.port[link.to]
@@ -206,6 +209,7 @@ export default class {
 
     this._code.links.push(`net.addLink(${args.join(', ')})`)
   }
+
   _addPort (port) {
     const node = this._portToNode(port)
     if (!node) {
@@ -255,6 +259,7 @@ export default class {
       )
     })
   }
+
   _addSwitch (swtch) {
     this._addHostname(swtch)
 
@@ -288,6 +293,7 @@ export default class {
   _portToNode (port) {
     return this._getNeighbors(port, ['host', 'switch'])[0]
   }
+
   _getNeighbors (node, types) {
     const nodes = new Set()
     node.$associations
@@ -298,6 +304,7 @@ export default class {
 
     return [...nodes].filter(n => n !== node && types.indexOf(n.type) >= 0)
   }
+
   _addHostname (item) {
     const hostname = item.hostname
     if (this._hostnames.has(hostname)) {
@@ -306,6 +313,7 @@ export default class {
       this._hostnames.add(hostname)
     }
   }
+
   _addDevname (port, devname) {
     if (this._devnames[devname]) {
       const error = new SyntaxError('Devname collision.')
@@ -318,6 +326,7 @@ export default class {
       this._devnames[devname] = port
     }
   }
+
   _addLinkedPort (port) {
     if (this._linked.has(port)) {
       const error = new SyntaxError('Multiple links per port.')
@@ -339,6 +348,7 @@ export default class {
       ])
       .reduce((acc, val) => acc.concat(val), [])
   }
+
   _addNodeScripts (hostname, startScript, stopScript) {
     if (startScript) {
       this._code.nodeStartCmds.push(

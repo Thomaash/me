@@ -28,7 +28,7 @@ import LoadingSpinner from '@/components/LoadingSpinner'
 import RectangularSelection from './vis/RectangularSelection'
 import VisCanvas from './vis/VisCanvas'
 import deselectHandler from './vis/deselectHandler'
-import { util as visUtil } from 'vis-network/standalone/esm/vis-network'
+import * as visUtil from 'vis-util'
 import { compare, compareNodes } from './vis/locale'
 import { mapGetters } from 'vuex'
 import { selection as selectionTheme } from '@/theme'
@@ -53,13 +53,13 @@ const snackbarMsgGenerator = new Map([
 ])
 
 const portAmounts = {
-  'host': 2,
-  'switch': 6
+  host: 2,
+  switch: 6
 }
 const nodePriorities = ['dummy', 'controller', 'switch', 'host', 'port']
 const edgeTests = {
-  'link': (src, dst) => src === 'port' && dst === 'port',
-  'association': (src, dst) => (
+  link: (src, dst) => src === 'port' && dst === 'port',
+  association: (src, dst) => (
     (src === 'controller' && dst === 'switch') ||
     (src === 'switch' && dst === 'port') ||
     (src === 'host' && dst === 'port') ||
@@ -67,34 +67,34 @@ const edgeTests = {
   )
 }
 const baseHostnames = {
-  'controller': 'c1',
-  'host': 'h1',
-  'port': 'eth0',
-  'switch': 's1'
+  controller: 'c1',
+  host: 'h1',
+  port: 'eth0',
+  switch: 's1'
 }
 
 // [ctrl][key]
 const keybindings = {
   false: {
-    'Delete': 'deleteSelected',
-    'Escape': 'stopEditMode',
-    'a': 'fitAll',
-    'c': 'addController',
-    'd': 'deleteSelected',
-    'e': 'addEdge',
-    'f': 'fitSelected',
-    'h': 'addHost',
-    'i': 'addIPsDummy',
-    'l': 'addDummy',
-    'p': 'addPort',
-    's': 'addSwitch',
-    't': 'addTypesDummy',
-    'z': 'setScale'
+    Delete: 'deleteSelected',
+    Escape: 'stopEditMode',
+    a: 'fitAll',
+    c: 'addController',
+    d: 'deleteSelected',
+    e: 'addEdge',
+    f: 'fitSelected',
+    h: 'addHost',
+    i: 'addIPsDummy',
+    l: 'addDummy',
+    p: 'addPort',
+    s: 'addSwitch',
+    t: 'addTypesDummy',
+    z: 'setScale'
   },
   true: {
-    'a': 'selectAll',
-    'y': 'redo',
-    'z': 'undo'
+    a: 'selectAll',
+    y: 'redo',
+    z: 'undo'
   }
 }
 

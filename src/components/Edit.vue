@@ -37,22 +37,22 @@ import PortEdit from './edit/Port'
 import SwitchEdit from './edit/Switch'
 
 const typeComponentMap = {
-  'association': 'AssociationEdit',
-  'controller': 'ControllerEdit',
-  'dummy': 'DummyEdit',
-  'host': 'HostEdit',
-  'link': 'LinkEdit',
-  'port': 'PortEdit',
-  'switch': 'SwitchEdit'
+  association: 'AssociationEdit',
+  controller: 'ControllerEdit',
+  dummy: 'DummyEdit',
+  host: 'HostEdit',
+  link: 'LinkEdit',
+  port: 'PortEdit',
+  switch: 'SwitchEdit'
 }
 const typeHeadlineMap = {
-  'association': 'Association',
-  'controller': 'Controller',
-  'dummy': 'Label',
-  'host': 'Host',
-  'link': 'Link',
-  'port': 'Port',
-  'switch': 'Switch'
+  association: 'Association',
+  controller: 'Controller',
+  dummy: 'Label',
+  host: 'Host',
+  link: 'Link',
+  port: 'Port',
+  switch: 'Switch'
 }
 
 export default {

@@ -177,8 +177,6 @@ export default {
             })
           }
         )
-      } catch (error) {
-        throw error
       } finally {
         this.visCanvasOn = false
       }

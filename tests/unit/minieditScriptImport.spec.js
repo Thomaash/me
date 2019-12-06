@@ -60,7 +60,7 @@ describe('Import Miniedit script', () => {
     describe('Root properties', () => {
       Object.keys(props).forEach(key => {
         it(key, () => {
-          expect(json[key], `Invalid property value.`).to.be.equal(props[key])
+          expect(json[key], 'Invalid property value.').to.be.equal(props[key])
         })
       })
     })

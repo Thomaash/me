@@ -1,12 +1,12 @@
 // [ctrl][shift]
 const keysModeMap = {
-  'false': {
-    'false': 'set',
-    'true': 'add'
+  false: {
+    false: 'set',
+    true: 'add'
   },
-  'true': {
-    'false': 'del',
-    'true': 'set'
+  true: {
+    false: 'del',
+    true: 'set'
   }
 }
 
@@ -20,6 +20,7 @@ export default class {
     this._drag = false
     this._rectDOM = {}
   }
+
   attach () {
     // Prepare callback
     this._mousedown = (...args) => this._mousedownListener(...args)
@@ -37,6 +38,7 @@ export default class {
     this._oncontextmenu = this._container.oncontextmenu
     this._container.oncontextmenu = () => false
   }
+
   detach () {
     // Listeners
     this._container.removeEventListener('mousedown', this._mousedown)
@@ -58,9 +60,11 @@ export default class {
     ;[startY, endY] = this._orderPair(startY, endY)
     return { startX, startY, endX, endY }
   }
+
   _orderPair (a, b) {
     return a < b ? [a, b] : [b, a]
   }
+
   _selectNodes (mode, event) {
     const { startX, startY, endX, endY } = this._rectCanvas
 
@@ -86,6 +90,7 @@ export default class {
       }
     })
   }
+
   _prepareNodeSelection (curr, mode) {
     if (mode === 'set') {
       return curr
@@ -109,6 +114,7 @@ export default class {
       this._drag = true
     }
   }
+
   _mousemoveListener ({ which, offsetX: x, offsetY: y }) {
     if (which !== 3 && this._drag) {
       // Mouse released outside of the container, abort
@@ -120,6 +126,7 @@ export default class {
       this._network.redraw()
     }
   }
+
   _mouseupListener ({ which, ctrlKey, shiftKey }) {
     if (which === 3) {
       // Select nodes
@@ -128,6 +135,7 @@ export default class {
       this._selectNodes(keysModeMap[ctrlKey][shiftKey], event)
     }
   }
+
   _afterDrawingListener (ctx) {
     if (this._drag) {
       const { startX, startY, endX, endY } = this._rectCanvas

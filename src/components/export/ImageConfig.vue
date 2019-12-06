@@ -123,9 +123,11 @@ class ValuesToScale {
   widthScreenCm (v) {
     return this.widthPx(v * SCREEN_DPCM)
   }
+
   widthPaperCm (v) {
     return this.widthPx(v * PAPER_DPCM)
   }
+
   widthPx (v) {
     return v / this.width
   }
@@ -133,9 +135,11 @@ class ValuesToScale {
   heightScreenCm (v) {
     return this.heightPx(v * SCREEN_DPCM)
   }
+
   heightPaperCm (v) {
     return this.heightPx(v * PAPER_DPCM)
   }
+
   heightPx (v) {
     return v / this.height
   }
@@ -150,9 +154,11 @@ class ScaleValues {
   widthScreenCm (s) {
     return this.widthPx(s) / SCREEN_DPCM
   }
+
   widthPaperCm (s) {
     return this.widthPx(s) / PAPER_DPCM
   }
+
   widthPx (s) {
     return Math.ceil(s * this.width)
   }
@@ -160,9 +166,11 @@ class ScaleValues {
   heightScreenCm (s) {
     return this.heightPx(s) / SCREEN_DPCM
   }
+
   heightPaperCm (s) {
     return this.heightPx(s) / PAPER_DPCM
   }
+
   heightPx (s) {
     return Math.ceil(s * this.height)
   }
@@ -176,9 +184,11 @@ class ValuesToString {
   widthScreenCm (v) {
     return v.toFixed(this.precision)
   }
+
   widthPaperCm (v) {
     return v.toFixed(this.precision)
   }
+
   widthPx (v) {
     return v.toFixed(0)
   }
@@ -186,9 +196,11 @@ class ValuesToString {
   heightScreenCm (v) {
     return v.toFixed(this.precision)
   }
+
   heightPaperCm (v) {
     return v.toFixed(this.precision)
   }
+
   heightPx (v) {
     return v.toFixed(0)
   }

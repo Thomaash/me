@@ -24,14 +24,14 @@ const vuetify = new Vuetify({
   icons: {
     iconfont: 'mdi',
     values: {
-      'success': 'mdi-check-circle',
-      'info': 'mdi-information',
-      'warning': 'mdi-alert',
-      'error': 'mdi-alert-octagon',
+      success: 'mdi-check-circle',
+      info: 'mdi-information',
+      warning: 'mdi-alert',
+      error: 'mdi-alert-octagon',
 
-      'checkboxFalse': 'mdi-close-box',
-      'checkboxTrue': 'mdi-checkbox-marked',
-      'checkboxUndefined': 'mdi-checkbox-blank-outline',
+      checkboxFalse: 'mdi-close-box',
+      checkboxTrue: 'mdi-checkbox-marked',
+      checkboxUndefined: 'mdi-checkbox-blank-outline',
 
       'net-controller': 'mdi-developer-board',
       'net-dummy': 'mdi-label',

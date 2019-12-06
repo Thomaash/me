@@ -7,9 +7,12 @@
 <script>
 import generateTooltip from './generateTooltip'
 import labelPlaceholders from './placeholders'
-import { DataSet, Network } from 'vis-network/standalone/esm/vis-network'
+import { DataSet } from 'vis-data'
+import { Network } from 'vis-network/peer'
 import { items as theme } from '@/theme'
 import { mapGetters } from 'vuex'
+
+import 'vis-network/styles'
 
 import controllerImg from '@/assets/network/controller.svg'
 import hostImg from '@/assets/network/host.svg'
@@ -136,7 +139,9 @@ export default {
         smooth: false
       },
       interaction: {
-        hover: true
+        hover: true,
+        navigationButtons: false,
+        keyboard: false
       },
       manipulation: {
         enabled: false
@@ -312,8 +317,6 @@ export default {
         return fallback
           ? await this._toBlobJimp(bb, scale, progressObserver)
           : await this._toBlobNative(bb, scale, progressObserver)
-      } catch (error) {
-        throw error
       } finally {
         this.net.off('beforeDrawing', beforeDrawingHandler)
       }
@@ -363,7 +366,7 @@ export default {
       }
     },
     _toBlobJimp (bb, scale, progressObserver) {
-      return new Promise(async (resolve, reject) => {
+      return (async (resolve, reject) => {
         const tileSize = 1000
 
         // Compute the number of columns and rows of tiles
@@ -469,7 +472,7 @@ export default {
             })
           }
         }
-      })
+      })()
     },
     isEdge (type) {
       return type === 'link' || type === 'association'
