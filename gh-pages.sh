@@ -18,7 +18,7 @@ rsync -r "$repo/dist/" '.'
 
 # Commit
 git add .
-git commit -m 'Update GitHub pages'
+git commit --allow-empty -m 'chore: update GitHub Pages [ci skip]'
 
 # Push
 git push
