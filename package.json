@@ -32,7 +32,7 @@
     "vuetify": "^2.1.13",
     "vuetify-confirm": "^2.0.2",
     "vuex": "^3.1.2",
-    "vuex-ltm": "^1.0.3",
+    "vuex-ltm": "^1.0.6",
     "vuex-shared-mutations": "^1.0.2"
   },
   "devDependencies": {
