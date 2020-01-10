@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "browserconfig.xml"
   },
   {
-    "revision": "d70653de52796f1ede37",
+    "revision": "7e0e7b3c40f1c3d8dff2",
     "url": "css/app.9b6cd4fc.css"
   },
   {
@@ -464,7 +464,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/switch.22166899.svg"
   },
   {
-    "revision": "2f4bff79552b4edcbd4e97d4fab10746",
+    "revision": "0e4cfb845891e67b90ba0fc53c04ba4a",
     "url": "index.html"
   },
   {
@@ -472,8 +472,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/0.4aaf51bd.worker.js"
   },
   {
-    "revision": "d70653de52796f1ede37",
-    "url": "js/app.ef96071f.js"
+    "revision": "7e0e7b3c40f1c3d8dff2",
+    "url": "js/app.b76a5f3f.js"
   },
   {
     "revision": "3e34a35174e4e0cd0a9c",
