@@ -3,6 +3,10 @@ const WorkerPlugin = require('worker-plugin')
 module.exports = {
   publicPath: './',
 
+  // Do not fail the build with linting errors. It sometimes reports errors
+  // that are simply not there.
+  lintOnSave: 'warning',
+
   transpileDependencies: [
     'vuetify',
     'vuex-ltm'

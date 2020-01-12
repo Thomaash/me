@@ -11,7 +11,6 @@ module.exports = {
     browser: true
   },
   extends: [
-    'plugin:vue-libs/recommended',
     'plugin:vue/recommended',
     'standard'
   ],
