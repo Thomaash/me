@@ -3,11 +3,11 @@
   "version": "0.0.0-no-version",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "deploy": "npm run test:unit && ./gh-pages.sh",
     "lint": "vue-cli-service lint",
-    "test": "vue-cli-service test:unit && vue-cli-service test:e2e",
+    "serve": "vue-cli-service serve",
+    "test": "vue-cli-service test:unit && vue-cli-service test:e2e --headless",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
   },

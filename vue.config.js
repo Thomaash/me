@@ -7,6 +7,9 @@ module.exports = {
   // that are simply not there.
   lintOnSave: 'warning',
 
+  // There are issues with parallelism in CircleCI.
+  parallel: !process.env.CIRCLECI,
+
   transpileDependencies: [
     'vuetify',
     'vuex-ltm'
