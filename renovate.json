@@ -1,9 +1,5 @@
 {
-  "extends": [
-    "config:base",
-    ":disableRateLimiting",
-    ":pinAllExceptPeerDependencies"
-  ],
+  "extends": ["config:base", ":prNotPending"],
 
   "masterIssue": true,
   "masterIssueAutoclose": true,
