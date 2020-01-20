@@ -2,7 +2,6 @@
   "extends": ["config:base", ":prNotPending"],
 
   "masterIssue": true,
-  "masterIssueAutoclose": true,
   "rebaseStalePrs": true,
   "reviewers": ["Thomaash"],
 
