@@ -51,7 +51,7 @@
     "vis-network": "7.3.3",
     "vis-util": "2.1.0",
     "vue": "2.6.11",
-    "vue-cli-plugin-vuetify": "2.0.3",
+    "vue-cli-plugin-vuetify": "2.0.4",
     "vue-router": "3.1.5",
     "vue-template-compiler": "2.6.11",
     "vuelidate": "0.7.5",
