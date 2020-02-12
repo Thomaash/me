@@ -96,7 +96,7 @@ Cypress.Commands.add(
     Object.entries(selectProps).forEach(([key, value]) => {
       cy.get(`[data-cy=${key}] input[type=text]`)
         .click({ force: true }) // The input is hidden but works
-      cy.contains(value)
+      cy.contains('.menuable__content__active .v-list-item__title', value)
         .click()
     })
   }
