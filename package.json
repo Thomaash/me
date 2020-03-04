@@ -32,7 +32,7 @@
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
     "eslint-plugin-vue": "6.2.1",
-    "jimp": "0.9.3",
+    "jimp": "0.9.5",
     "jsdom": "16.2.0",
     "jsdom-global": "3.0.2",
     "jspdf": "1.5.3",
