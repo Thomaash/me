@@ -63,6 +63,6 @@
     "vuex": "3.1.2",
     "vuex-ltm": "1.0.8",
     "vuex-shared-mutations": "1.0.2",
-    "worker-plugin": "3.2.0"
+    "worker-plugin": "4.0.2"
   }
 }
