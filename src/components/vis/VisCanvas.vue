@@ -7,12 +7,12 @@
 <script>
 import generateTooltip from './generateTooltip'
 import labelPlaceholders from './placeholders'
-import { DataSet } from 'vis-data'
+import { DataSet } from 'vis-data/peer'
 import { Network } from 'vis-network/peer'
 import { items as theme } from '@/theme'
 import { mapGetters } from 'vuex'
 
-import 'vis-network/styles'
+import 'vis-network/styles/vis-network.css'
 
 import controllerImg from '@/assets/network/controller.svg'
 import hostImg from '@/assets/network/host.svg'
