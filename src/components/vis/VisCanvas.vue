@@ -193,6 +193,9 @@ export default {
     // Create the network
     const net = new Network(this.$refs.vis, { nodes, edges }, options)
     this.net = net
+    this.cleanUpCallbacks.push(() => {
+      net.destroy()
+    })
 
     // Some labels contain placeholders for info from connected nodes.
     // Therefore this can't be done before the topology is built.
