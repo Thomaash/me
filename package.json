@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@mdi/font": "5.2.45",
-    "@types/uuid": "7.0.0",
+    "@types/uuid": "7.0.3",
     "@vue/cli-plugin-babel": "4.3.1",
     "@vue/cli-plugin-e2e-cypress": "4.3.1",
     "@vue/cli-plugin-eslint": "4.3.1",
@@ -48,7 +48,7 @@
     "sass-loader": "8.0.2",
     "source-code-pro": "2.30.2",
     "source-sans-pro": "3.6.0",
-    "uuid": "7.0.2",
+    "uuid": "7.0.3",
     "vis-data": "6.5.0",
     "vis-network": "7.4.0",
     "vis-util": "4.0.0",
