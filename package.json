@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@mdi/font": "5.2.45",
-    "@types/uuid": "7.0.3",
+    "@types/uuid": "7.0.4",
     "@vue/cli-plugin-babel": "4.3.1",
     "@vue/cli-plugin-e2e-cypress": "4.3.1",
     "@vue/cli-plugin-eslint": "4.3.1",
