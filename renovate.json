@@ -1,9 +1,9 @@
 {
   "extends": ["config:base", ":prNotPending"],
 
-  "masterIssue": true,
+  "automerge": true,
+  "masterIssue": false,
   "rebaseStalePrs": true,
-  "reviewers": ["Thomaash"],
 
   "packageRules": [
     { "packagePatterns": ["(^@vue\\/cli|^vue-cli)"], "groupName": "Vue CLI" },
