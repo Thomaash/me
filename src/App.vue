@@ -46,11 +46,11 @@
       </v-navigation-drawer>
     </template>
 
-    <v-content>
+    <v-main>
       <v-slide-y-transition mode="out-in">
         <router-view />
       </v-slide-y-transition>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
