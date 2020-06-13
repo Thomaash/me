@@ -91,24 +91,6 @@ const ports = [
 ]
 export { ports }
 
-const processNumbers = function (decimals, min, max, minLimited, maxLimited, one) {
-  const value = one.values[0]
-
-  // -0 is converted to 0 by the inputs
-  if (value.startsWith('-0')) {
-    one.expectedValue = value.slice(1)
-    one.valid = (
-      !minLimited || one.expectedValue >= min
-    ) && (
-      !maxLimited || one.expectedValue <= max
-    ) && (
-      decimals || Math.floor(one.expectedValue) === Math.ceil(one.expectedValue)
-    )
-  }
-
-  return one
-}
-
 const integers = (min, max, minLimited = true, maxLimited = true) => [
   { valid: !maxLimited, values: [`${max + 1}`] },
   { valid: !minLimited, values: [`${min - 1}`] },
@@ -121,7 +103,7 @@ const integers = (min, max, minLimited = true, maxLimited = true) => [
   { valid: true, values: [`${Math.floor(min + 0.9 * (max - min))}`] },
   { valid: true, values: [`${max}`] },
   { valid: true, values: [`${min}`] }
-].map(processNumbers.bind(null, false, min, max, minLimited, maxLimited))
+]
 export { integers }
 
 const decimals = (min, max, minLimited = true, maxLimited = true) => [
@@ -136,5 +118,5 @@ const decimals = (min, max, minLimited = true, maxLimited = true) => [
   { valid: true, values: [`${min + 0.5 * (max - min)}`] },
   { valid: true, values: [`${min + 0.9 * (max - min)}`] },
   { valid: true, values: [`${min}`] }
-].map(processNumbers.bind(null, true, min, max, minLimited, maxLimited))
+]
 export { decimals }
