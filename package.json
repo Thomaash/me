@@ -5,7 +5,8 @@
   "scripts": {
     "build": "vue-cli-service build",
     "deploy": "npm run test && ./gh-pages.sh",
-    "lint": "vue-cli-service lint",
+    "lint:ci": "vue-cli-service lint --no-fix",
+    "lint:fix": "vue-cli-service lint",
     "serve": "vue-cli-service serve",
     "test": "vue-cli-service test:unit && vue-cli-service test:e2e --headless",
     "test:e2e": "vue-cli-service test:e2e",
