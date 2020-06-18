@@ -59,7 +59,7 @@
     "vue-template-compiler": "2.6.11",
     "vuelidate": "0.7.5",
     "vuetify": "2.3.0",
-    "vuetify-confirm": "2.0.3",
+    "vuetify-confirm": "2.0.5",
     "vuetify-loader": "1.5.0",
     "vuex": "3.4.0",
     "vuex-ltm": "1.0.12",
