@@ -37,7 +37,7 @@
     "jsdom": "16.2.2",
     "jsdom-global": "3.0.2",
     "jspdf": "1.5.3",
-    "jspdf-autotable": "3.5.4",
+    "jspdf-autotable": "3.5.6",
     "keycharm": "0.3.1",
     "localforage": "1.7.4",
     "material-design-icons-iconfont": "5.0.1",
