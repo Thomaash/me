@@ -9,7 +9,7 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:13.14.0-browsers
 
-    resource_class: small
+    resource_class: medium
 
     working_directory: ~/repo
 
