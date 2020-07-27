@@ -13,7 +13,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "devDependencies": {
-    "@mdi/font": "5.3.45",
+    "@mdi/font": "5.4.55",
     "@types/uuid": "8.0.0",
     "@vue/cli-plugin-babel": "4.4.6",
     "@vue/cli-plugin-e2e-cypress": "4.4.6",
