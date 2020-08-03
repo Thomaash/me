@@ -51,7 +51,7 @@
     "source-sans-pro": "3.6.0",
     "uuid": "8.3.0",
     "vis-data": "7.0.0",
-    "vis-network": "7.10.2",
+    "vis-network": "8.0.0",
     "vis-util": "4.3.4",
     "vue": "2.6.11",
     "vue-cli-plugin-vuetify": "2.0.7",
