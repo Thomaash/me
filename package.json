@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@mdi/font": "5.5.55",
-    "@types/uuid": "8.0.1",
+    "@types/uuid": "8.3.0",
     "@vue/cli-plugin-babel": "4.5.3",
     "@vue/cli-plugin-e2e-cypress": "4.5.3",
     "@vue/cli-plugin-eslint": "4.5.3",
