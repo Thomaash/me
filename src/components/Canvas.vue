@@ -5,7 +5,7 @@
       <Vis ref="vis" @edit-item="editItem" />
       <Edit ref="edit" />
       <v-speed-dial v-if="!isView" v-model="fab" bottom right open-on-hover style="position: fixed">
-        <template v-slot:activator>
+        <template #activator>
           <v-btn v-model="fab" fab dark color="primary" data-cy="fab-activator">
             <v-icon v-if="fab">mdi-chevron-down</v-icon>
             <v-icon v-else>mdi-chevron-up</v-icon>

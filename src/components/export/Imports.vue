@@ -14,7 +14,7 @@
     </v-flex>
     <v-flex xs12 sm4>
       <v-menu :disabled="working" bottom offset-y>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn :disabled="working" outlined block color="primary" v-on="on">Examples</v-btn>
         </template>
         <v-list>
