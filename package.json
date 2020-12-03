@@ -61,7 +61,7 @@
     "vuetify": "2.3.19",
     "vuetify-confirm": "2.0.6",
     "vuetify-loader": "1.6.0",
-    "vuex": "3.5.1",
+    "vuex": "3.6.0",
     "vuex-ltm": "1.0.12",
     "vuex-shared-mutations": "1.0.2",
     "worker-plugin": "5.0.0"
