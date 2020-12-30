@@ -23,7 +23,7 @@
     "@vue/cli-service": "4.5.9",
     "@vue/eslint-config-standard": "5.1.2",
     "@vue/test-utils": "1.1.2",
-    "antlr4": "4.8.0",
+    "antlr4": "4.9.0",
     "babel-eslint": "10.1.0",
     "chai": "4.2.0",
     "css-loader": "5.0.1",
