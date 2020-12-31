@@ -8,18 +8,22 @@
       <v-flex xs12>
         <License />
       </v-flex>
+      <v-flex xs12>
+        <BuildInfo />
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import BuildInfo from './BuildInfo'
 import Description from './Description'
 import License from './License'
 import Logo from './Logo'
 
 export default {
   name: 'About',
-  components: { Description, License, Logo }
+  components: { BuildInfo, Description, License, Logo }
 }
 </script>
 

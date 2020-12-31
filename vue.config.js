@@ -1,4 +1,15 @@
 const WorkerPlugin = require('worker-plugin')
+const { execSync } = require('child_process')
+
+process.env.VUE_APP_BUILD_DATE = new Date().toISOString()
+process.env.VUE_APP_BUILD_COMMIT_HASH = execSync('git log -1 --format=%H', {
+  encoding: 'ascii'
+}).trim()
+process.env.VUE_APP_BUILD_COMMIT_DATE = new Date(
+  execSync("git log -1 --format=%ct", {
+    encoding: "ascii",
+  }).trim() * 1000
+).toISOString();
 
 module.exports = {
   publicPath: './',
