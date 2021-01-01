@@ -48,7 +48,7 @@ jobs:
             - "53:21:2c:c9:90:e4:de:ac:7f:a0:2b:bd:6c:0f:8f:d4"
       - run: mkdir -p ~/.ssh
       - run: touch ~/.ssh/known_hosts
-      - run: printf '%s\n' $KNOWN_HOSTS >> ~/.ssh/known_hosts
+      - run: printf '%s\n' "$KNOWN_HOSTS" >> ~/.ssh/known_hosts
 
       - run: sudo apt-get install rsync
 
