@@ -8,7 +8,7 @@ Imports JSONs and Python scripts.\
 Persists projects even if the browser is closed and also works offline.
 
 ## Available online
-https://vycital.eu/me/
+https://www.vycital.eu/me/
 
 ## Screenshots
 
