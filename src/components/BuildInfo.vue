@@ -12,6 +12,11 @@
         {{ buildCommitHash }}
       </a>
     </p>
+
+    <p v-if="$store.state.isUpdateAvailable">
+      A new version is available and will be automatically installed when you
+      close all open tabs.
+    </p>
   </section>
 </template>
 
