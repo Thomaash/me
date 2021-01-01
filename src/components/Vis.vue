@@ -2,7 +2,7 @@
   <div class="component-container" tabindex="0" @mousemove="moveMouseTag" @drag="moveMouseTag" @mouseover="focusRoot" @keydown="keypress">
     <LoadingSpinner v-if="loading !== false" />
     <template v-else>
-      <VisCanvas data-cy="vis" @ready="init" />
+      <VisCanvas data-cy="vis" :dark="dark" @ready="init" />
 
       <div v-if="newItem.type !== ''" :style="{left: mouseTag.x + 'px', top: mouseTag.y + 'px'}" class="mouse-tag">
         <v-icon color="black" v-text="mouseTagIcon" />
@@ -31,7 +31,7 @@ import deselectHandler from './vis/deselectHandler'
 import { v4 as randomUUID } from 'uuid'
 import { compare, compareNodes } from './vis/locale'
 import { mapGetters } from 'vuex'
-import { selection as selectionTheme } from '@/theme'
+import { dark, selection as selectionTheme } from '@/theme'
 
 function delayCall (fn = () => {}, delay = 0) {
   let timeout = null
@@ -102,6 +102,7 @@ export default {
   name: 'Vis',
   components: { LoadingSpinner, VisCanvas },
   data: () => ({
+    dark,
     newItem: {
       type: null,
       connectTo: null,

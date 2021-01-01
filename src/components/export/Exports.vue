@@ -19,7 +19,7 @@
     </v-flex>
 
     <div style="height: 0px; width: 0px; overflow: hidden;">
-      <VisCanvas v-if="visCanvasOn" ref="visCanvas" @ready="visCanvasResolve" />
+      <VisCanvas v-if="visCanvasOn" ref="visCanvas" :dark="dark" @ready="visCanvasResolve" />
     </div>
   </v-layout>
 </template>
@@ -53,7 +53,8 @@ export default {
   components: { ImageConfig, VisCanvas },
   data: () => ({
     visCanvasOn: false,
-    visCanvasResolve: () => {}
+    visCanvasResolve: () => {},
+    dark: false
   }),
   computed: {
     ...mapGetters('topology', [
@@ -107,7 +108,11 @@ export default {
         this.working = false
       }
     },
-    async downloadImage (size) {
+    async downloadImage ({ size, dark }) {
+      this.dark = dark
+
+      await new Promise((resolve) => this.$nextTick(resolve))
+
       const sizeString = `${size.width.toLocaleString()}\xa0×\xa0${size.height.toLocaleString()}\xa0px (${((size.width * size.height) / 1e6).toLocaleString()}\xa0Mpx)`
 
       try {

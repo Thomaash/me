@@ -9,18 +9,29 @@ import generateTooltip from './generateTooltip'
 import labelPlaceholders from './placeholders'
 import { DataSet } from 'vis-data/peer'
 import { Network } from 'vis-network/peer'
-import { items as theme } from '@/theme'
+import { canvasDark, canvasLight, itemsDark, itemsLight } from '@/theme'
+import colors from 'vuetify/es5/util/colors'
 import { mapGetters } from 'vuex'
 
 import 'vis-network/styles/vis-network.css'
 
-import controllerImg from '@/assets/network/controller.svg'
-import hostImg from '@/assets/network/host.svg'
-import portImg from '@/assets/network/port.svg'
-import switchImg from '@/assets/network/switch.svg'
+import controllerImgDark from '@/assets/network/controller.dark.svg'
+import controllerImgLight from '@/assets/network/controller.light.svg'
+import hostImgDark from '@/assets/network/host.dark.svg'
+import hostImgLight from '@/assets/network/host.light.svg'
+import portImgDark from '@/assets/network/port.dark.svg'
+import portImgLight from '@/assets/network/port.light.svg'
+import switchImgDark from '@/assets/network/switch.dark.svg'
+import switchImgLight from '@/assets/network/switch.light.svg'
 
 export default {
   name: 'VisCanvas',
+  props: {
+    dark: {
+      required: true,
+      type: Boolean
+    }
+  },
   data: () => ({
     width: null,
     height: null,
@@ -32,6 +43,106 @@ export default {
       'data',
       'boundingBox'
     ]),
+    theme () {
+      return {
+        images: {
+          controller: this.dark ? controllerImgDark : controllerImgLight,
+          host: this.dark ? hostImgDark : hostImgLight,
+          port: this.dark ? portImgDark : portImgLight,
+          switch: this.dark ? switchImgDark : switchImgLight
+        },
+        items: {
+          controller: this.dark ? itemsDark.controller : itemsLight.controller,
+          dummy: this.dark ? itemsDark.dummy : itemsLight.dummy,
+          host: this.dark ? itemsDark.host : itemsLight.host,
+          port: this.dark ? itemsDark.port : itemsLight.port,
+          switch: this.dark ? itemsDark.switch : itemsLight.switch
+        },
+        foreground: this.dark ? canvasDark.foreground : canvasLight.foreground,
+        background: this.dark ? canvasDark.background : canvasLight.background
+      }
+    },
+    options () {
+      return {
+        physics: {
+          enabled: false
+        },
+        nodes: {
+        // Invisible border, 0 makes selected border dissapear
+          borderWidth: 0.0001,
+          borderWidthSelected: 2,
+          font: {
+            align: 'center',
+            color: this.theme.foreground,
+            face: 'Source Sans Pro',
+            strokeWidth: 0
+          },
+          shapeProperties: {
+            borderRadius: 6,
+            useBorderWithImage: true
+          },
+          scaling: {
+            label: {
+            // Don't hide labels while zooming in too much (useful for image export)
+              maxVisible: Number.MAX_SAFE_INTEGER
+            }
+          }
+        },
+        edges: {
+          smooth: false,
+          font: {
+            align: 'top',
+            color: this.theme.foreground,
+            face: 'Source Sans Pro',
+            strokeWidth: 0
+          }
+        },
+        interaction: {
+          hover: true,
+          navigationButtons: false,
+          keyboard: false
+        },
+        manipulation: {
+          enabled: false
+        },
+        groups: {
+          controller: {
+            shape: 'image',
+            color: this.buildGroupColor(this.theme.items.controller),
+            size: 25,
+            image: this.theme.images.controller
+          },
+          dummy: {
+            shape: 'box',
+            color: this.buildGroupColor(this.theme.items.dummy, true),
+            font: {
+              color: this.theme.foreground,
+              face: 'Source Code Pro',
+              align: 'left'
+            },
+            borderWidth: 1
+          },
+          host: {
+            shape: 'image',
+            color: this.buildGroupColor(this.theme.items.host),
+            size: 25,
+            image: this.theme.images.host
+          },
+          port: {
+            shape: 'image',
+            color: this.buildGroupColor(this.theme.items.port),
+            size: 10,
+            image: this.theme.images.port
+          },
+          switch: {
+            shape: 'image',
+            color: this.buildGroupColor(this.theme.items.switch),
+            size: 25,
+            image: this.theme.images.switch
+          }
+        }
+      }
+    },
     widthStyle () {
       return this.width == null
         ? undefined
@@ -111,78 +222,14 @@ export default {
       }
     }
   },
+  watch: {
+    options (v) {
+      this.net.setOptions(v)
+    }
+  },
   mounted () {
     const container = this.$refs.container
-    const options = {
-      physics: {
-        enabled: false
-      },
-      nodes: {
-        // Invisible border, 0 makes selected border dissapear
-        borderWidth: 0.0001,
-        borderWidthSelected: 2,
-        font: {
-          face: 'Source Sans Pro'
-        },
-        shapeProperties: {
-          borderRadius: 6,
-          useBorderWithImage: true
-        },
-        scaling: {
-          label: {
-            // Don't hide labels while zooming in too much (useful for image export)
-            maxVisible: Number.MAX_SAFE_INTEGER
-          }
-        }
-      },
-      edges: {
-        smooth: false
-      },
-      interaction: {
-        hover: true,
-        navigationButtons: false,
-        keyboard: false
-      },
-      manipulation: {
-        enabled: false
-      },
-      groups: {
-        controller: {
-          shape: 'image',
-          color: this.buildGroupColor(theme.controller),
-          size: 25,
-          image: controllerImg
-        },
-        dummy: {
-          shape: 'box',
-          color: this.buildGroupColor(theme.dummy, '#fff', true),
-          font: {
-            color: theme.dummy,
-            face: 'Source Code Pro',
-            align: 'left'
-          },
-          borderWidth: 1
-        },
-        host: {
-          shape: 'image',
-          color: this.buildGroupColor(theme.host),
-          size: 25,
-          image: hostImg
-        },
-        port: {
-          shape: 'image',
-          color: this.buildGroupColor(theme.port),
-          size: 10,
-          image: portImg
-        },
-        switch: {
-          shape: 'image',
-          color: this.buildGroupColor(theme.switch),
-          size: 25,
-          image: switchImg
-        }
-      }
-    }
+    const options = this.options
 
     // Create and fill datasets
     const nodes = this.nodes = new DataSet()
@@ -480,18 +527,18 @@ export default {
     isEdge (type) {
       return type === 'link' || type === 'association'
     },
-    buildGroupColor (primary, bg, alwaysBorder) {
-      bg = bg || 'rgba(0, 0, 0, 0)'
+    buildGroupColor ({ canvas }, bg = false) {
+      const background = bg ? this.theme.background : colors.shades.transparent
       return {
-        background: bg,
-        border: primary,
+        background: background,
+        border: canvas,
         highlight: {
-          background: bg,
-          border: primary
+          background: background,
+          border: canvas
         },
         hover: {
-          background: bg,
-          border: primary
+          background: background,
+          border: canvas
         }
       }
     }

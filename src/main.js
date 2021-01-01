@@ -10,7 +10,7 @@ import Vuetify from 'vuetify'
 import VuetifyConfirm from 'vuetify-confirm'
 import router from './router'
 import store from './store'
-import { vuetify as theme } from './theme'
+import { dark, vuetifyDark, vuetifyLight } from './theme'
 
 import './registerServiceWorker'
 
@@ -18,8 +18,10 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({
   theme: {
     themes: {
-      light: theme
-    }
+      light: vuetifyLight,
+      dark: vuetifyDark
+    },
+    dark
   },
   icons: {
     iconfont: 'mdi',

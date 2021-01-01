@@ -1,5 +1,13 @@
 <template>
   <v-layout row wrap>
+    <v-flex xs12 sm12>
+      <v-switch
+        v-model="dark"
+        :disabled="disabled"
+        label="Render in dark mode"
+      />
+    </v-flex>
+
     <v-flex xs12 sm4>
       <v-text-field
         ref="sizeWidthScreenCm"
@@ -98,7 +106,7 @@
         outlined
         block
         color="primary"
-        @click="$emit('render', { width: +size.widthPx, height: +size.heightPx, scale })"
+        @click="$emit('render', { size: { width: +size.widthPx, height: +size.heightPx, scale }, dark })"
       >
         Render image
       </v-btn>
@@ -217,6 +225,7 @@ export default {
   },
   data: () => ({
     scale: 1,
+    dark: false,
     size: {
       widthScreenCm: 0,
       widthPaperCm: 0,
