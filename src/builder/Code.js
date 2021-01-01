@@ -68,10 +68,12 @@ export default class {
         code.push(
           `# ${name} {{{`,
           '',
-          ...(silent ? [] : [
-            `mininet.log.info('\\n*** ${name}\\n')`,
-            ''
-          ]),
+          ...(silent
+            ? []
+            : [
+                `mininet.log.info('\\n*** ${name}\\n')`,
+                ''
+              ]),
           ...arr,
           '',
           '# }}}'

@@ -12,7 +12,7 @@ function prepareUndoRedoChange (changeLogItem) {
     replace: []
   }
 
-  changeLogItem.map(({ before: beforeJSON, after: afterJSON }) => {
+  changeLogItem.forEach(({ before: beforeJSON, after: afterJSON }) => {
     const before = JSON.parse(afterJSON)
     const after = JSON.parse(beforeJSON)
 

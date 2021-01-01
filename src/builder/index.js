@@ -251,10 +251,12 @@ export default class {
 
     ;(port.ips || []).forEach((ip, i) => {
       this._code.ips.push(
-        ...(i === 0 ? [
-          `${node.hostname}.intf('${dev}').ip = '${ip.split('/')[0]}'`,
-          `${node.hostname}.intf('${dev}').prefixLen = ${ip.split('/')[1]}`
-        ] : []),
+        ...(i === 0
+          ? [
+              `${node.hostname}.intf('${dev}').ip = '${ip.split('/')[0]}'`,
+              `${node.hostname}.intf('${dev}').prefixLen = ${ip.split('/')[1]}`
+            ]
+          : []),
         `${node.hostname}.cmd('ip a a ${ip} dev ${dev}')`
       )
     })

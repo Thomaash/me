@@ -192,7 +192,6 @@ export default {
 
       if (count) {
         this.commit('removeItems', [...nodes, ...edges])
-        this.net.deleteSelected()
 
         this.showSnackbar('items-deleted', [count], 'Undo', this.undo)
         this.updateURLSelection()
@@ -531,13 +530,13 @@ export default {
 
             const { node: edited, item } = newItem.noEdit
               ? {
-                node,
-                item: {
-                  id: node.id,
-                  type: node.group,
-                  hostname: node.label
+                  node,
+                  item: {
+                    id: node.id,
+                    type: node.group,
+                    hostname: node.label
+                  }
                 }
-              }
               : await this.editItem(node, false)
             if (!edited) {
               return
@@ -695,11 +694,6 @@ export default {
       // Set rectangular selection up
       const rs = new RectangularSelection(container, this.net, this.nodes, selectionTheme)
       rs.attach()
-
-      // @todo - debug
-      window.net = this.net
-      window.nodes = this.nodes
-      window.edges = this.edges
     }
   }
 }
