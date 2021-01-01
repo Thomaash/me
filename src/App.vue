@@ -36,7 +36,7 @@
         <v-list>
           <v-list-item v-for="(item, i) in drawerItems" :key="i" :to="item.to" :data-cy="`drawer-${item.to.name.toLowerCase().replace(' ', '-')}`" value="true" color="primary">
             <v-list-item-action>
-              <v-icon v-html="item.icon" />
+              <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title v-text="item.title" />
