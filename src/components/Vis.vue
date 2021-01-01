@@ -694,11 +694,6 @@ export default {
       // Set rectangular selection up
       const rs = new RectangularSelection(container, this.net, this.nodes, selectionTheme)
       rs.attach()
-
-      // @todo - debug
-      window.net = this.net
-      window.nodes = this.nodes
-      window.edges = this.edges
     }
   }
 }
