@@ -3,7 +3,7 @@
     "short_name": "ME",
     "description": "GUI topology editor for Mininet with Python script export.",
     "lang": "en_US",
-    "start_url": "https://vycital.eu/me/",
+    "start_url": "https://www.vycital.eu/me/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#009688",
