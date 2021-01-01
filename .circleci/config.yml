@@ -2,12 +2,19 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
+
+executors:
+  node:
+    docker:
+      - image: circleci/node:lts-browsers
+    working_directory: ~/repo
+
 jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:13.14.0-browsers
+      - image: circleci/node:lts-browsers
 
     resource_class: medium
 
@@ -15,7 +22,49 @@ jobs:
 
     steps:
       - checkout
+
       - run: npm ci
       - run: npm run lint:ci
       - run: npm run build -- --verbose
       - run: npm test
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "*"
+
+  release:
+    executor: node
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run: git config user.email "tomina@vycital.eu"
+      - run: git config user.name "Tomáš Vyčítal"
+
+      - add_ssh_keys:
+          fingerprints:
+            - "53:21:2c:c9:90:e4:de:ac:7f:a0:2b:bd:6c:0f:8f:d4"
+      - run: mkdir -p ~/.ssh
+      - run: touch ~/.ssh/known_hosts
+      - run: printf '%s\n' 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==' >> ~/.ssh/known_hosts
+
+      - run: sudo apt-get install rsync
+
+      - run: npm run deploy -- --ci
+
+workflows:
+  version: 2
+
+  build:
+    jobs:
+      - build
+
+      - release:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - release
