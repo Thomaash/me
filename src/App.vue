@@ -46,6 +46,22 @@
       </v-navigation-drawer>
     </template>
 
+    <v-snackbar
+      color="primary"
+      :timeout="-1"
+      :value="$store.state.isUpdateAvailable"
+    >
+      A new version was downloaded.
+      <template #action>
+        <v-btn
+          outlined
+          @click="reload"
+        >
+          Reload to activate.
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-main>
       <v-slide-y-transition mode="out-in">
         <router-view />
@@ -117,6 +133,9 @@ export default {
   methods: {
     updateDocumentTitle () {
       document.title = this.documentTitle
+    },
+    reload () {
+      window.location.reload()
     }
   }
 }

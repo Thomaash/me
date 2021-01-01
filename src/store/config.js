@@ -8,6 +8,7 @@ export const config = {
   state: {
     loading: true,
     working: false,
+    isUpdateAvailable: false,
     alert: { show: false }
   },
   mutations: {
@@ -26,6 +27,9 @@ export const config = {
     },
     clearAlert (state) {
       state.alert.show = false
+    },
+    setUpdateAvailable (state) {
+      state.isUpdateAvailable = true
     }
   },
   actions: {},
