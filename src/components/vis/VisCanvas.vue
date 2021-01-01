@@ -9,15 +9,37 @@ import generateTooltip from './generateTooltip'
 import labelPlaceholders from './placeholders'
 import { DataSet } from 'vis-data/peer'
 import { Network } from 'vis-network/peer'
-import { items as theme } from '@/theme'
+import { dark, canvas as canvasTheme, items as itemsTheme } from '@/theme'
+import colors from 'vuetify/es5/util/colors'
 import { mapGetters } from 'vuex'
 
 import 'vis-network/styles/vis-network.css'
 
-import controllerImg from '@/assets/network/controller.svg'
-import hostImg from '@/assets/network/host.svg'
-import portImg from '@/assets/network/port.svg'
-import switchImg from '@/assets/network/switch.svg'
+import controllerImgDark from '@/assets/network/controller.dark.svg'
+import controllerImgLight from '@/assets/network/controller.light.svg'
+import hostImgDark from '@/assets/network/host.dark.svg'
+import hostImgLight from '@/assets/network/host.light.svg'
+import portImgDark from '@/assets/network/port.dark.svg'
+import portImgLight from '@/assets/network/port.light.svg'
+import switchImgDark from '@/assets/network/switch.dark.svg'
+import switchImgLight from '@/assets/network/switch.light.svg'
+
+const {
+  controllerImg,
+  hostImg,
+  portImg,
+  switchImg
+} = dark ? {
+  controllerImg: controllerImgDark,
+  hostImg: hostImgDark,
+  portImg: portImgDark,
+  switchImg: switchImgDark
+} : {
+  controllerImg: controllerImgLight,
+  hostImg: hostImgLight,
+  portImg: portImgLight,
+  switchImg: switchImgLight
+}
 
 export default {
   name: 'VisCanvas',
@@ -122,7 +144,10 @@ export default {
         borderWidth: 0.0001,
         borderWidthSelected: 2,
         font: {
-          face: 'Source Sans Pro'
+          align: 'center',
+          color: canvasTheme.foreground,
+          face: 'Source Sans Pro',
+          strokeWidth: 0
         },
         shapeProperties: {
           borderRadius: 6,
@@ -136,7 +161,13 @@ export default {
         }
       },
       edges: {
-        smooth: false
+        smooth: false,
+        font: {
+          align: 'top',
+          color: canvasTheme.foreground,
+          face: 'Source Sans Pro',
+          strokeWidth: 0
+        }
       },
       interaction: {
         hover: true,
@@ -149,15 +180,15 @@ export default {
       groups: {
         controller: {
           shape: 'image',
-          color: this.buildGroupColor(theme.controller),
+          color: this.buildGroupColor(itemsTheme.controller),
           size: 25,
           image: controllerImg
         },
         dummy: {
           shape: 'box',
-          color: this.buildGroupColor(theme.dummy, '#fff', true),
+          color: this.buildGroupColor(itemsTheme.dummy, true),
           font: {
-            color: theme.dummy,
+            color: canvasTheme.foreground,
             face: 'Source Code Pro',
             align: 'left'
           },
@@ -165,19 +196,19 @@ export default {
         },
         host: {
           shape: 'image',
-          color: this.buildGroupColor(theme.host),
+          color: this.buildGroupColor(itemsTheme.host),
           size: 25,
           image: hostImg
         },
         port: {
           shape: 'image',
-          color: this.buildGroupColor(theme.port),
+          color: this.buildGroupColor(itemsTheme.port),
           size: 10,
           image: portImg
         },
         switch: {
           shape: 'image',
-          color: this.buildGroupColor(theme.switch),
+          color: this.buildGroupColor(itemsTheme.switch),
           size: 25,
           image: switchImg
         }
@@ -480,18 +511,18 @@ export default {
     isEdge (type) {
       return type === 'link' || type === 'association'
     },
-    buildGroupColor (primary, bg, alwaysBorder) {
-      bg = bg || 'rgba(0, 0, 0, 0)'
+    buildGroupColor ({ canvas }, bg = false) {
+      const background = bg ? canvasTheme.background : colors.shades.transparent
       return {
-        background: bg,
-        border: primary,
+        background: background,
+        border: canvas,
         highlight: {
-          background: bg,
-          border: primary
+          background: background,
+          border: canvas
         },
         hover: {
-          background: bg,
-          border: primary
+          background: background,
+          border: canvas
         }
       }
     }

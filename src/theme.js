@@ -10,7 +10,9 @@ function addAlpha (hex, alpha) {
   ) + `, ${alpha})`
 }
 
-const vuetify = {
+export const dark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+export const vuetifyLight = {
   primary: colors.teal.base,
   secondary: colors.teal.lighten1,
   accent: colors.amber.darken1,
@@ -19,20 +21,87 @@ const vuetify = {
   info: colors.blue.base,
   success: colors.green.base
 }
-export { vuetify }
-
-const items = {
-  controller: colors.purple.base,
-  dummy: colors.grey.darken4,
-  edge: colors.cyan.base,
-  host: colors.orange.base,
-  port: colors.green.base,
-  switch: colors.indigo.base
+export const vuetifyDark = {
+  primary: colors.teal.base,
+  secondary: colors.teal.lighten1,
+  accent: colors.amber.darken1,
+  error: colors.red.base,
+  warning: colors.orange.base,
+  info: colors.blue.base,
+  success: colors.green.base
 }
-export { items }
+export const vuetify = dark ? vuetifyDark : vuetifyLight
 
-const selection = {
+export const itemsLight = {
+  controller: {
+    menu: colors.purple.base,
+    canvas: colors.purple.base
+  },
+  dummy: {
+    menu: colors.grey.darken4,
+    canvas: colors.grey.base
+  },
+  edge: {
+    menu: colors.cyan.base,
+    canvas: colors.cyan.base
+  },
+  host: {
+    menu: colors.orange.base,
+    canvas: colors.orange.base
+  },
+  port: {
+    menu: colors.green.base,
+    canvas: colors.green.base
+  },
+  switch: {
+    menu: colors.indigo.base,
+    canvas: colors.indigo.base
+  }
+}
+export const itemsDark = {
+  controller: {
+    menu: colors.purple.base,
+    canvas: colors.purple.base
+  },
+  dummy: {
+    menu: colors.grey.darken4,
+    canvas: colors.grey.base
+  },
+  edge: {
+    menu: colors.cyan.base,
+    canvas: colors.cyan.base
+  },
+  host: {
+    menu: colors.orange.base,
+    canvas: colors.orange.base
+  },
+  port: {
+    menu: colors.green.base,
+    canvas: colors.green.base
+  },
+  switch: {
+    menu: colors.indigo.base,
+    canvas: colors.indigo.base
+  }
+}
+export const items = dark ? itemsDark : itemsLight
+
+export const selectionLight = {
   background: addAlpha(colors.teal.base, 0.25),
   border: addAlpha(colors.teal.base, 0.75)
 }
-export { selection }
+export const selectionDark = {
+  background: addAlpha(colors.teal.base, 0.25),
+  border: addAlpha(colors.teal.base, 0.75)
+}
+export const selection = dark ? selectionDark : selectionLight
+
+export const canvasLight = {
+  foreground: colors.shades.black,
+  background: colors.shades.white
+}
+export const canvasDark = {
+  foreground: colors.shades.white,
+  background: colors.grey.darken3
+}
+export const canvas = dark ? canvasDark : canvasLight
