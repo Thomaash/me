@@ -192,7 +192,6 @@ export default {
 
       if (count) {
         this.commit('removeItems', [...nodes, ...edges])
-        this.net.deleteSelected()
 
         this.showSnackbar('items-deleted', [count], 'Undo', this.undo)
         this.updateURLSelection()
