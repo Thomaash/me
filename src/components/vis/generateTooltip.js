@@ -52,9 +52,13 @@ const generators = {
     const parts = [
       ...(item.controllerType != null ? [`${controllerTypesMap[item.controllerType] || item.controllerType}`] : ['Default']),
       '<br/>',
-      ...(item.ip != null && item.port != null ? [
-        item.ip.includes(':') ? `[${item.ip}]:${item.port}` : `${item.ip}:${item.port}`
-      ] : []),
+      ...(item.ip != null && item.port != null
+        ? [
+            item.ip.includes(':')
+              ? `[${item.ip}]:${item.port}`
+              : `${item.ip}:${item.port}`
+          ]
+        : []),
       ...(item.ip != null && item.port == null ? [item.ip] : []),
       ...(item.ip == null && item.port != null ? [`&lt;No IP&gt;:${item.port}`] : [])
     ]

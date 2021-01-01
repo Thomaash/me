@@ -530,13 +530,13 @@ export default {
 
             const { node: edited, item } = newItem.noEdit
               ? {
-                node,
-                item: {
-                  id: node.id,
-                  type: node.group,
-                  hostname: node.label
+                  node,
+                  item: {
+                    id: node.id,
+                    type: node.group,
+                    hostname: node.label
+                  }
                 }
-              }
               : await this.editItem(node, false)
             if (!edited) {
               return
