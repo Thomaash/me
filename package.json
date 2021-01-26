@@ -55,7 +55,7 @@
     "vis-util": "5.0.1",
     "vue": "2.6.12",
     "vue-cli-plugin-vuetify": "2.0.9",
-    "vue-router": "3.5.0",
+    "vue-router": "3.5.1",
     "vue-template-compiler": "2.6.12",
     "vuelidate": "0.7.6",
     "vuetify": "2.4.3",
