@@ -60,7 +60,7 @@
     "vuelidate": "0.7.6",
     "vuetify": "2.4.3",
     "vuetify-confirm": "2.0.6",
-    "vuetify-loader": "1.6.0",
+    "vuetify-loader": "1.7.1",
     "vuex": "3.6.1",
     "vuex-ltm": "1.0.14",
     "vuex-shared-mutations": "1.0.2",
