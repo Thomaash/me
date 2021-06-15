@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.aada6da109509eb9838cda24d2db5b9a.js"
+  "precache-manifest.995d460b95add5fc131b1b390d549dd4.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "mininet-editor"});
