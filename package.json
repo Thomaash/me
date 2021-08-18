@@ -39,7 +39,7 @@
     "jspdf": "2.3.1",
     "jspdf-autotable": "3.5.15",
     "keycharm": "0.4.0",
-    "localforage": "1.9.0",
+    "localforage": "1.10.0",
     "material-design-icons-iconfont": "6.1.0",
     "mocha": "8.2.1",
     "mocha-webpack": "1.1.0",
