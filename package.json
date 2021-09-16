@@ -45,7 +45,7 @@
     "mocha-webpack": "1.1.0",
     "raw-loader": "4.0.2",
     "register-service-worker": "1.7.2",
-    "sass": "1.41.0",
+    "sass": "1.41.1",
     "sass-loader": "10.2.0",
     "source-code-pro": "2.38.0",
     "source-sans-pro": "3.6.0",
