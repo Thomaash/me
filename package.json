@@ -34,7 +34,7 @@
     "eslint-plugin-standard": "4.1.0",
     "eslint-plugin-vue": "7.19.1",
     "jimp": "0.16.1",
-    "jsdom": "17.0.0",
+    "jsdom": "18.0.0",
     "jsdom-global": "3.0.2",
     "jspdf": "2.4.0",
     "jspdf-autotable": "3.5.20",
