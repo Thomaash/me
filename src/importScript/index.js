@@ -1,6 +1,6 @@
-import antlr4 from 'antlr4'
-import { Python2Lexer } from './generated/Python2Lexer'
-import { Python2Parser } from './generated/Python2Parser'
+import * as antlr4 from 'antlr4'
+import Python2Lexer from './generated/Python2Lexer'
+import Python2Parser from './generated/Python2Parser'
 
 import CustomListener from './CustomListener'
 import { pyBoolean, pyNotNull, pyNumber, pyString } from './pyTypes'

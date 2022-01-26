@@ -1,780 +1,774 @@
-// Generated from Python2.g4 by ANTLR 4.7.1
+// Generated from Python2.g4 by ANTLR 4.9.3
 // jshint ignore: start
-import antlr4 from 'antlr4/index';
+import * as antlr4 from 'antlr4';
 
 // This class defines a complete listener for a parse tree produced by Python2Parser.
-function Python2Listener() {
-	antlr4.tree.ParseTreeListener.call(this);
-	return this;
+export default class Python2Listener extends antlr4.tree.ParseTreeListener {
+
+	// Enter a parse tree produced by Python2Parser#single_input.
+	enterSingle_input(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#single_input.
+	exitSingle_input(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#file_input.
+	enterFile_input(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#file_input.
+	exitFile_input(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#eval_input.
+	enterEval_input(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#eval_input.
+	exitEval_input(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#decorator.
+	enterDecorator(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#decorator.
+	exitDecorator(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#decorators.
+	enterDecorators(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#decorators.
+	exitDecorators(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#decorated.
+	enterDecorated(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#decorated.
+	exitDecorated(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#funcdef.
+	enterFuncdef(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#funcdef.
+	exitFuncdef(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#parameters.
+	enterParameters(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#parameters.
+	exitParameters(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#varargslist.
+	enterVarargslist(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#varargslist.
+	exitVarargslist(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#fpdef.
+	enterFpdef(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#fpdef.
+	exitFpdef(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#fplist.
+	enterFplist(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#fplist.
+	exitFplist(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#stmt.
+	enterStmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#stmt.
+	exitStmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#simple_stmt.
+	enterSimple_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#simple_stmt.
+	exitSimple_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#small_stmt.
+	enterSmall_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#small_stmt.
+	exitSmall_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#expr_stmt.
+	enterExpr_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#expr_stmt.
+	exitExpr_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#augassign.
+	enterAugassign(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#augassign.
+	exitAugassign(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#print_stmt.
+	enterPrint_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#print_stmt.
+	exitPrint_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#del_stmt.
+	enterDel_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#del_stmt.
+	exitDel_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#pass_stmt.
+	enterPass_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#pass_stmt.
+	exitPass_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#flow_stmt.
+	enterFlow_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#flow_stmt.
+	exitFlow_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#break_stmt.
+	enterBreak_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#break_stmt.
+	exitBreak_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#continue_stmt.
+	enterContinue_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#continue_stmt.
+	exitContinue_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#return_stmt.
+	enterReturn_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#return_stmt.
+	exitReturn_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#yield_stmt.
+	enterYield_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#yield_stmt.
+	exitYield_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#raise_stmt.
+	enterRaise_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#raise_stmt.
+	exitRaise_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#import_stmt.
+	enterImport_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#import_stmt.
+	exitImport_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#import_name.
+	enterImport_name(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#import_name.
+	exitImport_name(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#import_from.
+	enterImport_from(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#import_from.
+	exitImport_from(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#import_as_name.
+	enterImport_as_name(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#import_as_name.
+	exitImport_as_name(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#dotted_as_name.
+	enterDotted_as_name(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#dotted_as_name.
+	exitDotted_as_name(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#import_as_names.
+	enterImport_as_names(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#import_as_names.
+	exitImport_as_names(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#dotted_as_names.
+	enterDotted_as_names(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#dotted_as_names.
+	exitDotted_as_names(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#dotted_name.
+	enterDotted_name(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#dotted_name.
+	exitDotted_name(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#global_stmt.
+	enterGlobal_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#global_stmt.
+	exitGlobal_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#exec_stmt.
+	enterExec_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#exec_stmt.
+	exitExec_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#assert_stmt.
+	enterAssert_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#assert_stmt.
+	exitAssert_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#compound_stmt.
+	enterCompound_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#compound_stmt.
+	exitCompound_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#if_stmt.
+	enterIf_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#if_stmt.
+	exitIf_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#while_stmt.
+	enterWhile_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#while_stmt.
+	exitWhile_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#for_stmt.
+	enterFor_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#for_stmt.
+	exitFor_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#try_stmt.
+	enterTry_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#try_stmt.
+	exitTry_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#with_stmt.
+	enterWith_stmt(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#with_stmt.
+	exitWith_stmt(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#with_item.
+	enterWith_item(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#with_item.
+	exitWith_item(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#except_clause.
+	enterExcept_clause(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#except_clause.
+	exitExcept_clause(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#suite.
+	enterSuite(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#suite.
+	exitSuite(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#testlist_safe.
+	enterTestlist_safe(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#testlist_safe.
+	exitTestlist_safe(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#old_test.
+	enterOld_test(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#old_test.
+	exitOld_test(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#old_lambdef.
+	enterOld_lambdef(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#old_lambdef.
+	exitOld_lambdef(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#test.
+	enterTest(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#test.
+	exitTest(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#or_test.
+	enterOr_test(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#or_test.
+	exitOr_test(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#and_test.
+	enterAnd_test(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#and_test.
+	exitAnd_test(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#not_test.
+	enterNot_test(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#not_test.
+	exitNot_test(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#comparison.
+	enterComparison(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#comparison.
+	exitComparison(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#comp_op.
+	enterComp_op(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#comp_op.
+	exitComp_op(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#expr.
+	enterExpr(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#expr.
+	exitExpr(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#xor_expr.
+	enterXor_expr(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#xor_expr.
+	exitXor_expr(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#and_expr.
+	enterAnd_expr(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#and_expr.
+	exitAnd_expr(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#shift_expr.
+	enterShift_expr(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#shift_expr.
+	exitShift_expr(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#arith_expr.
+	enterArith_expr(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#arith_expr.
+	exitArith_expr(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#term.
+	enterTerm(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#term.
+	exitTerm(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#factor.
+	enterFactor(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#factor.
+	exitFactor(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#power.
+	enterPower(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#power.
+	exitPower(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#atom.
+	enterAtom(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#atom.
+	exitAtom(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#listmaker.
+	enterListmaker(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#listmaker.
+	exitListmaker(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#testlist_comp.
+	enterTestlist_comp(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#testlist_comp.
+	exitTestlist_comp(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#lambdef.
+	enterLambdef(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#lambdef.
+	exitLambdef(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#trailer.
+	enterTrailer(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#trailer.
+	exitTrailer(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#subscriptlist.
+	enterSubscriptlist(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#subscriptlist.
+	exitSubscriptlist(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#subscript.
+	enterSubscript(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#subscript.
+	exitSubscript(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#sliceop.
+	enterSliceop(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#sliceop.
+	exitSliceop(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#exprlist.
+	enterExprlist(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#exprlist.
+	exitExprlist(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#testlist.
+	enterTestlist(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#testlist.
+	exitTestlist(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#dictorsetmaker.
+	enterDictorsetmaker(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#dictorsetmaker.
+	exitDictorsetmaker(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#classdef.
+	enterClassdef(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#classdef.
+	exitClassdef(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#arglist.
+	enterArglist(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#arglist.
+	exitArglist(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#argument.
+	enterArgument(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#argument.
+	exitArgument(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#list_iter.
+	enterList_iter(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#list_iter.
+	exitList_iter(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#list_for.
+	enterList_for(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#list_for.
+	exitList_for(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#list_if.
+	enterList_if(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#list_if.
+	exitList_if(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#comp_iter.
+	enterComp_iter(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#comp_iter.
+	exitComp_iter(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#comp_for.
+	enterComp_for(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#comp_for.
+	exitComp_for(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#comp_if.
+	enterComp_if(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#comp_if.
+	exitComp_if(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#testlist1.
+	enterTestlist1(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#testlist1.
+	exitTestlist1(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#encoding_decl.
+	enterEncoding_decl(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#encoding_decl.
+	exitEncoding_decl(ctx) {
+	}
+
+
+	// Enter a parse tree produced by Python2Parser#yield_expr.
+	enterYield_expr(ctx) {
+	}
+
+	// Exit a parse tree produced by Python2Parser#yield_expr.
+	exitYield_expr(ctx) {
+	}
+
+
+
 }
-
-Python2Listener.prototype = Object.create(antlr4.tree.ParseTreeListener.prototype);
-Python2Listener.prototype.constructor = Python2Listener;
-
-// Enter a parse tree produced by Python2Parser#single_input.
-Python2Listener.prototype.enterSingle_input = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#single_input.
-Python2Listener.prototype.exitSingle_input = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#file_input.
-Python2Listener.prototype.enterFile_input = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#file_input.
-Python2Listener.prototype.exitFile_input = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#eval_input.
-Python2Listener.prototype.enterEval_input = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#eval_input.
-Python2Listener.prototype.exitEval_input = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#decorator.
-Python2Listener.prototype.enterDecorator = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#decorator.
-Python2Listener.prototype.exitDecorator = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#decorators.
-Python2Listener.prototype.enterDecorators = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#decorators.
-Python2Listener.prototype.exitDecorators = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#decorated.
-Python2Listener.prototype.enterDecorated = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#decorated.
-Python2Listener.prototype.exitDecorated = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#funcdef.
-Python2Listener.prototype.enterFuncdef = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#funcdef.
-Python2Listener.prototype.exitFuncdef = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#parameters.
-Python2Listener.prototype.enterParameters = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#parameters.
-Python2Listener.prototype.exitParameters = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#varargslist.
-Python2Listener.prototype.enterVarargslist = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#varargslist.
-Python2Listener.prototype.exitVarargslist = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#fpdef.
-Python2Listener.prototype.enterFpdef = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#fpdef.
-Python2Listener.prototype.exitFpdef = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#fplist.
-Python2Listener.prototype.enterFplist = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#fplist.
-Python2Listener.prototype.exitFplist = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#stmt.
-Python2Listener.prototype.enterStmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#stmt.
-Python2Listener.prototype.exitStmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#simple_stmt.
-Python2Listener.prototype.enterSimple_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#simple_stmt.
-Python2Listener.prototype.exitSimple_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#small_stmt.
-Python2Listener.prototype.enterSmall_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#small_stmt.
-Python2Listener.prototype.exitSmall_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#expr_stmt.
-Python2Listener.prototype.enterExpr_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#expr_stmt.
-Python2Listener.prototype.exitExpr_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#augassign.
-Python2Listener.prototype.enterAugassign = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#augassign.
-Python2Listener.prototype.exitAugassign = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#print_stmt.
-Python2Listener.prototype.enterPrint_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#print_stmt.
-Python2Listener.prototype.exitPrint_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#del_stmt.
-Python2Listener.prototype.enterDel_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#del_stmt.
-Python2Listener.prototype.exitDel_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#pass_stmt.
-Python2Listener.prototype.enterPass_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#pass_stmt.
-Python2Listener.prototype.exitPass_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#flow_stmt.
-Python2Listener.prototype.enterFlow_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#flow_stmt.
-Python2Listener.prototype.exitFlow_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#break_stmt.
-Python2Listener.prototype.enterBreak_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#break_stmt.
-Python2Listener.prototype.exitBreak_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#continue_stmt.
-Python2Listener.prototype.enterContinue_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#continue_stmt.
-Python2Listener.prototype.exitContinue_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#return_stmt.
-Python2Listener.prototype.enterReturn_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#return_stmt.
-Python2Listener.prototype.exitReturn_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#yield_stmt.
-Python2Listener.prototype.enterYield_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#yield_stmt.
-Python2Listener.prototype.exitYield_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#raise_stmt.
-Python2Listener.prototype.enterRaise_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#raise_stmt.
-Python2Listener.prototype.exitRaise_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#import_stmt.
-Python2Listener.prototype.enterImport_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#import_stmt.
-Python2Listener.prototype.exitImport_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#import_name.
-Python2Listener.prototype.enterImport_name = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#import_name.
-Python2Listener.prototype.exitImport_name = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#import_from.
-Python2Listener.prototype.enterImport_from = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#import_from.
-Python2Listener.prototype.exitImport_from = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#import_as_name.
-Python2Listener.prototype.enterImport_as_name = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#import_as_name.
-Python2Listener.prototype.exitImport_as_name = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#dotted_as_name.
-Python2Listener.prototype.enterDotted_as_name = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#dotted_as_name.
-Python2Listener.prototype.exitDotted_as_name = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#import_as_names.
-Python2Listener.prototype.enterImport_as_names = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#import_as_names.
-Python2Listener.prototype.exitImport_as_names = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#dotted_as_names.
-Python2Listener.prototype.enterDotted_as_names = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#dotted_as_names.
-Python2Listener.prototype.exitDotted_as_names = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#dotted_name.
-Python2Listener.prototype.enterDotted_name = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#dotted_name.
-Python2Listener.prototype.exitDotted_name = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#global_stmt.
-Python2Listener.prototype.enterGlobal_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#global_stmt.
-Python2Listener.prototype.exitGlobal_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#exec_stmt.
-Python2Listener.prototype.enterExec_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#exec_stmt.
-Python2Listener.prototype.exitExec_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#assert_stmt.
-Python2Listener.prototype.enterAssert_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#assert_stmt.
-Python2Listener.prototype.exitAssert_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#compound_stmt.
-Python2Listener.prototype.enterCompound_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#compound_stmt.
-Python2Listener.prototype.exitCompound_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#if_stmt.
-Python2Listener.prototype.enterIf_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#if_stmt.
-Python2Listener.prototype.exitIf_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#while_stmt.
-Python2Listener.prototype.enterWhile_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#while_stmt.
-Python2Listener.prototype.exitWhile_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#for_stmt.
-Python2Listener.prototype.enterFor_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#for_stmt.
-Python2Listener.prototype.exitFor_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#try_stmt.
-Python2Listener.prototype.enterTry_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#try_stmt.
-Python2Listener.prototype.exitTry_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#with_stmt.
-Python2Listener.prototype.enterWith_stmt = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#with_stmt.
-Python2Listener.prototype.exitWith_stmt = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#with_item.
-Python2Listener.prototype.enterWith_item = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#with_item.
-Python2Listener.prototype.exitWith_item = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#except_clause.
-Python2Listener.prototype.enterExcept_clause = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#except_clause.
-Python2Listener.prototype.exitExcept_clause = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#suite.
-Python2Listener.prototype.enterSuite = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#suite.
-Python2Listener.prototype.exitSuite = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#testlist_safe.
-Python2Listener.prototype.enterTestlist_safe = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#testlist_safe.
-Python2Listener.prototype.exitTestlist_safe = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#old_test.
-Python2Listener.prototype.enterOld_test = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#old_test.
-Python2Listener.prototype.exitOld_test = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#old_lambdef.
-Python2Listener.prototype.enterOld_lambdef = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#old_lambdef.
-Python2Listener.prototype.exitOld_lambdef = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#test.
-Python2Listener.prototype.enterTest = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#test.
-Python2Listener.prototype.exitTest = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#or_test.
-Python2Listener.prototype.enterOr_test = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#or_test.
-Python2Listener.prototype.exitOr_test = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#and_test.
-Python2Listener.prototype.enterAnd_test = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#and_test.
-Python2Listener.prototype.exitAnd_test = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#not_test.
-Python2Listener.prototype.enterNot_test = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#not_test.
-Python2Listener.prototype.exitNot_test = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#comparison.
-Python2Listener.prototype.enterComparison = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#comparison.
-Python2Listener.prototype.exitComparison = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#comp_op.
-Python2Listener.prototype.enterComp_op = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#comp_op.
-Python2Listener.prototype.exitComp_op = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#expr.
-Python2Listener.prototype.enterExpr = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#expr.
-Python2Listener.prototype.exitExpr = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#xor_expr.
-Python2Listener.prototype.enterXor_expr = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#xor_expr.
-Python2Listener.prototype.exitXor_expr = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#and_expr.
-Python2Listener.prototype.enterAnd_expr = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#and_expr.
-Python2Listener.prototype.exitAnd_expr = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#shift_expr.
-Python2Listener.prototype.enterShift_expr = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#shift_expr.
-Python2Listener.prototype.exitShift_expr = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#arith_expr.
-Python2Listener.prototype.enterArith_expr = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#arith_expr.
-Python2Listener.prototype.exitArith_expr = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#term.
-Python2Listener.prototype.enterTerm = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#term.
-Python2Listener.prototype.exitTerm = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#factor.
-Python2Listener.prototype.enterFactor = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#factor.
-Python2Listener.prototype.exitFactor = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#power.
-Python2Listener.prototype.enterPower = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#power.
-Python2Listener.prototype.exitPower = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#atom.
-Python2Listener.prototype.enterAtom = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#atom.
-Python2Listener.prototype.exitAtom = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#listmaker.
-Python2Listener.prototype.enterListmaker = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#listmaker.
-Python2Listener.prototype.exitListmaker = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#testlist_comp.
-Python2Listener.prototype.enterTestlist_comp = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#testlist_comp.
-Python2Listener.prototype.exitTestlist_comp = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#lambdef.
-Python2Listener.prototype.enterLambdef = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#lambdef.
-Python2Listener.prototype.exitLambdef = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#trailer.
-Python2Listener.prototype.enterTrailer = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#trailer.
-Python2Listener.prototype.exitTrailer = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#subscriptlist.
-Python2Listener.prototype.enterSubscriptlist = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#subscriptlist.
-Python2Listener.prototype.exitSubscriptlist = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#subscript.
-Python2Listener.prototype.enterSubscript = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#subscript.
-Python2Listener.prototype.exitSubscript = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#sliceop.
-Python2Listener.prototype.enterSliceop = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#sliceop.
-Python2Listener.prototype.exitSliceop = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#exprlist.
-Python2Listener.prototype.enterExprlist = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#exprlist.
-Python2Listener.prototype.exitExprlist = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#testlist.
-Python2Listener.prototype.enterTestlist = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#testlist.
-Python2Listener.prototype.exitTestlist = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#dictorsetmaker.
-Python2Listener.prototype.enterDictorsetmaker = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#dictorsetmaker.
-Python2Listener.prototype.exitDictorsetmaker = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#classdef.
-Python2Listener.prototype.enterClassdef = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#classdef.
-Python2Listener.prototype.exitClassdef = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#arglist.
-Python2Listener.prototype.enterArglist = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#arglist.
-Python2Listener.prototype.exitArglist = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#argument.
-Python2Listener.prototype.enterArgument = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#argument.
-Python2Listener.prototype.exitArgument = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#list_iter.
-Python2Listener.prototype.enterList_iter = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#list_iter.
-Python2Listener.prototype.exitList_iter = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#list_for.
-Python2Listener.prototype.enterList_for = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#list_for.
-Python2Listener.prototype.exitList_for = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#list_if.
-Python2Listener.prototype.enterList_if = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#list_if.
-Python2Listener.prototype.exitList_if = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#comp_iter.
-Python2Listener.prototype.enterComp_iter = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#comp_iter.
-Python2Listener.prototype.exitComp_iter = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#comp_for.
-Python2Listener.prototype.enterComp_for = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#comp_for.
-Python2Listener.prototype.exitComp_for = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#comp_if.
-Python2Listener.prototype.enterComp_if = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#comp_if.
-Python2Listener.prototype.exitComp_if = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#testlist1.
-Python2Listener.prototype.enterTestlist1 = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#testlist1.
-Python2Listener.prototype.exitTestlist1 = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#encoding_decl.
-Python2Listener.prototype.enterEncoding_decl = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#encoding_decl.
-Python2Listener.prototype.exitEncoding_decl = function(ctx) {
-};
-
-
-// Enter a parse tree produced by Python2Parser#yield_expr.
-Python2Listener.prototype.enterYield_expr = function(ctx) {
-};
-
-// Exit a parse tree produced by Python2Parser#yield_expr.
-Python2Listener.prototype.exitYield_expr = function(ctx) {
-};
-
-
-
-export { Python2Listener };

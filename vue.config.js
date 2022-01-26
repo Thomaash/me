@@ -1,4 +1,4 @@
-const WorkerPlugin = require('worker-plugin')
+const webpack = require('webpack')
 const { execSync } = require('child_process')
 
 process.env.VUE_APP_BUILD_DATE = new Date().toISOString()
@@ -36,8 +36,24 @@ module.exports = {
       .end()
 
     config
-      .plugin('worker-plugin')
-      .use(WorkerPlugin)
+      .resolve
+      .set("fallback", {
+        assert: false,
+        fs: false,
+        http: false,
+        https: false,
+        path: false,
+        stream: false,
+        util: false,
+        zlib: false
+      })
+
+
+    config
+      .plugin('clean')
+      .use(webpack.DefinePlugin, [{
+        'process.browser': JSON.stringify(true)
+      }])
   },
 
   pwa: {
