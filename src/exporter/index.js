@@ -1,35 +1,35 @@
 export default {
-  importData (external) {
-    external = JSON.parse(JSON.stringify(external))
+  importData(external) {
+    external = JSON.parse(JSON.stringify(external));
 
     if (external.version === 0) {
       const items = external.items.reduce((acc, val) => {
-        acc[val.id] = val
-        return acc
-      }, {})
+        acc[val.id] = val;
+        return acc;
+      }, {});
 
-      delete external.version
-      delete external.items
+      delete external.version;
+      delete external.items;
 
       return {
         ...external,
-        items
-      }
+        items,
+      };
     } else {
-      throw new TypeError('Unsuported export version.')
+      throw new TypeError("Unsuported export version.");
     }
   },
-  exportData (internal) {
-    internal = JSON.parse(JSON.stringify(internal))
+  exportData(internal) {
+    internal = JSON.parse(JSON.stringify(internal));
 
-    const items = Object.values(internal.items)
+    const items = Object.values(internal.items);
 
-    delete internal.items
+    delete internal.items;
 
     return {
       ...internal,
       version: 0,
-      items
-    }
-  }
-}
+      items,
+    };
+  },
+};

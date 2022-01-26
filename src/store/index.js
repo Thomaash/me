@@ -1,13 +1,13 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-import { config, ready } from './config'
+import { config, ready } from "./config";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-export const store = new Vuex.Store(config)
-export default store
+export const store = new Vuex.Store(config);
+export default store;
 
 ready.then(() => {
-  store.commit('loaded')
-})
+  store.commit("loaded");
+});

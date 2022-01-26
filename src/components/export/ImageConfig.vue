@@ -20,7 +20,7 @@
         label="Width on screen"
         type="number"
         suffix="cm"
-        @input="v => recompute('widthScreenCm', v)"
+        @input="(v) => recompute('widthScreenCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
@@ -35,7 +35,7 @@
         label="Width on paper"
         type="number"
         suffix="cm"
-        @input="v => recompute('widthPaperCm', v)"
+        @input="(v) => recompute('widthPaperCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
@@ -50,7 +50,7 @@
         label="Width"
         type="number"
         suffix="px"
-        @input="v => recompute('widthPx', v)"
+        @input="(v) => recompute('widthPx', v)"
       />
     </v-flex>
 
@@ -66,7 +66,7 @@
         label="Height on screen"
         type="number"
         suffix="cm"
-        @input="v => recompute('heightScreenCm', v)"
+        @input="(v) => recompute('heightScreenCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
@@ -81,7 +81,7 @@
         label="Height on paper"
         type="number"
         suffix="cm"
-        @input="v => recompute('heightPaperCm', v)"
+        @input="(v) => recompute('heightPaperCm', v)"
       />
     </v-flex>
     <v-flex xs12 sm4>
@@ -96,16 +96,12 @@
         label="Height"
         type="number"
         suffix="px"
-        @input="v => recompute('heightPx', v)"
+        @input="(v) => recompute('heightPx', v)"
       />
     </v-flex>
 
     <v-flex xs12 sm12>
-      <v-switch
-        v-model="tiles"
-        :disabled="disabled"
-        label="Render as tiles"
-      />
+      <v-switch v-model="tiles" :disabled="disabled" label="Render as tiles" />
     </v-flex>
 
     <template v-if="tiles">
@@ -143,7 +139,9 @@
           label="The number of tiles"
           readonly
           :disabled="disabled"
-          :value="`${tilesWidthNumber}x${tilesHeightNumber} (${tilesWidthNumber * tilesHeightNumber})`"
+          :value="`${tilesWidthNumber}x${tilesHeightNumber} (${
+            tilesWidthNumber * tilesHeightNumber
+          })`"
         />
       </v-flex>
     </template>
@@ -163,113 +161,113 @@
 </template>
 
 <script>
-import { decimal, integer, minValue } from '@/validation/rules'
-import errors from '@/validation/errors'
-import { mapGetters } from 'vuex'
+import { decimal, integer, minValue } from "@/validation/rules";
+import errors from "@/validation/errors";
+import { mapGetters } from "vuex";
 
-const SCREEN_DPCM = 38
-const PAPER_DPCM = 120
+const SCREEN_DPCM = 38;
+const PAPER_DPCM = 120;
 
 class ValuesToScale {
-  constructor (width, height) {
-    this.width = width
-    this.height = height
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
   }
 
-  widthScreenCm (v) {
-    return this.widthPx(v * SCREEN_DPCM)
+  widthScreenCm(v) {
+    return this.widthPx(v * SCREEN_DPCM);
   }
 
-  widthPaperCm (v) {
-    return this.widthPx(v * PAPER_DPCM)
+  widthPaperCm(v) {
+    return this.widthPx(v * PAPER_DPCM);
   }
 
-  widthPx (v) {
-    return v / this.width
+  widthPx(v) {
+    return v / this.width;
   }
 
-  heightScreenCm (v) {
-    return this.heightPx(v * SCREEN_DPCM)
+  heightScreenCm(v) {
+    return this.heightPx(v * SCREEN_DPCM);
   }
 
-  heightPaperCm (v) {
-    return this.heightPx(v * PAPER_DPCM)
+  heightPaperCm(v) {
+    return this.heightPx(v * PAPER_DPCM);
   }
 
-  heightPx (v) {
-    return v / this.height
+  heightPx(v) {
+    return v / this.height;
   }
 }
 
 class ScaleValues {
-  constructor (width, height) {
-    this.width = width
-    this.height = height
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
   }
 
-  widthScreenCm (s) {
-    return this.widthPx(s) / SCREEN_DPCM
+  widthScreenCm(s) {
+    return this.widthPx(s) / SCREEN_DPCM;
   }
 
-  widthPaperCm (s) {
-    return this.widthPx(s) / PAPER_DPCM
+  widthPaperCm(s) {
+    return this.widthPx(s) / PAPER_DPCM;
   }
 
-  widthPx (s) {
-    return Math.ceil(s * this.width)
+  widthPx(s) {
+    return Math.ceil(s * this.width);
   }
 
-  heightScreenCm (s) {
-    return this.heightPx(s) / SCREEN_DPCM
+  heightScreenCm(s) {
+    return this.heightPx(s) / SCREEN_DPCM;
   }
 
-  heightPaperCm (s) {
-    return this.heightPx(s) / PAPER_DPCM
+  heightPaperCm(s) {
+    return this.heightPx(s) / PAPER_DPCM;
   }
 
-  heightPx (s) {
-    return Math.ceil(s * this.height)
+  heightPx(s) {
+    return Math.ceil(s * this.height);
   }
 }
 
 class ValuesToString {
-  constructor (precision) {
-    this.precision = precision
+  constructor(precision) {
+    this.precision = precision;
   }
 
-  widthScreenCm (v) {
-    return v.toFixed(this.precision)
+  widthScreenCm(v) {
+    return v.toFixed(this.precision);
   }
 
-  widthPaperCm (v) {
-    return v.toFixed(this.precision)
+  widthPaperCm(v) {
+    return v.toFixed(this.precision);
   }
 
-  widthPx (v) {
-    return v.toFixed(0)
+  widthPx(v) {
+    return v.toFixed(0);
   }
 
-  heightScreenCm (v) {
-    return v.toFixed(this.precision)
+  heightScreenCm(v) {
+    return v.toFixed(this.precision);
   }
 
-  heightPaperCm (v) {
-    return v.toFixed(this.precision)
+  heightPaperCm(v) {
+    return v.toFixed(this.precision);
   }
 
-  heightPx (v) {
-    return v.toFixed(0)
+  heightPx(v) {
+    return v.toFixed(0);
   }
 }
 
 export default {
-  name: 'ImageConfig',
+  name: "ImageConfig",
   mixins: [errors],
   props: {
     working: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data: () => ({
     scale: 1,
@@ -283,20 +281,16 @@ export default {
       widthPx: 0,
       heightScreenCm: 0,
       heightPaperCm: 0,
-      heightPx: 0
-    }
+      heightPx: 0,
+    },
   }),
   computed: {
-    ...mapGetters('topology', [
-      'boundingBox'
-    ]),
+    ...mapGetters("topology", ["boundingBox"]),
 
-    disabled () {
-      return this.working ||
-        this.width <= 0 ||
-        this.height <= 0
+    disabled() {
+      return this.working || this.width <= 0 || this.height <= 0;
     },
-    invalid () {
+    invalid() {
       return (
         this.$v.tileHeightPx.$invalid ||
         this.$v.tileWidthPx.$invalid ||
@@ -306,81 +300,79 @@ export default {
         this.$v.size.widthPaperCm.$invalid ||
         this.$v.size.widthPx.$invalid ||
         this.$v.size.widthScreenCm.$invalid
-      )
+      );
     },
 
-    width () {
-      return this.boundingBox().width
+    width() {
+      return this.boundingBox().width;
     },
-    height () {
-      return this.boundingBox().height
-    },
-
-    tilesWidthNumber () {
-      return Math.max(1, Math.ceil(this.size.widthPx / this.tileWidthPx))
-    },
-    tilesHeightNumber () {
-      return Math.max(1, Math.ceil(this.size.heightPx / this.tileHeightPx))
+    height() {
+      return this.boundingBox().height;
     },
 
-    valuesToScale () {
-      return new ValuesToScale(this.width, this.height)
+    tilesWidthNumber() {
+      return Math.max(1, Math.ceil(this.size.widthPx / this.tileWidthPx));
     },
-    scaleValues () {
-      return new ScaleValues(this.width, this.height)
+    tilesHeightNumber() {
+      return Math.max(1, Math.ceil(this.size.heightPx / this.tileHeightPx));
     },
-    valuesToString () {
-      return new ValuesToString(2)
-    }
+
+    valuesToScale() {
+      return new ValuesToScale(this.width, this.height);
+    },
+    scaleValues() {
+      return new ScaleValues(this.width, this.height);
+    },
+    valuesToString() {
+      return new ValuesToString(2);
+    },
   },
   watch: {
-    width () {
-      this.recomputeAll(1)
+    width() {
+      this.recomputeAll(1);
     },
-    height () {
-      this.recomputeAll(1)
-    }
+    height() {
+      this.recomputeAll(1);
+    },
   },
-  mounted () {
-    this.recomputeAll(1)
+  mounted() {
+    this.recomputeAll(1);
   },
   methods: {
-    recompute (initiator, value) {
-      const scale = this.valuesToScale[initiator](+value)
-      Object.keys(this.size).forEach(key => {
+    recompute(initiator, value) {
+      const scale = this.valuesToScale[initiator](+value);
+      Object.keys(this.size).forEach((key) => {
         if (key === initiator) {
-          this.size[key] = `${value}`
+          this.size[key] = `${value}`;
         } else {
           this.size[key] = this.valuesToString[key](
             this.scaleValues[key](scale)
-          )
+          );
         }
-      })
-      this.scale = scale
+      });
+      this.scale = scale;
     },
-    recomputeAll (scale) {
-      Object.keys(this.size).forEach(key => {
-        this.size[key] = this.valuesToString[key](
-          this.scaleValues[key](scale)
-        )
-      })
+    recomputeAll(scale) {
+      Object.keys(this.size).forEach((key) => {
+        this.size[key] = this.valuesToString[key](this.scaleValues[key](scale));
+      });
     },
-    render () {
-      this.$emit('render', {
+    render() {
+      this.$emit("render", {
         size: {
           width: +this.size.widthPx,
           height: +this.size.heightPx,
-          scale: this.scale
+          scale: this.scale,
         },
         tiles: this.tiles
           ? {
               width: this.tileWidthPx,
-              height: this.tileHeightPx
+              height: this.tileHeightPx,
             }
           : false,
-        dark: this.dark
-      })
-    }
+        dark: this.dark,
+      });
+    },
   },
   validations: {
     tileHeightPx: { integer, minValue: minValue(1) },
@@ -391,8 +383,8 @@ export default {
       heightScreenCm: { decimal, minValue: minValue(0) },
       widthPaperCm: { decimal, minValue: minValue(0) },
       widthPx: { integer, minValue: minValue(1) },
-      widthScreenCm: { decimal, minValue: minValue(0) }
-    }
-  }
-}
+      widthScreenCm: { decimal, minValue: minValue(0) },
+    },
+  },
+};
 </script>

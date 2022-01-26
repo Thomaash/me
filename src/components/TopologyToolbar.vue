@@ -14,60 +14,64 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'TopologyToolbar',
+  name: "TopologyToolbar",
   props: {
     undoRedo: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
-    ...mapGetters('topology', ['canUndo', 'canRedo']),
-    show () {
-      return !!this.items.length
+    ...mapGetters("topology", ["canUndo", "canRedo"]),
+    show() {
+      return !!this.items.length;
     },
-    viewURL () {
-      return this.$route.name.startsWith('Canvas')
+    viewURL() {
+      return this.$route.name.startsWith("Canvas")
         ? `/view${this.$route.fullPath}`
-        : '/view/canvas'
+        : "/view/canvas";
     },
-    items () {
-      return [{
-        icon: 'mdi-undo',
-        text: 'Undo',
-        action: () => {
-          this.$store.dispatch('topology/undo')
+    items() {
+      return [
+        {
+          icon: "mdi-undo",
+          text: "Undo",
+          action: () => {
+            this.$store.dispatch("topology/undo");
+          },
+          show: this.undoRedo,
+          enabled: this.canUndo,
         },
-        show: this.undoRedo,
-        enabled: this.canUndo
-      }, {
-        icon: 'mdi-redo',
-        text: 'Redo',
-        action: () => {
-          this.$store.dispatch('topology/redo')
+        {
+          icon: "mdi-redo",
+          text: "Redo",
+          action: () => {
+            this.$store.dispatch("topology/redo");
+          },
+          show: this.undoRedo,
+          enabled: this.canRedo,
         },
-        show: this.undoRedo,
-        enabled: this.canRedo
-      }, {
-        icon: 'mdi-open-in-new',
-        text: 'Open a new view',
-        action: this.openViewPopup,
-        show: true,
-        enabled: true
-      }].filter(({ show }) => show)
-    }
+        {
+          icon: "mdi-open-in-new",
+          text: "Open a new view",
+          action: this.openViewPopup,
+          show: true,
+          enabled: true,
+        },
+      ].filter(({ show }) => show);
+    },
   },
   methods: {
-    openViewPopup () {
+    openViewPopup() {
       window.open(
-        `${this.$router.mode === 'hash' ? '#' : ''}${this.viewURL}`,
-        '',
-        '_blank'
-      )
-    }
-  }
-}
+        `${this.$router.mode === "hash" ? "#" : ""}${this.viewURL}`,
+        "",
+        "_blank"
+      );
+    },
+  },
+};
 </script>

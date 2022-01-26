@@ -7,14 +7,14 @@
 </template>
 
 <script>
-import license from '@/../LICENSE'
+import license from "@/../LICENSE";
 
 export default {
-  name: 'License',
+  name: "AppLicense",
   computed: {
-    license () {
-      return license.split(/\n\n/g)
-    }
-  }
-}
+    license() {
+      return license.split(/\n\n/g);
+    },
+  },
+};
 </script>
