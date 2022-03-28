@@ -65,10 +65,10 @@ export default {
         return !!this.$store.state.working
       },
       set (value) {
-        if (value) {
+        if (value === true) {
           this.$store.commit('clearAlert')
         }
-        this.$store.commit('setWorking', { working: !!value })
+        this.$store.commit('setWorking', { working: value })
       }
     }
   },
@@ -108,61 +108,66 @@ export default {
         this.working = false
       }
     },
-    async downloadImage ({ size, dark }) {
+    async downloadImage ({ size, tiles, dark }) {
       this.dark = dark
 
       await new Promise((resolve) => this.$nextTick(resolve))
 
-      const sizeString = `${size.width.toLocaleString()}\xa0×\xa0${size.height.toLocaleString()}\xa0px (${((size.width * size.height) / 1e6).toLocaleString()}\xa0Mpx)`
+      const sizeString = tiles
+        ? `${(Math.ceil(size.width / tiles.width) * Math.ceil(size.height / tiles.height)).toLocaleString()} tiles of ${tiles.width.toLocaleString()}\xa0×\xa0${tiles.height.toLocaleString()}\xa0px (${((tiles.width * tiles.height) / 1e6).toLocaleString()}\xa0Mpx) each`
+        : `${size.width.toLocaleString()}\xa0×\xa0${size.height.toLocaleString()}\xa0px (${((size.width * size.height) / 1e6).toLocaleString()}\xa0Mpx)`
 
       try {
         this.working = true
         this.$emit('log', [])
 
-        const { blob } = await this.tryRenderingMethods(size, sizeString)
+        this.showAlert(
+          'info',
+          `Rendering image ${tiles ? 'as tiles' : 'as single picture'}, size: ${sizeString}.`
+        )
+
+        await this.renderImage(
+          {
+            canvasHeight: size.height,
+            canvasWidth: size.width,
+            scale: size.scale,
+            tileHeight: tiles ? tiles.height : size.height,
+            tileWidth: tiles ? tiles.width : size.width
+          },
+          async (blob, { col, cols, doneTiles, row, rows, totalTiles }) => {
+            const tileSuffixDigits = tiles
+              ? Math.ceil(Math.log10(Math.max(cols, rows)))
+              : 0
+
+            const tileSuffix = cols === 1 && rows === 1
+              ? null
+              : `${(`${col}`).padStart(tileSuffixDigits, '0')}x${(`${row}`).padStart(tileSuffixDigits, '0')}`
+
+            const url = URL.createObjectURL(blob)
+            try {
+              await new Promise((resolve) => setTimeout(resolve, 50))
+              download(this.getFilename([tileSuffix, 'png'].filter((v) => v != null).join('.')), url)
+              await new Promise((resolve) => setTimeout(resolve, 50))
+              this.$store.commit('setWorking', { curr: doneTiles, max: totalTiles })
+            } finally {
+              URL.revokeObjectURL(url)
+            }
+          }
+        )
 
         this.showAlert('success', `Image rendered, size: ${sizeString}.`)
-        const url = URL.createObjectURL(blob)
-        download(this.getFilename('png'), url)
-        URL.revokeObjectURL(url)
       } catch (error) {
+        console.error(error)
         this.showAlert(
           'error',
-          `Image rendering failed. Probably too large image for this browser, size: ${sizeString}.`
+          `Image rendering failed. Probably too large image for this browser, size: ${sizeString}. You can try smaller size or rendering it as tiles.`
         )
       } finally {
         this.working = false
       }
     },
-    async tryRenderingMethods (size, sizeString) {
+    async renderImage (size, onBlob) {
       try {
-        return await this.renderImage(size, sizeString, false)
-      } catch (error) {
-        const confirmed = await this.$confirm(
-          '<p>Fallback method can be used to bypass your browsers limitations, but it is <strong>very slow</strong> and <strong>needs a lot of memory</strong>.</p>',
-          {
-            buttonFalseText: 'Give up',
-            buttonTrueText: 'Try fallback method',
-            icon: this.$vuetify.icons.error,
-            title: 'Rendering failed',
-            width: 600
-          }
-        )
-
-        if (confirmed) {
-          return this.renderImage(size, sizeString, true)
-        } else {
-          throw error
-        }
-      }
-    },
-    async renderImage (size, sizeString, fallback) {
-      try {
-        this.showAlert(
-          'info',
-          `Rendering image using ${fallback ? 'slow fallback' : 'fast native'} method, size: ${sizeString}.`
-        )
-
         await new Promise(resolve => {
           this.visCanvasResolve = resolve
           this.visCanvasOn = true
@@ -171,17 +176,10 @@ export default {
         // The timeout prevents glitches like missing node icons, especially in Firefox.
         await new Promise(resolve => window.setTimeout(resolve, 100))
 
-        return await this.$refs.visCanvas.toBlob(
-          size,
-          fallback,
-          progress => {
-            this.$store.commit('setWorking', {
-              working: true,
-              curr: progress,
-              max: 1
-            })
-          }
-        )
+        return await this.$refs.visCanvas.toTileBlobs({
+          ...size,
+          onBlob
+        })
       } finally {
         this.visCanvasOn = false
       }
