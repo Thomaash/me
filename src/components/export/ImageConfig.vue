@@ -100,13 +100,61 @@
       />
     </v-flex>
 
+    <v-flex xs12 sm12>
+      <v-switch
+        v-model="tiles"
+        :disabled="disabled"
+        label="Render as tiles"
+      />
+    </v-flex>
+
+    <template v-if="tiles">
+      <v-flex xs12 sm4>
+        <v-text-field
+          ref="sizeTileWidthPx"
+          v-model="tileWidthPx"
+          :disabled="disabled"
+          :min="1"
+          :step="1"
+          :error-messages="errors.tileWidthPx"
+          :rules="[badNumberRule('sizeTileWidthPx')]"
+          label="The width of each tile"
+          type="number"
+          suffix="px"
+        />
+      </v-flex>
+      <v-flex xs12 sm4>
+        <v-text-field
+          ref="sizeTileHeightPx"
+          v-model="tileHeightPx"
+          :disabled="disabled"
+          :min="1"
+          :step="1"
+          :error-messages="errors.tileHeightPx"
+          :rules="[badNumberRule('sizeTileHeightPx')]"
+          label="The height of each tile"
+          type="number"
+          suffix="px"
+        />
+      </v-flex>
+
+      <v-flex xs12 sm4>
+        <v-text-field
+          label="The number of tiles"
+          readonly
+          :disabled="disabled"
+          :value="`${tilesWidthNumber}x${tilesHeightNumber} (${tilesWidthNumber * tilesHeightNumber})`"
+        />
+      </v-flex>
+    </template>
+
     <v-flex xs12>
       <v-btn
         :disabled="disabled || invalid"
         outlined
         block
         color="primary"
-        @click="$emit('render', { size: { width: +size.widthPx, height: +size.heightPx, scale }, dark })"
+        @click="render"
       >
         Render image
       </v-btn>
@@ -226,6 +274,9 @@ export default {
   data: () => ({
     scale: 1,
     dark: false,
+    tiles: false,
+    tileHeightPx: 256,
+    tileWidthPx: 256,
     size: {
       widthScreenCm: 0,
       widthPaperCm: 0,
@@ -247,6 +298,8 @@ export default {
     },
     invalid () {
       return (
+        this.$v.tileHeightPx.$invalid ||
+        this.$v.tileWidthPx.$invalid ||
         this.$v.size.heightPaperCm.$invalid ||
         this.$v.size.heightPx.$invalid ||
         this.$v.size.heightScreenCm.$invalid ||
@@ -261,6 +314,13 @@ export default {
     },
     height () {
       return this.boundingBox().height
+    },
+
+    tilesWidthNumber () {
+      return Math.max(1, Math.ceil(this.size.widthPx / this.tileWidthPx))
+    },
+    tilesHeightNumber () {
+      return Math.max(1, Math.ceil(this.size.heightPx / this.tileHeightPx))
     },
 
     valuesToScale () {
@@ -304,9 +364,27 @@ export default {
           this.scaleValues[key](scale)
         )
       })
+    },
+    render () {
+      this.$emit('render', {
+        size: {
+          width: +this.size.widthPx,
+          height: +this.size.heightPx,
+          scale: this.scale
+        },
+        tiles: this.tiles
+          ? {
+              width: this.tileWidthPx,
+              height: this.tileHeightPx
+            }
+          : false,
+        dark: this.dark
+      })
     }
   },
   validations: {
+    tileHeightPx: { integer, minValue: minValue(1) },
+    tileWidthPx: { integer, minValue: minValue(1) },
     size: {
       heightPaperCm: { decimal, minValue: minValue(0) },
       heightPx: { integer, minValue: minValue(1) },

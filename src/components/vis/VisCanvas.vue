@@ -332,16 +332,16 @@ export default {
         this.updateLabels()
       }
     },
-    async toBlob ({ width, height, scale } = { scale: 1 }, fallback = false, progressObserver = () => {}) {
+    async toTileBlobs ({ canvasHeight, canvasWidth, onBlob, scale, tileHeight, tileWidth }) {
       const bb = await this.boundingBox({ scale })
 
       // Solve rounding issues (usually ±1 px)
       // Ensures that the user gets the size they see
-      if (width) {
-        bb.width = width
+      if (canvasWidth) {
+        bb.width = canvasWidth
       }
-      if (height) {
-        bb.height = height
+      if (canvasHeight) {
+        bb.height = canvasHeight
       }
 
       // Rendering zero sized images doesn't work nor makes sense
@@ -364,110 +364,15 @@ export default {
       this.net.on('beforeDrawing', beforeDrawingHandler)
 
       try {
-        return fallback
-          ? await this._toBlobJimp(bb, scale, progressObserver)
-          : await this._toBlobNative(bb, scale, progressObserver)
-      } finally {
-        this.net.off('beforeDrawing', beforeDrawingHandler)
-      }
-    },
-    async _toBlobNative (bb, scale, progressObserver) {
-      // Resize the canvas to image size
-      await new Promise(resolve => {
-        const handler = () => {
-          this.net.off('resize', handler)
-          resolve()
-        }
-
-        this.net.on('resize', handler)
-        this.width = bb.width
-        this.height = bb.height
-      })
-
-      // Fit all items into the view and scale accordingly
-      this.net.fit()
-      this.net.moveTo({
-        scale,
-        animation: false
-      })
-
-      // Render image blob
-      const blob = await new Promise(resolve => {
-        const handler = ctx => {
-          this.net.off('afterDrawing', handler)
-          ctx.canvas.toBlob(resolve, 'image/png')
-        }
-
-        this.net.on('afterDrawing', handler)
-        this.net.redraw()
-      })
-
-      this.width = null
-      this.height = null
-
-      if (blob) {
-        return {
-          blob,
-          width: bb.width,
-          height: bb.height
-        }
-      } else {
-        throw new Error('Image size is probably out of limits.')
-      }
-    },
-    _toBlobJimp (bb, scale, progressObserver) {
-      return (async (resolve, reject) => {
-        const tileSize = 1000
-
         // Compute the number of columns and rows of tiles
-        const cols = Math.ceil(bb.width / tileSize)
-        const rows = Math.ceil(bb.height / tileSize)
+        const cols = Math.ceil(bb.width / tileWidth)
+        const rows = Math.ceil(bb.height / tileHeight)
 
         // Offset for Vis coordinates, Vis always points to the center, not topleft corner
         const offset = {
-          x: -(bb.sX + tileSize / 2),
-          y: -(bb.sY + tileSize / 2)
+          x: -(bb.sX + tileWidth / 2),
+          y: -(bb.sY + tileHeight / 2)
         }
-
-        // Init the worker and it's clean up function
-        const worker = new Worker('./JoinImages.worker.js', { type: 'module' })
-        const terminateWorker = () => {
-          this.cleanUpCallbacks.splice(this.cleanUpCallbacks.indexOf(terminateWorker), 1)
-          worker.terminate()
-        }
-        this.cleanUpCallbacks.push(terminateWorker)
-
-        worker.onmessage = event => {
-          const { progress, blob, errorMsg } = event.data
-          progressObserver(progress)
-          if (progress === 1) {
-            if (blob) {
-              resolve({
-                blob,
-                width: bb.width,
-                height: bb.height
-              })
-            } else {
-              reject(new Error(`Image rendering failed: ${errorMsg}.`))
-            }
-
-            terminateWorker()
-            this.width = null
-            this.height = null
-          }
-        }
-
-        // Prepare empty image in the worker
-        worker.postMessage({
-          type: 'init',
-          payload: {
-            width: bb.width,
-            height: bb.height,
-            tileSize,
-            cols,
-            rows
-          }
-        })
 
         // Resize the canvas to tile size
         await new Promise(resolve => {
@@ -477,8 +382,8 @@ export default {
           }
 
           this.net.on('resize', handler)
-          this.width = tileSize
-          this.height = tileSize
+          this.width = tileWidth
+          this.height = tileHeight
         })
 
         // Apply scale
@@ -488,14 +393,16 @@ export default {
         })
 
         // Render the tiles
+        const totalTiles = rows * cols
+        let doneTiles = 0
         for (let row = 0; row < rows; ++row) {
           for (let col = 0; col < cols; ++col) {
             // Move the viewport
             this.net.moveTo({
               position: { x: 0, y: 0 },
               offset: {
-                x: offset.x - tileSize * col,
-                y: offset.y - tileSize * row
+                x: offset.x - tileWidth * col,
+                y: offset.y - tileHeight * row
               },
               animation: false
             })
@@ -511,18 +418,16 @@ export default {
               this.net.redraw()
             })
 
-            // Send the tile blob to the worker
-            worker.postMessage({
-              type: 'add-tile',
-              payload: {
-                blob,
-                col,
-                row
-              }
-            })
+            // Update progress
+            ++doneTiles
+
+            // Send the tile blob to the caller
+            await onBlob(blob, { col, cols, doneTiles, row, rows, totalTiles })
           }
         }
-      })()
+      } finally {
+        this.net.off('beforeDrawing', beforeDrawingHandler)
+      }
     },
     isEdge (type) {
       return type === 'link' || type === 'association'
