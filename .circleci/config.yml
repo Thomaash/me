@@ -51,6 +51,7 @@ jobs:
       - run: touch ~/.ssh/known_hosts
       - run: printf '%s\n' "$KNOWN_HOSTS" >> ~/.ssh/known_hosts
 
+      - run: sudo apt update
       - run: sudo apt install rsync
 
       - run: npm run deploy -- --ci
