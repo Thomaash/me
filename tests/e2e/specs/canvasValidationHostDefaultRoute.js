@@ -1,8 +1,8 @@
-import testSet, { ips } from '../support/testItemsFieldValidity'
+import testSet, { ips } from "../support/testItemsFieldValidity";
 
 testSet({
-  name: 'Host default route',
-  type: 'host',
-  field: 'edit-default-route',
-  values: ips
-})
+  name: "Host default route",
+  type: "host",
+  field: "edit-default-route",
+  values: ips,
+});

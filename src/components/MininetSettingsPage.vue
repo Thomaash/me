@@ -104,55 +104,50 @@
 </template>
 
 <script>
-import LoadingSpinner from '@/components/LoadingSpinner'
-import ThreeStateCheckbox from '@/components/ThreeStateCheckbox'
-import errors from '@/validation/errors'
-import { ipWithMask, port } from '@/validation/rules'
-import { logLevels } from '@/components/selects'
-import { mapGetters } from 'vuex'
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ThreeStateCheckbox from "@/components/ThreeStateCheckbox";
+import errors from "@/validation/errors";
+import { ipWithMask, port } from "@/validation/rules";
+import { logLevels } from "@/components/selects";
+import { mapGetters } from "vuex";
 
-function ComputedStoreProperty (key) {
+function ComputedStoreProperty(key) {
   this.get = function () {
-    return this.data[key]
-  }
+    return this.data[key];
+  };
   this.set = function (value) {
-    this.$store.commit('topology/setValues', {
-      [key]: value
-    })
-  }
+    this.$store.commit("topology/setValues", {
+      [key]: value,
+    });
+  };
 }
 
 export default {
-  name: 'Script',
+  name: "MininetSettiongsPage",
   components: { LoadingSpinner, ThreeStateCheckbox },
   mixins: [errors],
   data: () => ({
-    logLevels
+    logLevels,
   }),
   computed: {
-    ...mapGetters('topology', [
-      'data'
-    ]),
-    loading () {
-      return this.$store.state.loading
+    ...mapGetters("topology", ["data"]),
+    loading() {
+      return this.$store.state.loading;
     },
-    autoSetMAC: new ComputedStoreProperty('autoSetMAC'),
-    autoStaticARP: new ComputedStoreProperty('autoStaticARP'),
-    inNamespace: new ComputedStoreProperty('inNamespace'),
-    ipBase: new ComputedStoreProperty('ipBase'),
-    listenPortBase: new ComputedStoreProperty('listenPortBase'),
-    logLevel: new ComputedStoreProperty('logLevel'),
-    projectName: new ComputedStoreProperty('projectName'),
-    spawnTerminals: new ComputedStoreProperty('spawnTerminals'),
-    startScript: new ComputedStoreProperty('startScript'),
-    stopScript: new ComputedStoreProperty('stopScript')
+    autoSetMAC: new ComputedStoreProperty("autoSetMAC"),
+    autoStaticARP: new ComputedStoreProperty("autoStaticARP"),
+    inNamespace: new ComputedStoreProperty("inNamespace"),
+    ipBase: new ComputedStoreProperty("ipBase"),
+    listenPortBase: new ComputedStoreProperty("listenPortBase"),
+    logLevel: new ComputedStoreProperty("logLevel"),
+    projectName: new ComputedStoreProperty("projectName"),
+    spawnTerminals: new ComputedStoreProperty("spawnTerminals"),
+    startScript: new ComputedStoreProperty("startScript"),
+    stopScript: new ComputedStoreProperty("stopScript"),
   },
   validations: {
     listenPortBase: { port },
-    ipBase: { ipWithMask }
-  }
-}
+    ipBase: { ipWithMask },
+  },
+};
 </script>
-
-<style scoped>
-</style>

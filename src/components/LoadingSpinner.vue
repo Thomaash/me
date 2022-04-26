@@ -1,11 +1,16 @@
 <template>
-  <v-progress-circular :size="100" class="loading-spinner" color="primary" indeterminate />
+  <v-progress-circular
+    :size="100"
+    class="loading-spinner"
+    color="primary"
+    indeterminate
+  />
 </template>
 
 <script>
 export default {
-  name: 'LoadingSpinner'
-}
+  name: "LoadingSpinner",
+};
 </script>
 
 <style scoped>

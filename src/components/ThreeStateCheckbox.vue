@@ -19,38 +19,37 @@ export default {
   props: {
     value: {
       type: Boolean,
-      default: undefined
+      default: undefined,
     },
     color: {
       type: String,
-      default: 'primary'
+      default: "primary",
     },
     label: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   data: () => ({
     states: [
-      { value: undefined, title: 'Default' },
-      { value: true, title: 'Enabled' },
-      { value: false, title: 'Disabled' }
-    ].map((value, index) => ({ ...value, index }))
+      { value: undefined, title: "Default" },
+      { value: true, title: "Enabled" },
+      { value: false, title: "Disabled" },
+    ].map((value, index) => ({ ...value, index })),
   }),
   computed: {
-    state () {
-      return this.states.find(({ value }) => value === this.value) || this.states[0]
-    }
+    state() {
+      return (
+        this.states.find(({ value }) => value === this.value) || this.states[0]
+      );
+    },
   },
   methods: {
-    cycle () {
-      const curr = this.state.index
-      const next = (curr + 1) % this.states.length
-      this.$emit('input', this.states[next].value)
-    }
-  }
-}
+    cycle() {
+      const curr = this.state.index;
+      const next = (curr + 1) % this.states.length;
+      this.$emit("input", this.states[next].value);
+    },
+  },
+};
 </script>
-
-<style scoped>
-</style>

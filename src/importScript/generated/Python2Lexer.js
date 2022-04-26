@@ -1,52 +1,54 @@
-// Generated from Python2.g4 by ANTLR 4.7.1
+// Generated from Python2.g4 by ANTLR 4.9.3
 // jshint ignore: start
-import antlr4 from 'antlr4/index';
-
-import { Python2Parser } from './Python2Parser';
-import { CommonToken } from 'antlr4';
-class IndentStack {
-    constructor() {
-        this._s = [];
-    }
-    empty() {
-        return this._s.length === 0;
-    }
-    push(wsval) {
-        this._s.push(wsval);
-    }
-    pop() {
-        this._s.pop();
-    }
-    wsval() {
-        if (this._s.length) return this._s[this._s.length - 1];
-        else return 0;
-    }
-}
-
-class TokenQueue {
-    constructor() {
-        this._q = [];
-    }
-    empty() {
-        return this._q.length === 0;
-    }
-    enq(t) {
-        this._q.push(t);
-    }
-    deq() {
-        return this._q.shift();
-    }
-}
-
-function ord(char) {
-    return char.charCodeAt();
-}
+import * as antlr4 from 'antlr4';
 
 
-var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u0002T\u02b3\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004",
-    "\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t",
-    "\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
+    import Python2Parser from './Python2Parser';
+    import { CommonToken } from 'antlr4';
+    class IndentStack {
+        constructor() {
+            this._s = [];
+        }
+        empty() {
+            return this._s.length === 0;
+        }
+        push(wsval) {
+            this._s.push(wsval);
+        }
+        pop() {
+            this._s.pop();
+        }
+        wsval() {
+            if (this._s.length) return this._s[this._s.length - 1];
+            else return 0;
+        }
+    }
+
+    class TokenQueue {
+        constructor() {
+            this._q = [];
+        }
+        empty() {
+            return this._q.length === 0;
+        }
+        enq(t) {
+            this._q.push(t);
+        }
+        deq() {
+            return this._q.shift();
+        }
+    }
+
+    function ord(char) {
+        return char.charCodeAt();
+    }
+
+
+
+const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
+    "\u5964\u0002T\u02b3\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003",
+    "\u0004\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007",
+    "\t\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
     "\f\t\f\u0004\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010",
     "\t\u0010\u0004\u0011\t\u0011\u0004\u0012\t\u0012\u0004\u0013\t\u0013",
     "\u0004\u0014\t\u0014\u0004\u0015\t\u0015\u0004\u0016\t\u0016\u0004\u0017",
@@ -499,24 +501,135 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003M\u0006\u0003N\u0007\u0003O\b\u0003P\t\u0003Q\n\u0003R\u000b"].join("");
 
 
-var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
+const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
-var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
+const decisionsToDFA = atn.decisionToState.map( (ds, index) => new antlr4.dfa.DFA(ds, index) );
 
-function Python2Lexer(input) {
-	antlr4.Lexer.call(this, input);
-    this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
-    return this;
-}
+export default class Python2Lexer extends antlr4.Lexer {
 
-Python2Lexer.prototype = Object.create(antlr4.Lexer.prototype);
-Python2Lexer.prototype.constructor = Python2Lexer;
+    static grammarFileName = "Python2.g4";
+    static channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
+	static modeNames = [ "DEFAULT_MODE" ];
+	static literalNames = [ null, "'@'", "'def'", "':'", "'='", "','", "'*'", 
+                         "'**'", "';'", "'+='", "'-='", "'*='", "'/='", 
+                         "'%='", "'&='", "'|='", "'^='", "'<<='", "'>>='", 
+                         "'**='", "'//='", "'>>'", "'del'", "'pass'", "'break'", 
+                         "'continue'", "'return'", "'raise'", "'import'", 
+                         "'from'", "'.'", "'as'", "'global'", "'exec'", 
+                         "'in'", "'assert'", "'if'", "'elif'", "'else'", 
+                         "'while'", "'for'", "'try'", "'finally'", "'with'", 
+                         "'except'", "'lambda'", "'or'", "'and'", "'not'", 
+                         "'<'", "'>'", "'=='", "'>='", "'<='", "'<>'", "'!='", 
+                         "'is'", "'|'", "'^'", "'&'", "'<<'", "'+'", "'-'", 
+                         "'/'", "'%'", "'//'", "'~'", "'`'", "'class'", 
+                         "'yield'", null, null, null, null, null, null, 
+                         "'('", "')'", "'{'", "'}'", "'['", "']'" ];
+	static symbolicNames = [ null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, null, null, 
+                          null, null, null, null, null, null, "NAME", "NUMBER", 
+                          "STRING", "LINENDING", "WHITESPACE", "COMMENT", 
+                          "OPEN_PAREN", "CLOSE_PAREN", "OPEN_BRACE", "CLOSE_BRACE", 
+                          "OPEN_BRACKET", "CLOSE_BRACKET", "UNKNOWN" ];
+	static ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", 
+                      "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", 
+                      "T__13", "T__14", "T__15", "T__16", "T__17", "T__18", 
+                      "T__19", "T__20", "T__21", "T__22", "T__23", "T__24", 
+                      "T__25", "T__26", "T__27", "T__28", "T__29", "T__30", 
+                      "T__31", "T__32", "T__33", "T__34", "T__35", "T__36", 
+                      "T__37", "T__38", "T__39", "T__40", "T__41", "T__42", 
+                      "T__43", "T__44", "T__45", "T__46", "T__47", "T__48", 
+                      "T__49", "T__50", "T__51", "T__52", "T__53", "T__54", 
+                      "T__55", "T__56", "T__57", "T__58", "T__59", "T__60", 
+                      "T__61", "T__62", "T__63", "T__64", "T__65", "T__66", 
+                      "T__67", "T__68", "NAME", "NUMBER", "STRING", "LINENDING", 
+                      "WHITESPACE", "COMMENT", "OPEN_PAREN", "CLOSE_PAREN", 
+                      "OPEN_BRACE", "CLOSE_BRACE", "OPEN_BRACKET", "CLOSE_BRACKET", 
+                      "UNKNOWN" ];
 
-Object.defineProperty(Python2Lexer.prototype, "atn", {
-        get : function() {
-                return atn;
+    constructor(input) {
+        super(input)
+        this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
+
+            this._openBRCount       = 0
+            this._suppressNewlines  = false
+            this._lineContinuation  = false
+            this._tokens            = new TokenQueue();
+            this._indents           = new IndentStack();
+            antlr4.Lexer.prototype.reset.call(this);
+
+    }
+
+    get atn() {
+        return atn;
+    }
+
+    nextToken () {
+        if (!this._tokens.empty()) {
+            return this._tokens.deq();
+        } else {
+            var t = antlr4.Lexer.prototype.nextToken.call(this);
+            if (t.type !== Python2Parser.EOF) return t;
+            else {
+                if (!this._suppressNewlines) {
+                    this.emitNewline();
+                }
+                this.emitFullDedent();
+                this.emitEndmarker();
+                this.emitEndToken(t);
+                return this._tokens.deq();
+            }
         }
-});
+
+    }
+
+    emitEndToken (token) {
+        this._tokens.enq(token);
+    }
+
+    emitIndent (length = 0, text = 'INDENT') {
+        var t = this.createToken(Python2Parser.INDENT, text, length);
+        this._tokens.enq(t);
+    }
+
+    emitDedent () {
+        var t = this.createToken(Python2Parser.DEDENT, 'DEDENT');
+        this._tokens.enq(t);
+    }
+
+    emitFullDedent () {
+        while (!this._indents.empty()) {
+            this._indents.pop();
+            this.emitDedent();
+        }
+    }
+
+    emitEndmarker () {
+        var t = this.createToken(Python2Parser.ENDMARKER, 'ENDMARKER');
+        this._tokens.enq(t);
+    }
+
+    emitNewline () {
+        var t = this.createToken(Python2Parser.NEWLINE, 'NEWLINE');
+        this._tokens.enq(t);
+    }   
+
+    createToken (type_, text="", length=0) {
+        var start = this._tokenStartCharIndex;
+        var stop = start + length;
+        var t = new CommonToken(this._tokenFactorySourcePair,
+                type_, this.DEFAULT_TOKEN_CHANNEL,
+                start, stop);
+        t.text = text;
+        return t;
+    }  
+
+}
 
 Python2Lexer.EOF = antlr4.Token.EOF;
 Python2Lexer.T__0 = 1;
@@ -602,149 +715,6 @@ Python2Lexer.OPEN_BRACKET = 80;
 Python2Lexer.CLOSE_BRACKET = 81;
 Python2Lexer.UNKNOWN = 82;
 
-Python2Lexer.prototype.channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
-
-Python2Lexer.prototype.modeNames = [ "DEFAULT_MODE" ];
-
-Python2Lexer.prototype.literalNames = [ null, "'@'", "'def'", "':'", "'='", 
-                                        "','", "'*'", "'**'", "';'", "'+='", 
-                                        "'-='", "'*='", "'/='", "'%='", 
-                                        "'&='", "'|='", "'^='", "'<<='", 
-                                        "'>>='", "'**='", "'//='", "'>>'", 
-                                        "'del'", "'pass'", "'break'", "'continue'", 
-                                        "'return'", "'raise'", "'import'", 
-                                        "'from'", "'.'", "'as'", "'global'", 
-                                        "'exec'", "'in'", "'assert'", "'if'", 
-                                        "'elif'", "'else'", "'while'", "'for'", 
-                                        "'try'", "'finally'", "'with'", 
-                                        "'except'", "'lambda'", "'or'", 
-                                        "'and'", "'not'", "'<'", "'>'", 
-                                        "'=='", "'>='", "'<='", "'<>'", 
-                                        "'!='", "'is'", "'|'", "'^'", "'&'", 
-                                        "'<<'", "'+'", "'-'", "'/'", "'%'", 
-                                        "'//'", "'~'", "'`'", "'class'", 
-                                        "'yield'", null, null, null, null, 
-                                        null, null, "'('", "')'", "'{'", 
-                                        "'}'", "'['", "']'" ];
-
-Python2Lexer.prototype.symbolicNames = [ null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, null, null, 
-                                         null, null, null, null, "NAME", 
-                                         "NUMBER", "STRING", "LINENDING", 
-                                         "WHITESPACE", "COMMENT", "OPEN_PAREN", 
-                                         "CLOSE_PAREN", "OPEN_BRACE", "CLOSE_BRACE", 
-                                         "OPEN_BRACKET", "CLOSE_BRACKET", 
-                                         "UNKNOWN" ];
-
-Python2Lexer.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", 
-                                     "T__5", "T__6", "T__7", "T__8", "T__9", 
-                                     "T__10", "T__11", "T__12", "T__13", 
-                                     "T__14", "T__15", "T__16", "T__17", 
-                                     "T__18", "T__19", "T__20", "T__21", 
-                                     "T__22", "T__23", "T__24", "T__25", 
-                                     "T__26", "T__27", "T__28", "T__29", 
-                                     "T__30", "T__31", "T__32", "T__33", 
-                                     "T__34", "T__35", "T__36", "T__37", 
-                                     "T__38", "T__39", "T__40", "T__41", 
-                                     "T__42", "T__43", "T__44", "T__45", 
-                                     "T__46", "T__47", "T__48", "T__49", 
-                                     "T__50", "T__51", "T__52", "T__53", 
-                                     "T__54", "T__55", "T__56", "T__57", 
-                                     "T__58", "T__59", "T__60", "T__61", 
-                                     "T__62", "T__63", "T__64", "T__65", 
-                                     "T__66", "T__67", "T__68", "NAME", 
-                                     "NUMBER", "STRING", "LINENDING", "WHITESPACE", 
-                                     "COMMENT", "OPEN_PAREN", "CLOSE_PAREN", 
-                                     "OPEN_BRACE", "CLOSE_BRACE", "OPEN_BRACKET", 
-                                     "CLOSE_BRACKET", "UNKNOWN" ];
-
-Python2Lexer.prototype.grammarFileName = "Python2.g4";
-
-
-var old_lexer = Python2Lexer;
-Python2Lexer = function() {
-    old_lexer.apply(this, arguments);
-    this._openBRCount       = 0
-    this._suppressNewlines  = false
-    this._lineContinuation  = false
-    this._tokens            = new TokenQueue();
-    this._indents           = new IndentStack();
-    antlr4.Lexer.prototype.reset.call(this);
-}
-
-Python2Lexer.prototype = Object.create(old_lexer.prototype);
-Python2Lexer.prototype.constructor = Python2Lexer;
-
-Python2Lexer.prototype.nextToken = function() {
-    if (!this._tokens.empty()) {
-        return this._tokens.deq();
-    } else {
-        var t = antlr4.Lexer.prototype.nextToken.call(this);
-        if (t.type !== Python2Parser.EOF) return t;
-        else {
-            if (!this._suppressNewlines) {
-                this.emitNewline();
-            }
-            this.emitFullDedent();
-            this.emitEndmarker();
-            this.emitEndToken(t);
-            return this._tokens.deq();
-        }
-    }
-
-}
-
-Python2Lexer.prototype.emitEndToken = function (token) {
-    this._tokens.enq(token);
-}
-
-Python2Lexer.prototype.emitIndent = function (length = 0, text = 'INDENT') {
-    var t = this.createToken(Python2Parser.INDENT, text, length);
-    this._tokens.enq(t);
-}
-
-Python2Lexer.prototype.emitDedent = function () {
-    var t = this.createToken(Python2Parser.DEDENT, 'DEDENT');
-    this._tokens.enq(t);
-}
-
-Python2Lexer.prototype.emitFullDedent = function () {
-    while (!this._indents.empty()) {
-        this._indents.pop();
-        this.emitDedent();
-    }
-}
-
-Python2Lexer.prototype.emitEndmarker = function () {
-    var t = this.createToken(Python2Parser.ENDMARKER, 'ENDMARKER');
-    this._tokens.enq(t);
-}
-
-Python2Lexer.prototype.emitNewline = function () {
-    var t = this.createToken(Python2Parser.NEWLINE, 'NEWLINE');
-    this._tokens.enq(t);
-}
-
-Python2Lexer.prototype.createToken = function (type_, text="", length=0) {
-    var start = this._tokenStartCharIndex;
-    var stop = start + length;
-    var t = new CommonToken(this._tokenFactorySourcePair,
-            type_, this.DEFAULT_TOKEN_CHANNEL,
-            start, stop);
-    t.text = text;
-    return t;
-}
-
-
 Python2Lexer.prototype.action = function(localctx, ruleIndex, actionIndex) {
 	switch (ruleIndex) {
 	case 72:
@@ -775,6 +745,7 @@ Python2Lexer.prototype.action = function(localctx, ruleIndex, actionIndex) {
 		throw "No registered action for:" + ruleIndex;
 	}
 };
+
 
 Python2Lexer.prototype.LINENDING_action = function(localctx , actionIndex) {
 	switch (actionIndex) {
@@ -903,5 +874,4 @@ Python2Lexer.prototype.CLOSE_BRACKET_action = function(localctx , actionIndex) {
 };
 
 
-export { Python2Lexer };
 

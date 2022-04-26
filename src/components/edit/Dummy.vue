@@ -19,17 +19,14 @@
 </template>
 
 <script>
-import common from './common'
+import common from "./common";
 
 export default {
-  name: 'DummyEdit',
+  name: "DummyEdit",
   mixins: [common],
   data: () => ({
     valid: false,
-    item: {}
-  })
-}
+    item: {},
+  }),
+};
 </script>
-
-<style scoped>
-</style>

@@ -4,9 +4,9 @@
 
     <p>
       Build date: {{ buildDate }}
-      <br>
+      <br />
       Commit date: {{ buildCommitDate }}
-      <br>
+      <br />
       Commit hash:
       <a :href="'https://github.com/Thomaash/me/commit/' + buildCommitHash">
         {{ buildCommitHash }}
@@ -22,17 +22,17 @@
 
 <script>
 export default {
-  name: 'BuildInfo',
+  name: "BuildInfo",
   computed: {
-    buildDate () {
-      return process.env.VUE_APP_BUILD_DATE
+    buildDate() {
+      return process.env.VUE_APP_BUILD_DATE;
     },
-    buildCommitHash () {
-      return process.env.VUE_APP_BUILD_COMMIT_HASH
+    buildCommitHash() {
+      return process.env.VUE_APP_BUILD_COMMIT_HASH;
     },
-    buildCommitDate () {
-      return process.env.VUE_APP_BUILD_COMMIT_DATE
-    }
-  }
-}
+    buildCommitDate() {
+      return process.env.VUE_APP_BUILD_COMMIT_DATE;
+    },
+  },
+};
 </script>

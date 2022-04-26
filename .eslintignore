@@ -1,6 +1,3 @@
-/build/
-/config/
+!.eslintrc.js
 /dist/
-/*.js
-/test/unit/coverage/
 /src/importScript/generated/

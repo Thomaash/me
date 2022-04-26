@@ -1,8 +1,8 @@
-import testSet, { ips } from '../support/testItemsFieldValidity'
+import testSet, { ips } from "../support/testItemsFieldValidity";
 
 testSet({
-  name: 'Switch IP',
-  type: 'switch',
-  field: 'edit-ip',
-  values: ips
-})
+  name: "Switch IP",
+  type: "switch",
+  field: "edit-ip",
+  values: ips,
+});
