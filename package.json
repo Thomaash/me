@@ -13,7 +13,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.18.2",
+    "@babel/eslint-parser": "7.18.9",
     "@mdi/font": "6.9.96",
     "@types/uuid": "8.3.4",
     "@vue/cli-plugin-babel": "5.0.8",
