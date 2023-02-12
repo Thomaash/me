@@ -1,4 +1,4 @@
-describe("Mininet settings", () => {
+describe("Mininet settings", { testIsolation: false }, () => {
   const checkboxPropsFromUnset = {
     setTrue: {
       clicks: 1,

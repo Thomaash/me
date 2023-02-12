@@ -25,10 +25,9 @@
             :key="'example' + i"
             @click.stop
           >
-            <v-list-item-title
-              @click="importData(example.data)"
-              v-text="example.title"
-            />
+            <v-list-item-title @click="importData(example.data)">{{
+              example.title
+            }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>

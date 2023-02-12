@@ -16,13 +16,13 @@
           class="with-title combination"
           :title="getTitleFor(item.combination)"
         >
-          <span
+          <component
             :is="c.tag"
             v-for="(c, i) in parse(item.combination)"
             :key="i"
             class="monospace"
-            v-text="c.text"
-          />
+            >{{ c.text }}</component
+          >
         </div>
       </template>
       <template #[`item.description`]="{ item }">

@@ -1,5 +1,5 @@
 export default function ({ name, type, field, values }) {
-  describe(name, () => {
+  describe(name, { testIsolation: false }, () => {
     describe("Init", () => {
       it("Open new empty canvas", () => {
         cy.meOpen();

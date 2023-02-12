@@ -15,7 +15,7 @@
           style="flex-grow: 0"
           @dblclick="fullscreen = !fullscreen"
         >
-          <v-icon class="mr-2" v-text="'$vuetify.icons.net-' + themeType" />
+          <v-icon class="mr-2">{{ `$vuetify.icons.net-${themeType}` }}</v-icon>
           <h3 class="headline" v-text="headline" />
         </v-card-title>
         <v-card-text style="flex-grow: 1">

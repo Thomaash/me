@@ -11,13 +11,12 @@
             <v-checkbox v-model="logCbs[i]" color="primary" hide-details />
           </v-list-item-action>
           <v-list-item-content @click="$set(logCbs, i, !logCbs[i])">
-            <v-list-item-title v-text="l.msg" />
+            <v-list-item-title>{{ l.msg }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-avatar @click="selectInCanvas(l.item.id)">
-            <v-icon
-              :color="l.severity"
-              v-text="'$vuetify.icons.' + l.severity"
-            />
+            <v-icon :color="l.severity">{{
+              `$vuetify.icons.${l.severity}`
+            }}</v-icon>
           </v-list-item-avatar>
         </v-list-item>
       </v-list>

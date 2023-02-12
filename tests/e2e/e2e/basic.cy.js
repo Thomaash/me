@@ -1,4 +1,4 @@
-describe("Basic", () => {
+describe("Basic", { testIsolation: false }, () => {
   it("Home page", () => {
     cy.meOpen("/");
     cy.contains("h3", "Description");

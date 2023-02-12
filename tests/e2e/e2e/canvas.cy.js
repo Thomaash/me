@@ -1,4 +1,4 @@
-describe("Canvas", () => {
+describe("Canvas", { testIsolation: false }, () => {
   const itemPosition = { x: 150, y: 150 };
   const checkboxPropsFromUnset = {
     setTrue: {

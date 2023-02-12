@@ -16,7 +16,7 @@
         :style="{ left: mouseTag.x + 'px', top: mouseTag.y + 'px' }"
         class="mouse-tag"
       >
-        <v-icon color="black" v-text="mouseTagIcon" />
+        <v-icon color="black">{{ mouseTagIcon }}</v-icon>
       </div>
 
       <v-snackbar
