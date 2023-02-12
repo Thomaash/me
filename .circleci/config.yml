@@ -9,7 +9,7 @@ executors:
     docker:
       - image: cimg/node:19.6.0
     working_directory: ~/repo
-    resource_class: small
+    resource_class: medium
 
   node-browsers:
     docker:
