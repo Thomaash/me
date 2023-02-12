@@ -19,7 +19,7 @@ executors:
 
 jobs:
   build:
-    executor: node-browsers
+    executor: node
 
     steps:
       - checkout
@@ -27,12 +27,20 @@ jobs:
       - run: npm ci
       - run: npm run lint:ci
       - run: npm run build -- --verbose
-      - run: npm test
 
       - persist_to_workspace:
           root: .
           paths:
-            - "*"
+            - "dist"
+            - "node_modules"
+
+  test:
+    executor: node-browsers
+
+    steps:
+      - checkout
+
+      - run: npm test
 
   release:
     executor: node
@@ -59,9 +67,14 @@ workflows:
     jobs:
       - build
 
+      - test:
+          requires:
+            - build
+
       - release:
           requires:
             - build
+            - test
           filters:
             branches:
               only:
