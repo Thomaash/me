@@ -41,20 +41,16 @@ jobs:
       - attach_workspace:
           at: .
 
-      - run: git config user.email "tomina@vycital.eu"
-      - run: git config user.name "Tomáš Vyčítal"
+      - run:
+          name: Prepare Git
+          command: |
+            git config user.email "$GIT_EMAIL"
+            git config user.name "$GIT_NAME"
 
-      - add_ssh_keys:
-          fingerprints:
-            - "53:21:2c:c9:90:e4:de:ac:7f:a0:2b:bd:6c:0f:8f:d4"
-      - run: mkdir -p ~/.ssh
-      - run: touch ~/.ssh/known_hosts
-      - run: printf '%s\n' "$KNOWN_HOSTS" >> ~/.ssh/known_hosts
-
-      - run: sudo apt update
-      - run: sudo apt install rsync
-
-      - run: npm run deploy -- --ci
+      - run:
+          name: Publish
+          command: |
+            npx gh-pages --dist 'dist' --message 'chore: update GitHub Pages [ci skip]' --dotfiles --repo "https://$GH_USERNAME:$GH_TOKEN@github.com/Thomaash/me.git"
 
 workflows:
   version: 2
