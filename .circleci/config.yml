@@ -31,8 +31,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - "dist"
-            - "node_modules"
+            - "*"
 
   test:
     executor: node-browsers
