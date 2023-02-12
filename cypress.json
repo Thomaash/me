@@ -1,5 +1,7 @@
 {
     "pluginsFile": "tests/e2e/plugins/index.js",
+    "screenshotOnRunFailure": false,
+    "video": false,
     "viewportWidth": 1311,
     "viewportHeight": 737,
     "defaultCommandTimeout": 15000
