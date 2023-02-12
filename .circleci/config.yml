@@ -33,6 +33,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - ".git"
             - "dist"
             - "node_modules"
             - "package-lock.json"
