@@ -9,7 +9,7 @@ executors:
     docker:
       - image: cimg/node:19.6.0
     working_directory: ~/repo
-    resource_class: medium
+    resource_class: small
 
   node-browsers:
     docker:
@@ -18,8 +18,8 @@ executors:
     resource_class: medium
 
 jobs:
-  build:
-    executor: node
+  build-and-test:
+    executor: node-browsers
 
     steps:
       - checkout
@@ -28,19 +28,15 @@ jobs:
       - run: npm run lint:ci
       - run: npm run build -- --verbose
 
+      - run: npm test
+
       - persist_to_workspace:
           root: .
           paths:
-            - "*"
-
-  test:
-    executor: node-browsers
-
-    steps:
-      - attach_workspace:
-          at: .
-
-      - run: npm test
+            - "dist"
+            - "node_modules"
+            - "package-lock.json"
+            - "package.json"
 
   release:
     executor: node
@@ -65,16 +61,11 @@ workflows:
 
   build:
     jobs:
-      - build
-
-      - test:
-          requires:
-            - build
+      - build-and-test
 
       - release:
           requires:
-            - build
-            - test
+            - build-and-test
           filters:
             branches:
               only:
