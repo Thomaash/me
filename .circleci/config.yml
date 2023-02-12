@@ -38,7 +38,8 @@ jobs:
     executor: node-browsers
 
     steps:
-      - checkout
+      - attach_workspace:
+          at: .
 
       - run: npm test
 
