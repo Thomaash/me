@@ -47,6 +47,11 @@ jobs:
           at: .
 
       - run:
+          name: Copy old files from previous releases
+          command: |
+            ./bin/build-old-deploy-files.sh
+
+      - run:
           name: Prepare Git
           command: |
             git config user.email "$GIT_EMAIL"
