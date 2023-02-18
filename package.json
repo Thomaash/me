@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
+    "build:old-deploy-files": "./bin/build-old-deploy-files.sh",
     "deploy": "./gh-pages.sh",
     "lint:ci": "vue-cli-service lint --no-fix",
     "lint:fix": "vue-cli-service lint",

@@ -49,7 +49,7 @@ jobs:
       - run:
           name: Copy old files from previous releases
           command: |
-            ./bin/build-old-deploy-files.sh
+            npm run build:old-deploy-files
 
       - run:
           name: Prepare Git
