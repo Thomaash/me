@@ -3,13 +3,16 @@
 cd './dist/' || exit 1
 
 mkdir -p './old-files'
-rm './old-files/'*
 
 tar --create --exclude './old-files/**' --file './old-files/0.tar' './'
 
 for i in $(seq 0 8); do
-  if test "$(curl "https://vycital.eu/me/old-files/${i}.tar" --no-progress-meter --write-out "%{http_code}" --output "./old-files/$((i + 1)).tar")" -ne 200; then
-    rm "./old-files/$((i + 1)).tar"
+  stdout="$(curl "https://www.vycital.eu/me/old-files/${i}.tar" --no-progress-meter --write-out "%{http_code}" --output "./old-files/$(($i + 1)).tar")"
+  if test "${stdout}" -ne 200; then
+    printf 'Failed to download: %s.tar (%s)\n' "${i}" "${stdout}"
+    rm "./old-files/$(($i + 1)).tar"
+  else
+    printf 'Downloaded: %s.tar\n' "${i}"
   fi
 done
 
