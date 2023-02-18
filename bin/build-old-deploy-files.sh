@@ -5,15 +5,17 @@ cd './dist/' || exit 1
 mkdir -p './old-files'
 rm './old-files/'*
 
-tar --create --verbose --exclude './old-files/**' --file './old-files/0.tar' './'
+tar --create --exclude './old-files/**' --file './old-files/0.tar' './'
 
 for i in $(seq 0 8); do
-  if test "$(curl "https://vycital.eu/me/old-files/${i}.tar"  --write-out "%{http_code}" --output "./old-files/$((i + 1)).tar")" -ne 200; then
+  if test "$(curl "https://vycital.eu/me/old-files/${i}.tar" --no-progress-meter --write-out "%{http_code}" --output "./old-files/$((i + 1)).tar")" -ne 200; then
     rm "./old-files/$((i + 1)).tar"
   fi
 done
 
+printf 'After build: %s\n' "$(find -type f | wc -l)"
 for file in './old-files/'*'.tar'; do
-  tar --extract --verbose --skip-old-files --file "${file}" --directory './'
+  tar --extract --skip-old-files --file "${file}" --directory './'
+  printf "After %s %s\n" "${file}" "$(find -type f | wc -l)"
 done
 
