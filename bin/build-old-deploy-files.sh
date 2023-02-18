@@ -14,6 +14,6 @@ for i in $(seq 0 8); do
 done
 
 for file in './old-files/'*'.tar'; do
-  tar --extract --verbose --skip-old-files --file "${file}" --directory './dist'
+  tar --extract --verbose --skip-old-files --file "${file}" --directory './'
 done
 
