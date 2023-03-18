@@ -1,4 +1,5 @@
 .DS_Store
+/dependency-graph.svg
 /dist/
 /tests/e2e/reports/
 /tests/e2e/videos/
