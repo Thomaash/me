@@ -16,7 +16,7 @@
     "visualize-deps": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
   },
   "dependencies": {
-    "@mdi/font": "7.1.96",
+    "@mdi/font": "7.2.96",
     "antlr4": "4.9.3",
     "jspdf": "2.5.1",
     "jspdf-autotable": "3.5.28",
