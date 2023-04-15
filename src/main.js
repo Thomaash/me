@@ -1,18 +1,18 @@
 import "source-sans-pro/source-sans-pro.css";
 import "source-code-pro/source-code-pro.css";
 import "@mdi/font/css/materialdesignicons.css";
-import "./main.sass";
+import "vuetify/dist/vuetify.min.css";
 
-import App from "./App";
+import App from "./App.vue";
 import Vue from "vue";
-import Vuelidate from "vuelidate";
+import Vuelidate from "vuelidate/src/index.js";
 import Vuetify from "vuetify";
 import VuetifyConfirm from "vuetify-confirm";
 import router from "./router";
 import store from "./store";
 import { dark, vuetifyDark, vuetifyLight } from "./theme";
 
-import "./registerServiceWorker";
+import { initServiceWorker } from "./service-worker-init";
 
 Vue.use(Vuetify);
 const vuetify = new Vuetify({
@@ -61,3 +61,5 @@ new Vue({
 
   render: (h) => h(App),
 });
+
+initServiceWorker();

@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import RectangularSelection from "./vis/RectangularSelection";
-import VisCanvas from "./vis/VisCanvas";
+import VisCanvas from "./vis/VisCanvas.vue";
 import deselectHandler from "./vis/deselectHandler";
 import { v4 as randomUUID } from "uuid";
 import { compare, compareNodes } from "./vis/locale";

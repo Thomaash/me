@@ -104,8 +104,8 @@
 </template>
 
 <script>
-import LoadingSpinner from "@/components/LoadingSpinner";
-import ThreeStateCheckbox from "@/components/ThreeStateCheckbox";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import ThreeStateCheckbox from "@/components/ThreeStateCheckbox.vue";
 import errors from "@/validation/errors";
 import { ipWithMask, port } from "@/validation/rules";
 import { logLevels } from "@/components/selects";

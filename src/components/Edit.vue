@@ -45,13 +45,13 @@
 </template>
 
 <script>
-import AssociationEdit from "./edit/Associtaion";
-import ControllerEdit from "./edit/Controller";
-import DummyEdit from "./edit/Dummy";
-import HostEdit from "./edit/Host";
-import LinkEdit from "./edit/Link";
-import PortEdit from "./edit/Port";
-import SwitchEdit from "./edit/Switch";
+import AssociationEdit from "./edit/Associtaion.vue";
+import ControllerEdit from "./edit/Controller.vue";
+import DummyEdit from "./edit/Dummy.vue";
+import HostEdit from "./edit/Host.vue";
+import LinkEdit from "./edit/Link.vue";
+import PortEdit from "./edit/Port.vue";
+import SwitchEdit from "./edit/Switch.vue";
 
 const typeComponentMap = {
   association: "AssociationEdit",

@@ -25,13 +25,13 @@ export default {
   name: "BuildInfo",
   computed: {
     buildDate() {
-      return process.env.VUE_APP_BUILD_DATE;
+      return process.env.VITE_BUILD_DATE;
     },
     buildCommitHash() {
-      return process.env.VUE_APP_BUILD_COMMIT_HASH;
+      return process.env.VITE_BUILD_COMMIT_HASH;
     },
     buildCommitDate() {
-      return process.env.VUE_APP_BUILD_COMMIT_DATE;
+      return process.env.VITE_BUILD_COMMIT_DATE;
     },
   },
 };

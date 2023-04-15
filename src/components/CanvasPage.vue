@@ -101,9 +101,9 @@
 </template>
 
 <script>
-import Edit from "@/components/Edit";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import VisContainer from "@/components/VisContainer";
+import Edit from "@/components/Edit.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import VisContainer from "@/components/VisContainer.vue";
 import { items as theme } from "@/theme";
 
 export default {

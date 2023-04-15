@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import license from "@/../LICENSE";
+import license from "@/../LICENSE?raw";
 
 export default {
   name: "AppLicense",

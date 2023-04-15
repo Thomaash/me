@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import ThreeStateCheckbox from "@/components/ThreeStateCheckbox";
+import ThreeStateCheckbox from "@/components/ThreeStateCheckbox.vue";
 import common from "./common";
 import errors from "@/validation/errors";
 import {

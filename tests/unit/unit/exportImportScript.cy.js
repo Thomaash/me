@@ -1,22 +1,22 @@
 import { expect } from "chai";
 
-import Builder from "../../src/builder";
-import importScript from "../../src/importScript";
+import Builder from "../../../src/builder";
+import importScript from "../../../src/importScript";
 import {
   getCleanItems,
   removeNonCode,
   testTypes,
 } from "./exportImportCommon.js";
 
-import tiny from "../../src/examples/tiny";
-import tinyController from "../../src/examples/tiny_controller";
-import tinyTC from "../../src/examples/tiny_tc";
-import tinyPhysicalInterface from "../../src/examples/tiny_physical_interface";
-import tinyMininetConf from "../../src/examples/tiny_mininet_conf";
-import medium1Controller from "../../src/examples/medium_1_controller";
-import medium2Controllers from "../../src/examples/medium_2_controllers";
+import tiny from "../../../src/examples/tiny";
+import tinyController from "../../../src/examples/tiny_controller";
+import tinyTC from "../../../src/examples/tiny_tc";
+import tinyPhysicalInterface from "../../../src/examples/tiny_physical_interface";
+import tinyMininetConf from "../../../src/examples/tiny_mininet_conf";
+import medium1Controller from "../../../src/examples/medium_1_controller";
+import medium2Controllers from "../../../src/examples/medium_2_controllers";
 
-import minieditScript from "./minieditScriptImport.script.py";
+import minieditScript from "../fixtures/miniedit-script.py?raw";
 const miniedit = importScript(minieditScript).data;
 
 describe("Export import script", () => {

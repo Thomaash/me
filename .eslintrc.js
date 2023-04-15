@@ -1,10 +1,5 @@
 module.exports = {
   root: true,
-  parserOptions: {
-    ecmaVersion: 2017,
-    parser: "@babel/eslint-parser",
-    sourceType: "module",
-  },
   globals: {
     module: "writable",
     process: "readonly",
@@ -12,19 +7,27 @@ module.exports = {
   extends: ["plugin:vue/recommended", "eslint:recommended", "@vue/prettier"],
   plugins: ["vue", "prettier"],
   rules: {
-    // allow debugger during development
-    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
+    "no-debugger": "error",
   },
   overrides: [
     {
       files: ["./src/**", "./tests/**"],
       env: {
         browser: true,
+        es2021: true,
+      },
+    },
+    {
+      files: ["./tests/**"],
+      globals: {
+        Cypress: "readonly",
+        cy: "readonly",
       },
     },
     {
       files: ["./*.*", "./.*.*"],
       env: {
+        es2021: true,
         node: true,
       },
     },

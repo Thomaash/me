@@ -1,0 +1,14 @@
+diff --git a/node_modules/vuelidate/src/withParams.js b/node_modules/vuelidate/src/withParams.js
+index d85949c..a9e0357 100644
+--- a/node_modules/vuelidate/src/withParams.js
++++ b/node_modules/vuelidate/src/withParams.js
+@@ -1,7 +1,4 @@
+ /* istanbul ignore next */
+-const withParams =
+-  process.env.BUILD === 'web'
+-    ? require('./withParamsBrowser').withParams
+-    : require('./params').withParams
++import { withParams } from "./params";
+ 
+-export default withParams
++export default withParams;

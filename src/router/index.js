@@ -2,12 +2,12 @@ import Router from "vue-router";
 import Vue from "vue";
 import store from "@/store";
 
-import AboutPage from "@/components/AboutPage";
-import CanvasPage from "@/components/CanvasPage";
-import TopologyToolbar from "@/components/TopologyToolbar";
-import ExportPage from "@/components/ExportPage";
-import HomePage from "@/components/HomePage";
-import MininetSettingsPage from "@/components/MininetSettingsPage";
+import AboutPage from "@/components/AboutPage.vue";
+import CanvasPage from "@/components/CanvasPage.vue";
+import TopologyToolbar from "@/components/TopologyToolbar.vue";
+import ExportPage from "@/components/ExportPage.vue";
+import HomePage from "@/components/HomePage.vue";
+import MininetSettingsPage from "@/components/MininetSettingsPage.vue";
 
 Vue.use(Router);
 

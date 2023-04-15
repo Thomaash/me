@@ -28,10 +28,10 @@
 </template>
 
 <script>
-import ExportSection from "./export/ExportSection";
-import ImportSection from "./export/ImportSection";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import LogListing from "./export/LogListing";
+import ExportSection from "./export/ExportSection.vue";
+import ImportSection from "./export/ImportSection.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import LogListing from "./export/LogListing.vue";
 
 export default {
   name: "ExportPage",

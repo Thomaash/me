@@ -53,11 +53,11 @@
 <script>
 import AddressingPlan from "@/builder/AddressingPlan";
 import Builder from "@/builder";
-import VisCanvas from "@/components/vis/VisCanvas";
+import VisCanvas from "@/components/vis/VisCanvas.vue";
 import exporter from "@/exporter";
 import { mapGetters } from "vuex";
 
-import ImageConfig from "./ImageConfig";
+import ImageConfig from "./ImageConfig.vue";
 
 function download(filename, mimeOrHref, data) {
   const href =

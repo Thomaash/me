@@ -1,5 +1,27 @@
-import { helpers, integer, between } from "vuelidate/lib/validators";
-export * from "vuelidate/lib/validators";
+import {
+  alpha,
+  alphaNum,
+  and,
+  between,
+  decimal,
+  email,
+  helpers,
+  integer,
+  ipAddress,
+  macAddress,
+  maxLength,
+  maxValue,
+  minLength,
+  minValue,
+  not,
+  numeric,
+  or,
+  required,
+  requiredIf,
+  requiredUnless,
+  sameAs,
+  url,
+} from "vuelidate/src/validators/index.js";
 
 const { req, withParams } = helpers;
 
@@ -90,3 +112,28 @@ export const naturalNumberList = withParams(
   { type: "naturalNumberList" },
   (v) => !req(v) || v.every((nm) => /^[0-9]+$/.test(nm))
 );
+
+export {
+  alpha,
+  alphaNum,
+  and,
+  between,
+  decimal,
+  email,
+  helpers,
+  integer,
+  ipAddress,
+  macAddress,
+  maxLength,
+  maxValue,
+  minLength,
+  minValue,
+  not,
+  numeric,
+  or,
+  required,
+  requiredIf,
+  requiredUnless,
+  sameAs,
+  url,
+};
