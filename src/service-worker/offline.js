@@ -53,7 +53,9 @@ export function initOffline() {
         const url = new URL(event.request.url);
         url.hash = "";
 
-        const cachedRequest = await caches.match(url);
+        const cache = await caches.open(cacheName);
+
+        const cachedRequest = await cache.match(url);
         console.info(
           `[Service Worker] Fetching resource: ${url.href} from ${event.request.url}`
         );
@@ -63,8 +65,6 @@ export function initOffline() {
         }
 
         const response = await fetch(event.request);
-
-        const cache = await caches.open(cacheName);
         console.info(
           `[Service Worker] Caching new resource: ${url.href} from ${event.request.url}`
         );
