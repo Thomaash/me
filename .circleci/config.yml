@@ -61,7 +61,7 @@ jobs:
       - run:
           name: Publish
           command: |
-            npx gh-pages --dist 'dist' --message 'chore: update GitHub Pages [ci skip]' --dotfiles --repo "https://$GH_USERNAME:$GH_TOKEN@github.com/Thomaash/me.git"
+            npx gh-pages --dist 'dist/me' --message 'chore: update GitHub Pages [ci skip]' --dotfiles --repo "https://$GH_USERNAME:$GH_TOKEN@github.com/Thomaash/me.git"
 
 workflows:
   version: 2
