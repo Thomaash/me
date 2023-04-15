@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="SVGRoot"
+   version="1.1"
+   viewBox="0 0 16 16"
+   height="16px"
+   width="16px">
+  <defs
+     id="defs4518" />
+  <metadata
+     id="metadata4521">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1">
+    <circle
+       r="8"
+       cx="8"
+       cy="8"
+       id="path5077"
+       style="opacity:1;fill:#fffffe;fill-opacity:1;stroke-width:0.80219263" />
+    <g
+       id="text5083"
+       style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#009688;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       aria-label="M" />
+    <g
+       transform="translate(-0.1091285)"
+       id="text833"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       aria-label="E">
+      <path
+         d="M 9.5190239,11.936 H 13.179024 V 11.084 H 9.5190239 V 8.228 H 12.507024 V 7.376 H 9.5190239 V 4.904 H 13.059024 V 4.064 H 9.5190239 Z m -6.4797913,0 h 0.9 V 7.604 c 0,-0.696 -0.072,-1.632 -0.12,-2.328 h 0.048 l 0.624,1.788 1.488,4.08 h 0.66 l 1.4880001,-4.08 0.624,-1.788 h 0.048 c -0.048,0.696 -0.132,1.632 -0.132,2.328 v 4.332 h 0.936 V 4.064 h -1.212 l -1.488,4.2 c -0.192,0.54 -0.348,1.104 -0.54,1.644 h -0.048 c -0.192,-0.54 -0.372,-1.104 -0.564,-1.644 l -1.512,-4.2 h -1.2 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#009688;fill-opacity:1"
+         id="path838" />
+    </g>
+  </g>
+</svg>
