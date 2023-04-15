@@ -26,7 +26,7 @@ jobs:
 
       - run: npm ci
       - run: npm run lint:ci
-      - run: npm run build -- --verbose
+      - run: npm run build
 
       - run: npm test
 
