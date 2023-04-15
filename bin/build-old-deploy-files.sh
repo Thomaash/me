@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-cd './dist/' || exit 1
+cd './dist/me/' || exit 1
 
 mkdir -p './old-files'
 
