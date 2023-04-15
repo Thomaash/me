@@ -1,9 +1,10 @@
 export function initOffline() {
-  // Files to cache
-  const cacheName = "me-v1";
+  // Files to cache.
+  const cacheName = process.env.VITE_BUILD_COMMIT_HASH;
   const cacheURLs = ["CACHE_URLS_PLACEHOLDER"];
 
-  // Installing Service Worker
+  // Precache assets on install to enable offline usage (old service worker is
+  // still active).
   self.addEventListener("install", (event) => {
     console.info("[Service Worker] Install");
     event.waitUntil(
@@ -16,9 +17,28 @@ export function initOffline() {
     );
   });
 
-  // Fetching content using Service Worker
+  // Wipe stale caches on activation (old service worker is inactive now).
+  self.addEventListener("activate", (event) => {
+    event.waitUntil(
+      (async () => {
+        await Promise.all(
+          (
+            await caches.keys()
+          )
+            .filter((oldCacheName) => {
+              return oldCacheName !== cacheName;
+            })
+            .map((oldCacheName) => {
+              return caches.delete(oldCacheName);
+            })
+        );
+      })()
+    );
+  });
+
+  // Fetching content using Service Worker.
   self.addEventListener("fetch", (event) => {
-    // Cache http and https only, skip unsupported chrome-extension:// and file://...
+    // Cache HTTP(S) only, skip unsupported chrome-extension:// and file://…
     if (
       !(
         event.request.url.startsWith("http:") ||
