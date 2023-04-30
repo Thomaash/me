@@ -72,7 +72,7 @@
     "start-server-and-test": "2.0.0",
     "vis-util": "5.0.3",
     "vite": "2",
-    "vite-plugin-commonjs": "0.6.2",
+    "vite-plugin-commonjs": "0.7.0",
     "vite-plugin-require": "1.1.10",
     "vite-plugin-vue2": "2.0.3",
     "vue-cli-plugin-vuetify": "2.5.8",
