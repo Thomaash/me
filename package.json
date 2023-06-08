@@ -41,7 +41,7 @@
     "vuex-shared-mutations": "1.0.2"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.21.8",
+    "@babel/eslint-parser": "7.22.5",
     "@types/uuid": "9.0.1",
     "@vitejs/plugin-vue": "1",
     "@vue/babel-preset-app": "5.0.8",
