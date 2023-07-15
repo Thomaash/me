@@ -1,6 +1,6 @@
 {
   "index.html": {
-    "file": "assets/js/app-ec657d71.js",
+    "file": "assets/js/app-88368a6b.js",
     "src": "index.html",
     "isEntry": true,
     "dynamicImports": [
@@ -147,7 +147,7 @@
     "isDynamicEntry": true
   },
   "node_modules/canvg/lib/index.es.js": {
-    "file": "assets/index.es.de52a895.js",
+    "file": "assets/index.es.fe838315.js",
     "src": "node_modules/canvg/lib/index.es.js",
     "isDynamicEntry": true,
     "imports": [
