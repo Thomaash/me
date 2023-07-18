@@ -79,7 +79,7 @@
     "vue-template-compiler": "2.7.14"
   },
   "volta": {
-    "node": "18.16.1",
+    "node": "18.17.0",
     "npm": "9.8.0"
   }
 }
