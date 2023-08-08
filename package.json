@@ -53,7 +53,7 @@
     "dependency-cruiser": "13.1.2",
     "eslint": "8.46.0",
     "eslint-config-prettier": "9.0.0",
-    "eslint-plugin-cypress": "2.13.4",
+    "eslint-plugin-cypress": "2.14.0",
     "eslint-plugin-import": "2.28.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "5.0.0",
