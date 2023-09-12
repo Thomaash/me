@@ -75,7 +75,6 @@
     "vite-plugin-commonjs": "0.9.0",
     "vite-plugin-require": "1.1.10",
     "vite-plugin-vue2": "2.0.3",
-    "vue-cli-plugin-vuetify": "2.5.8",
     "vue-template-compiler": "2.7.14"
   },
   "volta": {
