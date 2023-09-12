@@ -37,7 +37,7 @@
     "vuetify": "2.6.15",
     "vuetify-confirm": "2.0.6",
     "vuex": "3.6.2",
-    "vuex-ltm": "1.1.6",
+    "vuex-ltm": "1.1.7",
     "vuex-shared-mutations": "1.0.2"
   },
   "devDependencies": {
