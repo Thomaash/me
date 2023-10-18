@@ -1,26 +1,20 @@
 {
   "index.html": {
-    "file": "assets/js/app-b9cd3ed7.js",
+    "file": "assets/js/app-fb0dc478.js",
     "src": "index.html",
     "isEntry": true,
     "dynamicImports": [
-      "node_modules/html2canvas/dist/html2canvas.esm.js",
-      "node_modules/dompurify/dist/purify.es.js",
-      "node_modules/canvg/lib/index.es.js"
+      "src/components/HomePage.vue",
+      "src/components/CanvasPage.vue",
+      "src/components/TopologyToolbar.vue",
+      "src/components/MininetSettingsPage.vue",
+      "_ExportPage.bcec67c0.js",
+      "src/components/AboutPage.vue"
     ],
     "css": [
-      "assets/app.9ce607ea.css"
+      "assets/app.805f0137.css"
     ],
     "assets": [
-      "assets/icon.3c9c2f0c.svg",
-      "assets/controller.dark.660cbe05.svg",
-      "assets/controller.light.f7ee0c3f.svg",
-      "assets/host.dark.df6e0427.svg",
-      "assets/host.light.e18b99ec.svg",
-      "assets/port.dark.2a082b18.svg",
-      "assets/port.light.52cb350a.svg",
-      "assets/switch.dark.597c2e45.svg",
-      "assets/switch.light.bd72a59e.svg",
       "assets/SourceSansPro-ExtraLight.ttf.8a7da3df.woff2",
       "assets/SourceSansPro-ExtraLight.otf.16f073eb.woff",
       "assets/SourceSansPro-ExtraLight.02337f01.otf",
@@ -136,6 +130,120 @@
     "src": "src/service-worker/index.js",
     "isEntry": true
   },
+  "src/components/HomePage.vue": {
+    "file": "assets/HomePage.b8787703.js",
+    "src": "src/components/HomePage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_AppLogo.ba7ae556.js"
+    ],
+    "css": [
+      "assets/HomePage.9bcd2a56.css"
+    ]
+  },
+  "_AppLogo.ba7ae556.js": {
+    "file": "assets/AppLogo.ba7ae556.js",
+    "imports": [
+      "index.html"
+    ],
+    "css": [
+      "assets/AppLogo.6d8d8d84.css"
+    ],
+    "assets": [
+      "assets/icon.3c9c2f0c.svg"
+    ]
+  },
+  "src/components/CanvasPage.vue": {
+    "file": "assets/CanvasPage.42a662a1.js",
+    "src": "src/components/CanvasPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_LoadingSpinner.c9a8a2f8.js",
+      "_VisCanvas.c90accaa.js",
+      "_ThreeStateCheckbox.e39f24fd.js"
+    ],
+    "css": [
+      "assets/CanvasPage.e36fc8a1.css"
+    ]
+  },
+  "_LoadingSpinner.c9a8a2f8.js": {
+    "file": "assets/LoadingSpinner.c9a8a2f8.js",
+    "imports": [
+      "index.html"
+    ],
+    "css": [
+      "assets/LoadingSpinner.ed9fa969.css"
+    ]
+  },
+  "_VisCanvas.c90accaa.js": {
+    "file": "assets/VisCanvas.c90accaa.js",
+    "imports": [
+      "_LoadingSpinner.c9a8a2f8.js",
+      "index.html"
+    ],
+    "css": [
+      "assets/VisCanvas.4280c84c.css"
+    ],
+    "assets": [
+      "assets/controller.dark.660cbe05.svg",
+      "assets/controller.light.f7ee0c3f.svg",
+      "assets/host.dark.df6e0427.svg",
+      "assets/host.light.e18b99ec.svg",
+      "assets/port.dark.2a082b18.svg",
+      "assets/port.light.52cb350a.svg",
+      "assets/switch.dark.597c2e45.svg",
+      "assets/switch.light.bd72a59e.svg"
+    ]
+  },
+  "_ThreeStateCheckbox.e39f24fd.js": {
+    "file": "assets/ThreeStateCheckbox.e39f24fd.js",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/components/TopologyToolbar.vue": {
+    "file": "assets/TopologyToolbar.b17598de.js",
+    "src": "src/components/TopologyToolbar.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/components/MininetSettingsPage.vue": {
+    "file": "assets/MininetSettingsPage.74b6faca.js",
+    "src": "src/components/MininetSettingsPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_LoadingSpinner.c9a8a2f8.js",
+      "_ThreeStateCheckbox.e39f24fd.js",
+      "index.html"
+    ]
+  },
+  "_ExportPage.bcec67c0.js": {
+    "file": "assets/ExportPage.bcec67c0.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_VisCanvas.c90accaa.js",
+      "_LoadingSpinner.c9a8a2f8.js"
+    ],
+    "dynamicImports": [
+      "node_modules/html2canvas/dist/html2canvas.esm.js",
+      "node_modules/dompurify/dist/purify.es.js",
+      "node_modules/canvg/lib/index.es.js"
+    ]
+  },
+  "src/components/AboutPage.vue": {
+    "file": "assets/AboutPage.2abb6437.js",
+    "src": "src/components/AboutPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_AppLogo.ba7ae556.js"
+    ]
+  },
   "node_modules/html2canvas/dist/html2canvas.esm.js": {
     "file": "assets/html2canvas.esm.0eae2bf4.js",
     "src": "node_modules/html2canvas/dist/html2canvas.esm.js",
@@ -147,11 +255,14 @@
     "isDynamicEntry": true
   },
   "node_modules/canvg/lib/index.es.js": {
-    "file": "assets/index.es.c2567305.js",
+    "file": "assets/index.es.0c0aa8f9.js",
     "src": "node_modules/canvg/lib/index.es.js",
     "isDynamicEntry": true,
     "imports": [
-      "index.html"
+      "index.html",
+      "_ExportPage.bcec67c0.js",
+      "_VisCanvas.c90accaa.js",
+      "_LoadingSpinner.c9a8a2f8.js"
     ]
   }
 }
