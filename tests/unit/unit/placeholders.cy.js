@@ -11,7 +11,7 @@ describe("Placeholders", () => {
       placeholders.re,
       (match) => {
         actual.push(match);
-      }
+      },
     );
 
     expect(actual).to.deep.equal(expected);
@@ -151,7 +151,7 @@ describe("Placeholders", () => {
         "s1:    no address",
         "s2:    no address",
         "s15:   8.4.9.3",
-      ].join("\n\n")
+      ].join("\n\n"),
     );
   });
 
@@ -215,7 +215,7 @@ describe("Placeholders", () => {
         `c12: ${controllerTypesMap.OVSController}`,
         `s1:  ${switchTypesMap.OVSBridge}`,
         "s2:  default type",
-      ].join("\n")
+      ].join("\n"),
     );
   });
 });

@@ -13,7 +13,7 @@ export function initOffline() {
         console.info("[Service Worker] Caching");
         await cache.addAll(cacheURLs);
         console.info("[Service Worker] Cached");
-      })()
+      })(),
     );
   });
 
@@ -22,17 +22,15 @@ export function initOffline() {
     event.waitUntil(
       (async () => {
         await Promise.all(
-          (
-            await caches.keys()
-          )
+          (await caches.keys())
             .filter((oldCacheName) => {
               return oldCacheName !== cacheName;
             })
             .map((oldCacheName) => {
               return caches.delete(oldCacheName);
-            })
+            }),
         );
-      })()
+      })(),
     );
   });
 
@@ -57,7 +55,7 @@ export function initOffline() {
 
         const cachedRequest = await cache.match(url);
         console.info(
-          `[Service Worker] Fetching resource: ${url.href} from ${event.request.url}`
+          `[Service Worker] Fetching resource: ${url.href} from ${event.request.url}`,
         );
 
         if (cachedRequest) {
@@ -66,12 +64,12 @@ export function initOffline() {
 
         const response = await fetch(event.request);
         console.info(
-          `[Service Worker] Caching new resource: ${url.href} from ${event.request.url}`
+          `[Service Worker] Caching new resource: ${url.href} from ${event.request.url}`,
         );
         cache.put(url, response.clone());
 
         return response;
-      })()
+      })(),
     );
   });
 }

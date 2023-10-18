@@ -18,7 +18,7 @@ export default class {
     itemsArray
       .map(
         // Add new attrs without modifying original data.
-        (item) => Object.create(item)
+        (item) => Object.create(item),
       )
       .forEach((item) => {
         const { id, type } = item;
@@ -41,7 +41,7 @@ export default class {
     this.arr = {};
     Object.keys(this.map).forEach((key) => {
       this.arr[key] = Object.values(this.map[key]).sort(
-        ({ hostname: a }, { hostname: b }) => collator.compare(a, b)
+        ({ hostname: a }, { hostname: b }) => collator.compare(a, b),
       );
     });
 

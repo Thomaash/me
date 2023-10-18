@@ -17,8 +17,8 @@ function buildOutputString(items, left, right) {
       .map(
         (item) =>
           `${(item[left] + ":").padEnd(indent, " ")}${item[right].join(
-            "\n".padEnd(indent + 1, " ")
-          )}`
+            "\n".padEnd(indent + 1, " "),
+          )}`,
       )
       .join(sepparator);
   }

@@ -64,7 +64,7 @@ function reduceToMap(acc, val) {
 }
 const controllerTypesMap = controllerTypes.reduce(
   reduceToMap,
-  Object.create(null)
+  Object.create(null),
 );
 export { controllerTypesMap };
 const switchTypesMap = switchTypes.reduce(reduceToMap, Object.create(null));

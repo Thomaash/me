@@ -28,7 +28,7 @@ export default defineConfig({
             (
               await readFile(
                 resolve(__dirname, "./dist/me/service-worker.js"),
-                "utf-8"
+                "utf-8",
               )
             ).replace(
               '["CACHE_URLS_PLACEHOLDER"]',
@@ -37,9 +37,9 @@ export default defineConfig({
                   await import("globby")
                 ).globby("./{assets,img}/**", {
                   cwd: resolve(__dirname, "./dist/me"),
-                })
-              )
-            )
+                }),
+              ),
+            ),
           );
         },
       };
@@ -68,14 +68,14 @@ export default defineConfig({
     "process.env.VITE_BUILD_COMMIT_HASH": JSON.stringify(
       execSync("git log -1 --format=%H", {
         encoding: "ascii",
-      }).trim()
+      }).trim(),
     ),
     "process.env.VITE_BUILD_COMMIT_DATE": JSON.stringify(
       new Date(
         execSync("git log -1 --format=%ct", {
           encoding: "ascii",
-        }).trim() * 1000
-      ).toISOString()
+        }).trim() * 1000,
+      ).toISOString(),
     ),
   },
   resolve: {
@@ -88,7 +88,7 @@ export default defineConfig({
         find: "vue",
         replacement: resolve(
           __dirname,
-          "./node_modules/vue/dist/vue.runtime.esm.js"
+          "./node_modules/vue/dist/vue.runtime.esm.js",
         ),
       },
     ],

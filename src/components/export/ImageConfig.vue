@@ -346,7 +346,7 @@ export default {
           this.size[key] = `${value}`;
         } else {
           this.size[key] = this.valuesToString[key](
-            this.scaleValues[key](scale)
+            this.scaleValues[key](scale),
           );
         }
       });

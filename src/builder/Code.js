@@ -64,7 +64,7 @@ export default class {
           ...(silent ? [] : [`mininet.log.info('\\n*** ${name}\\n')`, ""]),
           ...arr,
           "",
-          "# }}}"
+          "# }}}",
         );
       }
     });

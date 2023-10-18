@@ -52,7 +52,7 @@ export default {
           this.$set(
             this.item,
             "ips",
-            val.split("\n").filter((line) => line !== "")
+            val.split("\n").filter((line) => line !== ""),
           );
         } else {
           this.$delete(this.item, "ips");

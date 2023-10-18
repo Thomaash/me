@@ -204,7 +204,7 @@ export default {
           icon: this.$vuetify.icons.warning,
           title: "Warning",
           width: 600,
-        }
+        },
       );
       if (confirmed) {
         this.$store.commit("topology/importData", importData);

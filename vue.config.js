@@ -8,7 +8,7 @@ process.env.VUE_APP_BUILD_COMMIT_HASH = execSync("git log -1 --format=%H", {
 process.env.VUE_APP_BUILD_COMMIT_DATE = new Date(
   execSync("git log -1 --format=%ct", {
     encoding: "ascii",
-  }).trim() * 1000
+  }).trim() * 1000,
 ).toISOString();
 
 module.exports = {

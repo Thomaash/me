@@ -143,7 +143,7 @@ describe("Import Miniedit script", () => {
         Object.keys(props).forEach((key) => {
           it(key, () => {
             expect(json[key], "Invalid property value.").to.be.equal(
-              props[key]
+              props[key],
             );
           });
         });
@@ -154,7 +154,7 @@ describe("Import Miniedit script", () => {
           it(type, () => {
             expect(
               json.items.filter((item) => item.type === type),
-              `Unexpected amount of ${type} items.`
+              `Unexpected amount of ${type} items.`,
             ).to.have.lengthOf(amount);
           });
         });
@@ -168,6 +168,6 @@ describe("Import Miniedit script", () => {
           });
         });
       });
-    })
+    }),
   );
 });

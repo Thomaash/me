@@ -51,7 +51,7 @@ export default {
     sortedLog() {
       return [...this.log].sort(
         ({ severity: a }, { severity: b }) =>
-          this.logPriority[a] - this.logPriority[b]
+          this.logPriority[a] - this.logPriority[b],
       );
     },
   },

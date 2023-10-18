@@ -69,7 +69,7 @@ export default {
       window.open(
         `${this.$router.mode === "hash" ? "#" : ""}${this.viewURL}`,
         "",
-        "_blank"
+        "_blank",
       );
     },
   },

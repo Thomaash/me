@@ -114,7 +114,7 @@ export default {
               .split(/\s*[\s,]\s*/g)
               .map((str) => (re.test(str) ? +str : NaN))
               .sort((a, b) => a - b)
-              .filter((value, index, array) => array[index - 1] !== value)
+              .filter((value, index, array) => array[index - 1] !== value),
           );
         }
       },

@@ -11,19 +11,19 @@ export default function (net, event) {
 
     if (
       event.nodes.every(
-        (id) => event.previousSelection.nodes.indexOf(id) !== -1
+        (id) => event.previousSelection.nodes.indexOf(id) !== -1,
       ) &&
       event.edges.every(
-        (id) => event.previousSelection.edges.indexOf(id) !== -1
+        (id) => event.previousSelection.edges.indexOf(id) !== -1,
       )
     ) {
       // Remove from the selection.
       net.setSelection({
         nodes: event.previousSelection.nodes.filter(
-          (id) => event.nodes.indexOf(id) === -1
+          (id) => event.nodes.indexOf(id) === -1,
         ),
         edges: event.previousSelection.edges.filter(
-          (id) => event.edges.indexOf(id) === -1
+          (id) => event.edges.indexOf(id) === -1,
         ),
       });
     } else {

@@ -167,8 +167,8 @@ export default {
           const updatedIds = new Set(
             [].concat(
               ...ids,
-              ...ids.map((id) => this.net.getConnectedNodes(id))
-            )
+              ...ids.map((id) => this.net.getConnectedNodes(id)),
+            ),
           );
 
           if (update) {
@@ -210,12 +210,12 @@ export default {
 
           // Save new neighbors for label update
           ids.forEach((id) =>
-            this.net.getConnectedNodes(id).forEach((id) => updatedIds.add(id))
+            this.net.getConnectedNodes(id).forEach((id) => updatedIds.add(id)),
           );
 
           // Update label texts
           this.updateLabels(
-            [...updatedIds].filter((id) => this.data.items[id])
+            [...updatedIds].filter((id) => this.data.items[id]),
           );
         },
       };
@@ -250,7 +250,7 @@ export default {
     this.cleanUpCallbacks.push(
       this.$store.subscribe(({ type, payload }, { data }) => {
         (this.storeActions[type] || (() => {}))(payload, data);
-      })
+      }),
     );
 
     this.$emit("ready", { container, net, nodes, edges });
@@ -304,7 +304,7 @@ export default {
         (ids || this.nodes.getIds())
           .map((id) => this.data.items[id])
           .filter((item) => item.type === "dummy")
-          .map((item) => this.itemToNode(item))
+          .map((item) => this.itemToNode(item)),
       );
     },
     replaceItems() {
@@ -318,13 +318,13 @@ export default {
       // Nodes
       this.nodes.clear();
       this.nodes.add(
-        items.filter(({ type }) => !this.isEdge(type)).map(this.itemToNode)
+        items.filter(({ type }) => !this.isEdge(type)).map(this.itemToNode),
       );
 
       // Edges
       this.edges.clear();
       this.edges.add(
-        items.filter(({ type }) => this.isEdge(type)).map(this.itemToEdge)
+        items.filter(({ type }) => this.isEdge(type)).map(this.itemToEdge),
       );
 
       // Some labels contain placeholders for info from connected nodes.
@@ -365,7 +365,7 @@ export default {
           -x / scale - 1,
           -y / scale - 1,
           ctx.canvas.width / scale + 2,
-          ctx.canvas.height / scale + 2
+          ctx.canvas.height / scale + 2,
         );
       };
 

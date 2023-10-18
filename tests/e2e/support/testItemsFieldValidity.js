@@ -38,7 +38,7 @@ export default function ({ name, type, field, values }) {
 
           it(`Is ${valid ? "" : "in"}valid?`, () => {
             cy.get("[data-cy=edit-save]").should(
-              valid ? "not.be.disabled" : "be.disabled"
+              valid ? "not.be.disabled" : "be.disabled",
             );
           });
         });

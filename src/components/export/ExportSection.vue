@@ -109,13 +109,13 @@ export default {
         const json = JSON.stringify(
           exporter.exportData(this.data),
           undefined,
-          4
+          4,
         );
         this.showAlert("success", "Successfully exported.");
         download(
           this.getFilename("json"),
           "application/json;charset=utf-8",
-          json
+          json,
         );
       } catch (error) {
         console.error(error);
@@ -167,7 +167,7 @@ export default {
           "info",
           `Rendering image ${
             tiles ? "as tiles" : "as single picture"
-          }, size: ${sizeString}.`
+          }, size: ${sizeString}.`,
         );
 
         await this.renderImage(
@@ -188,7 +188,7 @@ export default {
                 ? null
                 : `${`${col}`.padStart(
                     tileSuffixDigits,
-                    "0"
+                    "0",
                   )}x${`${row}`.padStart(tileSuffixDigits, "0")}`;
 
             const url = URL.createObjectURL(blob);
@@ -196,9 +196,9 @@ export default {
               await new Promise((resolve) => setTimeout(resolve, 50));
               download(
                 this.getFilename(
-                  [tileSuffix, "png"].filter((v) => v != null).join(".")
+                  [tileSuffix, "png"].filter((v) => v != null).join("."),
                 ),
-                url
+                url,
               );
               await new Promise((resolve) => setTimeout(resolve, 50));
               this.$store.commit("setWorking", {
@@ -208,7 +208,7 @@ export default {
             } finally {
               URL.revokeObjectURL(url);
             }
-          }
+          },
         );
 
         this.showAlert("success", `Image rendered, size: ${sizeString}.`);
@@ -216,7 +216,7 @@ export default {
         console.error(error);
         this.showAlert(
           "error",
-          `Image rendering failed. Probably too large image for this browser, size: ${sizeString}. You can try smaller size or rendering it as tiles.`
+          `Image rendering failed. Probably too large image for this browser, size: ${sizeString}. You can try smaller size or rendering it as tiles.`,
         );
       } finally {
         this.working = false;
@@ -249,7 +249,7 @@ export default {
         ap.build();
         ap.savePDF(
           this.data.projectName || "Mininet Network",
-          this.getFilename("pdf")
+          this.getFilename("pdf"),
         );
 
         this.showAlert("success", "Addressing plan built.");

@@ -14,7 +14,7 @@ function getMockState(...states) {
 function getMockStateWithTopo(...states) {
   return getMockState(
     { data: exporter.importData(exampleMedium2Controllers) },
-    ...states
+    ...states,
   );
 }
 
@@ -107,7 +107,7 @@ describe("Store topology", () => {
         const state = getMockStateWithTopo();
 
         expect(
-          getters.boundingBox(state)({ scale: Math.PI, margin: 174 })
+          getters.boundingBox(state)({ scale: Math.PI, margin: 174 }),
         ).to.deep.equal({
           eX: 4782,
           eY: 1694,
@@ -159,7 +159,7 @@ describe("Store topology", () => {
           .to.be.an("object")
           .to.have.all.keys(externalData.items.map((item) => item.id));
         expect(Object.values(state.data.items)).to.deep.have.members(
-          externalData.items
+          externalData.items,
         );
       }
 
@@ -237,33 +237,33 @@ describe("Store topology", () => {
           .to.have.own.property(oA.id, oA, "Original A should still be present")
           .that.deep.equals(
             oACopy,
-            "Original A shouldn't be changed in any way"
+            "Original A shouldn't be changed in any way",
           );
         expect(state.data.items).to.have.own.property(
           nA.id,
           nA,
-          "New A should be added"
+          "New A should be added",
         );
         expect(state.data.items).to.have.own.property(
           nB.id,
           nB,
-          "New B should replace original B"
+          "New B should replace original B",
         );
         expect(state.data.items)
           .to.have.own.property(
             oC.id,
             oC,
-            "Original C should still be present (just altered)"
+            "Original C should still be present (just altered)",
           )
           .that.has.own.property(
             "hostname",
             uC.hostname,
-            "Updated C should have the new hostname"
+            "Updated C should have the new hostname",
           );
         expect(state.data.items).to.not.have.own.property(
           oD.id,
           oD,
-          "D shoudn't exist anymore"
+          "D shoudn't exist anymore",
         );
       });
 
@@ -490,26 +490,26 @@ describe("Store topology", () => {
             if (before.future) {
               expect(state.future).to.include(
                 unitFuture,
-                "Future unit should be in the future"
+                "Future unit should be in the future",
               );
             }
             if (before.past) {
               expect(state.future).to.include(
                 unitPast,
-                "Past unit should be in the future"
+                "Past unit should be in the future",
               );
             }
           } else if (operation === "redoShift") {
             if (before.future) {
               expect(state.past).to.include(
                 unitFuture,
-                "Future unit should be in the past"
+                "Future unit should be in the past",
               );
             }
             if (before.past) {
               expect(state.past).to.include(
                 unitPast,
-                "Past unit should be in the past"
+                "Past unit should be in the past",
               );
             }
           }

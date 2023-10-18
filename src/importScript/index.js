@@ -108,7 +108,7 @@ export default function (input) {
         if (funcName === ".onecmd") {
           // Script
           scriptLines[beforeCLIRun ? "startScript" : "stopScript"].push(
-            pyString(args[0])
+            pyString(args[0]),
           );
         } else if (funcName === ".addLink") {
           // Link
@@ -157,7 +157,7 @@ export default function (input) {
           if (pyNotNull(args.defaultRoute)) {
             item.defaultRoute = args.defaultRoute.replace(
               /.*via\s+([0-9a-fA-F.:]+).*/,
-              "$1"
+              "$1",
             );
           }
           if (pyNotNull(args.ip)) {

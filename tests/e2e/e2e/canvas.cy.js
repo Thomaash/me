@@ -193,6 +193,6 @@ describe("Canvas", { testIsolation: false }, () => {
             .should("have.attr", "data-cy-values", `[${itemsToDelete}]`);
         });
       });
-    }
+    },
   );
 });

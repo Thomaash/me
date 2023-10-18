@@ -182,7 +182,7 @@ export default {
         "dummy",
         ["port", "host", "switch", "controller"],
         "{{IPS}}",
-        true
+        true,
       );
       this.net.addNodeMode();
     },
@@ -261,7 +261,7 @@ export default {
       actionName = "Close",
       actionFunction = () => {
         this.snackbar.show = false;
-      }
+      },
     ) {
       this.snackbar.type = type;
       this.snackbar.values = values;
@@ -376,7 +376,7 @@ export default {
       const ports = this.getConnectedNodes(node.id, "port").sort(compareNodes);
       const coords = this.generateOrganizedPortCoors(
         this.net.getPositions([node.id])[node.id],
-        ports.length
+        ports.length,
       );
 
       this.commit(
@@ -384,7 +384,7 @@ export default {
         coords.map((coords, i) => ({
           ...coords,
           id: ports[i].id,
-        }))
+        })),
       );
     },
     getNextHostname(hostnames, fallback) {
@@ -411,9 +411,9 @@ export default {
 
         return this.getNextHostname(
           this.getConnectedNodes(rootNodeId, type).map(
-            ({ id }) => this.data.items[id].hostname
+            ({ id }) => this.data.items[id].hostname,
           ),
-          baseHostnames[type]
+          baseHostnames[type],
         );
       } else {
         // Global namespace
@@ -422,7 +422,7 @@ export default {
             .get()
             .filter((node) => node.group === type)
             .map(({ id }) => this.data.items[id].hostname),
-          baseHostnames[type]
+          baseHostnames[type],
         );
       }
     },
@@ -432,11 +432,11 @@ export default {
         .filter((id) => types.indexOf(this.data.items[id].type) !== -1);
       const positions = this.net.getPositions(ids);
       const distances = ids.map((id) =>
-        Math.hypot(positions[id].x - x, positions[id].y - y)
+        Math.hypot(positions[id].x - x, positions[id].y - y),
       );
       const closestIndex = distances.reduce(
         (acc, val, i) => (val < distances[acc] ? i : acc),
-        0
+        0,
       );
 
       return distances[closestIndex] <= maxDistance ? ids[closestIndex] : null;
@@ -702,7 +702,7 @@ export default {
           toSelect.add(edge.from);
         });
         const toSelectFiltered = [...toSelect].filter(
-          (nodeId) => this.data.items[nodeId].type === "port"
+          (nodeId) => this.data.items[nodeId].type === "port",
         );
         if (toSelectFiltered.length) {
           this.net.selectNodes([event.nodes[0], ...toSelectFiltered]);
@@ -723,7 +723,7 @@ export default {
         container,
         this.net,
         this.nodes,
-        selectionTheme
+        selectionTheme,
       );
       rs.attach();
     },

@@ -50,8 +50,8 @@ export default class {
                 this._log(
                   `Failed to add ${node.type}/${node.hostname}: conflicting hostname.`,
                   "error",
-                  node
-                )
+                  node,
+                ),
               );
           } else if (
             error instanceof SyntaxError &&
@@ -62,8 +62,8 @@ export default class {
               this._log(
                 `Failed to add ${port.type}/${port.hostname}: conflicting interface name ${devname}.`,
                 "error",
-                port
-              )
+                port,
+              ),
             );
           } else if (
             error instanceof SyntaxError &&
@@ -73,7 +73,7 @@ export default class {
             this._log(
               `Failed to add ${port.type}/${port.hostname}: single port has multiple links.`,
               "error",
-              port
+              port,
             );
           } else if (
             error instanceof SyntaxError &&
@@ -83,7 +83,7 @@ export default class {
             this._log(
               `Failed to add ${port.type}/${port.hostname}: port can't be both physical and connected to a link.`,
               "error",
-              port
+              port,
             );
           } else {
             console.error(error);
@@ -91,10 +91,10 @@ export default class {
               item != null && item.type !== null && item.id !== null
                 ? `Failed to add ${item.type}/${item.hostname}.`
                 : `Malformed item (${this._items.arr.$all.find(
-                    (v) => v === item
+                    (v) => v === item,
                   )}).`,
               "error",
-              item
+              item,
             );
           }
 
@@ -106,19 +106,19 @@ export default class {
     // Log level
     if (this._data.logLevel) {
       this._code.preInit.push(
-        `mininet.log.setLogLevel('${this._data.logLevel}')`
+        `mininet.log.setLogLevel('${this._data.logLevel}')`,
       );
     }
 
     // Scripts
     if (this._data.startScript) {
       this._code.globalStartCmds.push(
-        ...this._scriptToCmds(this._data.startScript)
+        ...this._scriptToCmds(this._data.startScript),
       );
     }
     if (this._data.stopScript) {
       this._code.globalStopCmds.push(
-        ...this._scriptToCmds(this._data.stopScript)
+        ...this._scriptToCmds(this._data.stopScript),
       );
     }
 
@@ -156,7 +156,7 @@ export default class {
           Boolean,
           "xterms",
         ],
-      ])
+      ]),
     );
 
     return this._code.toString();
@@ -178,7 +178,7 @@ export default class {
       [controller.protocol != null, controller.protocol, String, "protocol"],
     ]);
     this._code.nodes.push(
-      `${controller.hostname} = net.addController(${args.join(", ")})`
+      `${controller.hostname} = net.addController(${args.join(", ")})`,
     );
     this._code.startControllers.push(`${controller.hostname}.start()`);
   }
@@ -197,7 +197,7 @@ export default class {
       ],
       [
         [host.cpuScheduler, host.cpuCores, host.cpuLimit].some(
-          (v) => v != null
+          (v) => v != null,
         ),
         "mininet.node.CPULimitedHost",
         null,
@@ -212,7 +212,7 @@ export default class {
         [host.cpuLimit != null, host.cpuLimit, Number, "f"],
       ]);
       this._code.nodeLimits.push(
-        `${host.hostname}.setCPUFrac(${args.join(", ")})`
+        `${host.hostname}.setCPUFrac(${args.join(", ")})`,
       );
     }
     if (host.cpuCores != null) {
@@ -220,7 +220,7 @@ export default class {
         [host.cpuCores != null, host.cpuCores.join(","), String, "cores"],
       ]);
       this._code.nodeLimits.push(
-        `${host.hostname}.setCPUs(${args.join(", ")})`
+        `${host.hostname}.setCPUs(${args.join(", ")})`,
       );
     }
 
@@ -241,16 +241,16 @@ export default class {
       this._log(
         `Failed to add ${link.type}/${link.hostname}: link can't be connected to disconnected port(s).`,
         "warning",
-        link
+        link,
       );
       [...(fromNode ? [] : [fromPort]), ...(toNode ? [] : [toPort])].forEach(
         (port) => {
           this._log(
             `Failed to add ${port.type}/${port.hostname}: port can't be connected to a link but not to a node.`,
             "warning",
-            port
+            port,
           );
-        }
+        },
       );
 
       return;
@@ -280,7 +280,7 @@ export default class {
       this._log(
         `Skipping ${port.type}/${port.hostname}: not connected to any node.`,
         "info",
-        port
+        port,
       );
       return;
     }
@@ -289,7 +289,7 @@ export default class {
       this._log(
         `Skipping ${port.type}/${port.hostname}: port has to be either physical or connected to a link.`,
         "info",
-        port
+        port,
       );
       return;
     }
@@ -321,7 +321,7 @@ export default class {
               `${node.hostname}.intf('${dev}').prefixLen = ${ip.split("/")[1]}`,
             ]
           : []),
-        `${node.hostname}.cmd('ip a a ${ip} dev ${dev}')`
+        `${node.hostname}.cmd('ip a a ${ip} dev ${dev}')`,
       );
     });
   }
@@ -354,13 +354,13 @@ export default class {
       [swtch.verbose != null, swtch.verbose, Boolean, "verbose"],
     ]);
     const controllerHostnames = this._getNeighbors(swtch, ["controller"]).map(
-      (controller) => controller.hostname
+      (controller) => controller.hostname,
     );
     this._code.nodes.push(
-      `${swtch.hostname} = net.addSwitch(${args.join(", ")})`
+      `${swtch.hostname} = net.addSwitch(${args.join(", ")})`,
     );
     this._code.startSwitches.push(
-      `${swtch.hostname}.start([${controllerHostnames.join(", ")}])`
+      `${swtch.hostname}.start([${controllerHostnames.join(", ")}])`,
     );
 
     this._addNodeScripts(swtch.hostname, swtch.startScript, swtch.stopScript);
@@ -425,7 +425,7 @@ export default class {
   _addNodeScripts(hostname, startScript, stopScript) {
     if (startScript) {
       this._code.nodeStartCmds.push(
-        ...this._scriptToCmds(startScript, hostname)
+        ...this._scriptToCmds(startScript, hostname),
       );
     }
     if (stopScript) {

@@ -40,7 +40,7 @@ Cypress.Commands.add(
         .trigger("pointerdown", { button, clientX: x, clientY: y })
         .trigger("pointerup", { button, clientX: x, clientY: y, force: true });
     }
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -49,7 +49,7 @@ Cypress.Commands.add(
   (type, position = { x: 150, y: 150 }) => {
     cy.meVisFabClick(type);
     cy.get("[data-cy=vis] canvas").meVisClick(position);
-  }
+  },
 );
 
 Cypress.Commands.add("meVisFabClick", { prevSubject: false }, (button) => {
@@ -83,10 +83,10 @@ Cypress.Commands.add(
       cy.get(`[data-cy=${key}] input[type=text]`).click({ force: true }); // The input is hidden but works
       cy.contains(
         ".menuable__content__active .v-list-item__title",
-        value
+        value,
       ).click();
     });
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -101,14 +101,14 @@ Cypress.Commands.add(
       cy.get(`[data-cy=${key}] input`).should(
         "have.attr",
         "aria-checked",
-        ariaChecked
+        ariaChecked,
       );
     });
 
     Object.entries(selectProps).forEach(([key, value]) => {
       cy.get(`[data-cy=${key}]`).contains(value);
     });
-  }
+  },
 );
 
 Cypress.Commands.add("meClickMenu", { prevSubject: false }, (name) => {

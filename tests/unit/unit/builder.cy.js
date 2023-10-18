@@ -18,7 +18,7 @@ describe("Builder", () => {
       expect(script, "builder didn't return a string").to.be.a("string");
       expect(
         removeNonCode(script),
-        "builder didn't build expected script"
+        "builder didn't build expected script",
       ).to.equal(removeNonCode(correctScript));
     });
   });

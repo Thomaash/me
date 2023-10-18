@@ -46,11 +46,11 @@ describe("Export import script", () => {
           const items2 = getCleanItems(data2.items, type);
           expect(
             items2,
-            `The amount of ${typePl} differs.`
+            `The amount of ${typePl} differs.`,
           ).to.have.lengthOf.at.most(items1.length);
           expect(
             items1,
-            `Some ${typePl} were not imported correctly.`
+            `Some ${typePl} were not imported correctly.`,
           ).to.include.deep.members(items2);
         });
 
@@ -65,11 +65,11 @@ describe("Export import script", () => {
             const items1 = getCleanItems(data1.items, type);
             const items2 = getCleanItems(data2.items, type);
             expect(items2, `The amount of ${typePl} differs.`).to.have.lengthOf(
-              items1.length
+              items1.length,
             );
             expect(
               items2,
-              `Some ${typePl} were not imported correctly.`
+              `Some ${typePl} were not imported correctly.`,
             ).to.have.deep.members(items1);
           });
         });
@@ -78,9 +78,9 @@ describe("Export import script", () => {
       it("script reexport", () => {
         expect(
           removeNonCode(script2),
-          "Script changed after importing and reexporting."
+          "Script changed after importing and reexporting.",
         ).to.equal(removeNonCode(script1));
       });
-    })
+    }),
   );
 });

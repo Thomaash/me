@@ -27,7 +27,7 @@ describe("Mininet settings", { testIsolation: false }, () => {
         "mininet-settings-ip-base": ["172.16.0.0/16"],
         "mininet-settings-listen-port-base": ["1564"],
         "mininet-settings-start-script": [...Array(8)].map(
-          (_, i) => `ping 172.16.77.${60 + i}`
+          (_, i) => `ping 172.16.77.${60 + i}`,
         ),
         "mininet-settings-stop-script": ["pingall"],
       },
@@ -57,6 +57,6 @@ describe("Mininet settings", { testIsolation: false }, () => {
           cy.meTestVuetifyInputs({ textProps, checkboxProps, selectProps });
         });
       });
-    }
+    },
   );
 });
