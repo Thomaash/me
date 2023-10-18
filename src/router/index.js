@@ -28,8 +28,10 @@ function createRoutes(mapper = (v) => v) {
         drawer: true,
         icon: "mdi-home",
       },
-      component: () =>
-        import(/* webpackPrefetch: true */ "@/components/HomePage.vue"),
+      components: {
+        default: () =>
+          import(/* webpackPrefetch: true */ "@/components/HomePage.vue"),
+      },
     },
     {
       path: "/canvas",
@@ -40,12 +42,12 @@ function createRoutes(mapper = (v) => v) {
         icon: "mdi-map",
       },
       components: {
-        default: import(
-          /* webpackPrefetch: true */ "@/components/CanvasPage.vue"
-        ),
-        toolbar: import(
-          /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-        ),
+        default: () =>
+          import(/* webpackPrefetch: true */ "@/components/CanvasPage.vue"),
+        toolbar: () =>
+          import(
+            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
+          ),
       },
       props: {
         toolbar: {
@@ -87,12 +89,14 @@ function createRoutes(mapper = (v) => v) {
         icon: "mdi-tune",
       },
       components: {
-        default: import(
-          /* webpackPrefetch: true */ "@/components/MininetSettingsPage.vue"
-        ),
-        toolbar: import(
-          /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-        ),
+        default: () =>
+          import(
+            /* webpackPrefetch: true */ "@/components/MininetSettingsPage.vue"
+          ),
+        toolbar: () =>
+          import(
+            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
+          ),
       },
     },
     {
@@ -104,12 +108,12 @@ function createRoutes(mapper = (v) => v) {
         icon: "mdi-content-save",
       },
       components: {
-        default: import(
-          /* webpackPrefetch: true */ "@/components/ExportPage.vue"
-        ),
-        toolbar: import(
-          /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-        ),
+        default: () =>
+          import(/* webpackPrefetch: true */ "@/components/ExportPage.vue"),
+        toolbar: () =>
+          import(
+            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
+          ),
       },
     },
     {
@@ -120,9 +124,10 @@ function createRoutes(mapper = (v) => v) {
         drawer: true,
         icon: "mdi-information",
       },
-      component: import(
-        /* webpackPrefetch: true */ "@/components/AboutPage.vue"
-      ),
+      components: {
+        default: () =>
+          import(/* webpackPrefetch: true */ "@/components/AboutPage.vue"),
+      },
     },
   ].map(mapper);
 }
