@@ -50,7 +50,7 @@
     "autoprefixer": "10.4.16",
     "chai": "4.3.10",
     "cypress": "13.3.2",
-    "dependency-cruiser": "13.1.5",
+    "dependency-cruiser": "14.1.2",
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-cypress": "2.15.1",
