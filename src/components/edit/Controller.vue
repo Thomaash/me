@@ -5,7 +5,10 @@
         <v-flex xs12>
           <v-text-field
             v-model="item.hostname"
-            :error-messages="errors.item.hostname"
+            :rules="[
+              validators.required(item.hostname),
+              validators.hostname(item.hostname),
+            ]"
             label="Label"
             autofocus
             clearable
@@ -23,7 +26,7 @@
         <v-flex xs12>
           <v-text-field
             v-model="item.ip"
-            :error-messages="errors.item.ip"
+            :rules="[validators.ip(item.ip)]"
             label="IP"
             clearable
             data-cy="edit-ip"
@@ -33,8 +36,7 @@
           <v-text-field
             ref="port"
             v-model.number="item.port"
-            :rules="[badNumberRule('port')]"
-            :error-messages="errors.item.port"
+            :rules="[validators.port(item.port)]"
             label="Port"
             type="number"
             min="1"
@@ -58,25 +60,23 @@
 
 <script>
 import common from "./common";
-import errors from "@/validation/errors";
 import { controllerTypes, protocolsIP } from "@/components/selects";
 import { required, hostname, ip, port } from "@/validation/rules";
 
 export default {
   name: "ControllerEdit",
-  mixins: [common, errors],
+  mixins: [common],
   data: () => ({
     valid: false,
     item: {},
     controllerTypes,
     protocolsIP,
-  }),
-  validations: {
-    item: {
-      hostname: { required, hostname },
-      ip: { ip },
-      port: { port },
+    validators: {
+      required,
+      hostname,
+      ip,
+      port,
     },
-  },
+  }),
 };
 </script>

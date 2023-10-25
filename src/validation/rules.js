@@ -1,30 +1,3 @@
-import {
-  alpha,
-  alphaNum,
-  and,
-  between,
-  decimal,
-  email,
-  helpers,
-  integer,
-  ipAddress,
-  macAddress,
-  maxLength,
-  maxValue,
-  minLength,
-  minValue,
-  not,
-  numeric,
-  or,
-  required,
-  requiredIf,
-  requiredUnless,
-  sameAs,
-  url,
-} from "vuelidate/src/validators/index.js";
-
-const { req, withParams } = helpers;
-
 const testMask4 = (v) => /^\d+$/.test(v) && v >= 0 && v <= 32;
 const testMask6 = (v) => /^\d+$/.test(v) && v >= 0 && v <= 128;
 
@@ -70,70 +43,104 @@ const testIP6WithMask = (v) => {
 const testIP = (v) => testIP4(v) || testIP6(v);
 const testIPWithMask = (v) => testIP4WithMask(v) || testIP6WithMask(v);
 
-export const hostname = withParams(
-  { type: "hostname" },
-  (v) => !req(v) || /^[a-zA-Z][a-zA-Z0-9]*$/.test(v),
-);
-
-export const ip = withParams({ type: "ip" }, (v) => !req(v) || testIP(v));
-
-export const ipWithMask = withParams(
-  { type: "ipWithMask" },
-  (v) => !req(v) || testIPWithMask(v),
-);
-
-export const ipsWithMasks = withParams(
-  { type: "ipsWithMasks" },
-  (v) => !req(v) || v.every(testIPWithMask),
-);
-
-export const port = withParams(
-  { type: "port" },
-  (v) => !req(v) || (integer(v) && between(1, 65535)(v)),
-);
-
-export const timeWithUnit = withParams(
-  { type: "timeWithUnit" },
-  (v) => !req(v) || /^\d+(|m|u)s$/.test(v),
-);
-
-export const divisible = (divisor) =>
-  withParams(
-    { type: "divisible", divisor },
-    (v) => !req(v) || v % divisor === 0,
-  );
-
-export const hexData = withParams(
-  { type: "hexData" },
-  (v) => !req(v) || /^[0-9a-fA-F]*$/.test(v),
-);
-
-export const naturalNumberList = withParams(
-  { type: "naturalNumberList" },
-  (v) => !req(v) || v.every((nm) => /^[0-9]+$/.test(nm)),
-);
+const between = (min, max) => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "number" && min <= v && v <= max) ||
+  `Has to be between ${min} and ${max} inclusive.`;
+const decimal = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "number" && Number.isFinite(v)) ||
+  `Has to be a decimal number.`;
+const divisible = (divisor) => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "number" && v % divisor === 0) ||
+  `Has to be divisible by ${divisor}.`;
+const hexData = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "string" && /^[0-9a-fA-F]+$/.test(v)) ||
+  "Has to be in hexadecimal.";
+const hostname = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "string" && /^[a-zA-Z][a-zA-Z0-9]+$/.test(v)) ||
+  "Has to start with a letter and contain only letters and numbers.";
+const integer = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "number" && v % 1 === 0) ||
+  "Has to be an integer.";
+const ipWithMask = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "string" && testIPWithMask(v)) ||
+  "Has to contain a valid IP 4/6 address with a mask (CIDR notation).";
+const ip = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "string" && testIP(v)) ||
+  "Has to be valid IP 4/6 address.";
+const ipsWithMasks = () => (v) =>
+  v == null ||
+  v === "" ||
+  (Array.isArray(v) && v.every((v) => testIPWithMask(v))) ||
+  "Has to contain only valid IP 4/6 addresses with masks (CIDR notation), one per line.";
+const maxLength = (max) => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "string" && v.length <= max) ||
+  `Has to have at most ${max} character(s).`;
+const maxValue = (max) => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "number" && v <= max) ||
+  `Has to be at most ${max}.`;
+const minLength = (min) => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "string" && v.length >= min) ||
+  `Has to have at least ${min} character(s).`;
+const minValue = (min) => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "number" && v >= min) ||
+  `Has to be at least ${min}.`;
+const naturalNumberList = () => (v) =>
+  v == null ||
+  v === "" ||
+  (Array.isArray(v) && v.every((nm) => /^[0-9]+$/.test(nm))) ||
+  "Has to be a list of natural numbers.";
+const port = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "number" && v % 1 === 0 && 1 <= v && v <= 65535) ||
+  "Has to be valid port (1-65535).";
+const required = () => (v) => (v != null && v !== "") || "Can'n be left empty.";
+const timeWithUnit = () => (v) =>
+  v == null ||
+  v === "" ||
+  (typeof v === "string" && /^\d+(|m|u)s$/.test(v)) ||
+  "Has to be expressed as time + unit (e.g. 10ms or 443us).";
 
 export {
-  alpha,
-  alphaNum,
-  and,
   between,
   decimal,
-  email,
-  helpers,
+  divisible,
+  hexData,
+  hostname,
   integer,
-  ipAddress,
-  macAddress,
+  ip,
+  ipWithMask,
+  ipsWithMasks,
   maxLength,
   maxValue,
   minLength,
   minValue,
-  not,
-  numeric,
-  or,
+  naturalNumberList,
+  port,
   required,
-  requiredIf,
-  requiredUnless,
-  sameAs,
-  url,
+  timeWithUnit,
 };

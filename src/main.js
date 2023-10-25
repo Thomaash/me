@@ -5,7 +5,6 @@ import "vuetify/dist/vuetify.min.css";
 
 import App from "./App.vue";
 import Vue from "vue";
-import Vuelidate from "vuelidate/src/index.js";
 import Vuetify from "vuetify";
 import VuetifyConfirm from "vuetify-confirm";
 import router from "./router";
@@ -46,7 +45,6 @@ const vuetify = new Vuetify({
   },
 });
 
-Vue.use(Vuelidate);
 Vue.use(VuetifyConfirm, { vuetify });
 
 Vue.config.productionTip = false;

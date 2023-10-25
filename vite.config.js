@@ -13,9 +13,6 @@ const writeFile = promisify(writeFileCallback);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  optimizeDeps: {
-    include: ["vuelidate"],
-  },
   plugins: [
     createVuePlugin(),
     (function myPlugin() {

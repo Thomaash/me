@@ -15,8 +15,10 @@
         :min="0"
         :step="0.1"
         :value="size.widthScreenCm"
-        :error-messages="errors.size.widthScreenCm"
-        :rules="[badNumberRule('sizeWidthScreenCm')]"
+        :rules="[
+          validators.decimal(size.widthScreenCm),
+          validators.minValue(0)(size.widthScreenCm),
+        ]"
         label="Width on screen"
         type="number"
         suffix="cm"
@@ -30,8 +32,10 @@
         :min="0"
         :step="0.1"
         :value="size.widthPaperCm"
-        :error-messages="errors.size.widthPaperCm"
-        :rules="[badNumberRule('sizeWidthPaperCm')]"
+        :rules="[
+          validators.decimal(size.widthPaperCm),
+          validators.minValue(0)(size.widthPaperCm),
+        ]"
         label="Width on paper"
         type="number"
         suffix="cm"
@@ -45,8 +49,10 @@
         :min="1"
         :step="1"
         :value="size.widthPx"
-        :error-messages="errors.size.widthPx"
-        :rules="[badNumberRule('sizeWidthPx')]"
+        :rules="[
+          validators.integer(size.widthPx),
+          validators.minValue(1)(size.widthPx),
+        ]"
         label="Width"
         type="number"
         suffix="px"
@@ -61,8 +67,10 @@
         :min="0"
         :step="0.1"
         :value="size.heightScreenCm"
-        :error-messages="errors.size.heightScreenCm"
-        :rules="[badNumberRule('sizeHeightScreenCm')]"
+        :rules="[
+          validators.decimal(size.heightScreenCm),
+          validators.minValue(0)(size.heightScreenCm),
+        ]"
         label="Height on screen"
         type="number"
         suffix="cm"
@@ -76,8 +84,10 @@
         :min="0"
         :step="0.1"
         :value="size.heightPaperCm"
-        :error-messages="errors.size.heightPaperCm"
-        :rules="[badNumberRule('sizeHeightPaperCm')]"
+        :rules="[
+          validators.decimal(size.heightPaperCm),
+          validators.minValue(0)(size.heightPaperCm),
+        ]"
         label="Height on paper"
         type="number"
         suffix="cm"
@@ -91,8 +101,10 @@
         :min="1"
         :step="1"
         :value="size.heightPx"
-        :error-messages="errors.size.heightPx"
-        :rules="[badNumberRule('sizeHeightPx')]"
+        :rules="[
+          validators.integer(size.heightPx),
+          validators.minValue(1)(size.heightPx),
+        ]"
         label="Height"
         type="number"
         suffix="px"
@@ -112,8 +124,10 @@
           :disabled="disabled"
           :min="1"
           :step="1"
-          :error-messages="errors.tileWidthPx"
-          :rules="[badNumberRule('sizeTileWidthPx')]"
+          :rules="[
+            validators.integer(tileWidthPx),
+            validators.minValue(1)(tileWidthPx),
+          ]"
           label="The width of each tile"
           type="number"
           suffix="px"
@@ -126,8 +140,10 @@
           :disabled="disabled"
           :min="1"
           :step="1"
-          :error-messages="errors.tileHeightPx"
-          :rules="[badNumberRule('sizeTileHeightPx')]"
+          :rules="[
+            validators.integer(tileHeightPx),
+            validators.minValue(1)(tileHeightPx),
+          ]"
           label="The height of each tile"
           type="number"
           suffix="px"
@@ -162,7 +178,6 @@
 
 <script>
 import { decimal, integer, minValue } from "@/validation/rules";
-import errors from "@/validation/errors";
 import { mapGetters } from "vuex";
 
 const SCREEN_DPCM = 38;
@@ -262,7 +277,6 @@ class ValuesToString {
 
 export default {
   name: "ImageConfig",
-  mixins: [errors],
   props: {
     working: {
       required: true,
@@ -282,6 +296,11 @@ export default {
       heightScreenCm: 0,
       heightPaperCm: 0,
       heightPx: 0,
+    },
+    validators: {
+      decimal,
+      integer,
+      minValue,
     },
   }),
   computed: {
@@ -372,18 +391,6 @@ export default {
           : false,
         dark: this.dark,
       });
-    },
-  },
-  validations: {
-    tileHeightPx: { integer, minValue: minValue(1) },
-    tileWidthPx: { integer, minValue: minValue(1) },
-    size: {
-      heightPaperCm: { decimal, minValue: minValue(0) },
-      heightPx: { integer, minValue: minValue(1) },
-      heightScreenCm: { decimal, minValue: minValue(0) },
-      widthPaperCm: { decimal, minValue: minValue(0) },
-      widthPx: { integer, minValue: minValue(1) },
-      widthScreenCm: { decimal, minValue: minValue(0) },
     },
   },
 };

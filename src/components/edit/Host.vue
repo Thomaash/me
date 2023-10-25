@@ -5,7 +5,10 @@
         <v-flex xs12>
           <v-text-field
             v-model="item.hostname"
-            :error-messages="errors.item.hostname"
+            :rules="[
+              validators.required()(item.hostname),
+              validators.hostname()(item.hostname),
+            ]"
             label="Hostname"
             autofocus
             data-cy="edit-hostname"
@@ -14,7 +17,7 @@
         <v-flex xs12>
           <v-text-field
             v-model="item.defaultRoute"
-            :error-messages="errors.item.defaultRoute"
+            :rules="[validators.ip()(item.defaultRoute)]"
             label="Default Route"
             clearable
             data-cy="edit-default-route"
@@ -32,8 +35,10 @@
           <v-text-field
             ref="itemCPULimit"
             v-model.number="item.cpuLimit"
-            :rules="[badNumberRule('itemCPULimit')]"
-            :error-messages="errors.item.cpuLimit"
+            :rules="[
+              validators.decimal()(item.cpuLimit),
+              validators.between(0, 1)(item.cpuLimit),
+            ]"
             label="CPU Utilization Limit"
             type="number"
             min="0"
@@ -46,7 +51,7 @@
         <v-flex xs12>
           <v-text-field
             v-model="cpuCoresStr"
-            :error-messages="errors.item.cpuCores"
+            :rules="[validators.naturalNumberList()(item.cpuCores)]"
             label="CPU cores"
             clearable
             data-cy="edit-cpu-cores-str"
@@ -77,7 +82,6 @@
 
 <script>
 import common from "./common";
-import errors from "@/validation/errors";
 import {
   required,
   hostname,
@@ -90,12 +94,20 @@ import { schedulers } from "@/components/selects";
 
 export default {
   name: "HostEdit",
-  mixins: [common, errors],
+  mixins: [common],
   data: () => ({
     valid: false,
     item: {},
     schedulers,
     cpuCoresStrInit: "",
+    validators: {
+      between,
+      decimal,
+      hostname,
+      ip,
+      naturalNumberList,
+      required,
+    },
   }),
   computed: {
     cpuCoresStr: {
@@ -118,14 +130,6 @@ export default {
           );
         }
       },
-    },
-  },
-  validations: {
-    item: {
-      cpuCores: { naturalNumberList },
-      cpuLimit: { decimal, between: between(0, 1) },
-      defaultRoute: { ip },
-      hostname: { required, hostname },
     },
   },
   created() {

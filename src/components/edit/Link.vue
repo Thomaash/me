@@ -14,8 +14,7 @@
           <v-text-field
             ref="itemBandwidth"
             v-model.number="item.bandwidth"
-            :rules="[badNumberRule('itemBandwidth')]"
-            :error-messages="errors.item.bandwidth"
+            :rules="[minValue(0)(item.bandwidth)]"
             label="Bandwidth"
             type="number"
             min="0"
@@ -27,7 +26,7 @@
         <v-flex xs12 md6>
           <v-text-field
             v-model="item.delay"
-            :error-messages="errors.item.delay"
+            :rules="[timeWithUnit(item.delay)]"
             label="Delay"
             clearable
             data-cy="edit-delay"
@@ -36,7 +35,7 @@
         <v-flex xs12 md6>
           <v-text-field
             v-model="item.jitter"
-            :error-messages="errors.item.jitter"
+            :rules="[timeWithUnit(item.jitter)]"
             label="Jitter"
             clearable
             data-cy="edit-jitter"
@@ -46,8 +45,7 @@
           <v-text-field
             ref="itemLoss"
             v-model.number="item.loss"
-            :rules="[badNumberRule('itemLoss')]"
-            :error-messages="errors.item.loss"
+            :rules="[between(0, 100)(item.loss)]"
             label="Loss"
             type="number"
             min="0"
@@ -61,8 +59,10 @@
           <v-text-field
             ref="itemMaxQueueSize"
             v-model.number="item.maxQueueSize"
-            :rules="[badNumberRule('itemMaxQueueSize')]"
-            :error-messages="errors.item.maxQueueSize"
+            :rules="[
+              integer(item.maxQueueSize),
+              minValue(0)(item.maxQueueSize),
+            ]"
             label="Max queue"
             type="number"
             min="0"
@@ -78,24 +78,20 @@
 
 <script>
 import common from "./common";
-import errors from "@/validation/errors";
 import { timeWithUnit, integer, minValue, between } from "@/validation/rules";
 
 export default {
   name: "LinkEdit",
-  mixins: [common, errors],
+  mixins: [common],
   data: () => ({
     dialog: false,
     item: {},
-  }),
-  validations: {
-    item: {
-      bandwidth: { minValue: minValue(0) },
-      delay: { timeWithUnit },
-      loss: { between: between(0, 100) },
-      maxQueueSize: { integer, minValue: minValue(0) },
-      jitter: { timeWithUnit },
+    validators: {
+      between,
+      integer,
+      minValue,
+      timeWithUnit,
     },
-  },
+  }),
 };
 </script>

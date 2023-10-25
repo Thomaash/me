@@ -5,7 +5,10 @@
         <v-flex xs12>
           <v-text-field
             v-model="item.hostname"
-            :error-messages="errors.item.hostname"
+            :rules="[
+              validators.required()(item.hostname),
+              validators.hostname()(item.hostname),
+            ]"
             label="Dev Name"
             autofocus
             clearable
@@ -15,7 +18,7 @@
         <v-flex xs12>
           <v-textarea
             v-model="ips"
-            :error-messages="errors.item.ips"
+            :rules="[validators.ipsWithMasks()(item.ips)]"
             label="IPs"
             auto-grow
             clearable
@@ -24,6 +27,7 @@
         </v-flex>
         <v-flex xs12 data-cy="edit-physical">
           <v-switch v-model="item.physical" color="primary" label="Physical" />
+          {{ valid }}
         </v-flex>
       </v-layout>
     </v-container>
@@ -32,15 +36,19 @@
 
 <script>
 import common from "./common";
-import errors from "@/validation/errors";
 import { required, hostname, ipsWithMasks } from "@/validation/rules";
 
 export default {
   name: "PortEdit",
-  mixins: [common, errors],
+  mixins: [common],
   data: () => ({
     valid: false,
     item: {},
+    validators: {
+      hostname,
+      ipsWithMasks,
+      required,
+    },
   }),
   computed: {
     ips: {
@@ -66,12 +74,6 @@ export default {
         // Omit physical property if false
         delete this.$delete(this.item, "physical");
       }
-    },
-  },
-  validations: {
-    item: {
-      hostname: { required, hostname },
-      ips: { ipsWithMasks },
     },
   },
 };

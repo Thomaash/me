@@ -24,7 +24,7 @@
             <v-flex xs12>
               <v-text-field
                 v-model="ipBase"
-                :error-messages="errors.ipBase"
+                :rules="[validators.ipWithMask(ipBase)]"
                 clearable
                 data-cy="mininet-settings-ip-base"
                 label="IP Base"
@@ -34,8 +34,7 @@
               <v-text-field
                 ref="listenPortBase"
                 v-model.number="listenPortBase"
-                :rules="[badNumberRule('listenPortBase')]"
-                :error-messages="errors.listenPortBase"
+                :rules="[validators.port(listenPortBase)]"
                 clearable
                 data-cy="mininet-settings-listen-port-base"
                 label="Base Listening Port"
@@ -106,7 +105,6 @@
 <script>
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import ThreeStateCheckbox from "@/components/ThreeStateCheckbox.vue";
-import errors from "@/validation/errors";
 import { ipWithMask, port } from "@/validation/rules";
 import { logLevels } from "@/components/selects";
 import { mapGetters } from "vuex";
@@ -125,9 +123,9 @@ function ComputedStoreProperty(key) {
 export default {
   name: "MininetSettiongsPage",
   components: { LoadingSpinner, ThreeStateCheckbox },
-  mixins: [errors],
   data: () => ({
     logLevels,
+    validators: { ipWithMask, port },
   }),
   computed: {
     ...mapGetters("topology", ["data"]),
@@ -144,10 +142,6 @@ export default {
     spawnTerminals: new ComputedStoreProperty("spawnTerminals"),
     startScript: new ComputedStoreProperty("startScript"),
     stopScript: new ComputedStoreProperty("stopScript"),
-  },
-  validations: {
-    listenPortBase: { port },
-    ipBase: { ipWithMask },
   },
 };
 </script>
