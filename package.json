@@ -49,7 +49,7 @@
     "autoprefixer": "10.4.16",
     "chai": "4.3.10",
     "cypress": "13.3.3",
-    "dependency-cruiser": "15.0.0",
+    "dependency-cruiser": "15.1.1",
     "eslint": "8.52.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-cypress": "2.15.1",
