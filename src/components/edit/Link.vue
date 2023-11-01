@@ -14,7 +14,7 @@
           <v-text-field
             ref="itemBandwidth"
             v-model.number="item.bandwidth"
-            :rules="[minValue(0)(item.bandwidth)]"
+            :rules="[validators.minValue(0)(item.bandwidth)]"
             label="Bandwidth"
             type="number"
             min="0"
@@ -26,7 +26,7 @@
         <v-flex xs12 md6>
           <v-text-field
             v-model="item.delay"
-            :rules="[timeWithUnit(item.delay)]"
+            :rules="[validators.timeWithUnit(item.delay)]"
             label="Delay"
             clearable
             data-cy="edit-delay"
@@ -35,7 +35,7 @@
         <v-flex xs12 md6>
           <v-text-field
             v-model="item.jitter"
-            :rules="[timeWithUnit(item.jitter)]"
+            :rules="[validators.timeWithUnit(item.jitter)]"
             label="Jitter"
             clearable
             data-cy="edit-jitter"
@@ -45,7 +45,7 @@
           <v-text-field
             ref="itemLoss"
             v-model.number="item.loss"
-            :rules="[between(0, 100)(item.loss)]"
+            :rules="[validators.between(0, 100)(item.loss)]"
             label="Loss"
             type="number"
             min="0"
@@ -60,8 +60,8 @@
             ref="itemMaxQueueSize"
             v-model.number="item.maxQueueSize"
             :rules="[
-              integer(item.maxQueueSize),
-              minValue(0)(item.maxQueueSize),
+              validators.integer(item.maxQueueSize),
+              validators.minValue(0)(item.maxQueueSize),
             ]"
             label="Max queue"
             type="number"
