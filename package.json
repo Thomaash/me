@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
-    "antlr4": "4.9.3",
+    "antlr4": "4.13.0",
     "jspdf": "2.5.1",
     "jspdf-autotable": "3.8.2",
     "source-code-pro": "2.38.0",
