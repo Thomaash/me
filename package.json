@@ -45,7 +45,7 @@
     "@vitejs/plugin-vue": "1",
     "@vue/babel-preset-app": "5.0.8",
     "@vue/eslint-config-prettier": "9.0.0",
-    "@vue/test-utils": "2.4.5",
+    "@vue/test-utils": "2.4.6",
     "autoprefixer": "10.4.19",
     "chai": "5.1.0",
     "cypress": "13.8.1",
