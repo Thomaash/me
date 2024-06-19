@@ -1,6 +1,6 @@
 {
   "index.html": {
-    "file": "assets/js/app-070e5f8d.js",
+    "file": "assets/js/app-55cff2c5.js",
     "src": "index.html",
     "isEntry": true,
     "dynamicImports": [
@@ -8,7 +8,7 @@
       "src/components/CanvasPage.vue",
       "src/components/TopologyToolbar.vue",
       "src/components/MininetSettingsPage.vue",
-      "_ExportPage.73c1dcb3.js",
+      "_ExportPage.0167ada4.js",
       "src/components/AboutPage.vue"
     ],
     "css": [
@@ -131,19 +131,19 @@
     "isEntry": true
   },
   "src/components/HomePage.vue": {
-    "file": "assets/HomePage.18d8db27.js",
+    "file": "assets/HomePage.03b56341.js",
     "src": "src/components/HomePage.vue",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_AppLogo.e4973a0a.js"
+      "_AppLogo.5d854304.js"
     ],
     "css": [
       "assets/HomePage.9bcd2a56.css"
     ]
   },
-  "_AppLogo.e4973a0a.js": {
-    "file": "assets/AppLogo.e4973a0a.js",
+  "_AppLogo.5d854304.js": {
+    "file": "assets/AppLogo.5d854304.js",
     "imports": [
       "index.html"
     ],
@@ -155,21 +155,21 @@
     ]
   },
   "src/components/CanvasPage.vue": {
-    "file": "assets/CanvasPage.4ba2185b.js",
+    "file": "assets/CanvasPage.4c95583c.js",
     "src": "src/components/CanvasPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_LoadingSpinner.5ec51f02.js",
-      "_ThreeStateCheckbox.964caa50.js",
-      "_VisCanvas.42114112.js"
+      "_LoadingSpinner.885c932b.js",
+      "_ThreeStateCheckbox.0879e3e3.js",
+      "_VisCanvas.25170ac1.js"
     ],
     "css": [
       "assets/CanvasPage.e36fc8a1.css"
     ]
   },
-  "_LoadingSpinner.5ec51f02.js": {
-    "file": "assets/LoadingSpinner.5ec51f02.js",
+  "_LoadingSpinner.885c932b.js": {
+    "file": "assets/LoadingSpinner.885c932b.js",
     "imports": [
       "index.html"
     ],
@@ -177,10 +177,10 @@
       "assets/LoadingSpinner.ed9fa969.css"
     ]
   },
-  "_VisCanvas.42114112.js": {
-    "file": "assets/VisCanvas.42114112.js",
+  "_VisCanvas.25170ac1.js": {
+    "file": "assets/VisCanvas.25170ac1.js",
     "imports": [
-      "_LoadingSpinner.5ec51f02.js",
+      "_LoadingSpinner.885c932b.js",
       "index.html"
     ],
     "css": [
@@ -197,14 +197,14 @@
       "assets/switch.light.bd72a59e.svg"
     ]
   },
-  "_ThreeStateCheckbox.964caa50.js": {
-    "file": "assets/ThreeStateCheckbox.964caa50.js",
+  "_ThreeStateCheckbox.0879e3e3.js": {
+    "file": "assets/ThreeStateCheckbox.0879e3e3.js",
     "imports": [
       "index.html"
     ]
   },
   "src/components/TopologyToolbar.vue": {
-    "file": "assets/TopologyToolbar.31fd3b28.js",
+    "file": "assets/TopologyToolbar.371ea9ef.js",
     "src": "src/components/TopologyToolbar.vue",
     "isDynamicEntry": true,
     "imports": [
@@ -212,22 +212,22 @@
     ]
   },
   "src/components/MininetSettingsPage.vue": {
-    "file": "assets/MininetSettingsPage.196d38f0.js",
+    "file": "assets/MininetSettingsPage.38fa9dbe.js",
     "src": "src/components/MininetSettingsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_LoadingSpinner.5ec51f02.js",
-      "_ThreeStateCheckbox.964caa50.js",
+      "_LoadingSpinner.885c932b.js",
+      "_ThreeStateCheckbox.0879e3e3.js",
       "index.html"
     ]
   },
-  "_ExportPage.73c1dcb3.js": {
-    "file": "assets/ExportPage.73c1dcb3.js",
+  "_ExportPage.0167ada4.js": {
+    "file": "assets/ExportPage.0167ada4.js",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_VisCanvas.42114112.js",
-      "_LoadingSpinner.5ec51f02.js"
+      "_VisCanvas.25170ac1.js",
+      "_LoadingSpinner.885c932b.js"
     ],
     "dynamicImports": [
       "node_modules/html2canvas/dist/html2canvas.esm.js",
@@ -236,12 +236,12 @@
     ]
   },
   "src/components/AboutPage.vue": {
-    "file": "assets/AboutPage.10d4c17d.js",
+    "file": "assets/AboutPage.64e935c7.js",
     "src": "src/components/AboutPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_AppLogo.e4973a0a.js"
+      "_AppLogo.5d854304.js"
     ]
   },
   "node_modules/html2canvas/dist/html2canvas.esm.js": {
@@ -255,14 +255,14 @@
     "isDynamicEntry": true
   },
   "node_modules/canvg/lib/index.es.js": {
-    "file": "assets/index.es.50568726.js",
+    "file": "assets/index.es.6a3dd70f.js",
     "src": "node_modules/canvg/lib/index.es.js",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_ExportPage.73c1dcb3.js",
-      "_VisCanvas.42114112.js",
-      "_LoadingSpinner.5ec51f02.js"
+      "_ExportPage.0167ada4.js",
+      "_VisCanvas.25170ac1.js",
+      "_LoadingSpinner.885c932b.js"
     ]
   }
 }
