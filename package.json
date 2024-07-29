@@ -68,7 +68,7 @@
     "mocha": "10.7.0",
     "patch-package": "8.0.0",
     "sass": "1.77.8",
-    "start-server-and-test": "2.0.4",
+    "start-server-and-test": "2.0.5",
     "vis-util": "5.0.7",
     "vite": "2",
     "vite-plugin-commonjs": "0.10.1",
