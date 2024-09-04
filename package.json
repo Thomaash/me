@@ -48,7 +48,7 @@
     "@vue/test-utils": "2.4.6",
     "autoprefixer": "10.4.20",
     "chai": "5.1.1",
-    "cypress": "13.14.1",
+    "cypress": "13.14.2",
     "dependency-cruiser": "16.4.1",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
