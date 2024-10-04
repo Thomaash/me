@@ -42,7 +42,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "7.25.7",
     "@types/uuid": "9.0.8",
-    "@vitejs/plugin-vue": "1",
+    "@vitejs/plugin-vue": "5",
     "@vue/babel-preset-app": "5.0.8",
     "@vue/eslint-config-prettier": "9.0.0",
     "@vue/test-utils": "2.4.6",
