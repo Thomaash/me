@@ -28,7 +28,7 @@
     "jspdf-autotable": "3.8.3",
     "source-code-pro": "2.38.0",
     "source-sans-pro": "3.6.0",
-    "uuid": "9.0.1",
+    "uuid": "10.0.0",
     "vis-data": "7.1.9",
     "vis-network": "9.1.9",
     "vue": "2.7.16",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.25.7",
-    "@types/uuid": "9.0.8",
+    "@types/uuid": "10.0.0",
     "@vitejs/plugin-vue": "1",
     "@vue/babel-preset-app": "5.0.8",
     "@vue/eslint-config-prettier": "9.0.0",
