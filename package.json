@@ -33,7 +33,7 @@
     "vis-network": "9.1.9",
     "vue": "2.7.16",
     "vue-router": "3.6.5",
-    "vuetify": "2.7.2",
+    "vuetify": "3.7.3",
     "vuetify-confirm": "2.0.6",
     "vuex": "3.6.2",
     "vuex-ltm": "1.1.7",
