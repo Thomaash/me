@@ -14,13 +14,13 @@
     </v-col>
     <v-col cols="12" sm="4">
       <v-menu :disabled="working" bottom>
-        <template #activator="{ on }">
+        <template #activator="{ props: activatorProps }">
           <v-btn
             :disabled="working"
             variant="outlined"
             block
             color="primary"
-            v-on="on"
+            v-bind="activatorProps"
             >Examples</v-btn
           >
         </template>
