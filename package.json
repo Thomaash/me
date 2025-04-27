@@ -39,7 +39,7 @@
     "vue-router": "4.5.1",
     "vuetify": "3.8.2",
     "vuex": "4.0.2",
-    "vuex-ltm": "1.1.8",
+    "vuex-ltm": "1.1.9",
     "vuex-shared-mutations": "1.0.2"
   },
   "devDependencies": {
