@@ -1,4 +1,3 @@
-import Vue from "vue";
 import exporter from "@/exporter";
 
 import exampleData from "@/examples/medium_1_controller";
@@ -129,27 +128,27 @@ export const topology = {
 
       // Clean old data
       Object.keys(sd).forEach((key) => {
-        Vue.delete(sd, key);
+        delete sd[key];
       });
 
       // Load new data
       const data = exporter.importData(importData);
-      Object.keys(data).forEach((key) => Vue.set(sd, key, data[key]));
+      Object.keys(data).forEach((key) => (sd[key] = data[key]));
     },
     setValues({ data: sd }, data) {
       Object.keys(data).forEach((key) => {
         const value = data[key];
         if (value != null && value !== "") {
-          Vue.set(sd, key, value);
+          sd[key] = value;
         } else {
-          Vue.delete(sd, key);
+          delete sd[key];
         }
       });
     },
     applyChange({ data: sd }, { remove, update, replace }) {
       remove &&
         remove.forEach((id) => {
-          Vue.delete(sd.items, id);
+          delete sd.items[id];
         });
 
       update &&
@@ -159,7 +158,7 @@ export const topology = {
           }
           const saved = sd.items[item.id];
           Object.keys(item).forEach((key) => {
-            Vue.set(saved, key, item[key]);
+            saved[key] = item[key];
           });
         });
 
@@ -168,7 +167,7 @@ export const topology = {
           if (item.id == null) {
             throw new Error("Items have to have ids.");
           }
-          Vue.set(sd.items, item.id, item);
+          sd.items[item.id] = item;
         });
     },
     pushChange({ past, future }, unit) {

@@ -2,27 +2,27 @@
   <v-container grid-list-md>
     <LoadingSpinner v-if="loading !== false" />
     <template v-else>
-      <v-layout wrap>
-        <v-flex xs12 py-5>
+      <v-row>
+        <v-col cols="12" class="py-5">
           <h3 class="headline">Import</h3>
 
           <ImportSection @log="(l) => (log = l)" />
-        </v-flex>
+        </v-col>
 
-        <v-flex xs12 pb-5>
+        <v-col cols="12" class="pb-5">
           <h3 class="headline">Export</h3>
 
           <ExportSection @log="(l) => (log = l)" />
-        </v-flex>
+        </v-col>
 
-        <v-slide-y-transition mode="out-in">
-          <v-flex v-if="log.length" xs12 pb-5>
+        <v-expand-transition>
+          <v-col v-if="log.length" cols="12" class="pb-5">
             <h3 class="headline">Log</h3>
 
             <LogListing :log="log" />
-          </v-flex>
-        </v-slide-y-transition>
-      </v-layout>
+          </v-col>
+        </v-expand-transition>
+      </v-row>
     </template>
   </v-container>
 </template>

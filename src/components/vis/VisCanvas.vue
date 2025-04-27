@@ -14,7 +14,7 @@ import labelPlaceholders from "./placeholders";
 import { DataSet } from "vis-data/peer";
 import { Network } from "vis-network/peer";
 import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
-import colors from "vuetify/es5/util/colors";
+import colors from "@/theme-colors";
 import { mapGetters } from "vuex";
 
 import "vis-network/styles/vis-network.css";

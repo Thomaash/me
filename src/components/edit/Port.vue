@@ -1,8 +1,8 @@
 <template>
   <v-form v-model="valid">
     <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12>
+      <v-row wrap>
+        <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
             :rules="[
@@ -14,8 +14,8 @@
             clearable
             data-cy="edit-hostname"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-textarea
             v-model="ips"
             :rules="[validators.ipsWithMasks()(item.ips)]"
@@ -24,12 +24,11 @@
             clearable
             data-cy="edit-ips"
           />
-        </v-flex>
-        <v-flex xs12 data-cy="edit-physical">
+        </v-col>
+        <v-col cols="12" data-cy="edit-physical">
           <v-switch v-model="item.physical" color="primary" label="Physical" />
-          {{ valid }}
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
   </v-form>
 </template>
@@ -44,6 +43,7 @@ export default {
   data: () => ({
     valid: false,
     item: {},
+    newLineHack: false, // TODO: Fix properly.
     validators: {
       hostname,
       ipsWithMasks,
@@ -53,17 +53,17 @@ export default {
   computed: {
     ips: {
       get() {
-        return (this.item.ips || []).join("\n");
+        return (
+          (this.item.ips || []).join("\n") + (this.newLineHack ? "\n" : "")
+        );
       },
       set(val) {
         if (val) {
-          this.$set(
-            this.item,
-            "ips",
-            val.split("\n").filter((line) => line !== ""),
-          );
+          this.item.ips = val.split("\n").filter((line) => line !== "");
+          this.newLineHack = val.endsWith("\n");
         } else {
-          this.$delete(this.item, "ips");
+          delete this.item["ips"];
+          this.newLineHack = false;
         }
       },
     },
@@ -72,7 +72,7 @@ export default {
     "item.physical"(val) {
       if (val === false) {
         // Omit physical property if false
-        delete this.$delete(this.item, "physical");
+        delete this.item["physical"];
       }
     },
   },

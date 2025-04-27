@@ -1,8 +1,8 @@
 <template>
   <v-form v-model="valid">
     <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12>
+      <v-row>
+        <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
             :rules="[
@@ -13,23 +13,23 @@
             autofocus
             data-cy="edit-hostname"
           />
-        </v-flex>
-        <v-flex xs12 data-cy="edit-switch-type">
+        </v-col>
+        <v-col cols="12" data-cy="edit-switch-type">
           <v-select
             v-model="item.switchType"
             :items="switchTypes"
             label="Type"
             clearable
           />
-        </v-flex>
-        <v-flex xs12 md3>
+        </v-col>
+        <v-col cols="12" md="3">
           <ThreeStateCheckbox
             v-model="item.stp"
             label="STP"
             data-cy="edit-stp"
           />
-        </v-flex>
-        <v-flex xs12 md9>
+        </v-col>
+        <v-col cols="12" md="9">
           <v-text-field
             ref="itemSTPPriority"
             v-model.number="item.stpPriority"
@@ -46,8 +46,8 @@
             clearable
             data-cy="edit-stp-priority"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             v-model="item.ip"
             :rules="[validators.ip()(item.ip)]"
@@ -55,8 +55,8 @@
             clearable
             data-cy="edit-ip"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             ref="itemDPCTLPort"
             v-model.number="item.dpctlPort"
@@ -68,24 +68,24 @@
             clearable
             data-cy="edit-dpctl-port"
           />
-        </v-flex>
-        <v-flex xs12 data-cy="edit-protocol">
+        </v-col>
+        <v-col cols="12" data-cy="edit-protocol">
           <v-select
             v-model="item.protocol"
             :items="protocolsOF"
             label="Protocol"
             clearable
           />
-        </v-flex>
-        <v-flex xs12 md6 data-cy="edit-datapath">
+        </v-col>
+        <v-col cols="12" md="6" data-cy="edit-datapath">
           <v-select
             v-model="item.datapath"
             :items="datapaths"
             label="Datapath"
             clearable
           />
-        </v-flex>
-        <v-flex xs12 md6>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="item.dpid"
             :rules="[
@@ -98,16 +98,16 @@
             clearable
             data-cy="edit-dpid"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             v-model="item.dpopts"
             label="Ofdatapath arguments"
             clearable
             data-cy="edit-dpopts"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             ref="itemReconnectMs"
             v-model.number="item.reconnectms"
@@ -122,52 +122,52 @@
             clearable
             data-cy="edit-reconnect-ms"
           />
-        </v-flex>
-        <v-flex xs12 data-cy="edit-fail-mode">
+        </v-col>
+        <v-col cols="12" data-cy="edit-fail-mode">
           <v-select
             v-model="item.failMode"
             :items="failModes"
             label="Fail Mode"
             clearable
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <ThreeStateCheckbox
             v-model="item.inband"
             label="Inband"
             data-cy="edit-inband"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <ThreeStateCheckbox
             v-model="item.inNamespace"
             label="In Namespace"
             data-cy="edit-in-namespace"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <ThreeStateCheckbox
             v-model="item.batch"
             label="Batch"
             data-cy="edit-batch"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <ThreeStateCheckbox
             v-model="item.verbose"
             label="Verbose"
             data-cy="edit-verbose"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             v-model="item.opts"
             label="Additional Switch Options"
             clearable
             data-cy="edit-opts"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-textarea
             v-model="item.startScript"
             label="Startup Script"
@@ -175,8 +175,8 @@
             clearable
             data-cy="edit-start-script"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-textarea
             v-model="item.stopScript"
             label="Shutdown Script"
@@ -184,8 +184,8 @@
             clearable
             data-cy="edit-stop-script"
           />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
   </v-form>
 </template>

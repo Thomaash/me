@@ -1,43 +1,43 @@
 <template>
-  <v-layout wrap>
-    <v-flex xs12 sm4>
+  <v-row>
+    <v-col cols="12" sm="4">
       <v-btn
         :disabled="working"
-        outlined
+        variant="outlined"
         block
         color="primary"
         @click="downloadJSON"
         >JSON</v-btn
       >
-    </v-flex>
-    <v-flex xs12 sm4>
+    </v-col>
+    <v-col cols="12" sm="4">
       <v-btn
         :disabled="working"
-        outlined
+        variant="outlined"
         block
         color="primary"
         @click="downloadScript"
         >Python 2 script</v-btn
       >
-    </v-flex>
-    <v-flex xs12 sm4>
+    </v-col>
+    <v-col cols="12" sm="4">
       <v-btn
         :disabled="working"
-        outlined
+        variant="outlined"
         block
         color="primary"
         @click="downloadAddressingPlan"
         >Addressing plan</v-btn
       >
-    </v-flex>
+    </v-col>
 
-    <v-flex xs12 pt-4>
+    <v-col cols="12" class="pt-4">
       <h3>Image</h3>
-    </v-flex>
+    </v-col>
 
-    <v-flex xs12>
+    <v-col cols="12">
       <ImageConfig :working="working" @render="downloadImage" />
-    </v-flex>
+    </v-col>
 
     <div style="height: 0px; width: 0px; overflow: hidden">
       <VisCanvas
@@ -47,7 +47,7 @@
         @ready="visCanvasResolve"
       />
     </div>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

@@ -1,4 +1,5 @@
-import { createVuePlugin } from "vite-plugin-vue2";
+import createVuePlugin from "@vitejs/plugin-vue";
+import vuetify from "vite-plugin-vuetify";
 import { defineConfig } from "vite";
 import { execSync } from "child_process";
 import { promisify } from "util";
@@ -15,6 +16,7 @@ const writeFile = promisify(writeFileCallback);
 export default defineConfig({
   plugins: [
     createVuePlugin(),
+    vuetify({ autoImport: true }),
     (function myPlugin() {
       return {
         name: "service-worker-cache-file-list",
@@ -42,6 +44,7 @@ export default defineConfig({
       };
     })(),
   ],
+  port: 5173,
   base: "/me/",
   build: {
     manifest: true,
@@ -80,13 +83,6 @@ export default defineConfig({
       {
         find: "@",
         replacement: resolve(__dirname, "./src"),
-      },
-      {
-        find: "vue",
-        replacement: resolve(
-          __dirname,
-          "./node_modules/vue/dist/vue.runtime.esm.js",
-        ),
       },
     ],
   },

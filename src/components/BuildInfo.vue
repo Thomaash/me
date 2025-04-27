@@ -7,10 +7,17 @@
       <br />
       Commit date: {{ buildCommitDate }}
       <br />
-      Commit hash:
-      <a :href="'https://github.com/Thomaash/me/commit/' + buildCommitHash">
-        {{ buildCommitHash }}
-      </a>
+      Commit hash: {{ buildCommitHash }}
+      <br />
+      <v-btn
+        class="ma-2"
+        variant="outlined"
+        color="primary"
+        target="_blank"
+        :href="'https://github.com/Thomaash/me/commit/' + buildCommitHash"
+      >
+        Open on GitHub
+      </v-btn>
     </p>
 
     <p v-if="$store.state.isUpdateAvailable">

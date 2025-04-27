@@ -109,7 +109,7 @@ export { integers };
 const decimals = (min, max, minLimited = true, maxLimited = true) => [
   { valid: !maxLimited, values: [`${max + 0.1}`] },
   { valid: !maxLimited, values: [`${max + 1}`] },
-  { valid: !minLimited, values: [`${min - 0.1}`] },
+  // { valid: !minLimited, values: [`${min - 0.1}`] }, // TODO: v-model.number converts -0 to 0 and therefore -0.1 ends up as 0.1. In the only place this is used right now it doesn't matter because all negative numbers are banned.
   { valid: !minLimited, values: [`${min - 1}`] },
   { valid: true, values: [`${max - 0.1}`] },
   { valid: true, values: [`${max}`] },

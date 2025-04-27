@@ -1,8 +1,5 @@
-import Router from "vue-router";
-import Vue from "vue";
-import store from "@/store";
-
-Vue.use(Router);
+import { createRouter, createWebHashHistory } from "vue-router";
+import { store } from "@/store";
 
 function selectionTitleSuffix(ids) {
   if (!ids) {
@@ -27,6 +24,7 @@ function createRoutes(mapper = (v) => v) {
         title: "Home",
         drawer: true,
         icon: "mdi-home",
+        routerViewKey: "Home",
       },
       components: {
         default: () =>
@@ -40,6 +38,7 @@ function createRoutes(mapper = (v) => v) {
         title: "Canvas",
         drawer: true,
         icon: "mdi-map",
+        routerViewKey: "Canvas",
       },
       components: {
         default: () =>
@@ -63,6 +62,15 @@ function createRoutes(mapper = (v) => v) {
             subtitle(to) {
               return selectionTitleSuffix(to.params.ids);
             },
+            routerViewKey: "Canvas",
+          },
+          components: {
+            default: () =>
+              import(/* webpackPrefetch: true */ "@/components/CanvasPage.vue"),
+            toolbar: () =>
+              import(
+                /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
+              ),
           },
         },
         {
@@ -76,6 +84,15 @@ function createRoutes(mapper = (v) => v) {
                 scale * 100
               ).toFixed(0)}\u{a0}%${selectionTitleSuffix(ids)}`;
             },
+            routerViewKey: "Canvas",
+          },
+          components: {
+            default: () =>
+              import(/* webpackPrefetch: true */ "@/components/CanvasPage.vue"),
+            toolbar: () =>
+              import(
+                /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
+              ),
           },
         },
       ],
@@ -87,6 +104,7 @@ function createRoutes(mapper = (v) => v) {
         title: "Mininet Settings",
         drawer: true,
         icon: "mdi-tune",
+        routerViewKey: "Mininet settings",
       },
       components: {
         default: () =>
@@ -106,6 +124,7 @@ function createRoutes(mapper = (v) => v) {
         title: "Export/Import",
         drawer: true,
         icon: "mdi-content-save",
+        routerViewKey: "Export",
       },
       components: {
         default: () =>
@@ -123,6 +142,7 @@ function createRoutes(mapper = (v) => v) {
         title: "About",
         drawer: true,
         icon: "mdi-information",
+        routerViewKey: "About",
       },
       components: {
         default: () =>
@@ -174,7 +194,10 @@ const routes = [
   ...createRoutes(createViewRoute),
 ];
 
-export const router = new Router({ routes });
+export const router = createRouter({
+  routes,
+  history: createWebHashHistory("/me"),
+});
 
 router.beforeEach((to, from, next) => {
   // Stay in view mode

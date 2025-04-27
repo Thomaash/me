@@ -1,65 +1,65 @@
 const switchTypes = [
-  { value: "IVSSwitch", text: "IVS Switch" },
-  { value: "LinuxBridge", text: "Linux Bridge" },
-  { value: "OVSBridge", text: "OVS Bridge" },
-  { value: "OVSSwitch", text: "OVS Switch" },
-  { value: "UserSwitch", text: "User Switch" },
+  { value: "IVSSwitch", title: "IVS Switch" },
+  { value: "LinuxBridge", title: "Linux Bridge" },
+  { value: "OVSBridge", title: "OVS Bridge" },
+  { value: "OVSSwitch", title: "OVS Switch" },
+  { value: "UserSwitch", title: "User Switch" },
 ];
 export { switchTypes };
 
 const failModes = [
-  { value: "secure", text: "Secure" },
-  { value: "standalone", text: "Standalone" },
+  { value: "secure", title: "Secure" },
+  { value: "standalone", title: "Standalone" },
 ];
 export { failModes };
 
 const datapaths = [
-  { value: "kernel", text: "Kernel" },
-  { value: "user", text: "User" },
+  { value: "kernel", title: "Kernel" },
+  { value: "user", title: "User" },
 ];
 export { datapaths };
 
 const protocolsOF = [
-  { value: "OpenFlow12", text: "OpenFlow 1.2" },
-  { value: "OpenFlow13", text: "OpenFlow 1.3" },
-  { value: "OpenFlow14", text: "OpenFlow 1.4" },
-  { value: "OpenFlow15", text: "OpenFlow 1.5" },
+  { value: "OpenFlow12", title: "OpenFlow 1.2" },
+  { value: "OpenFlow13", title: "OpenFlow 1.3" },
+  { value: "OpenFlow14", title: "OpenFlow 1.4" },
+  { value: "OpenFlow15", title: "OpenFlow 1.5" },
 ];
 export { protocolsOF };
 
 const controllerTypes = [
-  { value: "Controller", text: "OpenFlow Reference Implementation" },
-  { value: "NOX", text: "NOX" },
-  { value: "OVSController", text: "OVS Controller" },
-  { value: "RemoteController", text: "Remote Controller" },
-  { value: "Ryu", text: "Ryu Controller" },
+  { value: "Controller", title: "OpenFlow Reference Implementation" },
+  { value: "NOX", title: "NOX" },
+  { value: "OVSController", title: "OVS Controller" },
+  { value: "RemoteController", title: "Remote Controller" },
+  { value: "Ryu", title: "Ryu Controller" },
 ];
 export { controllerTypes };
 
 const protocolsIP = [
-  { value: "tcp", text: "TCP" },
-  { value: "ssl", text: "SSL" },
+  { value: "tcp", title: "TCP" },
+  { value: "ssl", title: "SSL" },
 ];
 export { protocolsIP };
 
 const schedulers = [
-  { value: "cfs", text: "CFS" },
-  { value: "rt", text: "RT" },
+  { value: "cfs", title: "CFS" },
+  { value: "rt", title: "RT" },
 ];
 export { schedulers };
 
 const logLevels = [
-  { value: "debug", text: "Debug" },
-  { value: "info", text: "Info" },
-  { value: "output", text: "Output" },
-  { value: "warning", text: "Warning" },
-  { value: "error", text: "Error" },
-  { value: "critical", text: "Critical" },
+  { value: "debug", title: "Debug" },
+  { value: "info", title: "Info" },
+  { value: "output", title: "Output" },
+  { value: "warning", title: "Warning" },
+  { value: "error", title: "Error" },
+  { value: "critical", title: "Critical" },
 ];
 export { logLevels };
 
 function reduceToMap(acc, val) {
-  acc[val.value] = val.text;
+  acc[val.value] = val.title;
   return acc;
 }
 const controllerTypesMap = controllerTypes.reduce(

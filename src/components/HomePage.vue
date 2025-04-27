@@ -1,17 +1,17 @@
 <template>
   <v-container grid-list-md>
-    <v-layout wrap>
+    <v-row>
       <AppLogo />
-      <v-flex xs12>
+      <v-col cols="12">
         <AppDescription />
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <BindingsList />
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <PlaceholderHowTo />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

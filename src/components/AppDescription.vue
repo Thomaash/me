@@ -16,7 +16,7 @@
     <p v-if="full">
       <v-btn
         class="ma-2"
-        outlined
+        variant="outlined"
         color="primary"
         target="_blank"
         href="https://github.com/Thomaash/me"
@@ -25,7 +25,7 @@
       </v-btn>
       <v-btn
         class="ma-2"
-        outlined
+        variant="outlined"
         color="primary"
         target="_blank"
         href="https://github.com/Thomaash/me/issues/new"

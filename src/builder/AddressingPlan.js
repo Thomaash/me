@@ -1,4 +1,4 @@
-import JsPDF from "jspdf";
+import JSPDF from "jspdf";
 import "jspdf-autotable";
 
 import Items from "./Items";
@@ -73,7 +73,7 @@ export default class {
           });
       });
 
-    const doc = new JsPDF();
+    const doc = new JSPDF();
 
     doc.setProperties({ title: headline });
     doc.viewerPreferences({ DisplayDocTitle: true });

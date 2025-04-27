@@ -2,14 +2,14 @@
   <v-checkbox
     :title="state.title"
     :label="label"
-    :input-value="state.value === true"
+    :model-value="state.value === true"
     :indeterminate="state.value === undefined"
     :color="color"
     readonly
     class="primary--text"
-    on-icon="$vuetify.icons.checkboxTrue"
-    off-icon="$vuetify.icons.checkboxFalse"
-    indeterminate-icon="$vuetify.icons.checkboxUndefined"
+    true-icon="$checkboxTrue"
+    false-icon="$checkboxFalse"
+    indeterminate-icon="$checkboxUndefined"
     @click="cycle"
   />
 </template>
@@ -17,7 +17,7 @@
 <script>
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: undefined,
     },
@@ -30,6 +30,7 @@ export default {
       default: "",
     },
   },
+  emits: ["update:modelValue"],
   data: () => ({
     states: [
       { value: undefined, title: "Default" },
@@ -40,7 +41,8 @@ export default {
   computed: {
     state() {
       return (
-        this.states.find(({ value }) => value === this.value) || this.states[0]
+        this.states.find(({ value }) => value === this.modelValue) ||
+        this.states[0]
       );
     },
   },
@@ -48,7 +50,7 @@ export default {
     cycle() {
       const curr = this.state.index;
       const next = (curr + 1) % this.states.length;
-      this.$emit("input", this.states[next].value);
+      this.$emit("update:modelValue", this.states[next].value);
     },
   },
 };

@@ -1,30 +1,32 @@
 import "source-sans-pro/source-sans-pro.css";
 import "source-code-pro/source-code-pro.css";
 import "@mdi/font/css/materialdesignicons.css";
-import "vuetify/dist/vuetify.min.css";
+import "vuetify/styles/main.css";
+
+import { createApp } from "vue";
+import { createVuetify } from "vuetify";
+import { aliases, mdi } from "vuetify/iconsets/mdi";
 
 import App from "./App.vue";
-import Vue from "vue";
-import Vuetify from "vuetify";
-import VuetifyConfirm from "vuetify-confirm";
 import router from "./router";
 import store from "./store";
 import { dark, vuetifyDark, vuetifyLight } from "./theme";
 
 import { initServiceWorker } from "./service-worker-init";
 
-Vue.use(Vuetify);
-const vuetify = new Vuetify({
+const vuetify = createVuetify({
   theme: {
+    defaultTheme: dark ? "dark" : "light",
     themes: {
       light: vuetifyLight,
       dark: vuetifyDark,
     },
-    dark,
   },
   icons: {
-    iconfont: "mdi",
-    values: {
+    defaultSet: "mdi",
+    aliases: {
+      ...aliases,
+
       success: "mdi-check-circle",
       info: "mdi-information",
       warning: "mdi-alert",
@@ -42,22 +44,16 @@ const vuetify = new Vuetify({
       "net-port": "mdi-ethernet",
       "net-switch": "mdi-switch",
     },
+    sets: {
+      mdi,
+    },
   },
 });
 
-Vue.use(VuetifyConfirm, { vuetify });
-
-Vue.config.productionTip = false;
-
-/* eslint-disable no-new */
-new Vue({
-  el: "#app",
-
-  router,
-  store,
-  vuetify,
-
-  render: (h) => h(App),
-});
+const app = createApp(App);
+app.use(vuetify);
+app.use(store);
+app.use(router);
+app.mount("#app");
 
 initServiceWorker();

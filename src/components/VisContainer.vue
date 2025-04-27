@@ -12,7 +12,7 @@
       <VisCanvas data-cy="vis" :dark="dark" @ready="init" />
 
       <div
-        v-if="newItem.type !== ''"
+        v-if="newItem.type != null"
         :style="{ left: mouseTag.x + 'px', top: mouseTag.y + 'px' }"
         class="mouse-tag"
       >
@@ -154,7 +154,7 @@ export default {
       return this.$store.state.loading;
     },
     mouseTagIcon() {
-      return "$vuetify.icons.net-" + this.newItem.type;
+      return "$net-" + this.newItem.type;
     },
   },
   mounted() {
@@ -210,7 +210,7 @@ export default {
         this.commit("removeItems", [...nodes, ...edges]);
 
         this.showSnackbar("items-deleted", [count], "Undo", this.undo);
-        this.updateURLSelection();
+        this.updateURL();
       }
     },
     selectAll() {
@@ -218,8 +218,7 @@ export default {
         nodes: this.nodes.getIds(),
         edges: this.edges.getIds(),
       });
-      this.updateURLPosition();
-      this.updateURLSelection();
+      this.updateURL();
     },
     fitAll() {
       this.net.fit({ animation: true });
@@ -237,7 +236,7 @@ export default {
         scale: scale != null ? scale : 1,
         animation: true,
       });
-      this.updateURLPosition();
+      this.updateURL();
     },
     undo() {
       try {
@@ -453,6 +452,8 @@ export default {
     },
     async routerPush(...args) {
       try {
+        console.log(args);
+
         return await this.$router.push(...args);
       } catch (error) {
         if (error.name === "NavigationDuplicated") {
@@ -470,34 +471,18 @@ export default {
         },
       });
     },
-    updateURLPosition() {
+    updateURL() {
       const { x, y } = this.net.getViewPosition();
       const scale = this.net.getScale();
+      const { nodes, edges } = this.net.getSelection();
 
       return this.routerPush({
         name: "Canvas with position",
         params: {
-          ids: this.$route.params.ids,
+          ids: [...nodes, ...edges].join(","),
           x: Math.round(x),
           y: Math.round(y),
           scale: Math.round(scale * 1000) / 1000 || 0.001,
-        },
-      });
-    },
-    updateURLSelection() {
-      const { nodes, edges } = this.net.getSelection();
-
-      let ids;
-      if (nodes.length || edges.length) {
-        ids = [...nodes, ...edges].join(",");
-      } else {
-        ids = null;
-      }
-
-      return this.routerPush({
-        params: {
-          ...this.$route.params,
-          ids,
         },
       });
     },
@@ -710,10 +695,9 @@ export default {
       });
 
       // URL changing events
-      this.net.on("dragEnd", delayCall(this.updateURLPosition));
-      this.net.on("select", delayCall(this.updateURLPosition));
-      this.net.on("select", delayCall(this.updateURLSelection));
-      this.net.on("zoom", delayCall(this.updateURLPosition, 200));
+      this.net.on("dragEnd", delayCall(this.updateURL));
+      this.net.on("select", delayCall(this.updateURL));
+      this.net.on("zoom", delayCall(this.updateURL, 200));
 
       // Focus items
       this.applyURL();

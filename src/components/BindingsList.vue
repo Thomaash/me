@@ -33,6 +33,9 @@
 </template>
 
 <script>
+import { markRaw } from "vue";
+import { VIcon } from "vuetify/components";
+
 export default {
   name: "BindingsList",
   data: () => ({
@@ -148,28 +151,28 @@ export default {
       esc: { tag: "kbd", text: "ESC", title: "press escape" },
 
       ":edge": {
-        tag: "v-icon",
-        text: "$vuetify.icons.net-edge",
+        tag: markRaw(VIcon),
+        text: "$net-edge",
         title: "link or association",
       },
       ":item": {
-        tag: "v-icon",
-        text: "$vuetify.icons.net-host",
+        tag: markRaw(VIcon),
+        text: "$net-host",
         title: "port, host, switch, controller, label, link or association",
       },
       ":node": {
-        tag: "v-icon",
-        text: "$vuetify.icons.net-host",
+        tag: markRaw(VIcon),
+        text: "$net-host",
         title: "port, host, switch, controller or label",
       },
       ":swho": {
-        tag: "v-icon",
-        text: "$vuetify.icons.net-host",
+        tag: markRaw(VIcon),
+        text: "$net-host",
         title: "switch or host",
       },
       ":port": {
-        tag: "v-icon",
-        text: "$vuetify.icons.net-port",
+        tag: markRaw(VIcon),
+        text: "$net-port",
         title: "port",
       },
     },
@@ -208,14 +211,11 @@ export default {
     update() {
       ++this.iconsIndex;
       this.special[":node"].text =
-        "$vuetify.icons.net-" +
-        this.nodeIcons[this.iconsIndex % this.nodeIcons.length];
+        "$net-" + this.nodeIcons[this.iconsIndex % this.nodeIcons.length];
       this.special[":item"].text =
-        "$vuetify.icons.net-" +
-        this.itemIcons[this.iconsIndex % this.itemIcons.length];
+        "$net-" + this.itemIcons[this.iconsIndex % this.itemIcons.length];
       this.special[":swho"].text =
-        "$vuetify.icons.net-" +
-        this.swhoIcons[this.iconsIndex % this.swhoIcons.length];
+        "$net-" + this.swhoIcons[this.iconsIndex % this.swhoIcons.length];
     },
   },
 };

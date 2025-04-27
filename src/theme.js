@@ -1,4 +1,4 @@
-import colors from "vuetify/es5/util/colors";
+import colors from "./theme-colors";
 
 function addAlpha(hex, alpha) {
   return (
@@ -15,22 +15,28 @@ function addAlpha(hex, alpha) {
 export const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
 export const vuetifyLight = {
-  primary: colors.teal.base,
-  secondary: colors.teal.lighten1,
-  accent: colors.amber.darken1,
-  error: colors.red.base,
-  warning: colors.orange.base,
-  info: colors.blue.base,
-  success: colors.green.base,
+  dark: false,
+  colors: {
+    primary: colors.teal.base,
+    secondary: colors.teal.lighten1,
+    accent: colors.amber.darken1,
+    error: colors.red.base,
+    warning: colors.orange.base,
+    info: colors.blue.base,
+    success: colors.green.base,
+  },
 };
 export const vuetifyDark = {
-  primary: colors.teal.base,
-  secondary: colors.teal.lighten1,
-  accent: colors.amber.darken1,
-  error: colors.red.base,
-  warning: colors.orange.base,
-  info: colors.blue.base,
-  success: colors.green.base,
+  dark: true,
+  colors: {
+    primary: colors.teal.base,
+    secondary: colors.teal.lighten1,
+    accent: colors.amber.darken1,
+    error: colors.red.base,
+    warning: colors.orange.base,
+    info: colors.blue.base,
+    success: colors.green.base,
+  },
 };
 export const vuetify = dark ? vuetifyDark : vuetifyLight;
 

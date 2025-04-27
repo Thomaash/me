@@ -53,7 +53,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("meVisFabClick", { prevSubject: false }, (button) => {
-  cy.get("[data-cy=fab-activator]").trigger("mouseenter");
+  cy.get("[data-cy=fab-activator] button").click();
   cy.get(`[data-cy=fab-${button}]`).click();
 });
 
@@ -61,7 +61,7 @@ Cypress.Commands.add("meImportEmpty", { prevSubject: false }, () => {
   cy.meClickMenu("export");
 
   cy.get("[data-cy=import-empty]").click();
-  cy.get(".v-card__actions > .primary--text > .v-btn__content").click();
+  cy.get("[data-cy=import-warning-confirm]").click();
   cy.contains(".v-alert > div", "Successfully imported");
 });
 
@@ -70,19 +70,23 @@ Cypress.Commands.add(
   { prevSubject: false },
   ({ textProps = {}, checkboxProps = {}, selectProps = {} }) => {
     Object.entries(textProps).forEach(([key, values]) => {
-      cy.get(`[data-cy=${key}]`).clear().type(values.join("{enter}"));
+      cy.get(
+        `[data-cy=${key}] input, [data-cy=${key}] textarea:not([aria-hidden])`,
+      )
+        .clear()
+        .type(values.join("{enter}"));
     });
 
     Object.entries(checkboxProps).forEach(([key, { clicks }]) => {
       for (let i = 0; i < clicks; ++i) {
-        cy.get(`[data-cy=${key}] input`).click({ force: true }); // The input is hidden but works
+        cy.get(`[data-cy=${key}] input`).click();
       }
     });
 
     Object.entries(selectProps).forEach(([key, value]) => {
       cy.get(`[data-cy=${key}] input[type=text]`).click({ force: true }); // The input is hidden but works
       cy.contains(
-        ".menuable__content__active .v-list-item__title",
+        ".v-overlay__content.v-select__content .v-list-item-title",
         value,
       ).click();
     });
@@ -94,15 +98,38 @@ Cypress.Commands.add(
   { prevSubject: false },
   ({ textProps = {}, checkboxProps = {}, selectProps = {} }) => {
     Object.entries(textProps).forEach(([key, values]) => {
-      cy.get(`[data-cy=${key}]`).should("have.value", values.join("\n"));
+      cy.get(
+        `[data-cy=${key}] input, [data-cy=${key}] textarea:not([aria-hidden])`,
+      ).should("have.value", values.join("\n"));
     });
 
     Object.entries(checkboxProps).forEach(([key, { ariaChecked }]) => {
-      cy.get(`[data-cy=${key}] input`).should(
-        "have.attr",
-        "aria-checked",
-        ariaChecked,
-      );
+      if (ariaChecked === "mixed") {
+        cy.get(`[data-cy=${key}] input`)
+          .should("have.length", 1)
+          .its("0.attributes")
+          .should((attributes) => {
+            expect(attributes).to.have.property("aria-checked");
+            expect(attributes["aria-checked"].value).to.equal("mixed");
+            expect(attributes).to.not.have.property("checked");
+          });
+      } else if (ariaChecked === "true") {
+        cy.get(`[data-cy=${key}] input`)
+          .should("have.length", 1)
+          .its("0.attributes")
+          .should((attributes) => {
+            expect(attributes).to.not.have.property("aria-checked");
+            expect(attributes).to.have.property("checked");
+          });
+      } else {
+        cy.get(`[data-cy=${key}] input`)
+          .should("have.length", 1)
+          .its("0.attributes")
+          .should((attributes) => {
+            expect(attributes).to.not.have.property("aria-checked");
+            expect(attributes).to.not.have.property("checked");
+          });
+      }
     });
 
     Object.entries(selectProps).forEach(([key, value]) => {
@@ -121,11 +148,15 @@ Cypress.Commands.add("meClickMenu", { prevSubject: false }, (name) => {
   };
 
   if (name) {
-    cy.get(`[data-cy=drawer-${name}]`).click();
+    cy.get(
+      `[data-cy=drawer-${name}][href=${JSON.stringify(hashMap[name])}]`,
+    ).click();
     cy.hash().should("eq", hashMap[name]);
   } else {
     Object.entries(hashMap).forEach(([name, hash]) => {
-      cy.get(`[data-cy=drawer-${name}]`).click();
+      cy.get(
+        `[data-cy=drawer-${name}][href=${JSON.stringify(hashMap[name])}]`,
+      ).click();
       cy.hash().should("eq", hash);
     });
   }
@@ -134,7 +165,8 @@ Cypress.Commands.add("meClickMenu", { prevSubject: false }, (name) => {
 Cypress.Commands.add("meOpen", { prevSubject: false }, () => {
   cy.location("hostname").then((hostname) => {
     if (!hostname) {
-      return cy.visit("/");
+      cy.visit("/");
+      cy.hash().should("eq", "#/home");
     }
   });
 });

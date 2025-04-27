@@ -1,8 +1,8 @@
 <template>
   <v-form v-model="valid">
     <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12>
+      <v-row>
+        <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
             :rules="[
@@ -14,16 +14,16 @@
             clearable
             data-cy="edit-hostname"
           />
-        </v-flex>
-        <v-flex xs12 data-cy="edit-controller-type">
+        </v-col>
+        <v-col cols="12" data-cy="edit-controller-type">
           <v-select
             v-model="item.controllerType"
             :items="controllerTypes"
             label="Type"
             clearable
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             v-model="item.ip"
             :rules="[validators.ip(item.ip)]"
@@ -31,8 +31,8 @@
             clearable
             data-cy="edit-ip"
           />
-        </v-flex>
-        <v-flex xs12 md6>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-text-field
             ref="port"
             v-model.number="item.port"
@@ -44,16 +44,16 @@
             clearable
             data-cy="edit-port"
           />
-        </v-flex>
-        <v-flex xs12 md6 data-cy="edit-protocol">
+        </v-col>
+        <v-col cols="12" md="6" data-cy="edit-protocol">
           <v-select
             v-model="item.protocol"
             :items="protocolsIP"
             label="Protocol"
             clearable
           />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
   </v-form>
 </template>

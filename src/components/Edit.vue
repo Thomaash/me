@@ -1,8 +1,8 @@
 <template>
-  <v-layout row justify-center>
+  <v-row justify="center">
     <v-dialog
       v-model="dialog"
-      :fullscreen="fullscreen || $vuetify.breakpoint.xsOnly"
+      :fullscreen="fullscreen || $vuetify.display.xs"
       persistent
       scrollable
       max-width="600px"
@@ -15,11 +15,15 @@
           style="flex-grow: 0"
           @dblclick="fullscreen = !fullscreen"
         >
-          <v-icon class="mr-2">{{ `$vuetify.icons.net-${themeType}` }}</v-icon>
+          <v-icon class="mr-2">{{ `$net-${themeType}` }}</v-icon>
           <h3 class="headline" v-text="headline" />
         </v-card-title>
         <v-card-text style="flex-grow: 1">
-          <div :is="component" v-model="item" @valid="(v) => (valid = v)" />
+          <component
+            :is="component"
+            v-model="item"
+            @valid="(v) => (valid = v)"
+          />
         </v-card-text>
         <v-card-actions style="flex-grow: 0">
           <v-spacer />
@@ -41,7 +45,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>
@@ -114,7 +118,11 @@ export default {
       this.fullscreen = false;
       this.dialog = true;
     },
-    save() {
+    save(event) {
+      if (event.target.tagName === "TEXTAREA") {
+        return;
+      }
+
       if (!this.valid) {
         return;
       }

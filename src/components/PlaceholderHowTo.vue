@@ -15,10 +15,10 @@
       hide-default-footer
       class="elevation-1"
     >
-      <template slot="items" slot-scope="props">
-        <td class="monospace" v-text="props.item.name" />
-        <td v-text="props.item.description" />
-        <td v-text="props.item.multiline" />
+      <template #items="{ item }">
+        <td class="monospace" v-text="item.name" />
+        <td v-text="item.description" />
+        <td v-text="item.multiline" />
       </template>
     </v-data-table>
   </section>

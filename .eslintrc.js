@@ -1,5 +1,11 @@
 module.exports = {
   root: true,
+  env: {
+    es2021: true,
+  },
+  parserOptions: {
+    ecmaVersion: "latest",
+  },
   globals: {
     module: "writable",
     process: "readonly",
@@ -14,7 +20,6 @@ module.exports = {
       files: ["./src/**", "./tests/**"],
       env: {
         browser: true,
-        es2021: true,
       },
     },
     {
@@ -27,7 +32,6 @@ module.exports = {
     {
       files: ["./*.*", "./.*.*"],
       env: {
-        es2021: true,
         node: true,
       },
     },

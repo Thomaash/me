@@ -1,20 +1,21 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12 sm12>
+  <v-row>
+    <v-col cols="12">
       <v-switch
         v-model="dark"
+        color="primary"
         :disabled="disabled"
         label="Render in dark mode"
       />
-    </v-flex>
+    </v-col>
 
-    <v-flex xs12 sm4>
+    <v-col cols="12" sm="4">
       <v-text-field
         ref="sizeWidthScreenCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
-        :value="size.widthScreenCm"
+        :model-value="size.widthScreenCm"
         :rules="[
           validators.decimal(size.widthScreenCm),
           validators.minValue(0)(size.widthScreenCm),
@@ -22,16 +23,16 @@
         label="Width on screen"
         type="number"
         suffix="cm"
-        @input="(v) => recompute('widthScreenCm', v)"
+        @update:model-value="(v) => recompute('widthScreenCm', v)"
       />
-    </v-flex>
-    <v-flex xs12 sm4>
+    </v-col>
+    <v-col cols="12" sm="4">
       <v-text-field
         ref="sizeWidthPaperCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
-        :value="size.widthPaperCm"
+        :model-value="size.widthPaperCm"
         :rules="[
           validators.decimal(size.widthPaperCm),
           validators.minValue(0)(size.widthPaperCm),
@@ -39,16 +40,16 @@
         label="Width on paper"
         type="number"
         suffix="cm"
-        @input="(v) => recompute('widthPaperCm', v)"
+        @update:model-value="(v) => recompute('widthPaperCm', v)"
       />
-    </v-flex>
-    <v-flex xs12 sm4>
+    </v-col>
+    <v-col cols="12" sm="4">
       <v-text-field
         ref="sizeWidthPx"
         :disabled="disabled"
         :min="1"
         :step="1"
-        :value="size.widthPx"
+        :model-value="size.widthPx"
         :rules="[
           validators.integer(size.widthPx),
           validators.minValue(1)(size.widthPx),
@@ -56,17 +57,17 @@
         label="Width"
         type="number"
         suffix="px"
-        @input="(v) => recompute('widthPx', v)"
+        @update:model-value="(v) => recompute('widthPx', v)"
       />
-    </v-flex>
+    </v-col>
 
-    <v-flex xs12 sm4>
+    <v-col cols="12" sm="4">
       <v-text-field
         ref="sizeHeightScreenCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
-        :value="size.heightScreenCm"
+        :model-value="size.heightScreenCm"
         :rules="[
           validators.decimal(size.heightScreenCm),
           validators.minValue(0)(size.heightScreenCm),
@@ -74,16 +75,16 @@
         label="Height on screen"
         type="number"
         suffix="cm"
-        @input="(v) => recompute('heightScreenCm', v)"
+        @update:model-value="(v) => recompute('heightScreenCm', v)"
       />
-    </v-flex>
-    <v-flex xs12 sm4>
+    </v-col>
+    <v-col cols="12" sm="4">
       <v-text-field
         ref="sizeHeightPaperCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
-        :value="size.heightPaperCm"
+        :model-value="size.heightPaperCm"
         :rules="[
           validators.decimal(size.heightPaperCm),
           validators.minValue(0)(size.heightPaperCm),
@@ -91,16 +92,16 @@
         label="Height on paper"
         type="number"
         suffix="cm"
-        @input="(v) => recompute('heightPaperCm', v)"
+        @update:model-value="(v) => recompute('heightPaperCm', v)"
       />
-    </v-flex>
-    <v-flex xs12 sm4>
+    </v-col>
+    <v-col cols="12" sm="4">
       <v-text-field
         ref="sizeHeightPx"
         :disabled="disabled"
         :min="1"
         :step="1"
-        :value="size.heightPx"
+        :model-value="size.heightPx"
         :rules="[
           validators.integer(size.heightPx),
           validators.minValue(1)(size.heightPx),
@@ -108,16 +109,21 @@
         label="Height"
         type="number"
         suffix="px"
-        @input="(v) => recompute('heightPx', v)"
+        @update:model-value="(v) => recompute('heightPx', v)"
       />
-    </v-flex>
+    </v-col>
 
-    <v-flex xs12 sm12>
-      <v-switch v-model="tiles" :disabled="disabled" label="Render as tiles" />
-    </v-flex>
+    <v-col cols="12">
+      <v-switch
+        v-model="tiles"
+        color="primary"
+        :disabled="disabled"
+        label="Render as tiles"
+      />
+    </v-col>
 
     <template v-if="tiles">
-      <v-flex xs12 sm4>
+      <v-col cols="12" sm="4">
         <v-text-field
           ref="sizeTileWidthPx"
           v-model="tileWidthPx"
@@ -132,8 +138,8 @@
           type="number"
           suffix="px"
         />
-      </v-flex>
-      <v-flex xs12 sm4>
+      </v-col>
+      <v-col cols="12" sm="4">
         <v-text-field
           ref="sizeTileHeightPx"
           v-model="tileHeightPx"
@@ -148,32 +154,32 @@
           type="number"
           suffix="px"
         />
-      </v-flex>
+      </v-col>
 
-      <v-flex xs12 sm4>
+      <v-col cols="12" sm="4">
         <v-text-field
           label="The number of tiles"
           readonly
           :disabled="disabled"
-          :value="`${tilesWidthNumber}x${tilesHeightNumber} (${
+          :model-value="`${tilesWidthNumber}x${tilesHeightNumber} (${
             tilesWidthNumber * tilesHeightNumber
           })`"
         />
-      </v-flex>
+      </v-col>
     </template>
 
-    <v-flex xs12>
+    <v-col cols="12">
       <v-btn
-        :disabled="disabled || invalid"
-        outlined
+        :disabled="disabled"
+        variant="outlined"
         block
         color="primary"
         @click="render"
       >
         Render image
       </v-btn>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -309,18 +315,6 @@ export default {
     disabled() {
       return this.working || this.width <= 0 || this.height <= 0;
     },
-    invalid() {
-      return (
-        this.$v.tileHeightPx.$invalid ||
-        this.$v.tileWidthPx.$invalid ||
-        this.$v.size.heightPaperCm.$invalid ||
-        this.$v.size.heightPx.$invalid ||
-        this.$v.size.heightScreenCm.$invalid ||
-        this.$v.size.widthPaperCm.$invalid ||
-        this.$v.size.widthPx.$invalid ||
-        this.$v.size.widthScreenCm.$invalid
-      );
-    },
 
     width() {
       return this.boundingBox().width;
@@ -359,13 +353,13 @@ export default {
   },
   methods: {
     recompute(initiator, value) {
-      const scale = this.valuesToScale[initiator](+value);
+      const scale = this.valuesToScale[initiator](Number(value));
       Object.keys(this.size).forEach((key) => {
         if (key === initiator) {
-          this.size[key] = `${value}`;
+          this.size[key] = Number(value);
         } else {
-          this.size[key] = this.valuesToString[key](
-            this.scaleValues[key](scale),
+          this.size[key] = Number(
+            this.valuesToString[key](this.scaleValues[key](scale)),
           );
         }
       });
@@ -373,7 +367,9 @@ export default {
     },
     recomputeAll(scale) {
       Object.keys(this.size).forEach((key) => {
-        this.size[key] = this.valuesToString[key](this.scaleValues[key](scale));
+        this.size[key] = Number(
+          this.valuesToString[key](this.scaleValues[key](scale)),
+        );
       });
     },
     render() {

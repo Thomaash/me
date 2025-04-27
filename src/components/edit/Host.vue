@@ -1,8 +1,8 @@
 <template>
   <v-form v-model="valid">
     <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12>
+      <v-row>
+        <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
             :rules="[
@@ -13,8 +13,8 @@
             autofocus
             data-cy="edit-hostname"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             v-model="item.defaultRoute"
             :rules="[validators.ip()(item.defaultRoute)]"
@@ -22,16 +22,16 @@
             clearable
             data-cy="edit-default-route"
           />
-        </v-flex>
-        <v-flex xs12 md6 data-cy="edit-cpu-scheduler">
+        </v-col>
+        <v-col cols="12" md="6" data-cy="edit-cpu-scheduler">
           <v-select
             v-model="item.cpuScheduler"
             :items="schedulers"
             label="Scheduler"
             clearable
           />
-        </v-flex>
-        <v-flex xs12 md6>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-text-field
             ref="itemCPULimit"
             v-model.number="item.cpuLimit"
@@ -47,8 +47,8 @@
             clearable
             data-cy="edit-cpu-limit"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             v-model="cpuCoresStr"
             :rules="[validators.naturalNumberList()(item.cpuCores)]"
@@ -56,8 +56,8 @@
             clearable
             data-cy="edit-cpu-cores-str"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-textarea
             v-model="item.startScript"
             label="Startup Script"
@@ -65,8 +65,8 @@
             clearable
             data-cy="edit-start-script"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-textarea
             v-model="item.stopScript"
             label="Shutdown Script"
@@ -74,8 +74,8 @@
             clearable
             data-cy="edit-stop-script"
           />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
   </v-form>
 </template>
@@ -98,8 +98,8 @@ export default {
   data: () => ({
     valid: false,
     item: {},
+    tralingCommaHack: false, // TODO: Fix properly.
     schedulers,
-    cpuCoresStrInit: "",
     validators: {
       between,
       decimal,
@@ -112,30 +112,28 @@ export default {
   computed: {
     cpuCoresStr: {
       get() {
-        return this.cpuCoresStrInit;
+        return (
+          (this.item.cpuCores ?? []).join(", ") +
+          (this.trailingCommaHack ? ", " : "")
+        );
       },
       set(val) {
         if (val == null) {
-          this.$delete(this.item, "cpuCores");
+          delete this.item.cpuCores;
+          this.trailingCommaHack = false;
         } else {
-          const re = /^\d+$/;
-          this.$set(
-            this.item,
-            "cpuCores",
-            val
-              .split(/\s*[\s,]\s*/g)
-              .map((str) => (re.test(str) ? +str : NaN))
-              .sort((a, b) => a - b)
-              .filter((value, index, array) => array[index - 1] !== value),
-          );
+          this.item.cpuCores = [
+            ...new Set(
+              val
+                .split(/\s*,\s*/)
+                .filter((str) => str !== "")
+                .map((str) => (/^\d+$/.test(str) ? Number(str) : NaN)),
+            ),
+          ];
+          this.trailingCommaHack = /\s*,\s*$/.test(val);
         }
       },
     },
-  },
-  created() {
-    this.$on("new-item", () => {
-      this.cpuCoresStrInit = (this.item.cpuCores || []).join(", ");
-    });
   },
 };
 </script>

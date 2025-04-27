@@ -4,7 +4,7 @@
       v-for="({ icon, text, action, enabled }, i) in items"
       :key="i"
       :disabled="!enabled"
-      dark
+      theme="dark"
       icon
       @click="action"
     >
@@ -67,7 +67,7 @@ export default {
   methods: {
     openViewPopup() {
       window.open(
-        `${this.$router.mode === "hash" ? "#" : ""}${this.viewURL}`,
+        this.$router.options.history.createHref(this.viewURL),
         "",
         "_blank",
       );

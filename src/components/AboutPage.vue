@@ -1,17 +1,17 @@
 <template>
   <v-container grid-list-md>
-    <v-layout wrap>
+    <v-row wrap>
       <AppLogo />
-      <v-flex xs12>
+      <v-col cols="12">
         <AppDescription full />
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <AppLicense />
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <BuildInfo />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

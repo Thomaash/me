@@ -10,62 +10,60 @@
 
         <v-spacer />
 
-        <v-slide-y-transition mode="out-in">
-          <router-view name="toolbar" />
-        </v-slide-y-transition>
+        <router-view v-slot="{ Component, route }" name="toolbar">
+          <v-slide-y-transition mode="out-in">
+            <component :is="Component" :key="route.meta.routerViewKey" />
+          </v-slide-y-transition>
+        </router-view>
 
-        <v-progress-linear
-          v-show="progress.show"
-          slot="extension"
-          :indeterminate="progress.indeterminate === true"
-          :value="progress.value"
-          class="ma-0"
-          color="accent"
-        />
+        <template #extension>
+          <v-progress-linear
+            v-show="progress.show"
+            slot="extension"
+            :indeterminate="progress.indeterminate === true"
+            :model-value="progress.value"
+            class="ma-0"
+            color="accent"
+          />
 
-        <v-alert
-          slot="extension"
-          v-model="showAlert"
-          :type="alert.type"
-          dismissible
-          class="mt-0 alert"
-          transition="slide-y-transition"
-        >
-          {{ alert.text }}
-        </v-alert>
+          <v-alert
+            slot="extension"
+            v-model="showAlert"
+            :type="alert.type"
+            closable
+            class="mt-0 alert"
+            transition="slide-y-transition"
+          >
+            {{ alert.text }}
+          </v-alert>
+        </template>
       </v-app-bar>
 
-      <v-navigation-drawer
-        v-model="drawer"
-        persistent
-        enable-resize-watcher
-        fixed
-        app
-      >
+      <v-navigation-drawer v-model="drawer" persistent>
         <v-list>
           <v-list-item
-            v-for="(item, i) in drawerItems"
-            :key="i"
+            v-for="item in drawerItems"
+            :key="item.to.name"
+            :value="item.to.name"
             :to="item.to"
             :data-cy="`drawer-${item.to.name.toLowerCase().replace(' ', '-')}`"
-            value="true"
             color="primary"
           >
-            <v-list-item-action>
+            <template #prepend>
               <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
+            </template>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
     </template>
 
     <v-main>
-      <v-slide-y-transition mode="out-in">
-        <router-view />
-      </v-slide-y-transition>
+      <router-view v-slot="{ Component, route }">
+        <v-slide-y-transition mode="out-in">
+          <component :is="Component" :key="route.meta.routerViewKey" />
+        </v-slide-y-transition>
+      </router-view>
     </v-main>
   </v-app>
 </template>

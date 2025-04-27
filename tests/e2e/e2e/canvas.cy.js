@@ -157,7 +157,9 @@ describe("Canvas", { testIsolation: false }, () => {
         openEditDialog(type);
 
         it("Test item's hostname", () => {
-          cy.get("[data-cy=edit-hostname]").should("have.value", hostname);
+          cy.get(
+            "[data-cy=edit-hostname] input, [data-cy=edit-hostname] textarea:not([aria-hidden])",
+          ).should("have.value", hostname);
         });
 
         it("Change items' properties", () => {

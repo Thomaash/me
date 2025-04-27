@@ -1,33 +1,31 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12>
+  <v-row>
+    <v-col cols="12">
       <v-list>
         <v-list-item
           v-for="(l, i) in sortedLog"
           :key="'export_log_' + i"
-          @click.prevent
+          @click.prevent="logCbs[i] = !logCbs[i]"
         >
-          <v-list-item-action>
+          <template #prepend>
             <v-checkbox v-model="logCbs[i]" color="primary" hide-details />
-          </v-list-item-action>
-          <v-list-item-content @click="$set(logCbs, i, !logCbs[i])">
-            <v-list-item-title>{{ l.msg }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-avatar @click="selectInCanvas(l.item.id)">
-            <v-icon :color="l.severity">{{
-              `$vuetify.icons.${l.severity}`
-            }}</v-icon>
-          </v-list-item-avatar>
+          </template>
+          <v-list-item-title>{{ l.msg }}</v-list-item-title>
+          <template #append>
+            <v-btn variant="plain" @click="selectInCanvas(l.item.id)">
+              <v-icon :color="l.severity">{{ `$${l.severity}` }}</v-icon>
+            </v-btn>
+          </template>
         </v-list-item>
       </v-list>
-    </v-flex>
+    </v-col>
 
-    <v-flex xs12>
-      <v-btn outlined block color="primary" @click="selectInCanvas()"
+    <v-col cols="12">
+      <v-btn variant="outlined" block color="primary" @click="selectInCanvas()"
         >Select in the Canvas</v-btn
       >
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -70,7 +68,7 @@ export default {
       }
 
       this.$router.push({
-        name: "Canvas",
+        name: "Canvas without position",
         params: { ids: ids.join(",") },
       });
     },

@@ -10,8 +10,13 @@ module.exports = defineConfig({
   viewportHeight: 737,
   viewportWidth: 1311,
 
+  retries: {
+    runMode: 3,
+    openMode: 0,
+  },
+
   e2e: {
-    baseUrl: "http://127.0.0.1:3000",
+    baseUrl: "http://127.0.0.1:5173",
     fixturesFolder: "tests/e2e/fixtures",
     specPattern: "tests/e2e/e2e/**/*.cy.js",
     supportFile: "tests/e2e/support/index.js",

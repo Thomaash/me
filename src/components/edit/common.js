@@ -1,5 +1,6 @@
 export default {
-  props: ["value"],
+  props: ["modelValue"],
+  emits: ["update:modelValue", "new-item", "valid"],
   data: () => ({
     valid: false,
     item: {},
@@ -8,9 +9,9 @@ export default {
   watch: {
     item(val) {
       this._newItemEmit();
-      this.$emit("input", val);
+      this.$emit("update:modelValue", val);
     },
-    value(val) {
+    modelValue(val) {
       this.item = val;
     },
     valid(val) {
@@ -28,7 +29,7 @@ export default {
     },
   },
   mounted() {
-    this.item = this.value;
+    this.item = this.modelValue;
     this._newItemEmit();
     this.$emit("valid", this.valid);
     if (this.$v) {

@@ -1,16 +1,16 @@
 <template>
   <v-form v-model="valid">
     <v-container grid-list-md>
-      <v-layout wrap>
-        <v-flex xs12>
+      <v-row>
+        <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
             label="Label"
             autofocus
             data-cy="edit-hostname"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             ref="itemBandwidth"
             v-model.number="item.bandwidth"
@@ -22,8 +22,8 @@
             clearable
             data-cy="edit-bandwidth"
           />
-        </v-flex>
-        <v-flex xs12 md6>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="item.delay"
             :rules="[validators.timeWithUnit(item.delay)]"
@@ -31,8 +31,8 @@
             clearable
             data-cy="edit-delay"
           />
-        </v-flex>
-        <v-flex xs12 md6>
+        </v-col>
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="item.jitter"
             :rules="[validators.timeWithUnit(item.jitter)]"
@@ -40,8 +40,8 @@
             clearable
             data-cy="edit-jitter"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             ref="itemLoss"
             v-model.number="item.loss"
@@ -54,8 +54,8 @@
             clearable
             data-cy="edit-loss"
           />
-        </v-flex>
-        <v-flex xs12>
+        </v-col>
+        <v-col cols="12">
           <v-text-field
             ref="itemMaxQueueSize"
             v-model.number="item.maxQueueSize"
@@ -70,8 +70,8 @@
             clearable
             data-cy="edit-max-queue-size"
           />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-container>
   </v-form>
 </template>

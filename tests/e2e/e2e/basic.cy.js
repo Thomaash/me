@@ -1,8 +1,10 @@
 describe("Basic", { testIsolation: false }, () => {
   it("Home page", () => {
-    cy.meOpen("/");
+    cy.meOpen();
+    cy.hash().should("eq", "#/home");
     cy.contains("h3", "Description");
     cy.contains("h3", "Bindings");
+    cy.contains("h3", "Placeholders");
   });
 
   it("Menu url change", () => {
