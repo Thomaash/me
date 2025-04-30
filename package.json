@@ -73,7 +73,7 @@
     "patch-package": "8.0.0",
     "sass": "1.87.0",
     "start-server-and-test": "2.0.11",
-    "vite": "6.3.3",
+    "vite": "6.3.4",
     "vite-plugin-vuetify": "2.1.1",
     "vue-template-compiler": "2.7.16"
   },
