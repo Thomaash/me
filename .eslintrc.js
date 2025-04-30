@@ -10,8 +10,8 @@ module.exports = {
     module: "writable",
     process: "readonly",
   },
-  extends: ["plugin:vue/recommended", "eslint:recommended", "@vue/prettier"],
-  plugins: ["vue", "prettier"],
+  extends: ["plugin:vue/recommended", "eslint:recommended", "prettier"],
+  plugins: ["vue"],
   rules: {
     "no-debugger": "error",
   },

@@ -1,6 +1,7 @@
 ![Mininet Editor Logo](./public/img/icons/android-chrome-384x384.png)
 
 # Mininet Editor
+
 SDN topology editor in your web browser with Mininet export.
 
 Exports JSONs (whole projects), Python scripts (Mininet emulation), addressing plans and topology images.\
@@ -8,23 +9,29 @@ Imports JSONs and Python scripts.\
 Persists projects even if the browser is closed and also works offline.
 
 ## Available online
+
 https://www.vycital.eu/me/
 
 ## Screenshots
 
 ### Canvas
+
 ![Canvas](./readme-assets/canvas.png)
 
 ### Canvas and Views
+
 ![Canvas and Views](./readme-assets/canvas-and-views.png)
 
 ### Export and Import
+
 ![Export and Import](./readme-assets/export.png)
 
 ### Exported Addressing Plan
+
 ![Exported Addressing Plan](./readme-assets/addressing-plan.png)
 
 ## Features
+
 - PWA
   - Works offline once visited
   - Can be installed as native app (if the browser and operating system supports it)
@@ -36,6 +43,7 @@ https://www.vycital.eu/me/
   - Close the page or crash the OS, your project won't be lost
 
 ##### Canvas
+
 - All SDN nodes
   - Hosts
   - Switches
@@ -61,6 +69,7 @@ https://www.vycital.eu/me/
 - Keyboard shortcuts
 
 ##### Export
+
 - JSON
   - Contains everything (the only exception here is undo/redo history)
 - Script
@@ -77,6 +86,7 @@ https://www.vycital.eu/me/
   - In PNG format
 
 ##### Import
+
 - JSON
   - Contains everything (the only exception here is undo/redo history)
 - Script

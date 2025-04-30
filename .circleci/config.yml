@@ -25,7 +25,10 @@ jobs:
       - checkout
 
       - run: npm ci
+
+      - run: npm run style:ci
       - run: npm run lint:ci
+
       - run: npm run build
 
       - run: npm test
