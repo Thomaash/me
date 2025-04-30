@@ -27,7 +27,7 @@
     "@mdi/font": "7.4.47",
     "@vueuse/core": "13.1.0",
     "antlr4": "4.9.3",
-    "jspdf": "2.5.2",
+    "jspdf": "3.0.1",
     "jspdf-autotable": "5.0.2",
     "source-code-pro": "2.38.0",
     "source-sans-pro": "3.6.0",
