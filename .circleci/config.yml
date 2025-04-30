@@ -26,8 +26,9 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run style:ci
+      - run: npm run deps:ci
       - run: npm run lint:ci
+      - run: npm run style:ci
 
       - run: npm run build
 

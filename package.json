@@ -8,6 +8,8 @@
     "build:old-deploy-files": "./bin/build-old-deploy-files.sh",
     "clean": "rm -rf dist/*",
     "deploy": "./gh-pages.sh",
+    "deps:ci": "depcruise src",
+    "deps:visualize": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg",
     "dev": "vite",
     "lint:ci": "eslint --ext .js,.vue .",
     "lint:fix": "eslint --ext .js,.vue --fix .",
@@ -22,8 +24,7 @@
     "test:e2e:cypress:run": "cypress run",
     "test:e2e:open": "start-server-and-test dev http://127.0.0.1:5173/me/ test:e2e:cypress:open",
     "test:unit": "cypress run --component",
-    "test:unit:open": "cypress open --component",
-    "visualize-deps": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
+    "test:unit:open": "cypress open --component"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
