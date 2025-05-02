@@ -1,6 +1,9 @@
 import { expect } from "chai";
 
-import placeholders from "@/components/vis/placeholders";
+import {
+  labelPlaceholderRE,
+  labelPlaceholderReplacers,
+} from "@/components/vis/placeholders";
 import { controllerTypesMap, switchTypesMap } from "@/components/selects";
 
 describe("Placeholders", () => {
@@ -8,7 +11,7 @@ describe("Placeholders", () => {
     const expected = ["{{HOSTNAMES}}", "{{}}", "{{IPS}}", "{{TYPES}}"];
     const actual = [];
     '{{HOSTNAMES}}I saw you with those two "la{{}}dies of the evening"{{IPS}} at Elzars.\nExplain that.{{TYPES}}'.replace(
-      placeholders.re,
+      labelPlaceholderRE,
       (match) => {
         actual.push(match);
       },
@@ -18,7 +21,7 @@ describe("Placeholders", () => {
   });
 
   it("HOSTNAMES", () => {
-    const text = placeholders.replace["{{HOSTNAMES}}"]([
+    const text = labelPlaceholderReplacers["{{HOSTNAMES}}"]([
       {
         type: "host",
         hostname: "h2",
@@ -57,7 +60,7 @@ describe("Placeholders", () => {
   });
 
   it("IPS (one)", () => {
-    const text = placeholders.replace["{{IPS}}"]([
+    const text = labelPlaceholderReplacers["{{IPS}}"]([
       {
         type: "port",
         hostname: "eth2",
@@ -69,7 +72,7 @@ describe("Placeholders", () => {
   });
 
   it("IPS (many)", () => {
-    const text = placeholders.replace["{{IPS}}"]([
+    const text = labelPlaceholderReplacers["{{IPS}}"]([
       {
         type: "host",
         defaultRoute: "192.168.1.1",
@@ -156,7 +159,7 @@ describe("Placeholders", () => {
   });
 
   it("TYPES (one)", () => {
-    const text = placeholders.replace["{{TYPES}}"]([
+    const text = labelPlaceholderReplacers["{{TYPES}}"]([
       {
         type: "host",
       },
@@ -175,7 +178,7 @@ describe("Placeholders", () => {
   });
 
   it("TYPES (many)", () => {
-    const text = placeholders.replace["{{TYPES}}"]([
+    const text = labelPlaceholderReplacers["{{TYPES}}"]([
       {
         type: "host",
       },

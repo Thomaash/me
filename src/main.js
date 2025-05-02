@@ -8,8 +8,8 @@ import { createVuetify } from "vuetify";
 import { aliases, mdi } from "vuetify/iconsets/mdi";
 
 import App from "./App.vue";
-import router from "./router";
-import store from "./store";
+import { router } from "./router";
+import { store } from "./store";
 import { dark, vuetifyDark, vuetifyLight } from "./theme";
 
 import { initServiceWorker } from "./service-worker-init";

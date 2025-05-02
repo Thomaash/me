@@ -10,7 +10,7 @@
 
 <script>
 import generateTooltip from "./generateTooltip";
-import labelPlaceholders from "./placeholders";
+import { labelPlaceholderRE, labelPlaceholderReplacers } from "./placeholders";
 import { DataSet } from "vis-data/peer";
 import { Network } from "vis-network/peer";
 import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
@@ -40,7 +40,6 @@ export default {
     width: null,
     height: null,
     cleanUpCallbacks: [],
-    labelPlaceholders,
   }),
   computed: {
     ...mapGetters("topology", ["data", "boundingBox"]),
@@ -292,10 +291,10 @@ export default {
       const neighbors = this.net
         .getConnectedNodes(item.id)
         .map((id) => this.data.items[id]);
-      return item.hostname.replace(this.labelPlaceholders.re, (match) => {
+      return item.hostname.replace(labelPlaceholderRE, (match) => {
         return (
-          this.labelPlaceholders.replace[match.toUpperCase()] ||
-          this.labelPlaceholders.replace.fallback
+          labelPlaceholderReplacers.replace[match.toUpperCase()] ||
+          labelPlaceholderReplacers.replace.fallback
         )(neighbors, match);
       });
     },
