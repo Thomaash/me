@@ -1,6 +1,6 @@
-const { defineConfig } = require("cypress");
+import { defineConfig } from "cypress";
 
-module.exports = defineConfig({
+export default defineConfig({
   defaultCommandTimeout: 15000,
   fixturesFolder: "tests/e2e/fixtures",
   screenshotOnRunFailure: false,

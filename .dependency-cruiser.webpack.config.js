@@ -1,9 +1,10 @@
-const path = require("path");
+import { resolve } from "node:path";
+import { fileURLToPath } from "url";
 
-module.exports = {
+export default {
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
+      "@": resolve(fileURLToPath(new URL(".", import.meta.url)), "src"),
     },
     extensions: [".js", ".json", ".ts", ".vue", ".wasm"],
   },

@@ -1,6 +1,7 @@
 {
   "name": "me",
   "version": "0.0.0-no-version",
+  "type": "module",
   "private": true,
   "license": "ISC",
   "scripts": {

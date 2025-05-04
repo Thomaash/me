@@ -1,5 +1,5 @@
-const webpack = require("webpack");
-const { execSync } = require("child_process");
+import webpack from "webpack";
+import { execSync } from "child_process";
 
 process.env.VUE_APP_BUILD_DATE = new Date().toISOString();
 process.env.VUE_APP_BUILD_COMMIT_HASH = execSync("git log -1 --format=%H", {
@@ -11,7 +11,7 @@ process.env.VUE_APP_BUILD_COMMIT_DATE = new Date(
   }).trim() * 1000,
 ).toISOString();
 
-module.exports = {
+export default {
   publicPath: "./",
 
   // Do not fail the build with linting errors. It sometimes reports errors
