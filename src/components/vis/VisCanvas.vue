@@ -293,8 +293,8 @@ export default {
         .map((id) => this.data.items[id]);
       return item.hostname.replace(labelPlaceholderRE, (match) => {
         return (
-          labelPlaceholderReplacers.replace[match.toUpperCase()] ||
-          labelPlaceholderReplacers.replace.fallback
+          labelPlaceholderReplacers[match.toUpperCase()] ||
+          labelPlaceholderReplacers.fallback
         )(neighbors, match);
       });
     },
