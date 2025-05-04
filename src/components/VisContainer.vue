@@ -452,8 +452,6 @@ export default {
     },
     async routerPush(...args) {
       try {
-        console.log(args);
-
         return await this.$router.push(...args);
       } catch (error) {
         if (error.name === "NavigationDuplicated") {
