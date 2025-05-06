@@ -1,4 +1,4 @@
-import testSet, { ports } from "../support/testItemsFieldValidity";
+import { testSet, ports } from "../support/testItemsFieldValidity";
 
 testSet({
   name: "Controller port",

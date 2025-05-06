@@ -1,4 +1,4 @@
-import testSet, { integers } from "../support/testItemsFieldValidity";
+import { testSet, integers } from "../support/testItemsFieldValidity";
 
 testSet({
   name: "Switch reconnect timeout",

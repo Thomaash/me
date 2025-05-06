@@ -14,7 +14,7 @@ import { labelPlaceholderRE, labelPlaceholderReplacers } from "./placeholders";
 import { DataSet } from "vis-data/peer";
 import { Network } from "vis-network/peer";
 import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
-import colors from "@/theme-colors";
+import { themeColorShades } from "@/theme-colors";
 import { mapGetters } from "vuex";
 
 import "vis-network/styles/vis-network.css";
@@ -440,7 +440,9 @@ export default {
       return type === "link" || type === "association";
     },
     buildGroupColor({ canvas }, bg = false) {
-      const background = bg ? this.theme.background : colors.shades.transparent;
+      const background = bg
+        ? this.theme.background
+        : themeColorShades.transparent;
       return {
         background: background,
         border: canvas,

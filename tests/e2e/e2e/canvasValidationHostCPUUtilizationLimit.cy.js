@@ -1,4 +1,4 @@
-import testSet, { decimals } from "../support/testItemsFieldValidity";
+import { testSet, decimals } from "../support/testItemsFieldValidity";
 
 testSet({
   name: "Host CPU utilization limit",

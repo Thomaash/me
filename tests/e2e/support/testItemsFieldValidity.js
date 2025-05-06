@@ -1,4 +1,4 @@
-export default function ({ name, type, field, values }) {
+export function testSet({ name, type, field, values }) {
   describe(name, { testIsolation: false }, () => {
     describe("Init", () => {
       it("Open new empty canvas", () => {
@@ -53,7 +53,7 @@ export default function ({ name, type, field, values }) {
   });
 }
 
-const ips = [
+export const ips = [
   { valid: false, values: ["172.16.0.7/24"] },
   { valid: false, values: ["172.16.0.7/44"] },
   { valid: false, values: ["172.16.0.7/o"] },
@@ -74,9 +74,8 @@ const ips = [
   { valid: true, values: ["2001:db8:0:0:0:ff00:42:8329"] },
   { valid: true, values: ["2001:db8::ff00:42:8329"] },
 ];
-export { ips };
 
-const ports = [
+export const ports = [
   { valid: false, values: ["-1"] },
   { valid: false, values: ["0"] },
   { valid: false, values: ["100000"] },
@@ -89,9 +88,8 @@ const ports = [
   { valid: true, values: ["6633"] },
   { valid: true, values: ["6653"] },
 ];
-export { ports };
 
-const integers = (min, max, minLimited = true, maxLimited = true) => [
+export const integers = (min, max, minLimited = true, maxLimited = true) => [
   { valid: !maxLimited, values: [`${max + 1}`] },
   { valid: !minLimited, values: [`${min - 1}`] },
   { valid: false, values: [`${max + 0.1}`] },
@@ -104,9 +102,8 @@ const integers = (min, max, minLimited = true, maxLimited = true) => [
   { valid: true, values: [`${max}`] },
   { valid: true, values: [`${min}`] },
 ];
-export { integers };
 
-const decimals = (min, max, minLimited = true, maxLimited = true) => [
+export const decimals = (min, max, minLimited = true, maxLimited = true) => [
   { valid: !maxLimited, values: [`${max + 0.1}`] },
   { valid: !maxLimited, values: [`${max + 1}`] },
   // { valid: !minLimited, values: [`${min - 0.1}`] }, // TODO: v-model.number converts -0 to 0 and therefore -0.1 ends up as 0.1. In the only place this is used right now it doesn't matter because all negative numbers are banned.
@@ -119,4 +116,3 @@ const decimals = (min, max, minLimited = true, maxLimited = true) => [
   { valid: true, values: [`${min + 0.9 * (max - min)}`] },
   { valid: true, values: [`${min}`] },
 ];
-export { decimals };

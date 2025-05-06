@@ -1,6 +1,6 @@
 "use strict";
 
-const red = Object.freeze({
+export const themeColorRed = Object.freeze({
   base: "#f44336",
   lighten5: "#ffebee",
   lighten4: "#ffcdd2",
@@ -16,7 +16,7 @@ const red = Object.freeze({
   accent3: "#ff1744",
   accent4: "#d50000",
 });
-const pink = Object.freeze({
+export const themeColorPink = Object.freeze({
   base: "#e91e63",
   lighten5: "#fce4ec",
   lighten4: "#f8bbd0",
@@ -32,7 +32,7 @@ const pink = Object.freeze({
   accent3: "#f50057",
   accent4: "#c51162",
 });
-const purple = Object.freeze({
+export const themeColorPurple = Object.freeze({
   base: "#9c27b0",
   lighten5: "#f3e5f5",
   lighten4: "#e1bee7",
@@ -48,7 +48,7 @@ const purple = Object.freeze({
   accent3: "#d500f9",
   accent4: "#aa00ff",
 });
-const deepPurple = Object.freeze({
+export const themeColorDeepPurple = Object.freeze({
   base: "#673ab7",
   lighten5: "#ede7f6",
   lighten4: "#d1c4e9",
@@ -64,7 +64,7 @@ const deepPurple = Object.freeze({
   accent3: "#651fff",
   accent4: "#6200ea",
 });
-const indigo = Object.freeze({
+export const themeColorIndigo = Object.freeze({
   base: "#3f51b5",
   lighten5: "#e8eaf6",
   lighten4: "#c5cae9",
@@ -80,7 +80,7 @@ const indigo = Object.freeze({
   accent3: "#3d5afe",
   accent4: "#304ffe",
 });
-const blue = Object.freeze({
+export const themeColorBlue = Object.freeze({
   base: "#2196f3",
   lighten5: "#e3f2fd",
   lighten4: "#bbdefb",
@@ -96,7 +96,7 @@ const blue = Object.freeze({
   accent3: "#2979ff",
   accent4: "#2962ff",
 });
-const lightBlue = Object.freeze({
+export const themeColorLightBlue = Object.freeze({
   base: "#03a9f4",
   lighten5: "#e1f5fe",
   lighten4: "#b3e5fc",
@@ -112,7 +112,7 @@ const lightBlue = Object.freeze({
   accent3: "#00b0ff",
   accent4: "#0091ea",
 });
-const cyan = Object.freeze({
+export const themeColorCyan = Object.freeze({
   base: "#00bcd4",
   lighten5: "#e0f7fa",
   lighten4: "#b2ebf2",
@@ -128,7 +128,7 @@ const cyan = Object.freeze({
   accent3: "#00e5ff",
   accent4: "#00b8d4",
 });
-const teal = Object.freeze({
+export const themeColorTeal = Object.freeze({
   base: "#009688",
   lighten5: "#e0f2f1",
   lighten4: "#b2dfdb",
@@ -144,7 +144,7 @@ const teal = Object.freeze({
   accent3: "#1de9b6",
   accent4: "#00bfa5",
 });
-const green = Object.freeze({
+export const themeColorGreen = Object.freeze({
   base: "#4caf50",
   lighten5: "#e8f5e9",
   lighten4: "#c8e6c9",
@@ -160,7 +160,7 @@ const green = Object.freeze({
   accent3: "#00e676",
   accent4: "#00c853",
 });
-const lightGreen = Object.freeze({
+export const themeColorLightGreen = Object.freeze({
   base: "#8bc34a",
   lighten5: "#f1f8e9",
   lighten4: "#dcedc8",
@@ -176,7 +176,7 @@ const lightGreen = Object.freeze({
   accent3: "#76ff03",
   accent4: "#64dd17",
 });
-const lime = Object.freeze({
+export const themeColorLime = Object.freeze({
   base: "#cddc39",
   lighten5: "#f9fbe7",
   lighten4: "#f0f4c3",
@@ -192,7 +192,7 @@ const lime = Object.freeze({
   accent3: "#c6ff00",
   accent4: "#aeea00",
 });
-const yellow = Object.freeze({
+export const themeColorYellow = Object.freeze({
   base: "#ffeb3b",
   lighten5: "#fffde7",
   lighten4: "#fff9c4",
@@ -208,7 +208,7 @@ const yellow = Object.freeze({
   accent3: "#ffea00",
   accent4: "#ffd600",
 });
-const amber = Object.freeze({
+export const themeColorAmber = Object.freeze({
   base: "#ffc107",
   lighten5: "#fff8e1",
   lighten4: "#ffecb3",
@@ -224,7 +224,7 @@ const amber = Object.freeze({
   accent3: "#ffc400",
   accent4: "#ffab00",
 });
-const orange = Object.freeze({
+export const themeColorOrange = Object.freeze({
   base: "#ff9800",
   lighten5: "#fff3e0",
   lighten4: "#ffe0b2",
@@ -240,7 +240,7 @@ const orange = Object.freeze({
   accent3: "#ff9100",
   accent4: "#ff6d00",
 });
-const deepOrange = Object.freeze({
+export const themeColorDeepOrange = Object.freeze({
   base: "#ff5722",
   lighten5: "#fbe9e7",
   lighten4: "#ffccbc",
@@ -256,7 +256,7 @@ const deepOrange = Object.freeze({
   accent3: "#ff3d00",
   accent4: "#dd2c00",
 });
-const brown = Object.freeze({
+export const themeColorBrown = Object.freeze({
   base: "#795548",
   lighten5: "#efebe9",
   lighten4: "#d7ccc8",
@@ -268,7 +268,7 @@ const brown = Object.freeze({
   darken3: "#4e342e",
   darken4: "#3e2723",
 });
-const blueGrey = Object.freeze({
+export const themeColorBlueGrey = Object.freeze({
   base: "#607d8b",
   lighten5: "#eceff1",
   lighten4: "#cfd8dc",
@@ -280,7 +280,7 @@ const blueGrey = Object.freeze({
   darken3: "#37474f",
   darken4: "#263238",
 });
-const grey = Object.freeze({
+export const themeColorGrey = Object.freeze({
   base: "#9e9e9e",
   lighten5: "#fafafa",
   lighten4: "#f5f5f5",
@@ -292,33 +292,31 @@ const grey = Object.freeze({
   darken3: "#424242",
   darken4: "#212121",
 });
-const shades = Object.freeze({
+export const themeColorShades = Object.freeze({
   black: "#000000",
   white: "#ffffff",
   transparent: "transparent",
 });
 
-const colors = Object.freeze({
-  red: red,
-  pink: pink,
-  purple: purple,
-  deepPurple: deepPurple,
-  indigo: indigo,
-  blue: blue,
-  lightBlue: lightBlue,
-  cyan: cyan,
-  teal: teal,
-  green: green,
-  lightGreen: lightGreen,
-  lime: lime,
-  yellow: yellow,
-  amber: amber,
-  orange: orange,
-  deepOrange: deepOrange,
-  brown: brown,
-  blueGrey: blueGrey,
-  grey: grey,
-  shades: shades,
+export const themeColors = Object.freeze({
+  red: themeColorRed,
+  pink: themeColorPink,
+  purple: themeColorPurple,
+  deepPurple: themeColorDeepPurple,
+  indigo: themeColorIndigo,
+  blue: themeColorBlue,
+  lightBlue: themeColorLightBlue,
+  cyan: themeColorCyan,
+  teal: themeColorTeal,
+  green: themeColorGreen,
+  lightGreen: themeColorLightGreen,
+  lime: themeColorLime,
+  yellow: themeColorYellow,
+  amber: themeColorAmber,
+  orange: themeColorOrange,
+  deepOrange: themeColorDeepOrange,
+  brown: themeColorBrown,
+  blueGrey: themeColorBlueGrey,
+  grey: themeColorGrey,
+  shades: themeColorShades,
 });
-
-export default colors;

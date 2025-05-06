@@ -1,4 +1,4 @@
-import testSet, { ips } from "../support/testItemsFieldValidity";
+import { testSet, ips } from "../support/testItemsFieldValidity";
 
 testSet({
   name: "Switch IP",

@@ -1,4 +1,4 @@
-import colors from "./theme-colors";
+import { themeColors } from "./theme-colors";
 
 function addAlpha(hex, alpha) {
   return (
@@ -17,99 +17,99 @@ export const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 export const vuetifyLight = {
   dark: false,
   colors: {
-    primary: colors.teal.base,
-    secondary: colors.teal.lighten1,
-    accent: colors.amber.darken1,
-    error: colors.red.base,
-    warning: colors.orange.base,
-    info: colors.blue.base,
-    success: colors.green.base,
+    primary: themeColors.teal.base,
+    secondary: themeColors.teal.lighten1,
+    accent: themeColors.amber.darken1,
+    error: themeColors.red.base,
+    warning: themeColors.orange.base,
+    info: themeColors.blue.base,
+    success: themeColors.green.base,
   },
 };
 export const vuetifyDark = {
   dark: true,
   colors: {
-    primary: colors.teal.base,
-    secondary: colors.teal.lighten1,
-    accent: colors.amber.darken1,
-    error: colors.red.base,
-    warning: colors.orange.base,
-    info: colors.blue.base,
-    success: colors.green.base,
+    primary: themeColors.teal.base,
+    secondary: themeColors.teal.lighten1,
+    accent: themeColors.amber.darken1,
+    error: themeColors.red.base,
+    warning: themeColors.orange.base,
+    info: themeColors.blue.base,
+    success: themeColors.green.base,
   },
 };
 export const vuetify = dark ? vuetifyDark : vuetifyLight;
 
 export const itemsLight = {
   controller: {
-    menu: colors.purple.base,
-    canvas: colors.purple.base,
+    menu: themeColors.purple.base,
+    canvas: themeColors.purple.base,
   },
   dummy: {
-    menu: colors.grey.darken4,
-    canvas: colors.grey.base,
+    menu: themeColors.grey.darken4,
+    canvas: themeColors.grey.base,
   },
   edge: {
-    menu: colors.cyan.base,
-    canvas: colors.cyan.base,
+    menu: themeColors.cyan.base,
+    canvas: themeColors.cyan.base,
   },
   host: {
-    menu: colors.orange.base,
-    canvas: colors.orange.base,
+    menu: themeColors.orange.base,
+    canvas: themeColors.orange.base,
   },
   port: {
-    menu: colors.green.base,
-    canvas: colors.green.base,
+    menu: themeColors.green.base,
+    canvas: themeColors.green.base,
   },
   switch: {
-    menu: colors.indigo.base,
-    canvas: colors.indigo.base,
+    menu: themeColors.indigo.base,
+    canvas: themeColors.indigo.base,
   },
 };
 export const itemsDark = {
   controller: {
-    menu: colors.purple.base,
-    canvas: colors.purple.base,
+    menu: themeColors.purple.base,
+    canvas: themeColors.purple.base,
   },
   dummy: {
-    menu: colors.grey.darken4,
-    canvas: colors.grey.base,
+    menu: themeColors.grey.darken4,
+    canvas: themeColors.grey.base,
   },
   edge: {
-    menu: colors.cyan.base,
-    canvas: colors.cyan.base,
+    menu: themeColors.cyan.base,
+    canvas: themeColors.cyan.base,
   },
   host: {
-    menu: colors.orange.base,
-    canvas: colors.orange.base,
+    menu: themeColors.orange.base,
+    canvas: themeColors.orange.base,
   },
   port: {
-    menu: colors.green.base,
-    canvas: colors.green.base,
+    menu: themeColors.green.base,
+    canvas: themeColors.green.base,
   },
   switch: {
-    menu: colors.indigo.base,
-    canvas: colors.indigo.base,
+    menu: themeColors.indigo.base,
+    canvas: themeColors.indigo.base,
   },
 };
 export const items = dark ? itemsDark : itemsLight;
 
 export const selectionLight = {
-  background: addAlpha(colors.teal.base, 0.25),
-  border: addAlpha(colors.teal.base, 0.75),
+  background: addAlpha(themeColors.teal.base, 0.25),
+  border: addAlpha(themeColors.teal.base, 0.75),
 };
 export const selectionDark = {
-  background: addAlpha(colors.teal.base, 0.25),
-  border: addAlpha(colors.teal.base, 0.75),
+  background: addAlpha(themeColors.teal.base, 0.25),
+  border: addAlpha(themeColors.teal.base, 0.75),
 };
 export const selection = dark ? selectionDark : selectionLight;
 
 export const canvasLight = {
-  foreground: colors.shades.black,
-  background: colors.shades.white,
+  foreground: themeColors.shades.black,
+  background: themeColors.shades.white,
 };
 export const canvasDark = {
-  foreground: colors.shades.white,
-  background: colors.grey.darken3,
+  foreground: themeColors.shades.white,
+  background: themeColors.grey.darken3,
 };
 export const canvas = dark ? canvasDark : canvasLight;

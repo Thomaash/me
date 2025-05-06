@@ -1,4 +1,4 @@
-import testSet from "../support/testItemsFieldValidity";
+import { testSet } from "../support/testItemsFieldValidity";
 
 const values = [
   { valid: false, values: ["-1"] },

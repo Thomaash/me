@@ -1,4 +1,4 @@
-import testSet from "../support/testItemsFieldValidity";
+import { testSet } from "../support/testItemsFieldValidity";
 
 testSet({
   name: "Switch datapath ID",
