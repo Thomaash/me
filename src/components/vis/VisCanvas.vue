@@ -36,6 +36,7 @@ export default {
       type: Boolean,
     },
   },
+  emits: ["ready"],
   data: () => ({
     width: null,
     height: null,

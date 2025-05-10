@@ -78,6 +78,7 @@ function download(filename, mimeOrHref, data) {
 export default {
   name: "ExportSection",
   components: { ImageConfig, VisCanvas },
+  emits: ["log"],
   data: () => ({
     visCanvasOn: false,
     visCanvasResolve: () => {},

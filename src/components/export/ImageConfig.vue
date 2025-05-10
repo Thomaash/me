@@ -289,6 +289,7 @@ export default {
       type: Boolean,
     },
   },
+  emits: ["render"],
   data: () => ({
     scale: 1,
     dark: false,

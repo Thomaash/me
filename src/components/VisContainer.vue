@@ -114,6 +114,7 @@ const keybindings = {
 export default {
   name: "VisContainer",
   components: { LoadingSpinner, VisCanvas },
+  emits: ["edit-item"],
   data: () => ({
     dark,
     newItem: {

@@ -127,6 +127,7 @@ import exampleTinyTC from "@/examples/tiny_tc";
 
 export default {
   name: "ImportSection",
+  emits: ["log"],
   setup: () => {
     const { isRevealed, reveal, confirm, cancel } = useConfirmDialog();
 
