@@ -1,16 +1,9 @@
 import createVuePlugin from "@vitejs/plugin-vue";
 import vuetify from "vite-plugin-vuetify";
 import { defineConfig } from "vite";
-import { execSync } from "child_process";
-import { promisify } from "util";
-import {
-  readFile as readFileCallback,
-  writeFile as writeFileCallback,
-} from "fs";
-import { resolve } from "path";
-
-const readFile = promisify(readFileCallback);
-const writeFile = promisify(writeFileCallback);
+import { execSync } from "node:child_process";
+import { readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,10 +16,10 @@ export default defineConfig({
 
         async closeBundle() {
           await writeFile(
-            resolve(__dirname, "./dist/me/service-worker.js"),
+            resolve(import.meta.dirname, "./dist/me/service-worker.js"),
             (
               await readFile(
-                resolve(__dirname, "./dist/me/service-worker.js"),
+                resolve(import.meta.dirname, "./dist/me/service-worker.js"),
                 "utf-8",
               )
             ).replace(
@@ -35,7 +28,7 @@ export default defineConfig({
                 await (
                   await import("globby")
                 ).globby("./{assets,img}/**", {
-                  cwd: resolve(__dirname, "./dist/me"),
+                  cwd: resolve(import.meta.dirname, "./dist/me"),
                 }),
               ),
             ),
@@ -48,7 +41,7 @@ export default defineConfig({
   base: "/me/",
   build: {
     manifest: true,
-    outDir: resolve(__dirname, "./dist/me"),
+    outDir: resolve(import.meta.dirname, "./dist/me"),
     rollupOptions: {
       input: {
         app: "./index.html",
@@ -82,7 +75,7 @@ export default defineConfig({
     alias: [
       {
         find: "@",
-        replacement: resolve(__dirname, "./src"),
+        replacement: resolve(import.meta.dirname, "./src"),
       },
     ],
   },
