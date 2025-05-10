@@ -19,7 +19,6 @@
         <template #extension>
           <v-progress-linear
             v-show="progress.show"
-            slot="extension"
             :indeterminate="progress.indeterminate === true"
             :model-value="progress.value"
             class="ma-0"
@@ -27,7 +26,6 @@
           />
 
           <v-alert
-            slot="extension"
             v-model="showAlert"
             :type="alert.type"
             closable
