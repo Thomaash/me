@@ -4,6 +4,10 @@ import { config, ready } from "./config";
 
 export const store = new createStore(config);
 
-ready.then(() => {
-  store.commit("loaded");
-});
+ready
+  .then(() => {
+    store.commit("loaded");
+  })
+  .catch((error) => {
+    console.error(error, "Failed to load store from local storage");
+  });
