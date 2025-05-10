@@ -27,11 +27,7 @@
         </v-card-text>
         <v-card-actions style="flex-grow: 0">
           <v-spacer />
-          <v-btn
-            color="primary"
-            text
-            data-cy="edit-cancel"
-            @click.native="cancel"
+          <v-btn color="primary" text data-cy="edit-cancel" @click="cancel"
             >Cancel</v-btn
           >
           <v-btn
@@ -39,7 +35,7 @@
             color="primary"
             text
             data-cy="edit-save"
-            @click.native="save"
+            @click="save"
             >Save</v-btn
           >
         </v-card-actions>
