@@ -243,7 +243,7 @@ export default {
       try {
         this.commit("undo");
         this.showSnackbar("undone");
-      } catch (error) {
+      } catch {
         this.showSnackbar("nothing-to-undo");
       }
     },
@@ -251,7 +251,7 @@ export default {
       try {
         this.commit("redo");
         this.showSnackbar("redone");
-      } catch (error) {
+      } catch {
         this.showSnackbar("nothing-to-redo");
       }
     },
