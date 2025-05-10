@@ -187,7 +187,7 @@ export default {
     this.update();
     this.timer = window.setInterval(() => this.update(), 2000);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.clearInterval(this.timer);
   },
   methods: {

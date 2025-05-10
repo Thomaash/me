@@ -255,7 +255,7 @@ export default {
 
     this.$emit("ready", { container, net, nodes, edges });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.cleanUpCallbacks.forEach((clb) => {
       try {
         clb();
