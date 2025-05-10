@@ -1,4 +1,4 @@
-import Python2Listener from "./generated/Python2Listener";
+import Python2Listener from "./generated/PythonParserListener";
 
 import { pyString } from "./pyTypes";
 

@@ -1,6 +1,6 @@
-import * as antlr4 from "antlr4";
-import Python2Lexer from "./generated/Python2Lexer";
-import Python2Parser from "./generated/Python2Parser";
+import { ParseTreeWalker, CommonTokenStream, InputStream } from "antlr4";
+import Python2Lexer from "./generated/PythonLexer";
+import Python2Parser from "./generated/PythonParser";
 
 import CustomListener from "./CustomListener";
 import { pyBoolean, pyNotNull, pyNumber, pyString } from "./pyTypes";
@@ -67,9 +67,9 @@ class IPs {
 }
 
 function parse(input) {
-  const chars = new antlr4.InputStream(input);
+  const chars = new InputStream(input);
   const lexer = new Python2Lexer(chars);
-  const tokens = new antlr4.CommonTokenStream(lexer);
+  const tokens = new CommonTokenStream(lexer);
   const parser = new Python2Parser(tokens);
   parser.buildParseTrees = true;
   return parser.file_input();
@@ -351,9 +351,9 @@ export default function (input) {
 
   // Process the tree
   const tree = parse(input);
-  const walker = new antlr4.tree.ParseTreeWalker();
+  const walker = new ParseTreeWalker();
   walker.walk(printer, tree);
-  antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
+  ParseTreeWalker.DEFAULT.walk(printer, tree);
 
   // Prepare ports without IPs
   const hostDevs = new Set();

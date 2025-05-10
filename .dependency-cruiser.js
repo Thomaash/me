@@ -51,7 +51,7 @@ export default {
   extends: ["dependency-cruiser/configs/recommended-strict"],
   options: {
     doNotFollow: {
-      path: "node_modules",
+      path: ["/generated/", "(^|/)node_modules/"],
     },
     enhancedResolveOptions: {
       exportsFields: ["exports"],
