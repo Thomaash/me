@@ -30,15 +30,41 @@ Cypress.Commands.add(
   (subject, { button = 0, x = 0, y = 0, dbl = false }) => {
     if (dbl) {
       // Force reduces the time between events and therefore the risk of them being interpreted as two independent clicks
-      cy.wrap(subject)
-        .trigger("pointerdown", { button, clientX: x, clientY: y })
-        .trigger("pointerup", { button, clientX: x, clientY: y, force: true })
-        .trigger("pointerdown", { button, clientX: x, clientY: y, force: true })
-        .trigger("pointerup", { button, clientX: x, clientY: y, force: true });
+      cy.wrap(subject).trigger("pointerdown", {
+        button,
+        clientX: x,
+        clientY: y,
+      });
+      cy.wrap(subject).trigger("pointerup", {
+        button,
+        clientX: x,
+        clientY: y,
+        force: true,
+      });
+      cy.wrap(subject).trigger("pointerdown", {
+        button,
+        clientX: x,
+        clientY: y,
+        force: true,
+      });
+      cy.wrap(subject).trigger("pointerup", {
+        button,
+        clientX: x,
+        clientY: y,
+        force: true,
+      });
     } else {
-      cy.wrap(subject)
-        .trigger("pointerdown", { button, clientX: x, clientY: y })
-        .trigger("pointerup", { button, clientX: x, clientY: y, force: true });
+      cy.wrap(subject).trigger("pointerdown", {
+        button,
+        clientX: x,
+        clientY: y,
+      });
+      cy.wrap(subject).trigger("pointerup", {
+        button,
+        clientX: x,
+        clientY: y,
+        force: true,
+      });
     }
   },
 );
@@ -72,9 +98,9 @@ Cypress.Commands.add(
     Object.entries(textProps).forEach(([key, values]) => {
       cy.get(
         `[data-cy=${key}] input, [data-cy=${key}] textarea:not([aria-hidden])`,
-      )
-        .clear()
-        .type(values.join("{enter}"));
+      ).as("vuetify-input");
+      cy.get("@vuetify-input").clear();
+      cy.get("@vuetify-input").type(values.join("{enter}"));
     });
 
     Object.entries(checkboxProps).forEach(([key, { clicks }]) => {

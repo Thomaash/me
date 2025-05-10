@@ -140,9 +140,16 @@ describe("Canvas", { testIsolation: false }, () => {
         it("Enter add mode", () => {
           cy.meVisFabClick(type);
 
-          cy.get(".vis-root")
-            .trigger("mousemove", { button: 0, clientX: 50, clientY: 50 })
-            .trigger("mousemove", { button: 0, clientX: 250, clientY: 100 });
+          cy.get(".vis-root").trigger("mousemove", {
+            button: 0,
+            clientX: 50,
+            clientY: 50,
+          });
+          cy.get(".vis-root").trigger("mousemove", {
+            button: 0,
+            clientX: 250,
+            clientY: 100,
+          });
         });
 
         it("Place the item", () => {
