@@ -1,1 +1,2 @@
-.eslintignore
+/dist/
+/src/importScript/generated/
