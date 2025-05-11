@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import Builder from "../../../src/builder";
 import { removeNonCode } from "./exportImportCommon.js";
 

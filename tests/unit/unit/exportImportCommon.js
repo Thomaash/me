@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 function getCleanItems(items, typeOnly) {
   return items
     .filter((node) => !typeOnly || node.type === typeOnly)

@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import { MAX_UNDO_LENGTH, topology } from "@/store/topology";
 import exampleMedium2Controllers from "@/examples/medium_2_controllers";
 import exampleTiny from "@/examples/tiny";

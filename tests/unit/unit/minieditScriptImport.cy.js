@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import importScript from "../../../src/importScript";
 import { getCleanItems, testTypes } from "./exportImportCommon.js";
 
