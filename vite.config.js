@@ -1,9 +1,11 @@
-import createVuePlugin from "@vitejs/plugin-vue";
-import vuetify from "vite-plugin-vuetify";
-import { defineConfig } from "vite";
 import { execSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+
+import createVuePlugin from "@vitejs/plugin-vue";
+import vuetify from "vite-plugin-vuetify";
+import { defineConfig } from "vite";
+import { globby } from "globby";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -25,9 +27,7 @@ export default defineConfig({
             ).replace(
               '["CACHE_URLS_PLACEHOLDER"]',
               JSON.stringify(
-                await (
-                  await import("globby")
-                ).globby("./{assets,img}/**", {
+                await globby("./{assets,img}/**", {
                   cwd: resolve(import.meta.dirname, "./dist/me"),
                 }),
               ),
