@@ -54,7 +54,6 @@
     "@vue/babel-preset-app": "5.0.8",
     "@vue/test-utils": "2.4.6",
     "autoprefixer": "10.4.21",
-    "chai": "5.2.0",
     "cypress": "14.3.3",
     "dependency-cruiser": "16.10.2",
     "eslint": "9.26.0",
@@ -69,19 +68,11 @@
     "gh-pages": "6.3.0",
     "globals": "16.1.0",
     "globby": "14.1.0",
-    "jsdom": "26.1.0",
-    "jsdom-global": "3.0.2",
-    "keycharm": "0.4.0",
-    "localforage": "1.10.0",
-    "material-design-icons-iconfont": "6.7.0",
-    "mocha": "11.2.2",
     "patch-package": "8.0.0",
     "prettier": "3.5.3",
-    "sass": "1.88.0",
     "start-server-and-test": "2.0.11",
     "vite": "6.3.5",
-    "vite-plugin-vuetify": "2.1.1",
-    "vue-template-compiler": "2.7.16"
+    "vite-plugin-vuetify": "2.1.1"
   },
   "engines": {
     "node": ">=21.2.0"
