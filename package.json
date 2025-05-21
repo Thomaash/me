@@ -54,7 +54,7 @@
     "@vue/babel-preset-app": "5.0.8",
     "@vue/test-utils": "2.4.6",
     "autoprefixer": "10.4.21",
-    "cypress": "14.3.3",
+    "cypress": "14.4.0",
     "dependency-cruiser": "16.10.2",
     "eslint": "9.27.0",
     "eslint-config-prettier": "10.1.5",
