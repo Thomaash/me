@@ -69,7 +69,7 @@
     "globals": "16.2.0",
     "globby": "14.1.0",
     "patch-package": "8.0.0",
-    "prettier": "3.6.0",
+    "prettier": "3.6.1",
     "start-server-and-test": "2.0.12",
     "vite": "6.3.5",
     "vite-plugin-vuetify": "2.1.1"
