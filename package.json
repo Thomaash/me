@@ -57,7 +57,7 @@
     "cypress": "14.5.2",
     "dependency-cruiser": "16.10.4",
     "eslint": "9.31.0",
-    "eslint-config-prettier": "10.1.5",
+    "eslint-config-prettier": "10.1.8",
     "eslint-import-resolver-exports": "1.0.0-beta.5",
     "eslint-import-resolver-vite": "2.1.0",
     "eslint-plugin-cypress": "5.1.0",
