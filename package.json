@@ -62,7 +62,7 @@
     "eslint-import-resolver-vite": "2.1.0",
     "eslint-plugin-cypress": "5.1.0",
     "eslint-plugin-import": "2.32.0",
-    "eslint-plugin-n": "17.21.1",
+    "eslint-plugin-n": "17.21.2",
     "eslint-plugin-promise": "7.2.1",
     "eslint-plugin-vue": "10.3.0",
     "gh-pages": "6.3.0",
