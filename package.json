@@ -74,7 +74,7 @@
     "vite-plugin-vuetify": "2.1.2"
   },
   "engines": {
-    "node": ">=21.2.0"
+    "node": ">=22.16"
   },
   "volta": {
     "node": "22.20.0",
