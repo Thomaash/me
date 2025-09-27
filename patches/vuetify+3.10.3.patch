@@ -1,8 +1,8 @@
 diff --git a/node_modules/vuetify/lib/styles/main.css b/node_modules/vuetify/lib/styles/main.css
-index 351e681..6b75a6a 100644
+index ab9cc0c..d940966 100644
 --- a/node_modules/vuetify/lib/styles/main.css
 +++ b/node_modules/vuetify/lib/styles/main.css
-@@ -3640,7 +3640,7 @@ progress {
+@@ -3619,7 +3619,7 @@ progress {
  }
  
  html {
@@ -11,7 +11,7 @@ index 351e681..6b75a6a 100644
    line-height: 1.5;
    font-size: 1rem;
    overflow-x: hidden;
-@@ -7340,7 +7340,7 @@ html.overflow-y-hidden {
+@@ -7319,7 +7319,7 @@ html.overflow-y-hidden {
    font-weight: 300;
    line-height: 1;
    letter-spacing: -0.015625em !important;
@@ -20,7 +20,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7349,7 +7349,7 @@ html.overflow-y-hidden {
+@@ -7328,7 +7328,7 @@ html.overflow-y-hidden {
    font-weight: 300;
    line-height: 1;
    letter-spacing: -0.0083333333em !important;
@@ -29,7 +29,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7358,7 +7358,7 @@ html.overflow-y-hidden {
+@@ -7337,7 +7337,7 @@ html.overflow-y-hidden {
    font-weight: 400;
    line-height: 1.05;
    letter-spacing: normal !important;
@@ -38,7 +38,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7367,7 +7367,7 @@ html.overflow-y-hidden {
+@@ -7346,7 +7346,7 @@ html.overflow-y-hidden {
    font-weight: 400;
    line-height: 1.175;
    letter-spacing: 0.0073529412em !important;
@@ -47,7 +47,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7376,7 +7376,7 @@ html.overflow-y-hidden {
+@@ -7355,7 +7355,7 @@ html.overflow-y-hidden {
    font-weight: 400;
    line-height: 1.333;
    letter-spacing: normal !important;
@@ -56,7 +56,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7385,7 +7385,7 @@ html.overflow-y-hidden {
+@@ -7364,7 +7364,7 @@ html.overflow-y-hidden {
    font-weight: 500;
    line-height: 1.6;
    letter-spacing: 0.0125em !important;
@@ -65,7 +65,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7394,7 +7394,7 @@ html.overflow-y-hidden {
+@@ -7373,7 +7373,7 @@ html.overflow-y-hidden {
    font-weight: normal;
    line-height: 1.75;
    letter-spacing: 0.009375em !important;
@@ -74,7 +74,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7403,7 +7403,7 @@ html.overflow-y-hidden {
+@@ -7382,7 +7382,7 @@ html.overflow-y-hidden {
    font-weight: 500;
    line-height: 1.6;
    letter-spacing: 0.0071428571em !important;
@@ -83,7 +83,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7412,7 +7412,7 @@ html.overflow-y-hidden {
+@@ -7391,7 +7391,7 @@ html.overflow-y-hidden {
    font-weight: 400;
    line-height: 1.5;
    letter-spacing: 0.03125em !important;
@@ -92,7 +92,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7421,7 +7421,7 @@ html.overflow-y-hidden {
+@@ -7400,7 +7400,7 @@ html.overflow-y-hidden {
    font-weight: 400;
    line-height: 1.425;
    letter-spacing: 0.0178571429em !important;
@@ -101,7 +101,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7430,7 +7430,7 @@ html.overflow-y-hidden {
+@@ -7409,7 +7409,7 @@ html.overflow-y-hidden {
    font-weight: 500;
    line-height: 2.6;
    letter-spacing: 0.0892857143em !important;
@@ -110,7 +110,7 @@ index 351e681..6b75a6a 100644
    text-transform: uppercase !important;
  }
  
-@@ -7439,7 +7439,7 @@ html.overflow-y-hidden {
+@@ -7418,7 +7418,7 @@ html.overflow-y-hidden {
    font-weight: 400;
    line-height: 1.667;
    letter-spacing: 0.0333333333em !important;
@@ -119,7 +119,7 @@ index 351e681..6b75a6a 100644
    text-transform: none !important;
  }
  
-@@ -7448,7 +7448,7 @@ html.overflow-y-hidden {
+@@ -7427,7 +7427,7 @@ html.overflow-y-hidden {
    font-weight: 500;
    line-height: 2.667;
    letter-spacing: 0.1666666667em !important;
@@ -128,7 +128,7 @@ index 351e681..6b75a6a 100644
    text-transform: uppercase !important;
  }
  
-@@ -9554,7 +9554,7 @@ html.overflow-y-hidden {
+@@ -9533,7 +9533,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.015625em !important;
@@ -137,7 +137,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-h2 {
-@@ -9562,7 +9562,7 @@ html.overflow-y-hidden {
+@@ -9541,7 +9541,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.0083333333em !important;
@@ -146,7 +146,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-h3 {
-@@ -9570,7 +9570,7 @@ html.overflow-y-hidden {
+@@ -9549,7 +9549,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.05;
      letter-spacing: normal !important;
@@ -155,7 +155,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-h4 {
-@@ -9578,7 +9578,7 @@ html.overflow-y-hidden {
+@@ -9557,7 +9557,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.175;
      letter-spacing: 0.0073529412em !important;
@@ -164,7 +164,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-h5 {
-@@ -9586,7 +9586,7 @@ html.overflow-y-hidden {
+@@ -9565,7 +9565,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.333;
      letter-spacing: normal !important;
@@ -173,7 +173,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-h6 {
-@@ -9594,7 +9594,7 @@ html.overflow-y-hidden {
+@@ -9573,7 +9573,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0125em !important;
@@ -182,7 +182,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-subtitle-1 {
-@@ -9602,7 +9602,7 @@ html.overflow-y-hidden {
+@@ -9581,7 +9581,7 @@ html.overflow-y-hidden {
      font-weight: normal;
      line-height: 1.75;
      letter-spacing: 0.009375em !important;
@@ -191,7 +191,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-subtitle-2 {
-@@ -9610,7 +9610,7 @@ html.overflow-y-hidden {
+@@ -9589,7 +9589,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0071428571em !important;
@@ -200,7 +200,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-body-1 {
-@@ -9618,7 +9618,7 @@ html.overflow-y-hidden {
+@@ -9597,7 +9597,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.5;
      letter-spacing: 0.03125em !important;
@@ -209,7 +209,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-body-2 {
-@@ -9626,7 +9626,7 @@ html.overflow-y-hidden {
+@@ -9605,7 +9605,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.425;
      letter-spacing: 0.0178571429em !important;
@@ -218,7 +218,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-button {
-@@ -9634,7 +9634,7 @@ html.overflow-y-hidden {
+@@ -9613,7 +9613,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.6;
      letter-spacing: 0.0892857143em !important;
@@ -227,7 +227,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .text-sm-caption {
-@@ -9642,7 +9642,7 @@ html.overflow-y-hidden {
+@@ -9621,7 +9621,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.667;
      letter-spacing: 0.0333333333em !important;
@@ -236,7 +236,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-sm-overline {
-@@ -9650,7 +9650,7 @@ html.overflow-y-hidden {
+@@ -9629,7 +9629,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.667;
      letter-spacing: 0.1666666667em !important;
@@ -245,7 +245,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .h-sm-auto {
-@@ -11601,7 +11601,7 @@ html.overflow-y-hidden {
+@@ -11580,7 +11580,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.015625em !important;
@@ -254,7 +254,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-h2 {
-@@ -11609,7 +11609,7 @@ html.overflow-y-hidden {
+@@ -11588,7 +11588,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.0083333333em !important;
@@ -263,7 +263,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-h3 {
-@@ -11617,7 +11617,7 @@ html.overflow-y-hidden {
+@@ -11596,7 +11596,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.05;
      letter-spacing: normal !important;
@@ -272,7 +272,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-h4 {
-@@ -11625,7 +11625,7 @@ html.overflow-y-hidden {
+@@ -11604,7 +11604,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.175;
      letter-spacing: 0.0073529412em !important;
@@ -281,7 +281,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-h5 {
-@@ -11633,7 +11633,7 @@ html.overflow-y-hidden {
+@@ -11612,7 +11612,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.333;
      letter-spacing: normal !important;
@@ -290,7 +290,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-h6 {
-@@ -11641,7 +11641,7 @@ html.overflow-y-hidden {
+@@ -11620,7 +11620,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0125em !important;
@@ -299,7 +299,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-subtitle-1 {
-@@ -11649,7 +11649,7 @@ html.overflow-y-hidden {
+@@ -11628,7 +11628,7 @@ html.overflow-y-hidden {
      font-weight: normal;
      line-height: 1.75;
      letter-spacing: 0.009375em !important;
@@ -308,7 +308,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-subtitle-2 {
-@@ -11657,7 +11657,7 @@ html.overflow-y-hidden {
+@@ -11636,7 +11636,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0071428571em !important;
@@ -317,7 +317,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-body-1 {
-@@ -11665,7 +11665,7 @@ html.overflow-y-hidden {
+@@ -11644,7 +11644,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.5;
      letter-spacing: 0.03125em !important;
@@ -326,7 +326,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-body-2 {
-@@ -11673,7 +11673,7 @@ html.overflow-y-hidden {
+@@ -11652,7 +11652,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.425;
      letter-spacing: 0.0178571429em !important;
@@ -335,7 +335,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-button {
-@@ -11681,7 +11681,7 @@ html.overflow-y-hidden {
+@@ -11660,7 +11660,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.6;
      letter-spacing: 0.0892857143em !important;
@@ -344,7 +344,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .text-md-caption {
-@@ -11689,7 +11689,7 @@ html.overflow-y-hidden {
+@@ -11668,7 +11668,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.667;
      letter-spacing: 0.0333333333em !important;
@@ -353,7 +353,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-md-overline {
-@@ -11697,7 +11697,7 @@ html.overflow-y-hidden {
+@@ -11676,7 +11676,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.667;
      letter-spacing: 0.1666666667em !important;
@@ -362,7 +362,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .h-md-auto {
-@@ -13648,7 +13648,7 @@ html.overflow-y-hidden {
+@@ -13627,7 +13627,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.015625em !important;
@@ -371,7 +371,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-h2 {
-@@ -13656,7 +13656,7 @@ html.overflow-y-hidden {
+@@ -13635,7 +13635,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.0083333333em !important;
@@ -380,7 +380,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-h3 {
-@@ -13664,7 +13664,7 @@ html.overflow-y-hidden {
+@@ -13643,7 +13643,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.05;
      letter-spacing: normal !important;
@@ -389,7 +389,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-h4 {
-@@ -13672,7 +13672,7 @@ html.overflow-y-hidden {
+@@ -13651,7 +13651,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.175;
      letter-spacing: 0.0073529412em !important;
@@ -398,7 +398,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-h5 {
-@@ -13680,7 +13680,7 @@ html.overflow-y-hidden {
+@@ -13659,7 +13659,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.333;
      letter-spacing: normal !important;
@@ -407,7 +407,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-h6 {
-@@ -13688,7 +13688,7 @@ html.overflow-y-hidden {
+@@ -13667,7 +13667,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0125em !important;
@@ -416,7 +416,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-subtitle-1 {
-@@ -13696,7 +13696,7 @@ html.overflow-y-hidden {
+@@ -13675,7 +13675,7 @@ html.overflow-y-hidden {
      font-weight: normal;
      line-height: 1.75;
      letter-spacing: 0.009375em !important;
@@ -425,7 +425,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-subtitle-2 {
-@@ -13704,7 +13704,7 @@ html.overflow-y-hidden {
+@@ -13683,7 +13683,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0071428571em !important;
@@ -434,7 +434,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-body-1 {
-@@ -13712,7 +13712,7 @@ html.overflow-y-hidden {
+@@ -13691,7 +13691,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.5;
      letter-spacing: 0.03125em !important;
@@ -443,7 +443,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-body-2 {
-@@ -13720,7 +13720,7 @@ html.overflow-y-hidden {
+@@ -13699,7 +13699,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.425;
      letter-spacing: 0.0178571429em !important;
@@ -452,7 +452,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-button {
-@@ -13728,7 +13728,7 @@ html.overflow-y-hidden {
+@@ -13707,7 +13707,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.6;
      letter-spacing: 0.0892857143em !important;
@@ -461,7 +461,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .text-lg-caption {
-@@ -13736,7 +13736,7 @@ html.overflow-y-hidden {
+@@ -13715,7 +13715,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.667;
      letter-spacing: 0.0333333333em !important;
@@ -470,7 +470,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-lg-overline {
-@@ -13744,7 +13744,7 @@ html.overflow-y-hidden {
+@@ -13723,7 +13723,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.667;
      letter-spacing: 0.1666666667em !important;
@@ -479,7 +479,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .h-lg-auto {
-@@ -15695,7 +15695,7 @@ html.overflow-y-hidden {
+@@ -15674,7 +15674,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.015625em !important;
@@ -488,7 +488,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-h2 {
-@@ -15703,7 +15703,7 @@ html.overflow-y-hidden {
+@@ -15682,7 +15682,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.0083333333em !important;
@@ -497,7 +497,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-h3 {
-@@ -15711,7 +15711,7 @@ html.overflow-y-hidden {
+@@ -15690,7 +15690,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.05;
      letter-spacing: normal !important;
@@ -506,7 +506,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-h4 {
-@@ -15719,7 +15719,7 @@ html.overflow-y-hidden {
+@@ -15698,7 +15698,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.175;
      letter-spacing: 0.0073529412em !important;
@@ -515,7 +515,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-h5 {
-@@ -15727,7 +15727,7 @@ html.overflow-y-hidden {
+@@ -15706,7 +15706,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.333;
      letter-spacing: normal !important;
@@ -524,7 +524,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-h6 {
-@@ -15735,7 +15735,7 @@ html.overflow-y-hidden {
+@@ -15714,7 +15714,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0125em !important;
@@ -533,7 +533,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-subtitle-1 {
-@@ -15743,7 +15743,7 @@ html.overflow-y-hidden {
+@@ -15722,7 +15722,7 @@ html.overflow-y-hidden {
      font-weight: normal;
      line-height: 1.75;
      letter-spacing: 0.009375em !important;
@@ -542,7 +542,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-subtitle-2 {
-@@ -15751,7 +15751,7 @@ html.overflow-y-hidden {
+@@ -15730,7 +15730,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0071428571em !important;
@@ -551,7 +551,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-body-1 {
-@@ -15759,7 +15759,7 @@ html.overflow-y-hidden {
+@@ -15738,7 +15738,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.5;
      letter-spacing: 0.03125em !important;
@@ -560,7 +560,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-body-2 {
-@@ -15767,7 +15767,7 @@ html.overflow-y-hidden {
+@@ -15746,7 +15746,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.425;
      letter-spacing: 0.0178571429em !important;
@@ -569,7 +569,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-button {
-@@ -15775,7 +15775,7 @@ html.overflow-y-hidden {
+@@ -15754,7 +15754,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.6;
      letter-spacing: 0.0892857143em !important;
@@ -578,7 +578,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .text-xl-caption {
-@@ -15783,7 +15783,7 @@ html.overflow-y-hidden {
+@@ -15762,7 +15762,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.667;
      letter-spacing: 0.0333333333em !important;
@@ -587,7 +587,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xl-overline {
-@@ -15791,7 +15791,7 @@ html.overflow-y-hidden {
+@@ -15770,7 +15770,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.667;
      letter-spacing: 0.1666666667em !important;
@@ -596,7 +596,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .h-xl-auto {
-@@ -17742,7 +17742,7 @@ html.overflow-y-hidden {
+@@ -17721,7 +17721,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.015625em !important;
@@ -605,7 +605,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-h2 {
-@@ -17750,7 +17750,7 @@ html.overflow-y-hidden {
+@@ -17729,7 +17729,7 @@ html.overflow-y-hidden {
      font-weight: 300;
      line-height: 1;
      letter-spacing: -0.0083333333em !important;
@@ -614,7 +614,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-h3 {
-@@ -17758,7 +17758,7 @@ html.overflow-y-hidden {
+@@ -17737,7 +17737,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.05;
      letter-spacing: normal !important;
@@ -623,7 +623,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-h4 {
-@@ -17766,7 +17766,7 @@ html.overflow-y-hidden {
+@@ -17745,7 +17745,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.175;
      letter-spacing: 0.0073529412em !important;
@@ -632,7 +632,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-h5 {
-@@ -17774,7 +17774,7 @@ html.overflow-y-hidden {
+@@ -17753,7 +17753,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.333;
      letter-spacing: normal !important;
@@ -641,7 +641,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-h6 {
-@@ -17782,7 +17782,7 @@ html.overflow-y-hidden {
+@@ -17761,7 +17761,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0125em !important;
@@ -650,7 +650,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-subtitle-1 {
-@@ -17790,7 +17790,7 @@ html.overflow-y-hidden {
+@@ -17769,7 +17769,7 @@ html.overflow-y-hidden {
      font-weight: normal;
      line-height: 1.75;
      letter-spacing: 0.009375em !important;
@@ -659,7 +659,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-subtitle-2 {
-@@ -17798,7 +17798,7 @@ html.overflow-y-hidden {
+@@ -17777,7 +17777,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 1.6;
      letter-spacing: 0.0071428571em !important;
@@ -668,7 +668,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-body-1 {
-@@ -17806,7 +17806,7 @@ html.overflow-y-hidden {
+@@ -17785,7 +17785,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.5;
      letter-spacing: 0.03125em !important;
@@ -677,7 +677,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-body-2 {
-@@ -17814,7 +17814,7 @@ html.overflow-y-hidden {
+@@ -17793,7 +17793,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.425;
      letter-spacing: 0.0178571429em !important;
@@ -686,7 +686,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-button {
-@@ -17822,7 +17822,7 @@ html.overflow-y-hidden {
+@@ -17801,7 +17801,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.6;
      letter-spacing: 0.0892857143em !important;
@@ -695,7 +695,7 @@ index 351e681..6b75a6a 100644
      text-transform: uppercase !important;
    }
    .text-xxl-caption {
-@@ -17830,7 +17830,7 @@ html.overflow-y-hidden {
+@@ -17809,7 +17809,7 @@ html.overflow-y-hidden {
      font-weight: 400;
      line-height: 1.667;
      letter-spacing: 0.0333333333em !important;
@@ -704,7 +704,7 @@ index 351e681..6b75a6a 100644
      text-transform: none !important;
    }
    .text-xxl-overline {
-@@ -17838,7 +17838,7 @@ html.overflow-y-hidden {
+@@ -17817,7 +17817,7 @@ html.overflow-y-hidden {
      font-weight: 500;
      line-height: 2.667;
      letter-spacing: 0.1666666667em !important;
