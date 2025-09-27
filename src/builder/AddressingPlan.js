@@ -1,5 +1,5 @@
 import JSPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 import Items from "./Items";
 import { compare } from "@/components/vis/locale";
@@ -82,7 +82,7 @@ export default class {
     doc.text(headline, 14, 20);
     doc.setFontSize(11);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 30,
       theme: "grid",
       headStyles: { fillColor: theme.primary },
