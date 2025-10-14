@@ -39,7 +39,7 @@
     "vis-network": "10.0.2",
     "vis-util": "6.0.0",
     "vue": "3.5.22",
-    "vue-router": "4.5.1",
+    "vue-router": "4.6.0",
     "vuetify": "3.10.5",
     "vuex": "4.1.0",
     "vuex-ltm": "1.1.14",
