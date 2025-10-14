@@ -70,7 +70,7 @@
     "patch-package": "8.0.1",
     "prettier": "3.6.2",
     "start-server-and-test": "2.1.2",
-    "vite": "7.1.9",
+    "vite": "7.1.10",
     "vite-plugin-vuetify": "2.1.2"
   },
   "engines": {
