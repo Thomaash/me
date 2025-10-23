@@ -40,7 +40,7 @@
     "vis-util": "6.0.0",
     "vue": "3.5.22",
     "vue-router": "4.6.3",
-    "vuetify": "3.10.5",
+    "vuetify": "3.10.7",
     "vuex": "4.1.0",
     "vuex-ltm": "1.1.14",
     "vuex-shared-mutations": "1.0.2"
