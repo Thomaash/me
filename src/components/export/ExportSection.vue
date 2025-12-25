@@ -17,7 +17,7 @@
         block
         color="primary"
         @click="downloadScript"
-        >Python 2 script</v-btn
+        >Python 3 script</v-btn
       >
     </v-col>
     <v-col cols="12" sm="4">
