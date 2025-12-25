@@ -21,7 +21,7 @@ function pyNumber(str) {
 }
 
 function pyString(str) {
-  if (!/^'.*'$/.test(str)) {
+  if (!/^['"].*['"]$/.test(str)) {
     throw new TypeError(`Expected string, got: “${str}”`);
   } else {
     return str.substr(1, str.length - 2);

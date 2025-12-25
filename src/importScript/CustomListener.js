@@ -1,8 +1,8 @@
-import Python2Listener from "./generated/PythonParserListener";
+import Python3Listener from "./generated/Python3ParserListener";
 
 import { pyString } from "./pyTypes";
 
-export default class CustomListener extends Python2Listener {
+export default class CustomListener extends Python3Listener {
   constructor({ functionCall }) {
     super();
 

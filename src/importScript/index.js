@@ -1,6 +1,6 @@
 import { ParseTreeWalker, CommonTokenStream, InputStream } from "antlr4";
-import Python2Lexer from "./generated/PythonLexer";
-import Python2Parser from "./generated/PythonParser";
+import Python3Lexer from "./generated/Python3Lexer";
+import Python3Parser from "./generated/Python3Parser";
 
 import CustomListener from "./CustomListener";
 import { pyBoolean, pyNotNull, pyNumber, pyString } from "./pyTypes";
@@ -68,9 +68,9 @@ class IPs {
 
 function parse(input) {
   const chars = new InputStream(input);
-  const lexer = new Python2Lexer(chars);
+  const lexer = new Python3Lexer(chars);
   const tokens = new CommonTokenStream(lexer);
-  const parser = new Python2Parser(tokens);
+  const parser = new Python3Parser(tokens);
   parser.buildParseTrees = true;
   return parser.file_input();
 }
