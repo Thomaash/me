@@ -31,7 +31,7 @@
     "@vueuse/core": "14.1.0",
     "antlr4": "4.13.2",
     "jspdf": "3.0.4",
-    "jspdf-autotable": "5.0.2",
+    "jspdf-autotable": "5.0.7",
     "source-code-pro": "2.42.0",
     "source-sans-pro": "3.6.0",
     "uuid": "13.0.0",
