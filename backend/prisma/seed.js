@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const hash = await bcrypt.hash("password123", 10);
-  await prisma.user.upsert({
+  const user = await prisma.user.upsert({
     where: { email: "test@example.com" },
     update: {},
     create: {
@@ -17,6 +17,20 @@ async function main() {
       name: "Dev User",
     },
   });
+
+  // Create a sample config for the test user (composite PK: userId + name)
+  await prisma.config.upsert({
+    where: { userId_name: { userId: user.id, name: "default" } },
+    update: {
+      content: JSON.stringify({ example: "default config" }),
+    },
+    create: {
+      userId: user.id,
+      name: "default",
+      content: JSON.stringify({ example: "default config" }),
+    },
+  });
+
   console.log("Seed finished.");
 }
 

@@ -54,4 +54,61 @@ router.get("/me", async (req, res) => {
   }
 });
 
+import { listConfigs, setConfig, getConfig } from "../utils/configs.js";
+
+// POST /api/configs
+// Expects a JSON body that includes a string `projectName` key; the full JSON is stored as `content` (stringified).
+// If a config with the same (userId, projectName) exists, it is replaced.
+router.post("/configs", async (req, res) => {
+  const auth = req.headers.authorization || "";
+  const token = (auth.startsWith("Bearer ") && auth.slice(7)) || null;
+  if (!token) return res.status(401).json({ error: "missing token" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) return res.status(404).json({ error: "user not found" });
+
+    const body = req.body || {};
+    const projectName = body.projectName;
+    if (!projectName || typeof projectName !== "string") {
+      return res.status(400).json({ error: "projectName (string) required in body" });
+    }
+
+    const createdOrUpdated = await setConfig(user.id, projectName, body);
+    const status = createdOrUpdated ? (createdOrUpdated.createdAt === createdOrUpdated.updatedAt ? "created" : "updated") : "updated";
+
+    // Return timestamps depending on result
+    if (status === "created") {
+      return res.status(201).json({ status: "created", name: projectName, createdAt: createdOrUpdated.createdAt });
+    } else {
+      return res.json({ status: "updated", name: projectName, updatedAt: createdOrUpdated.updatedAt });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "internal error" });
+  }
+});
+
+// GET /api/configs
+// Optional query param: ?full=true to include parsed content for each config
+router.get("/configs", async (req, res) => {
+  const auth = req.headers.authorization || "";
+  const token = (auth.startsWith("Bearer ") && auth.slice(7)) || null;
+  if (!token) return res.status(401).json({ error: "missing token" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) return res.status(404).json({ error: "user not found" });
+
+    const includeContent = req.query.full === "true" || req.query.full === "1";
+    const list = await listConfigs(user.id, { includeContent });
+    res.json({ configs: list });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "internal error" });
+  }
+});
+
 export default router;
