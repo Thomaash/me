@@ -5,8 +5,7 @@
   "private": true,
   "license": "ISC",
   "workspaces": [
-    "backend",
-    "front"
+    "backend"
   ],
   "scripts": {
     "bootstrap": "npm install",
@@ -16,18 +15,16 @@
     "deploy": "./gh-pages.sh",
     "deps:ci": "depcruise src",
     "deps:visualize": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg",
-    "dev": "npm run dev:front",
-    "dev:backend": "npm --workspace backend run dev",
-    "dev:front": "npm --workspace front run dev",
+    "dev": "vite",
+    "dev:backend": "npm --workspace me-backend run dev",
     "lint:ci": "eslint --ext .js,.vue .",
     "lint:fix": "eslint --ext .js,.vue --fix .",
     "postinstall": "patch-package",
     "preview": "vite preview --port 5173",
-    "preview:front": "npm --workspace front run preview",
-    "prisma:db:push": "npm --workspace backend run prisma:db:push",
-    "prisma:generate": "npm --workspace backend run prisma:generate",
-    "seed:backend": "npm --workspace backend run seed",
-    "start:backend": "npm --workspace backend start",
+    "prisma:db:push": "npm --workspace me-backend run prisma:db:push",
+    "prisma:generate": "npm --workspace me-backend run prisma:generate",
+    "seed:backend": "npm --workspace me-backend run seed",
+    "start:backend": "npm --workspace me-backend start",
     "style:ci": "prettier .",
     "style:fix": "prettier --write .",
     "test": "npm run test:unit && npm run test:e2e",
@@ -35,7 +32,6 @@
     "test:e2e:cypress:open": "cypress open",
     "test:e2e:cypress:run": "cypress run",
     "test:e2e:open": "start-server-and-test dev http://127.0.0.1:5173/me/ test:e2e:cypress:open",
-    "test:front": "npm --workspace front run test",
     "test:unit": "cypress run --component",
     "test:unit:open": "cypress open --component"
   },

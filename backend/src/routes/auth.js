@@ -16,8 +16,9 @@ router.post("/register", async (req, res) => {
 
   const hashed = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({ data: { email, password: hashed, name } });
+  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
   const { password: _p, ...safe } = user;
-  res.status(201).json(safe);
+  res.status(201).json({ token, user: safe });
 });
 
 // POST /api/login
@@ -34,6 +35,23 @@ router.post("/login", async (req, res) => {
   const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
   const { password: _p, ...safe } = user;
   res.json({ token, user: safe });
+});
+
+// GET /api/me
+router.get("/me", async (req, res) => {
+  const auth = req.headers.authorization || "";
+  const token = (auth.startsWith("Bearer ") && auth.slice(7)) || null;
+  if (!token) return res.status(401).json({ error: "missing token" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) return res.status(404).json({ error: "user not found" });
+    const { password: _p, ...safe } = user;
+    res.json({ user: safe });
+  } catch (err) {
+    return res.status(401).json({ error: "invalid token" });
+  }
 });
 
 export default router;

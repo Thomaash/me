@@ -1,6 +1,7 @@
 import { ltm } from "./persist";
 import { syncPlugin } from "./sync";
 import { topology } from "./topology";
+import { auth } from "./auth";
 
 export const ready = ltm.ready;
 export const config = {
@@ -35,6 +36,7 @@ export const config = {
   actions: {},
   modules: {
     topology,
+    auth,
   },
   plugins: [ltm.plugin, syncPlugin],
 };

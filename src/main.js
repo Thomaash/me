@@ -9,7 +9,7 @@ import { aliases, mdi } from "vuetify/iconsets/mdi";
 
 import App from "./App.vue";
 import { router } from "./router";
-import { store } from "./store";
+import { store, ready } from "./store";
 import { dark, vuetifyDark, vuetifyLight } from "./theme";
 
 import { initServiceWorker } from "./service-worker-init";
@@ -53,6 +53,8 @@ const vuetify = createVuetify({
 const app = createApp(App);
 app.use(vuetify);
 app.use(store);
+// Initialize auth from persisted state and validate token
+ready.then(() => store.dispatch("auth/init")).catch(() => {});
 app.use(router);
 app.mount("#app");
 

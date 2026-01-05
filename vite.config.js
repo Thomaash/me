@@ -111,5 +111,9 @@ export default defineConfig({
   },
   server: {
     host: "127.0.0.1",
+    // Proxy API requests to backend server in dev to avoid CORS and allow `/api/*` calls
+    proxy: {
+      "/api": "http://127.0.0.1:4000",
+    },
   },
 });
