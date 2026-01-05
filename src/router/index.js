@@ -136,6 +136,19 @@ function createRoutes(mapper = (v) => v) {
       },
     },
     {
+      path: "/profile",
+      name: "Profile",
+      meta: {
+        title: "Profile",
+        drawer: true,
+        icon: "mdi-account",
+        routerViewKey: "Profile",
+      },
+      components: {
+        default: () => import(/* webpackPrefetch: true */ "@/components/ProfilePage.vue"),
+      },
+    },
+    {
       path: "/about",
       name: "About",
       meta: {

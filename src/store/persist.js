@@ -9,10 +9,11 @@ import {
 
 export const ltm = new LTM({
   execute: executeWithDelay(2000),
-  filter: mutationFilter([/^topology\//]),
+  filter: mutationFilter([/^topology\//, /^auth\//]),
   merge: shallowMerge,
   reduce: (state) => ({
     topology: toRaw(state.topology),
+    auth: toRaw(state.auth),
   }),
   storage: localForage("vuex-me", {
     name: "Vuex",

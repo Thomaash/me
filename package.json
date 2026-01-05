@@ -1,10 +1,14 @@
 {
-  "name": "me",
+  "name": "me-monorepo",
   "version": "0.0.0-no-version",
   "type": "module",
   "private": true,
   "license": "ISC",
+  "workspaces": [
+    "backend"
+  ],
   "scripts": {
+    "bootstrap": "npm install",
     "build": "vite build",
     "build:old-deploy-files": "./bin/build-old-deploy-files.sh",
     "clean": "rm -rf dist/*",
@@ -12,10 +16,15 @@
     "deps:ci": "depcruise src",
     "deps:visualize": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg",
     "dev": "vite",
+    "dev:backend": "npm --workspace me-backend run dev",
     "lint:ci": "eslint --ext .js,.vue .",
     "lint:fix": "eslint --ext .js,.vue --fix .",
     "postinstall": "patch-package",
     "preview": "vite preview --port 5173",
+    "prisma:db:push": "npm --workspace me-backend run prisma:db:push",
+    "prisma:generate": "npm --workspace me-backend run prisma:generate",
+    "seed:backend": "npm --workspace me-backend run seed",
+    "start:backend": "npm --workspace me-backend start",
     "style:ci": "prettier .",
     "style:fix": "prettier --write .",
     "test": "npm run test:unit && npm run test:e2e",
