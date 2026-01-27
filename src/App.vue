@@ -71,7 +71,7 @@ export default {
   name: "App",
   data: () => ({
     drawer: true,
-    appName: "Mininet Editor",
+    appName: "DabirRahmani's Mininet Editor",
   }),
   computed: {
     documentTitle() {
