@@ -7,7 +7,7 @@ import authRoutes from "./routes/auth.js";
 
 const app = express();
 // Allow JSON bodies up to 1MB to support larger config payloads (~500KB)
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "2mb" }));
 
 // Enable CORS for local frontend during development
 if (process.env.NODE_ENV === "development") {

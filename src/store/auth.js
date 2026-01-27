@@ -18,7 +18,7 @@ const mutations = {
 
 const actions = {
   async login({ commit }, { email, password }) {
-    const res = await fetch("/api/login", {
+    const res = await fetch(import.meta.env.VITE_API_URL + "/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -34,7 +34,7 @@ const actions = {
   },
 
   async register({ commit }, { email, password, name }) {
-    const res = await fetch("/api/register", {
+    const res = await fetch(import.meta.env.VITE_API_URL + "/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, name }),
@@ -53,7 +53,7 @@ const actions = {
     // If we have a token, verify it by calling /api/me
     if (!state.token) return;
     try {
-      const res = await fetch("/api/me", {
+      const res = await fetch(import.meta.env.VITE_API_URL + "/api/me", {
         headers: { Authorization: `Bearer ${state.token}` },
       });
       if (!res.ok) throw new Error("invalid token");
