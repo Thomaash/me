@@ -111,4 +111,60 @@ router.get("/configs", async (req, res) => {
   }
 });
 
+// GET /api/configs/:name
+// Get a single config by name with full content
+router.get("/configs/:name", async (req, res) => {
+  const auth = req.headers.authorization || "";
+  const token = (auth.startsWith("Bearer ") && auth.slice(7)) || null;
+  if (!token) return res.status(401).json({ error: "missing token" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) return res.status(404).json({ error: "user not found" });
+
+    const configName = req.params.name;
+    const config = await prisma.config.findUnique({
+      where: { userId_name: { userId: user.id, name: configName } },
+    });
+
+    if (!config) return res.status(404).json({ error: "config not found" });
+
+    res.json({ config });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "internal error" });
+  }
+});
+
+// DELETE /api/configs/:name
+// Delete a config by name
+router.delete("/configs/:name", async (req, res) => {
+  const auth = req.headers.authorization || "";
+  const token = (auth.startsWith("Bearer ") && auth.slice(7)) || null;
+  if (!token) return res.status(401).json({ error: "missing token" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    if (!user) return res.status(404).json({ error: "user not found" });
+
+    const configName = req.params.name;
+    const config = await prisma.config.findUnique({
+      where: { userId_name: { userId: user.id, name: configName } },
+    });
+
+    if (!config) return res.status(404).json({ error: "config not found" });
+
+    await prisma.config.delete({
+      where: { userId_name: { userId: user.id, name: configName } },
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "internal error" });
+  }
+});
+
 export default router;

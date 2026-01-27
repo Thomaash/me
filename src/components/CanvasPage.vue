@@ -4,25 +4,24 @@
     <template v-else>
       <VisContainer ref="vis" @edit-item="editItem" />
       <Edit ref="edit" />
-      <!-- Save/Load dropdown in top right -->
-      <div style="position: fixed; right: 1em; top: 5em">
-        <v-menu>
-          <template #activator="{ props }">
-            <v-btn
-              v-bind="props"
-              icon="mdi-menu"
-              variant="text"
-            ></v-btn>
-          </template>
-          <v-list>
-            <v-list-item data-cy="config-save" @click="saveDialogOpen = true">
-              <v-list-item-title>Save</v-list-item-title>
-            </v-list-item>
-            <v-list-item data-cy="config-load" @click="loadDialogOpen = true">
-              <v-list-item-title>Load</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+      <!-- Save/Load buttons in top right -->
+      <div style="position: fixed; right: 5em; bottom: 1.5em; display: flex; gap: 0.5em">
+        <v-btn
+          color="primary"
+          variant="outlined"
+          @click="loadDialogOpen = true"
+          data-cy="config-load"
+        >
+          List
+        </v-btn>
+        <v-btn
+          color="primary"
+          variant="elevated"
+          @click="saveDialogOpen = true"
+          data-cy="config-save"
+        >
+          Save
+        </v-btn>
       </div>
       <div style="position: fixed; right: 1em; bottom: 1em">
         <v-speed-dial
@@ -156,24 +155,33 @@
                 data-cy="config-item"
               >
                 <template #prepend>
-                  <div>
-                    <div class="font-weight-bold">{{ config.name }}</div>
-                    <div class="text-caption text-grey">
-                      {{ new Date(config.createdAt).toLocaleDateString() }}
-                      {{ new Date(config.createdAt).toLocaleTimeString() }}
-                    </div>
-                  </div>
-                </template>
-                <template #append>
                   <v-btn
                     size="small"
                     color="primary"
                     variant="elevated"
                     @click="handleLoadConfig(config.name)"
                     data-cy="config-import-btn"
+                    class="config-import-btn"
                   >
                     Import
                   </v-btn>
+                </template>
+                <div class="config-info">
+                  <div class="font-weight-bold">{{ config.name }}</div>
+                  <div class="text-caption text-grey">
+                    {{ new Date(config.createdAt).toLocaleDateString() }}
+                    {{ new Date(config.createdAt).toLocaleTimeString() }}
+                  </div>
+                </div>
+                <template #append>
+                  <v-btn
+                    size="small"
+                    color="error"
+                    variant="text"
+                    icon="mdi-delete"
+                    @click="handleDeleteConfig(config.name)"
+                    data-cy="config-delete-btn"
+                  ></v-btn>
                 </template>
               </v-list-item>
             </v-list>
@@ -242,14 +250,14 @@ export default {
     },
     async handleSave() {
       if (!this.projectName.trim()) {
-        console.error("Project name is required");
+        this.$store.commit("setAlert", { type: "error", text: "Project name is required" });
         return;
       }
 
       try {
         const token = this.$store.state.auth.token;
         if (!token) {
-          console.error("No auth token available");
+          this.$store.commit("setAlert", { type: "warning", text: "Please login to save configurations" });
           return;
         }
 
@@ -288,7 +296,7 @@ export default {
       try {
         const token = this.$store.state.auth.token;
         if (!token) {
-          console.error("No auth token available");
+          this.$store.commit("setAlert", { type: "warning", text: "Please login to load configurations" });
           return;
         }
 
@@ -311,10 +319,73 @@ export default {
         this.loadingConfigs = false;
       }
     },
-    handleLoadConfig(configName) {
-      // TODO: Implement load config functionality
-      console.log("Load config:", configName);
-      this.loadDialogOpen = false;
+    async handleLoadConfig(configName) {
+      try {
+        const token = this.$store.state.auth.token;
+        if (!token) {
+          this.$store.commit("setAlert", { type: "warning", text: "Please login to load configurations" });
+          return;
+        }
+
+        // Fetch only the specific config by name
+        const res = await fetch(`/api/configs/${encodeURIComponent(configName)}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch config");
+        }
+
+        const data = await res.json();
+        const config = data.config;
+
+        // Parse the content if it's a string
+        let importData = typeof config.content === "string" 
+          ? JSON.parse(config.content) 
+          : config.content;
+
+        // Ensure version field exists (default to 0 if missing)
+        if (importData.version === undefined) {
+          console.warn("Version field missing in config, setting to 0");
+          importData.version = 0;
+        }
+
+        // Pass to store - it will call exporter.importData() internally
+        this.$store.commit("topology/importData", importData);
+
+        console.log("Config loaded successfully");
+        this.loadDialogOpen = false;
+      } catch (err) {
+        console.error("Error loading config:", err);
+      }
+    },
+    async handleDeleteConfig(configName) {
+      try {
+        const token = this.$store.state.auth.token;
+        if (!token) {
+          this.$store.commit("setAlert", { type: "warning", text: "Please login to delete configurations" });
+          return;
+        }
+
+        const res = await fetch(`/api/configs/${encodeURIComponent(configName)}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to delete config");
+        }
+
+        console.log("Config deleted successfully");
+        // Refresh the configs list
+        await this.fetchConfigs();
+      } catch (err) {
+        console.error("Error deleting config:", err);
+      }
     },
   },
 };
@@ -328,5 +399,13 @@ export default {
 }
 .invert-color {
   filter: invert(100%);
+}
+.config-info {
+  flex: 1;
+  min-width: 0;
+}
+.config-import-btn {
+  flex-shrink: 0;
+  margin-right: 0.5rem;
 }
 </style>
