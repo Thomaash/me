@@ -210,25 +210,202 @@ app.use(cors({ origin: "https://yourdomain.com" }));
 
 ## Docker Deployment
 
-See [Dockerfile](./Dockerfile) for containerized deployment.
+The application is fully containerized and ready for production deployment. Database initialization happens automatically on first startup.
 
-### Build Image
+### Prerequisites for Docker
+
+- Docker and Docker Compose installed
+- For custom JWT_SECRET: generate a secure random string
+
+### How Docker Startup Works
+
+1. **Build Stage**: Installs dependencies and generates Prisma Client
+2. **Runtime Stage**: 
+   - Container starts with `docker-entrypoint.sh` script
+   - Script checks if database exists at `/data/db.sqlite`
+   - If missing, runs `prisma db push` to create schema
+   - Then starts the application
+   - Subsequent restarts skip initialization
+
+### Quick Start with Docker Compose
+
+The easiest way to run the backend:
 
 ```bash
-docker build -t me-backend .
+docker-compose up -d
 ```
 
-### Run Container
+This will:
+- Build the Docker image
+- Create and start the container
+- Create persistent data volume
+- Initialize the database schema
+- Generate Prisma client
+- Start the application
+
+Access the backend at `http://localhost:4000`
+
+**Stop the container:**
+
+```bash
+docker-compose down
+```
+
+**Stop and remove data:**
+
+```bash
+docker-compose down -v
+```
+
+**View logs:**
+
+```bash
+docker-compose logs -f backend
+```
+
+### Manual Docker Build and Run
+
+Build the image:
+
+```bash
+docker build -t me-backend:latest .
+```
+
+Run the container:
 
 ```bash
 docker run -d \
+  --name me-backend \
   -e DATABASE_URL="file:/data/db.sqlite" \
   -e PORT="4000" \
-  -e JWT_SECRET="your-secret-key" \
+  -e JWT_SECRET="your-very-secure-secret-key" \
   -e NODE_ENV="production" \
   -p 4000:4000 \
   -v backend-data:/data \
-  me-backend
+  me-backend:latest
+```
+
+**Check container status:**
+
+```bash
+docker ps
+docker logs me-backend
+```
+
+**Stop container:**
+
+```bash
+docker stop me-backend
+docker rm me-backend
+```
+
+### Docker Build Details
+
+The Dockerfile uses a multi-stage build:
+
+1. **Build Stage**: Installs all dependencies (including Prisma CLI)
+2. **Runtime Stage**: 
+   - Copies production dependencies
+   - Generates Prisma Client (`prisma generate`)
+   - Initializes database (`prisma db push`)
+   - Starts the application
+
+The image includes:
+- Alpine Linux (minimal size ~200MB)
+- Node.js 18
+- dumb-init (for proper signal handling)
+- curl (for health checks)
+
+### Environment Variables in Docker
+
+Set via `-e` flag or in `docker-compose.yml`:
+
+- `NODE_ENV` - Set to `production`
+- `PORT` - Container port (default: 4000)
+- `DATABASE_URL` - SQLite path (default: `file:/data/db.sqlite`)
+- `JWT_SECRET` - **IMPORTANT**: Use a strong random string in production!
+
+### Persistent Storage
+
+Database data is stored in Docker volumes:
+
+```bash
+# List volumes
+docker volume ls
+
+# Inspect volume
+docker volume inspect backend-data
+
+# Backup database
+docker run --rm -v backend-data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/db-backup.tar.gz -C /data .
+
+# Restore database
+docker run --rm -v backend-data:/data -v $(pwd):/backup \
+  alpine tar xzf /backup/db-backup.tar.gz -C /data
+```
+
+### Health Checks
+
+The container includes automated health checks:
+
+```bash
+# Check container health
+docker ps --filter "name=me-backend"
+```
+
+Health check endpoint: `GET http://localhost:4000/api/me`
+- Runs every 30 seconds
+- Times out after 3 seconds
+- Waits 10 seconds before first check
+- Fails after 3 failed attempts
+
+### Production Considerations
+
+1. **JWT_SECRET**: Generate a secure random string
+   ```bash
+   openssl rand -base64 32
+   ```
+
+2. **CORS**: Update `src/index.js` to allow your frontend domain
+   ```javascript
+   app.use(cors({ origin: "https://yourdomain.com" }));
+   ```
+
+3. **Database**: For production, consider:
+   - Using managed PostgreSQL instead of SQLite
+   - Regular backups of the data volume
+   - Mounting volumes on persistent storage
+
+4. **SSL/TLS**: Use a reverse proxy (Nginx) with SSL termination
+
+5. **Monitoring**: Use Docker's logging and health checks
+
+### Troubleshooting Docker
+
+**Container exits immediately:**
+
+```bash
+docker logs me-backend
+```
+
+**Database initialization failed:**
+
+```bash
+docker-compose down -v
+docker-compose up -d
+```
+
+**Permission issues with volume:**
+
+```bash
+docker exec me-backend chmod 777 /data
+```
+
+**Port already in use:**
+
+```bash
+docker run -p 4001:4000 ...  # Use different external port
 ```
 
 ## Troubleshooting
@@ -249,6 +426,7 @@ rm dev.db
 npm run prisma:db:push
 npm run seed
 ```
+
 
 ### JWT Token Expired
 
