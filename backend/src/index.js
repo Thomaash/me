@@ -11,7 +11,7 @@ app.use(express.json({ limit: "2mb" }));
 
 // Enable CORS for local frontend during development
 if (process.env.NODE_ENV === "development") {
-  app.use(cors({ origin: "http://127.0.0.1:5173" }));
+  app.use(cors());
 }
 
 app.use("/api", authRoutes);
