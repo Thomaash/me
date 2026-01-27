@@ -4,6 +4,26 @@
     <template v-else>
       <VisContainer ref="vis" @edit-item="editItem" />
       <Edit ref="edit" />
+      <!-- Save/Load dropdown in top right -->
+      <div style="position: fixed; right: 1em; top: 5em">
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              icon="mdi-menu"
+              variant="text"
+            ></v-btn>
+          </template>
+          <v-list>
+            <v-list-item data-cy="config-save" @click="saveDialogOpen = true">
+              <v-list-item-title>Save</v-list-item-title>
+            </v-list-item>
+            <v-list-item data-cy="config-load" @click="loadDialogOpen = true">
+              <v-list-item-title>Load</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
       <div style="position: fixed; right: 1em; bottom: 1em">
         <v-speed-dial
           v-if="!isView"
@@ -85,6 +105,91 @@
           />
         </v-speed-dial>
       </div>
+      <!-- Save dialog -->
+      <v-dialog v-model="saveDialogOpen" max-width="400">
+        <v-card>
+          <v-card-title>Save Configuration</v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="projectName"
+              label="Project Name"
+              variant="outlined"
+              placeholder="Enter project name"
+              data-cy="save-project-name-input"
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              variant="text"
+              @click="saveDialogOpen = false"
+              data-cy="save-cancel-btn"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              variant="elevated"
+              @click="handleSave"
+              data-cy="save-confirm-btn"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- Load dialog -->
+      <v-dialog v-model="loadDialogOpen" max-width="500">
+        <v-card>
+          <v-card-title>Load Configuration</v-card-title>
+          <v-card-text>
+            <div v-if="loadingConfigs" class="text-center pa-4">
+              <v-progress-circular indeterminate></v-progress-circular>
+            </div>
+            <div v-else-if="configsList.length === 0" class="text-center pa-4 text-grey">
+              No saved configurations
+            </div>
+            <v-list v-else>
+              <v-list-item
+                v-for="config in configsList"
+                :key="config.name"
+                data-cy="config-item"
+              >
+                <template #prepend>
+                  <div>
+                    <div class="font-weight-bold">{{ config.name }}</div>
+                    <div class="text-caption text-grey">
+                      {{ new Date(config.createdAt).toLocaleDateString() }}
+                      {{ new Date(config.createdAt).toLocaleTimeString() }}
+                    </div>
+                  </div>
+                </template>
+                <template #append>
+                  <v-btn
+                    size="small"
+                    color="primary"
+                    variant="elevated"
+                    @click="handleLoadConfig(config.name)"
+                    data-cy="config-import-btn"
+                  >
+                    Import
+                  </v-btn>
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              variant="text"
+              @click="loadDialogOpen = false"
+              data-cy="load-cancel-btn"
+            >
+              Close
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </template>
   </div>
 </template>
@@ -94,6 +199,8 @@ import Edit from "@/components/Edit.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import VisContainer from "@/components/VisContainer.vue";
 import { items as theme } from "@/theme";
+import exporter from "@/exporter";
+import { mapGetters } from "vuex";
 
 export default {
   name: "CanvasPage",
@@ -101,8 +208,14 @@ export default {
   data: () => ({
     fab: false,
     theme,
+    saveDialogOpen: false,
+    loadDialogOpen: false,
+    projectName: "",
+    configsList: [],
+    loadingConfigs: false,
   }),
   computed: {
+    ...mapGetters("topology", ["data"]),
     loading() {
       return this.$store.state.loading;
     },
@@ -110,9 +223,98 @@ export default {
       return this.$route.meta.isView;
     },
   },
+  watch: {
+    saveDialogOpen(newVal) {
+      if (newVal) {
+        // Set default value to current topology's projectName
+        this.projectName = this.data.projectName || "";
+      }
+    },
+    loadDialogOpen(newVal) {
+      if (newVal) {
+        this.fetchConfigs();
+      }
+    },
+  },
   methods: {
     editItem(item, callback) {
       this.$refs.edit.edit(item, callback);
+    },
+    async handleSave() {
+      if (!this.projectName.trim()) {
+        console.error("Project name is required");
+        return;
+      }
+
+      try {
+        const token = this.$store.state.auth.token;
+        if (!token) {
+          console.error("No auth token available");
+          return;
+        }
+
+        // Export data using the same exporter as ExportSection
+        const exportedData = exporter.exportData(this.data);
+        
+        // Remove projectName from exported data to avoid overwriting user input
+        const { projectName: _, ...dataWithoutProjectName } = exportedData;
+        
+        const res = await fetch("/api/configs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            projectName: this.projectName,
+            ...dataWithoutProjectName,
+          }),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || "Failed to save config");
+        }
+
+        console.log("Config saved successfully");
+        this.projectName = "";
+        this.saveDialogOpen = false;
+      } catch (err) {
+        console.error("Error saving config:", err);
+      }
+    },
+    async fetchConfigs() {
+      this.loadingConfigs = true;
+      try {
+        const token = this.$store.state.auth.token;
+        if (!token) {
+          console.error("No auth token available");
+          return;
+        }
+
+        const res = await fetch("/api/configs", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch configs");
+        }
+
+        const data = await res.json();
+        this.configsList = data.configs || [];
+      } catch (err) {
+        console.error("Error fetching configs:", err);
+        this.configsList = [];
+      } finally {
+        this.loadingConfigs = false;
+      }
+    },
+    handleLoadConfig(configName) {
+      // TODO: Implement load config functionality
+      console.log("Load config:", configName);
+      this.loadDialogOpen = false;
     },
   },
 };
