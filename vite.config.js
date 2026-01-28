@@ -18,17 +18,17 @@ export default defineConfig({
 
         async closeBundle() {
           await writeFile(
-            resolve(import.meta.dirname, "./dist/me/service-worker.js"),
+            resolve(import.meta.dirname, "./dist/service-worker.js"),
             (
               await readFile(
-                resolve(import.meta.dirname, "./dist/me/service-worker.js"),
+                resolve(import.meta.dirname, "./dist/service-worker.js"),
                 "utf-8",
               )
             ).replace(
               '["CACHE_URLS_PLACEHOLDER"]',
               JSON.stringify(
                 await globby("./{assets,img}/**", {
-                  cwd: resolve(import.meta.dirname, "./dist/me"),
+                  cwd: resolve(import.meta.dirname, "./dist"),
                 }),
               ),
             ),
@@ -68,10 +68,9 @@ export default defineConfig({
     ],
   },
   port: 5173,
-  base: "/me/",
   build: {
     manifest: true,
-    outDir: resolve(import.meta.dirname, "./dist/me"),
+    outDir: resolve(import.meta.dirname, "./dist"),
     rollupOptions: {
       input: {
         app: "./index.html",

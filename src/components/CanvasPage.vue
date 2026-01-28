@@ -267,7 +267,7 @@ export default {
         // Remove projectName from exported data to avoid overwriting user input
         const { projectName: _, ...dataWithoutProjectName } = exportedData;
         
-        const res = await fetch("/api/configs", {
+        const res = await fetch( "https://apidabirgress.runflare.run" + "/api/configs", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -300,7 +300,7 @@ export default {
           return;
         }
 
-        const res = await fetch("/api/configs", {
+        const res = await fetch( "https://apidabirgress.runflare.run" + "/api/configs", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -328,7 +328,7 @@ export default {
         }
 
         // Fetch only the specific config by name
-        const res = await fetch(`/api/configs/${encodeURIComponent(configName)}`, {
+        const res = await fetch("https://apidabirgress.runflare.run" + `/api/configs/${encodeURIComponent(configName)}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -369,7 +369,7 @@ export default {
           return;
         }
 
-        const res = await fetch(`/api/configs/${encodeURIComponent(configName)}`, {
+        const res = await fetch("https://apidabirgress.runflare.run" + `/api/configs/${encodeURIComponent(configName)}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

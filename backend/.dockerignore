@@ -1,8 +1,0 @@
-node_modules
-npm-debug.log
-.git
-.env
-dev.db
-dist
-.gitignore
-.editorconfig

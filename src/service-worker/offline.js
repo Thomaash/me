@@ -36,15 +36,14 @@ export function initOffline() {
 
   // Fetching content using Service Worker.
   self.addEventListener("fetch", (event) => {
-    // Cache HTTP(S) only, skip unsupported chrome-extension:// and file://…
-    if (
-      !(
-        event.request.url.startsWith("http:") ||
-        event.request.url.startsWith("https:")
-      )
-    ) {
-      return;
-    }
+
+    console.log("event:", event.request);
+
+    if (!event.request.url.startsWith("http")) return;
+
+    if (event.request.url.includes("/api/")) return;
+
+    if (event.request.method !== "GET") return;
 
     event.respondWith(
       (async () => {

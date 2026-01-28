@@ -18,7 +18,7 @@ const mutations = {
 
 const actions = {
   async login({ commit }, { email, password }) {
-    const res = await fetch("/api/login", {
+    const res = await fetch("https://apidabirgress.runflare.run" + "/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -34,7 +34,7 @@ const actions = {
   },
 
   async register({ commit }, { email, password, name }) {
-    const res = await fetch("/api/register", {
+    const res = await fetch("https://apidabirgress.runflare.run" + "/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, name }),
@@ -53,9 +53,12 @@ const actions = {
     // If we have a token, verify it by calling /api/me
     if (!state.token) return;
     try {
-      const res = await fetch("/api/me", {
-        headers: { Authorization: `Bearer ${state.token}` },
-      });
+      const res = await fetch(
+        "https://apidabirgress.runflare.run" + "/api/me",
+        {
+          headers: { Authorization: `Bearer ${state.token}` },
+        },
+      );
       if (!res.ok) throw new Error("invalid token");
       const data = await res.json();
       commit("setAuth", { token: state.token, user: data.user });
