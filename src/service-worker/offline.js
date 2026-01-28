@@ -37,6 +37,8 @@ export function initOffline() {
   // Fetching content using Service Worker.
   self.addEventListener("fetch", (event) => {
 
+    console.log("event:", event.request);
+
     if (!event.request.url.startsWith("http")) return;
 
     if (event.request.url.includes("/api/")) return;
