@@ -52,7 +52,7 @@
     "@vitejs/plugin-vue": "6.0.4",
     "@vue/babel-preset-app": "5.0.9",
     "@vue/test-utils": "2.4.6",
-    "autoprefixer": "10.4.24",
+    "autoprefixer": "10.4.27",
     "cypress": "15.11.0",
     "dependency-cruiser": "17.3.8",
     "eslint": "9.39.3",
