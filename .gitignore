@@ -1,10 +1,16 @@
 .DS_Store
+.vitest-attachments/
 /dependency-graph.svg
 /dist/
 /tests/e2e/reports/
 /tests/e2e/videos/
 /tests/unit/coverage/
+__screenshots__/
+.stryker-tmp/
 node_modules/
+reports/coverage/
+reports/mutation/
+stryker.log
 npm-debug.log*
 selenium-debug.log
 yarn-debug.log*

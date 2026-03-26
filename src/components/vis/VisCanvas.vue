@@ -9,12 +9,16 @@
 </template>
 
 <script>
-import generateTooltip from "./generateTooltip";
-import { labelPlaceholderRE, labelPlaceholderReplacers } from "./placeholders";
+import {
+  isEdge,
+  buildGroupColor,
+  itemToNode,
+  itemToEdge,
+  processLabel,
+} from "./visCanvasUtils";
 import { DataSet } from "vis-data/peer";
 import { Network } from "vis-network/peer";
 import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
-import { themeColorShades } from "@/theme-colors";
 import { mapGetters } from "vuex";
 
 import "vis-network/styles/vis-network.css";
@@ -109,13 +113,21 @@ export default {
         groups: {
           controller: {
             shape: "image",
-            color: this.buildGroupColor(this.theme.items.controller),
+            color: buildGroupColor(
+              this.theme.items.controller,
+              false,
+              this.theme.background,
+            ),
             size: 25,
             image: this.theme.images.controller,
           },
           dummy: {
             shape: "box",
-            color: this.buildGroupColor(this.theme.items.dummy, true),
+            color: buildGroupColor(
+              this.theme.items.dummy,
+              true,
+              this.theme.background,
+            ),
             font: {
               color: this.theme.foreground,
               face: "Source Code Pro",
@@ -125,19 +137,31 @@ export default {
           },
           host: {
             shape: "image",
-            color: this.buildGroupColor(this.theme.items.host),
+            color: buildGroupColor(
+              this.theme.items.host,
+              false,
+              this.theme.background,
+            ),
             size: 25,
             image: this.theme.images.host,
           },
           port: {
             shape: "image",
-            color: this.buildGroupColor(this.theme.items.port),
+            color: buildGroupColor(
+              this.theme.items.port,
+              false,
+              this.theme.background,
+            ),
             size: 10,
             image: this.theme.images.port,
           },
           switch: {
             shape: "image",
-            color: this.buildGroupColor(this.theme.items.switch),
+            color: buildGroupColor(
+              this.theme.items.switch,
+              false,
+              this.theme.background,
+            ),
             size: 25,
             image: this.theme.images.switch,
           },
@@ -178,7 +202,7 @@ export default {
                 ...itemUpdate,
               };
 
-              if (this.isEdge(item.type)) {
+              if (isEdge(item.type)) {
                 edges.push(this.itemToEdge(item));
               } else {
                 nodes.push(this.itemToNode(item));
@@ -188,7 +212,7 @@ export default {
 
           if (replace) {
             Object.values(replace).forEach((item) => {
-              if (this.isEdge(item.type)) {
+              if (isEdge(item.type)) {
                 edges.push(this.itemToEdge(item));
               } else {
                 nodes.push(this.itemToNode(item));
@@ -266,38 +290,13 @@ export default {
   },
   methods: {
     itemToNode(item) {
-      return {
-        id: item.id,
-        group: item.type,
-        x: item.x,
-        y: item.y,
-        label: item.type === "dummy" ? this.processLabel(item) : item.hostname,
-        title: generateTooltip(item),
-      };
+      return itemToNode(item, (i) => this.processLabel(i));
     },
     itemToEdge(item) {
-      return {
-        id: item.id,
-        from: item.from,
-        to: item.to,
-        label: item.hostname,
-        title: generateTooltip(item),
-      };
+      return itemToEdge(item);
     },
     processLabel(item) {
-      if (!this.net) {
-        return item.hostname;
-      }
-
-      const neighbors = this.net
-        .getConnectedNodes(item.id)
-        .map((id) => this.data.items[id]);
-      return item.hostname.replace(labelPlaceholderRE, (match) => {
-        return (
-          labelPlaceholderReplacers[match.toUpperCase()] ||
-          labelPlaceholderReplacers.fallback
-        )(neighbors, match);
-      });
+      return processLabel(item, this.net, this.data.items);
     },
     updateLabels(ids) {
       this.nodes.update(
@@ -318,13 +317,13 @@ export default {
       // Nodes
       this.nodes.clear();
       this.nodes.add(
-        items.filter(({ type }) => !this.isEdge(type)).map(this.itemToNode),
+        items.filter(({ type }) => !isEdge(type)).map(this.itemToNode),
       );
 
       // Edges
       this.edges.clear();
       this.edges.add(
-        items.filter(({ type }) => this.isEdge(type)).map(this.itemToEdge),
+        items.filter(({ type }) => isEdge(type)).map(this.itemToEdge),
       );
 
       // Some labels contain placeholders for info from connected nodes.
@@ -436,26 +435,6 @@ export default {
       } finally {
         this.net.off("beforeDrawing", beforeDrawingHandler);
       }
-    },
-    isEdge(type) {
-      return type === "link" || type === "association";
-    },
-    buildGroupColor({ canvas }, bg = false) {
-      const background = bg
-        ? this.theme.background
-        : themeColorShades.transparent;
-      return {
-        background: background,
-        border: canvas,
-        highlight: {
-          background: background,
-          border: canvas,
-        },
-        hover: {
-          background: background,
-          border: canvas,
-        },
-      };
     },
   },
 };

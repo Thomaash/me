@@ -24,7 +24,12 @@
     "test:e2e:cypress:run": "cypress run",
     "test:e2e:open": "start-server-and-test dev http://127.0.0.1:5173/me/ test:e2e:cypress:open",
     "test:unit": "cypress run --component",
-    "test:unit:open": "cypress open --component"
+    "test:unit:open": "cypress open --component",
+    "test:vitest:unit": "vitest run --config vitest.config.unit.js",
+    "test:vitest:unit:coverage": "vitest run --config vitest.config.unit.js --coverage",
+    "test:vitest:browser": "vitest run --config vitest.config.browser.js",
+    "test:vitest:browser:coverage": "vitest run --config vitest.config.browser.js --coverage",
+    "test:mutate": "stryker run"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
@@ -46,7 +51,12 @@
     "vuex-shared-mutations": "1.0.2"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^9.6.0",
+    "@stryker-mutator/vitest-runner": "^9.6.0",
     "@vitejs/plugin-vue": "6.0.5",
+    "@vitest/browser": "^4.1.0",
+    "@vitest/browser-playwright": "^4.1.0",
+    "@vitest/coverage-v8": "^4.1.0",
     "@vue/babel-preset-app": "5.0.9",
     "@vue/test-utils": "2.4.6",
     "autoprefixer": "10.4.27",
@@ -55,12 +65,15 @@
     "gh-pages": "6.3.0",
     "globals": "17.4.0",
     "globby": "16.2.0",
+    "jsdom": "^29.0.1",
     "oxlint": "1.56.0",
     "patch-package": "8.0.1",
+    "playwright": "^1.58.2",
     "prettier": "3.8.1",
     "start-server-and-test": "3.0.0",
     "vite": "7.3.1",
-    "vite-plugin-vuetify": "2.1.3"
+    "vite-plugin-vuetify": "2.1.3",
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": ">=22.16"

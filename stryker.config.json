@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker/master/packages/core/schema/stryker-core.schema.json",
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.config.unit.js"
+  },
+  "mutate": ["src/**/*.js", "!src/**/*.test.js", "!src/**/*.browser-test.js"],
+  "reporters": ["clear-text", "html", "progress"],
+  "mutator": {
+    "plugins": [
+      "doExpressions",
+      "objectRestSpread",
+      "classProperties",
+      "exportDefaultFrom",
+      "exportNamespaceFrom",
+      "asyncGenerators",
+      "functionBind",
+      "functionSent",
+      "dynamicImport",
+      "numericSeparator",
+      "importMeta",
+      "optionalCatchBinding",
+      "optionalChaining",
+      "classPrivateProperties",
+      ["pipelineOperator", { "proposal": "minimal" }],
+      "nullishCoalescingOperator",
+      "bigInt",
+      "throwExpressions",
+      "logicalAssignment",
+      "classPrivateMethods",
+      "v8intrinsic",
+      "partialApplication",
+      "decorators-legacy",
+      "jsx"
+    ]
+  },
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": null
+  },
+  "tempDirName": ".stryker-tmp"
+}
