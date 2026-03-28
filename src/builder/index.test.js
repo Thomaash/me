@@ -1,5 +1,9 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { describe, it, expect, beforeEach } from "vitest";
 import Builder from "@/builder/index.js";
+import medium2Controllers from "@/examples/medium_2_controllers.json";
 
 // --- Minimal Fixture Helpers ---
 
@@ -1396,6 +1400,23 @@ describe("Builder", () => {
 
       // No global start commands, so section should not appear
       expect(script).not.toContain("cli.onecmd(");
+    });
+  });
+
+  describe("full script fixture comparison", () => {
+    function removeNonCode(script) {
+      return script.split("\n").filter((line) => !/^($|#)/.test(line)).join("\n");
+    }
+
+    it("builds the expected script from medium_2_controllers example", ({ expect }) => {
+      const script = new Builder(JSON.parse(JSON.stringify(medium2Controllers))).build();
+      const correctScript = readFileSync(
+        resolve(import.meta.dirname, "../../tests/unit/fixtures/me-script.py"),
+        "utf-8",
+      );
+
+      expect(typeof script).toBe("string");
+      expect(removeNonCode(script)).toEqual(removeNonCode(correctScript));
     });
   });
 });

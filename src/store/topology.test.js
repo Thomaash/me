@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { topology, MAX_UNDO_LENGTH } from "@/store/topology.js";
+import exampleMedium2Controllers from "@/examples/medium_2_controllers";
+import exampleTiny from "@/examples/tiny";
+import exporter from "@/exporter";
 
 const { mutations, actions, getters } = topology;
 
@@ -18,6 +21,15 @@ function createItems(entries) {
   return Object.fromEntries(
     entries.map(([id, props]) => [id, { id, ...props }]),
   );
+}
+
+function createStateWithTopo(...overrides) {
+  return {
+    data: exporter.importData(exampleMedium2Controllers),
+    past: [],
+    future: [],
+    ...Object.assign({}, ...overrides),
+  };
 }
 
 describe("topology store module", () => {
@@ -520,6 +532,365 @@ describe("topology store module", () => {
         });
 
         expect(getters.canRedo(state)).toBe(2);
+      });
+    });
+  });
+
+  describe("real data integration", () => {
+    describe("getters", () => {
+      it("data returns state.data", ({ expect }) => {
+        const state = createStateWithTopo();
+
+        const data = getters.data(state);
+
+        expect(data).toBe(state.data);
+      });
+
+      describe("canUndo", () => {
+        it("returns 0 with empty past", ({ expect }) => {
+          const state = createStateWithTopo();
+
+          expect(getters.canUndo(state)).toBe(0);
+        });
+
+        it("returns 4 with past of length 4", ({ expect }) => {
+          const state = createStateWithTopo({ past: Array(4) });
+
+          expect(getters.canUndo(state)).toBe(4);
+        });
+      });
+
+      describe("canRedo", () => {
+        it("returns 0 with empty future", ({ expect }) => {
+          const state = createStateWithTopo();
+
+          expect(getters.canRedo(state)).toBe(0);
+        });
+
+        it("returns 7 with future of length 7", ({ expect }) => {
+          const state = createStateWithTopo({ future: Array(7) });
+
+          expect(getters.canRedo(state)).toBe(7);
+        });
+      });
+
+      describe("boundingBox", () => {
+        it("defaults", ({ expect }) => {
+          const state = createStateWithTopo();
+
+          expect(getters.boundingBox(state)()).toEqual({
+            eX: 1448,
+            eY: 465,
+            empty: false,
+            height: 1009,
+            sX: -711,
+            sY: -544,
+            width: 2159,
+          });
+        });
+
+        it("with more margin", ({ expect }) => {
+          const state = createStateWithTopo();
+
+          expect(getters.boundingBox(state)({ margin: 243 })).toEqual({
+            eX: 1591,
+            eY: 608,
+            empty: false,
+            height: 1295,
+            sX: -854,
+            sY: -687,
+            width: 2445,
+          });
+        });
+
+        it("with scale", ({ expect }) => {
+          const state = createStateWithTopo();
+
+          expect(getters.boundingBox(state)({ scale: Math.PI })).toEqual({
+            eX: 4550,
+            eY: 1461,
+            empty: false,
+            height: 3171,
+            sX: -2234,
+            sY: -1710,
+            width: 6784,
+          });
+        });
+
+        it("with scale and more margin", ({ expect }) => {
+          const state = createStateWithTopo();
+
+          expect(
+            getters.boundingBox(state)({ scale: Math.PI, margin: 174 }),
+          ).toEqual({
+            eX: 4782,
+            eY: 1694,
+            empty: false,
+            height: 3636,
+            sX: -2467,
+            sY: -1942,
+            width: 7249,
+          });
+        });
+
+        it("without positions (from script import)", ({ expect }) => {
+          const state = createStateWithTopo();
+
+          Object.keys(state.data.items).forEach((id) => {
+            delete state.data.items[id].x;
+            delete state.data.items[id].y;
+          });
+
+          expect(getters.boundingBox(state)()).toEqual({
+            eX: 0,
+            eY: 0,
+            empty: true,
+            height: 0,
+            sX: 0,
+            sY: 0,
+            width: 0,
+          });
+        });
+      });
+    });
+
+    describe("importData", () => {
+      function verifyImportedProject(state, externalData, { expect }) {
+        expect(state).toHaveProperty("future");
+        expect(state).toHaveProperty("past");
+        expect(state).toHaveProperty("data");
+
+        // Future and past should be cleared
+        expect(state.future).toEqual([]);
+        expect(state.future).toHaveLength(0);
+        expect(state.past).toEqual([]);
+        expect(state.past).toHaveLength(0);
+
+        // Data should be an object with 3 properties
+        expect(state.data).toHaveProperty("items");
+        expect(state.data).toHaveProperty("projectName");
+        expect(state.data).toHaveProperty("startScript");
+
+        // Items should contain all the items but not more
+        const expectedIds = externalData.items.map((item) => item.id);
+        const actualIds = Object.keys(state.data.items);
+        expect(actualIds).toHaveLength(expectedIds.length);
+        expectedIds.forEach((id) => {
+          expect(state.data.items).toHaveProperty(id);
+        });
+
+        // Values should deep equal the items
+        expect(Object.values(state.data.items)).toEqual(
+          expect.arrayContaining(externalData.items),
+        );
+        expect(externalData.items).toEqual(
+          expect.arrayContaining(Object.values(state.data.items)),
+        );
+      }
+
+      it("into empty store", ({ expect }) => {
+        const state = createState();
+
+        mutations.importData(state, exampleTiny);
+
+        verifyImportedProject(state, exampleTiny, { expect });
+      });
+
+      it("with preexisting project", ({ expect }) => {
+        const state = createStateWithTopo();
+
+        mutations.importData(state, exampleTiny);
+
+        verifyImportedProject(state, exampleTiny, { expect });
+      });
+    });
+
+    describe("setValues", () => {
+      it("sets values on state.data with real topology", ({ expect }) => {
+        const state = createStateWithTopo();
+
+        mutations.setValues(state, {
+          projectName: "test",
+          ipBase: "172.16.0.0/16",
+          spawnTerminals: true,
+        });
+
+        expect(state.data).toMatchObject({
+          projectName: "test",
+          ipBase: "172.16.0.0/16",
+          spawnTerminals: true,
+        });
+      });
+    });
+
+    describe("applyChange", () => {
+      it("with all arguments valid (checking originals not mutated)", ({ expect }) => {
+        const state = createStateWithTopo();
+
+        const originalValues = Object.values(state.data.items);
+        const [oA, oB, oC, oD] = originalValues;
+        const oACopy = { ...oA };
+        const nA = {
+          ...oA,
+          id: "A",
+        };
+        const nB = {
+          ...oB,
+          hostname: "B",
+        };
+        const uC = {
+          id: oC.id,
+          hostname: "C",
+        };
+
+        mutations.applyChange(state, {
+          replace: [nA, nB],
+          remove: [oD.id],
+          update: [uC],
+        });
+
+        // Original A should still be present and unchanged (deep copy check)
+        expect(state.data.items).toHaveProperty(oA.id);
+        expect(state.data.items[oA.id]).toBe(oA);
+        expect(state.data.items[oA.id]).toEqual(oACopy);
+
+        // New A should be added
+        expect(state.data.items).toHaveProperty(nA.id);
+        expect(state.data.items[nA.id]).toBe(nA);
+
+        // New B should replace original B
+        expect(state.data.items).toHaveProperty(nB.id);
+        expect(state.data.items[nB.id]).toBe(nB);
+
+        // Original C should still be present (just altered) with new hostname
+        expect(state.data.items).toHaveProperty(oC.id);
+        expect(state.data.items[oC.id]).toBe(oC);
+        expect(state.data.items[oC.id].hostname).toBe(uC.hostname);
+
+        // D should no longer exist
+        expect(state.data.items).not.toHaveProperty(oD.id);
+      });
+
+      it("remove nonexistent item", ({ expect }) => {
+        const state = createState();
+
+        // Should not throw
+        mutations.applyChange(state, {
+          remove: ["i don't exist"],
+        });
+
+        expect(state.data.items).toEqual({});
+      });
+    });
+
+    describe("pushChange", () => {
+      function generateUnit(suffix = "") {
+        return {
+          before: { id: `B${suffix}` },
+          after: { id: `A${suffix}` },
+        };
+      }
+
+      it("add to empty", ({ expect }) => {
+        const state = createState();
+        const unit = generateUnit();
+
+        mutations.pushChange(state, unit);
+
+        expect(state.past).toHaveLength(1);
+        expect(state.past).toContain(unit);
+        expect(state.future).toHaveLength(0);
+      });
+
+      it("add to half empty", ({ expect }) => {
+        const half = MAX_UNDO_LENGTH / 2;
+        const state = createState({
+          past: [...Array(half)].map((_, i) => generateUnit(i)),
+        });
+        const unit = generateUnit();
+
+        mutations.pushChange(state, unit);
+
+        expect(state.past).toHaveLength(half + 1);
+        expect(state.past).toContain(unit);
+        expect(state.future).toHaveLength(0);
+      });
+    });
+
+    describe("undo/redo shift matrix", () => {
+      const half = MAX_UNDO_LENGTH / 2;
+      const full = MAX_UNDO_LENGTH;
+
+      const shiftCases = [
+        { operation: "undoShift", before: { past: 0, future: 0 }, after: { past: 0, future: 0 } },
+        { operation: "undoShift", before: { past: 0, future: half }, after: { past: 0, future: half } },
+        { operation: "undoShift", before: { past: 0, future: full }, after: { past: 0, future: full } },
+        { operation: "undoShift", before: { past: half, future: 0 }, after: { past: half - 1, future: 1 } },
+        { operation: "undoShift", before: { past: half, future: half }, after: { past: half - 1, future: half + 1 } },
+        { operation: "undoShift", before: { past: half, future: full }, after: { past: half - 1, future: full } },
+        { operation: "undoShift", before: { past: full, future: 0 }, after: { past: full - 1, future: 1 } },
+        { operation: "undoShift", before: { past: full, future: half }, after: { past: full - 1, future: half + 1 } },
+        { operation: "undoShift", before: { past: full, future: full }, after: { past: full - 1, future: full } },
+        { operation: "redoShift", before: { past: 0, future: 0 }, after: { past: 0, future: 0 } },
+        { operation: "redoShift", before: { past: 0, future: half }, after: { past: 1, future: half - 1 } },
+        { operation: "redoShift", before: { past: 0, future: full }, after: { past: 1, future: full - 1 } },
+        { operation: "redoShift", before: { past: half, future: 0 }, after: { past: half, future: 0 } },
+        { operation: "redoShift", before: { past: half, future: half }, after: { past: half + 1, future: half - 1 } },
+        { operation: "redoShift", before: { past: half, future: full }, after: { past: half + 1, future: full - 1 } },
+        { operation: "redoShift", before: { past: full, future: 0 }, after: { past: full, future: 0 } },
+        { operation: "redoShift", before: { past: full, future: half }, after: { past: full, future: half - 1 } },
+        { operation: "redoShift", before: { past: full, future: full }, after: { past: full, future: full - 1 } },
+      ];
+
+      shiftCases.forEach(({ operation, before, after }) => {
+        it(`${operation}: past=${before.past}, future=${before.future} -> past=${after.past}, future=${after.future}`, ({ expect }) => {
+          const unitPast = {
+            before: { id: "B past" },
+            after: { id: "A past" },
+          };
+          const unitFuture = {
+            before: { id: "B future" },
+            after: { id: "A future" },
+          };
+
+          const state = createState({
+            past: [
+              ...[...Array((before.past || 1) - 1)].map((_, i) => ({
+                before: { id: `B${i}` },
+                after: { id: `A${i}` },
+              })),
+              ...(before.past > 0 ? [unitPast] : []),
+            ],
+            future: [
+              ...[...Array((before.future || 1) - 1)].map((_, i) => ({
+                before: { id: `B${i}` },
+                after: { id: `A${i}` },
+              })),
+              ...(before.future > 0 ? [unitFuture] : []),
+            ],
+          });
+
+          mutations[operation](state);
+
+          expect(state.past).toHaveLength(after.past);
+          expect(state.future).toHaveLength(after.future);
+
+          if (operation === "undoShift" && before.past) {
+            if (before.future) {
+              expect(state.future).toContain(unitFuture);
+            }
+            if (before.past) {
+              expect(state.future).toContain(unitPast);
+            }
+          } else if (operation === "redoShift") {
+            if (before.future) {
+              expect(state.past).toContain(unitFuture);
+            }
+            if (before.past) {
+              expect(state.past).toContain(unitPast);
+            }
+          }
+        });
       });
     });
   });

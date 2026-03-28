@@ -1171,6 +1171,133 @@ net.stop()
     });
   });
 
+  describe("miniedit comprehensive import (migrated from Cypress)", () => {
+    const fixturePath = resolve(
+      import.meta.dirname,
+      "../../tests/unit/fixtures/miniedit-script.py",
+    );
+    const script = readFileSync(fixturePath, "utf-8");
+    const json = importScript(script).data;
+
+    // Types map for property validation
+    const types = {
+      autoSetMAC: "boolean",
+      autoStaticARP: "boolean",
+      inNamespace: "boolean",
+      ipBase: "string",
+      items: "array",
+      listenPortBase: "number",
+      logLevel: "string",
+      spawnTerminals: "boolean",
+      startScript: "string",
+      stopScript: "string",
+      version: "number",
+    };
+
+    // getCleanItems helper (from exportImportCommon.js)
+    function getCleanItems(items, typeOnly) {
+      return items
+        .filter((node) => !typeOnly || node.type === typeOnly)
+        .map((orig) => {
+          const type = orig.type;
+          const isEdge = type === "link" || type === "association";
+          const clean = {};
+          Object.keys(orig).forEach((key) => {
+            if (type === "port" && key === "ips") {
+              clean[key] = orig[key].sort();
+            } else if (key === "startScript" || key === "stopScript") {
+              clean[key] = orig[key]
+                .split("\n")
+                .filter((line) => !/^(\s*#|$)/.test(line))
+                .join("\n");
+            } else if (
+              (isEdge && !/^(id|hostname|from|to)$/.test(key)) ||
+              (!isEdge && !/^(id|x|y)$/.test(key))
+            ) {
+              clean[key] = orig[key];
+            }
+          });
+          return clean;
+        });
+    }
+
+    describe("Types", () => {
+      Object.keys(json).forEach((key) => {
+        it(`property "${key}" has known type`, ({ expect }) => {
+          expect(types).toHaveProperty(key);
+          const expectedType = types[key];
+          if (expectedType === "array") {
+            expect(Array.isArray(json[key])).toBe(true);
+          } else {
+            expect(typeof json[key]).toBe(expectedType);
+          }
+        });
+      });
+    });
+
+    describe("Mandatory properties", () => {
+      ["version", "items"].forEach((key) => {
+        it(`${key} exists`, ({ expect }) => {
+          expect(json).toHaveProperty(key);
+        });
+      });
+    });
+
+    describe("Root properties", () => {
+      it("startScript is empty string", ({ expect }) => {
+        expect(json.startScript).toBe("");
+      });
+
+      it("stopScript is empty string", ({ expect }) => {
+        expect(json.stopScript).toBe("");
+      });
+    });
+
+    describe("Item properties via getCleanItems", () => {
+      const cleanItems = getCleanItems(json.items);
+
+      [
+        { type: "port", hostname: "eth0", ips: ["192.168.1.101/8"] },
+        { type: "port", hostname: "eth0", ips: ["192.168.1.102/8"] },
+        { type: "port", hostname: "eth0", ips: ["192.168.1.103/8"] },
+        { type: "port", hostname: "eth0", ips: ["192.168.1.104/8"] },
+        { type: "port", hostname: "eth0", ips: ["192.168.1.105/8"] },
+        { type: "port", hostname: "eth0", ips: ["192.168.1.106/8"] },
+      ].forEach((expected) => {
+        it(`port with IP ${expected.ips}`, ({ expect }) => {
+          expect(cleanItems).toEqual(
+            expect.arrayContaining([expect.objectContaining(expected)]),
+          );
+        });
+      });
+
+      it("s2 has switchType OVSSwitch", ({ expect }) => {
+        const s2 = findItem(json.items, "switch", "s2");
+        expect(s2.switchType).toBe("OVSSwitch");
+      });
+
+      it("s5 has switchType OVSSwitch", ({ expect }) => {
+        const s5 = findItem(json.items, "switch", "s5");
+        expect(s5.switchType).toBe("OVSSwitch");
+      });
+
+      it("s8 has switchType UserSwitch", ({ expect }) => {
+        const s8 = findItem(json.items, "switch", "s8");
+        expect(s8.switchType).toBe("UserSwitch");
+      });
+
+      it("h4 has defaultRoute 192.168.1.1", ({ expect }) => {
+        const h4 = findItem(json.items, "host", "h4");
+        expect(h4.defaultRoute).toBe("192.168.1.1");
+      });
+
+      it("h5 has defaultRoute 192.168.1.1", ({ expect }) => {
+        const h5 = findItem(json.items, "host", "h5");
+        expect(h5.defaultRoute).toBe("192.168.1.1");
+      });
+    });
+  });
+
   describe("me-script fixture detailed property verification", () => {
     let result;
 
