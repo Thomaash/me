@@ -78,12 +78,6 @@ function mountImportSection({ working = false, attachTo, store } = {}) {
   return { wrapper: mount(ImportSection, options), store: resolvedStore };
 }
 
-async function waitForDialog() {
-  await flushPromises();
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  await flushPromises();
-}
-
 describe.concurrent("ImportSection", () => {
   it("mounts successfully in Vuetify context with mock Vuex store", ({
     expect,
@@ -128,9 +122,6 @@ describe.concurrent("ImportSection", () => {
     const examplesBtn = buttons.find((btn) => btn.text() === "Examples");
     await examplesBtn.trigger("click");
 
-    // Wait for Vuetify menu overlay to render
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
     const expectedTitles = [
       "Tiny without controller",
       "Tiny with controller",
@@ -141,10 +132,14 @@ describe.concurrent("ImportSection", () => {
       "Medium with 2 controllers",
     ];
 
-    // Vuetify menus render to an overlay; check the full document body
-    const bodyText = document.body.textContent;
-    for (const title of expectedTitles) {
-      expect(bodyText).toContain(title);
+    // Wait for Vuetify menu overlay to render
+    await expect
+      .poll(() => document.body.textContent)
+      .toContain(expectedTitles[0]);
+
+    // After the first title appears, the rest should be present too
+    for (const title of expectedTitles.slice(1)) {
+      expect(document.body.textContent).toContain(title);
     }
 
     wrapper.unmount();
@@ -200,16 +195,17 @@ describe("ImportSection dialog interactions", () => {
       .findAllComponents({ name: "VBtn" })
       .find((btn) => btn.text() === "Empty");
     emptyBtn.trigger("click");
-    await waitForDialog();
+    await expect
+      .poll(() => document.querySelector('[data-cy="import-warning-confirm"]'))
+      .toBeTruthy();
 
     const confirmBtn = document.querySelector(
       '[data-cy="import-warning-confirm"]',
     );
     expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
-    await waitForDialog();
+    await expect.poll(() => store.state.alert.type).toBe("success");
 
-    expect(store.state.alert.type).toBe("success");
     expect(store.state.alert.text).toBe("Successfully imported.");
 
     wrapper.unmount();
@@ -227,16 +223,17 @@ describe("ImportSection dialog interactions", () => {
       .findAllComponents({ name: "VBtn" })
       .find((btn) => btn.text() === "Empty");
     emptyBtn.trigger("click");
-    await waitForDialog();
+    await expect
+      .poll(() => document.querySelector('[data-cy="import-warning-cancel"]'))
+      .toBeTruthy();
 
     const cancelBtn = document.querySelector(
       '[data-cy="import-warning-cancel"]',
     );
     expect(cancelBtn).not.toBeNull();
     cancelBtn.click();
-    await waitForDialog();
+    await expect.poll(() => store.state.alert.type).toBe("info");
 
-    expect(store.state.alert.type).toBe("info");
     expect(store.state.alert.text).toBe("Import canceled.");
 
     wrapper.unmount();
@@ -262,9 +259,7 @@ describe("ImportSection dialog interactions", () => {
       '[data-cy="import-warning-confirm"]',
     );
     confirmBtn.click();
-    await waitForDialog();
-
-    expect(store.state.working).toBe(false);
+    await expect.poll(() => store.state.working).toBe(false);
 
     wrapper.unmount();
     container.remove();
@@ -283,13 +278,21 @@ describe("ImportSection dialog interactions", () => {
       .findAllComponents({ name: "VBtn" })
       .find((btn) => btn.text() === "Empty");
     emptyBtn.trigger("click");
-    await waitForDialog();
+    await expect
+      .poll(() => document.querySelector('[data-cy="import-warning-confirm"]'))
+      .toBeTruthy();
 
     const confirmBtn = document.querySelector(
       '[data-cy="import-warning-confirm"]',
     );
     confirmBtn.click();
-    await waitForDialog();
+    await expect
+      .poll(
+        () =>
+          commitSpy.mock.calls.filter(([m]) => m === "topology/importData")
+            .length,
+      )
+      .toBeGreaterThanOrEqual(1);
 
     const importCalls = commitSpy.mock.calls.filter(
       ([mutation]) => mutation === "topology/importData",
@@ -322,17 +325,16 @@ describe("ImportSection dialog interactions", () => {
 
     await fileInput.trigger("input");
     // Wait for FileReader onloadend
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await flushPromises();
+    await expect
+      .poll(() => document.querySelector('[data-cy="import-warning-confirm"]'))
+      .toBeTruthy();
 
     const confirmBtn = document.querySelector(
       '[data-cy="import-warning-confirm"]',
     );
-    expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
-    await waitForDialog();
+    await expect.poll(() => store.state.alert.type).toBe("success");
 
-    expect(store.state.alert.type).toBe("success");
     expect(store.state.alert.text).toBe("Successfully imported.");
     expect(store.state.working).toBe(false);
 
@@ -361,10 +363,8 @@ describe("ImportSection dialog interactions", () => {
 
     await fileInput.trigger("input");
     // Wait for FileReader onloadend
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await flushPromises();
+    await expect.poll(() => store.state.alert.type).toBe("error");
 
-    expect(store.state.alert.type).toBe("error");
     expect(store.state.alert.text).toContain("Unknown file format");
     expect(store.state.working).toBe(false);
 
@@ -393,21 +393,16 @@ describe("ImportSection dialog interactions", () => {
 
     await fileInput.trigger("input");
     // Wait for FileReader onloadend
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    await flushPromises();
-
-    // The dialog should be showing with script import warning text
-    const dialogText = document.body.textContent;
-    expect(dialogText).toContain(
-      "Imported project won't contain node positions",
-    );
+    await expect
+      .poll(() => document.body.textContent)
+      .toContain("Imported project won't contain node positions");
 
     const confirmBtn = document.querySelector(
       '[data-cy="import-warning-confirm"]',
     );
     if (confirmBtn) {
       confirmBtn.click();
-      await waitForDialog();
+      await flushPromises();
     }
 
     wrapper.unmount();
@@ -456,10 +451,8 @@ describe("ImportSection dialog interactions", () => {
 
     await fileInput.trigger("input");
     // Wait for FileReader onloadend
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await flushPromises();
+    await expect.poll(() => store.state.alert.type).toBe("error");
 
-    expect(store.state.alert.type).toBe("error");
     expect(store.state.alert.text).toBe("Import failed.");
     expect(store.state.working).toBe(false);
 
@@ -477,13 +470,17 @@ describe("ImportSection dialog interactions", () => {
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     const examplesBtn = buttons.find((btn) => btn.text() === "Examples");
     await examplesBtn.trigger("click");
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await expect
+      .poll(() => document.querySelectorAll(".v-list-item-title").length)
+      .toBeGreaterThan(0);
 
     // Click the first example item
     const listItems = document.querySelectorAll(".v-list-item-title");
     expect(listItems.length).toBeGreaterThan(0);
     listItems[0].click();
-    await waitForDialog();
+    await expect
+      .poll(() => document.querySelector('[data-cy="import-warning-confirm"]'))
+      .toBeTruthy();
 
     // The confirmation dialog should appear; confirm the import
     const confirmBtn = document.querySelector(
@@ -491,9 +488,8 @@ describe("ImportSection dialog interactions", () => {
     );
     expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
-    await waitForDialog();
+    await expect.poll(() => store.state.alert.type).toBe("success");
 
-    expect(store.state.alert.type).toBe("success");
     expect(store.state.alert.text).toBe("Successfully imported.");
 
     wrapper.unmount();
@@ -519,10 +515,8 @@ describe("ImportSection dialog interactions", () => {
     });
 
     await fileInput.trigger("input");
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await flushPromises();
+    await expect.poll(() => wrapper.emitted("log")).toBeTruthy();
 
-    expect(wrapper.emitted("log")).toBeTruthy();
     expect(wrapper.emitted("log")[0][0]).toEqual([]);
 
     const confirmBtn = document.querySelector(
@@ -530,7 +524,7 @@ describe("ImportSection dialog interactions", () => {
     );
     if (confirmBtn) {
       confirmBtn.click();
-      await waitForDialog();
+      await flushPromises();
     }
 
     wrapper.unmount();

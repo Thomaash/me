@@ -414,10 +414,7 @@ describe("ExportSection downloadImage", () => {
     await flushPromises();
     await nextTick();
     // Wait for VisCanvas ready event and rendering timeout
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await flushPromises();
-
-    expect(store.state.alert.type).toBe("success");
+    await expect.poll(() => store.state.alert.type).toBe("success");
     expect(store.state.alert.text).toContain("Image rendered");
     expect(store.state.working).toBe(false);
     expect(toTileBlobsFn).toHaveBeenCalledWith(
@@ -445,10 +442,7 @@ describe("ExportSection downloadImage", () => {
     });
     await flushPromises();
     await nextTick();
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await flushPromises();
-
-    expect(store.state.alert.type).toBe("success");
+    await expect.poll(() => store.state.alert.type).toBe("success");
     expect(store.state.alert.text).toContain("Image rendered");
     expect(toTileBlobsFn).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -478,10 +472,7 @@ describe("ExportSection downloadImage", () => {
     });
     await flushPromises();
     await nextTick();
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await flushPromises();
-
-    expect(store.state.alert.type).toBe("error");
+    await expect.poll(() => store.state.alert.type).toBe("error");
     expect(store.state.alert.text).toContain("Image rendering failed");
     expect(store.state.working).toBe(false);
     consoleSpy.mockRestore();
@@ -513,8 +504,9 @@ describe("ExportSection downloadImage", () => {
       // Wait for full async chain: nextTick + Vue render + 100ms renderImage delay + 50ms+50ms onBlob delays
       await flushPromises();
       await nextTick();
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      await flushPromises();
+      await expect
+        .poll(() => URL.revokeObjectURL.mock.calls.length)
+        .toBeGreaterThan(0);
 
       expect(URL.createObjectURL).toHaveBeenCalledWith(mockBlob);
       expect(URL.revokeObjectURL).toHaveBeenCalledWith(fakeUrl);
@@ -546,8 +538,9 @@ describe("ExportSection downloadImage", () => {
       });
       await flushPromises();
       await nextTick();
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      await flushPromises();
+      await expect
+        .poll(() => URL.revokeObjectURL.mock.calls.length)
+        .toBeGreaterThan(0);
 
       expect(URL.createObjectURL).toHaveBeenCalledWith(mockBlob);
       expect(URL.revokeObjectURL).toHaveBeenCalledWith(fakeUrl);
