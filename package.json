@@ -55,7 +55,6 @@
     "@vitest/browser": "^4.1.0",
     "@vitest/browser-playwright": "^4.1.0",
     "@vitest/coverage-v8": "^4.1.0",
-    "@vue/babel-preset-app": "5.0.9",
     "@vue/test-utils": "2.4.6",
     "autoprefixer": "10.4.27",
     "cypress": "15.13.0",
