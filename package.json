@@ -55,6 +55,8 @@
     "@vitest/browser": "^4.1.0",
     "@vitest/browser-playwright": "^4.1.0",
     "@vitest/coverage-v8": "^4.1.0",
+    "@vue/compiler-dom": "^3.5.31",
+    "@vue/server-renderer": "^3.5.31",
     "@vue/test-utils": "2.4.6",
     "autoprefixer": "10.4.27",
     "cypress": "15.13.0",
