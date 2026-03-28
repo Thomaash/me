@@ -1,60 +1,67 @@
 {
-  "_AppLogo-bku-p4lj.css": {
-    "file": "assets/AppLogo-bku-p4lj.css",
-    "src": "_AppLogo-bku-p4lj.css"
-  },
-  "_AppLogo-iCxLW7dZ.js": {
-    "file": "assets/AppLogo-iCxLW7dZ.js",
+  "_AppLogo-BDV8Fun3.js": {
+    "file": "assets/AppLogo-BDV8Fun3.js",
     "name": "AppLogo",
     "imports": [
       "index.html",
-      "_VCard-B2vRtOOn.js"
+      "_VCard-CevoaX-f.js"
     ],
     "css": [
       "assets/AppLogo-bku-p4lj.css"
     ]
   },
-  "_ExportPage-bOD9TGKm.js": {
-    "file": "assets/ExportPage-bOD9TGKm.js",
+  "_AppLogo-bku-p4lj.css": {
+    "file": "assets/AppLogo-bku-p4lj.css",
+    "src": "_AppLogo-bku-p4lj.css"
+  },
+  "_ExportPage-B8sbrPjQ.js": {
+    "file": "assets/ExportPage-B8sbrPjQ.js",
     "name": "ExportPage",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_VisCanvas-w1c92XG_.js",
-      "_LoadingSpinner-rSP5EpOg.js",
-      "_useTopologyStore-CVSKPnMI.js",
-      "_VRow-D5fSJGAp.js",
-      "_VTextField-Bnitiivj.js",
-      "_VCard-B2vRtOOn.js"
+      "_VisCanvas-BYz13spQ.js",
+      "_LoadingSpinner-4YaIz8Pa.js",
+      "_useTopologyStore-DUTiceIt.js",
+      "_VRow-DGQdSlNW.js",
+      "_VTextField-BG7SeDOL.js",
+      "_VCard-CevoaX-f.js"
     ],
     "dynamicImports": [
       "node_modules/html2canvas/dist/html2canvas.esm.js",
       "node_modules/dompurify/dist/purify.es.mjs",
-      "node_modules/canvg/lib/index.es.js"
+      "node_modules/canvg/lib/index.es.js",
+      "src/examples/tiny.json",
+      "src/examples/tiny_controller.json",
+      "src/examples/tiny_physical_interface.json",
+      "src/examples/tiny_tc.json",
+      "src/examples/tiny_mininet_conf.json",
+      "index.html",
+      "src/examples/medium_2_controllers.json"
     ]
   },
-  "_LoadingSpinner-D7q8pO8X.css": {
-    "file": "assets/LoadingSpinner-D7q8pO8X.css",
-    "src": "_LoadingSpinner-D7q8pO8X.css"
-  },
-  "_LoadingSpinner-rSP5EpOg.js": {
-    "file": "assets/LoadingSpinner-rSP5EpOg.js",
+  "_LoadingSpinner-4YaIz8Pa.js": {
+    "file": "assets/LoadingSpinner-4YaIz8Pa.js",
     "name": "LoadingSpinner",
     "imports": [
-      "_VTextField-Bnitiivj.js",
+      "_VTextField-BG7SeDOL.js",
       "index.html"
     ],
     "css": [
       "assets/LoadingSpinner-D7q8pO8X.css"
     ]
   },
-  "_ThreeStateCheckbox-CxauOWqO.js": {
-    "file": "assets/ThreeStateCheckbox-CxauOWqO.js",
+  "_LoadingSpinner-D7q8pO8X.css": {
+    "file": "assets/LoadingSpinner-D7q8pO8X.css",
+    "src": "_LoadingSpinner-D7q8pO8X.css"
+  },
+  "_ThreeStateCheckbox-L359O5rc.js": {
+    "file": "assets/ThreeStateCheckbox-L359O5rc.js",
     "name": "ThreeStateCheckbox",
     "imports": [
       "index.html",
-      "_VTextField-Bnitiivj.js",
-      "_LoadingSpinner-rSP5EpOg.js"
+      "_VTextField-BG7SeDOL.js",
+      "_LoadingSpinner-4YaIz8Pa.js"
     ],
     "css": [
       "assets/ThreeStateCheckbox-xiMOHEu-.css"
@@ -64,8 +71,8 @@
     "file": "assets/ThreeStateCheckbox-xiMOHEu-.css",
     "src": "_ThreeStateCheckbox-xiMOHEu-.css"
   },
-  "_VCard-B2vRtOOn.js": {
-    "file": "assets/VCard-B2vRtOOn.js",
+  "_VCard-CevoaX-f.js": {
+    "file": "assets/VCard-CevoaX-f.js",
     "name": "VCard",
     "imports": [
       "index.html"
@@ -82,8 +89,8 @@
     "file": "assets/VRow-CEKoHqvM.css",
     "src": "_VRow-CEKoHqvM.css"
   },
-  "_VRow-D5fSJGAp.js": {
-    "file": "assets/VRow-D5fSJGAp.js",
+  "_VRow-DGQdSlNW.js": {
+    "file": "assets/VRow-DGQdSlNW.js",
     "name": "VRow",
     "imports": [
       "index.html"
@@ -92,11 +99,11 @@
       "assets/VRow-CEKoHqvM.css"
     ]
   },
-  "_VSelect-Ci1yC0tS.js": {
-    "file": "assets/VSelect-Ci1yC0tS.js",
+  "_VSelect-BrjWbVac.js": {
+    "file": "assets/VSelect-BrjWbVac.js",
     "name": "VSelect",
     "imports": [
-      "_VTextField-Bnitiivj.js",
+      "_VTextField-BG7SeDOL.js",
       "index.html"
     ],
     "css": [
@@ -107,8 +114,8 @@
     "file": "assets/VSelect-CyfMJZcx.css",
     "src": "_VSelect-CyfMJZcx.css"
   },
-  "_VTextField-Bnitiivj.js": {
-    "file": "assets/VTextField-Bnitiivj.js",
+  "_VTextField-BG7SeDOL.js": {
+    "file": "assets/VTextField-BG7SeDOL.js",
     "name": "VTextField",
     "imports": [
       "index.html"
@@ -121,34 +128,35 @@
     "file": "assets/VTextField-DQzcvheH.css",
     "src": "_VTextField-DQzcvheH.css"
   },
-  "_VisCanvas-Cwdz8q_k.css": {
-    "file": "assets/VisCanvas-Cwdz8q_k.css",
-    "src": "_VisCanvas-Cwdz8q_k.css"
-  },
-  "_VisCanvas-w1c92XG_.js": {
-    "file": "assets/VisCanvas-w1c92XG_.js",
+  "_VisCanvas-BYz13spQ.js": {
+    "file": "assets/VisCanvas-BYz13spQ.js",
     "name": "VisCanvas",
     "imports": [
-      "_VTextField-Bnitiivj.js",
+      "_VTextField-BG7SeDOL.js",
       "index.html",
-      "_LoadingSpinner-rSP5EpOg.js"
+      "_LoadingSpinner-4YaIz8Pa.js"
     ],
     "css": [
       "assets/VisCanvas-Cwdz8q_k.css"
     ]
   },
-  "_useTopologyStore-CVSKPnMI.js": {
-    "file": "assets/useTopologyStore-CVSKPnMI.js",
+  "_VisCanvas-Cwdz8q_k.css": {
+    "file": "assets/VisCanvas-Cwdz8q_k.css",
+    "src": "_VisCanvas-Cwdz8q_k.css"
+  },
+  "_useTopologyStore-DUTiceIt.js": {
+    "file": "assets/useTopologyStore-DUTiceIt.js",
     "name": "useTopologyStore",
     "imports": [
       "index.html"
     ]
   },
   "index.html": {
-    "file": "assets/js/app-tFiBcsNt.js",
+    "file": "assets/js/app-UQgXudE_.js",
     "name": "app",
     "src": "index.html",
     "isEntry": true,
+    "isDynamicEntry": true,
     "dynamicImports": [
       "src/components/HomePage.vue",
       "src/components/CanvasPage.vue",
@@ -159,7 +167,7 @@
       "src/components/TopologyToolbar.vue",
       "src/components/MininetSettingsPage.vue",
       "src/components/TopologyToolbar.vue",
-      "_ExportPage-bOD9TGKm.js",
+      "_ExportPage-B8sbrPjQ.js",
       "src/components/TopologyToolbar.vue",
       "src/components/AboutPage.vue"
     ],
@@ -270,19 +278,19 @@
     "src": "node_modules/@mdi/font/fonts/materialdesignicons-webfont.woff2"
   },
   "node_modules/canvg/lib/index.es.js": {
-    "file": "assets/index.es-uGl67qqt.js",
+    "file": "assets/index.es-w90tcaAk.js",
     "name": "index.es",
     "src": "node_modules/canvg/lib/index.es.js",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_ExportPage-bOD9TGKm.js",
-      "_VisCanvas-w1c92XG_.js",
-      "_VTextField-Bnitiivj.js",
-      "_LoadingSpinner-rSP5EpOg.js",
-      "_useTopologyStore-CVSKPnMI.js",
-      "_VRow-D5fSJGAp.js",
-      "_VCard-B2vRtOOn.js"
+      "_ExportPage-B8sbrPjQ.js",
+      "_VisCanvas-BYz13spQ.js",
+      "_VTextField-BG7SeDOL.js",
+      "_LoadingSpinner-4YaIz8Pa.js",
+      "_useTopologyStore-DUTiceIt.js",
+      "_VRow-DGQdSlNW.js",
+      "_VCard-CevoaX-f.js"
     ]
   },
   "node_modules/dompurify/dist/purify.es.mjs": {
@@ -618,79 +626,115 @@
     "src": "node_modules/source-sans/WOFF2/TTF/SourceSans3-SemiboldIt.ttf.woff2"
   },
   "src/components/AboutPage.vue": {
-    "file": "assets/AboutPage-KohZ8ykX.js",
+    "file": "assets/AboutPage-C4Af3tBH.js",
     "name": "AboutPage",
     "src": "src/components/AboutPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_useTopologyStore-CVSKPnMI.js",
+      "_useTopologyStore-DUTiceIt.js",
       "index.html",
-      "_AppLogo-iCxLW7dZ.js",
-      "_VRow-D5fSJGAp.js",
-      "_VCard-B2vRtOOn.js"
+      "_AppLogo-BDV8Fun3.js",
+      "_VRow-DGQdSlNW.js",
+      "_VCard-CevoaX-f.js"
     ]
   },
   "src/components/CanvasPage.vue": {
-    "file": "assets/CanvasPage-Z--_ipAx.js",
+    "file": "assets/CanvasPage-CkB-6CL5.js",
     "name": "CanvasPage",
     "src": "src/components/CanvasPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_VRow-D5fSJGAp.js",
-      "_VTextField-Bnitiivj.js",
-      "_LoadingSpinner-rSP5EpOg.js",
-      "_VSelect-Ci1yC0tS.js",
-      "_ThreeStateCheckbox-CxauOWqO.js",
-      "_VisCanvas-w1c92XG_.js",
-      "_VCard-B2vRtOOn.js",
-      "_useTopologyStore-CVSKPnMI.js"
+      "_VRow-DGQdSlNW.js",
+      "_VTextField-BG7SeDOL.js",
+      "_LoadingSpinner-4YaIz8Pa.js",
+      "_VSelect-BrjWbVac.js",
+      "_ThreeStateCheckbox-L359O5rc.js",
+      "_VisCanvas-BYz13spQ.js",
+      "_VCard-CevoaX-f.js",
+      "_useTopologyStore-DUTiceIt.js"
     ],
     "css": [
       "assets/CanvasPage-BVKZZftt.css"
     ]
   },
   "src/components/HomePage.vue": {
-    "file": "assets/HomePage-B9OMfOxh.js",
+    "file": "assets/HomePage-C7fLMeOk.js",
     "name": "HomePage",
     "src": "src/components/HomePage.vue",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_VSelect-Ci1yC0tS.js",
-      "_VTextField-Bnitiivj.js",
-      "_AppLogo-iCxLW7dZ.js",
-      "_VRow-D5fSJGAp.js",
-      "_VCard-B2vRtOOn.js"
+      "_VSelect-BrjWbVac.js",
+      "_VTextField-BG7SeDOL.js",
+      "_AppLogo-BDV8Fun3.js",
+      "_VRow-DGQdSlNW.js",
+      "_VCard-CevoaX-f.js"
     ],
     "css": [
       "assets/HomePage-BMlDcSC6.css"
     ]
   },
   "src/components/MininetSettingsPage.vue": {
-    "file": "assets/MininetSettingsPage-D0Ro02Fo.js",
+    "file": "assets/MininetSettingsPage-DTH_fGBk.js",
     "name": "MininetSettingsPage",
     "src": "src/components/MininetSettingsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_LoadingSpinner-rSP5EpOg.js",
-      "_ThreeStateCheckbox-CxauOWqO.js",
-      "_useTopologyStore-CVSKPnMI.js",
-      "_VRow-D5fSJGAp.js",
-      "_VTextField-Bnitiivj.js",
-      "_VSelect-Ci1yC0tS.js",
+      "_LoadingSpinner-4YaIz8Pa.js",
+      "_ThreeStateCheckbox-L359O5rc.js",
+      "_useTopologyStore-DUTiceIt.js",
+      "_VRow-DGQdSlNW.js",
+      "_VTextField-BG7SeDOL.js",
+      "_VSelect-BrjWbVac.js",
       "index.html"
     ]
   },
   "src/components/TopologyToolbar.vue": {
-    "file": "assets/TopologyToolbar-CLvRvv7t.js",
+    "file": "assets/TopologyToolbar-DKKe2bX2.js",
     "name": "TopologyToolbar",
     "src": "src/components/TopologyToolbar.vue",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_useTopologyStore-CVSKPnMI.js"
+      "_useTopologyStore-DUTiceIt.js"
     ]
+  },
+  "src/examples/medium_2_controllers.json": {
+    "file": "assets/medium_2_controllers-CUsypwWJ.js",
+    "name": "medium_2_controllers",
+    "src": "src/examples/medium_2_controllers.json",
+    "isDynamicEntry": true
+  },
+  "src/examples/tiny.json": {
+    "file": "assets/tiny-BOCF4Umt.js",
+    "name": "tiny",
+    "src": "src/examples/tiny.json",
+    "isDynamicEntry": true
+  },
+  "src/examples/tiny_controller.json": {
+    "file": "assets/tiny_controller-ppzaUzAk.js",
+    "name": "tiny_controller",
+    "src": "src/examples/tiny_controller.json",
+    "isDynamicEntry": true
+  },
+  "src/examples/tiny_mininet_conf.json": {
+    "file": "assets/tiny_mininet_conf-DmzuqAt_.js",
+    "name": "tiny_mininet_conf",
+    "src": "src/examples/tiny_mininet_conf.json",
+    "isDynamicEntry": true
+  },
+  "src/examples/tiny_physical_interface.json": {
+    "file": "assets/tiny_physical_interface-CkChvSmc.js",
+    "name": "tiny_physical_interface",
+    "src": "src/examples/tiny_physical_interface.json",
+    "isDynamicEntry": true
+  },
+  "src/examples/tiny_tc.json": {
+    "file": "assets/tiny_tc-8hFUohPg.js",
+    "name": "tiny_tc",
+    "src": "src/examples/tiny_tc.json",
+    "isDynamicEntry": true
   },
   "src/service-worker/index.js": {
     "file": "service-worker.js",
