@@ -1,0 +1,4 @@
+{
+  "*.{js,vue}": "oxlint --fix",
+  "*.{js,vue,json,css,md,html,yaml,yml}": "prettier --write"
+}
