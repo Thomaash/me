@@ -15,14 +15,9 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import BuildInfo from "./BuildInfo.vue";
 import AppDescription from "./AppDescription.vue";
 import AppLicense from "./AppLicense.vue";
 import AppLogo from "./AppLogo.vue";
-
-export default {
-  name: "AboutPage",
-  components: { BuildInfo, AppDescription, AppLicense, AppLogo },
-};
 </script>

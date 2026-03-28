@@ -14,7 +14,7 @@
           <v-text-field
             ref="itemBandwidth"
             v-model.number="item.bandwidth"
-            :rules="[validators.minValue(0)(item.bandwidth)]"
+            :rules="[validators.minValue(0)]"
             label="Bandwidth"
             type="number"
             min="0"
@@ -26,7 +26,7 @@
         <v-col cols="12" md="6">
           <v-text-field
             v-model="item.delay"
-            :rules="[validators.timeWithUnit(item.delay)]"
+            :rules="[validators.timeWithUnit()]"
             label="Delay"
             clearable
             data-cy="edit-delay"
@@ -35,7 +35,7 @@
         <v-col cols="12" md="6">
           <v-text-field
             v-model="item.jitter"
-            :rules="[validators.timeWithUnit(item.jitter)]"
+            :rules="[validators.timeWithUnit()]"
             label="Jitter"
             clearable
             data-cy="edit-jitter"
@@ -45,7 +45,7 @@
           <v-text-field
             ref="itemLoss"
             v-model.number="item.loss"
-            :rules="[validators.between(0, 100)(item.loss)]"
+            :rules="[validators.between(0, 100)]"
             label="Loss"
             type="number"
             min="0"
@@ -60,8 +60,8 @@
             ref="itemMaxQueueSize"
             v-model.number="item.maxQueueSize"
             :rules="[
-              validators.integer(item.maxQueueSize),
-              validators.minValue(0)(item.maxQueueSize),
+              validators.integer(),
+              validators.minValue(0),
             ]"
             label="Max queue"
             type="number"
@@ -76,22 +76,15 @@
   </v-form>
 </template>
 
-<script>
-import common from "./common";
+<script setup>
+import { ref, watch } from "vue";
 import { timeWithUnit, integer, minValue, between } from "@/validation/rules";
 
-export default {
-  name: "LinkEdit",
-  mixins: [common],
-  data: () => ({
-    dialog: false,
-    item: {},
-    validators: {
-      between,
-      integer,
-      minValue,
-      timeWithUnit,
-    },
-  }),
-};
+const item = defineModel({ type: Object, required: true });
+const valid = ref(false);
+const emit = defineEmits(["valid"]);
+
+watch(valid, (val) => emit("valid", val));
+
+const validators = { between, integer, minValue, timeWithUnit };
 </script>

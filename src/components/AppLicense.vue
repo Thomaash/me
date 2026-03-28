@@ -2,19 +2,15 @@
   <section>
     <h3 class="headline">License</h3>
 
-    <p v-for="(part, i) in license" :key="'license_p_' + i" v-text="part" />
+    <p v-for="(part, i) in licenseParts" :key="'license_p_' + i" v-text="part" />
   </section>
 </template>
 
-<script>
+<script setup>
+defineOptions({ name: "AppLicense" });
+
+import { computed } from "vue";
 import license from "@/../LICENSE?raw";
 
-export default {
-  name: "AppLicense",
-  computed: {
-    license() {
-      return license.split(/\n\n/g);
-    },
-  },
-};
+const licenseParts = computed(() => license.split(/\n\n/g));
 </script>

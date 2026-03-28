@@ -66,76 +66,68 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  name: "App",
-  data: () => ({
-    drawer: true,
-    appName: "Mininet Editor",
-  }),
-  computed: {
-    documentTitle() {
-      const { title, subtitle } = this.$route.meta;
-      const subtitleStr = subtitle ? subtitle(this.$route) : "";
-      return `${this.appName} | ${title}${subtitleStr}`;
-    },
-    drawerItems() {
-      return this.$router.options.routes
-        .filter((route) => route.meta && route.meta.drawer)
-        .map(({ name, meta }) => ({
-          title: meta.title,
-          icon: meta.icon,
-          to: { name },
-        }));
-    },
-    progress() {
-      const working = this.$store.state.working;
-      return {
-        show: !!working,
-        indeterminate: working === true,
-        value:
-          working.curr != null && working.max != null
-            ? (working.curr / working.max) * 100
-            : 0,
-      };
-    },
-    alert() {
-      return this.$store.state.alert;
-    },
-    showAlert: {
-      get() {
-        return this.alert.show;
-      },
-      set(value) {
-        if (value === false) {
-          this.$store.commit("clearAlert");
-        }
-      },
-    },
-    isView() {
-      return this.$route.meta.isView;
-    },
+<script setup>
+import { ref, computed, watch } from "vue";
+import { useStore } from "vuex";
+import { useRoute, useRouter } from "vue-router";
+
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
+
+const drawer = ref(true);
+const appName = "Mininet Editor";
+
+const documentTitle = computed(() => {
+  const { title, subtitle } = route.meta;
+  const subtitleStr = subtitle ? subtitle(route) : "";
+  return `${appName} | ${title}${subtitleStr}`;
+});
+
+const drawerItems = computed(() =>
+  router.options.routes
+    .filter((r) => r.meta && r.meta.drawer)
+    .map(({ name, meta }) => ({
+      title: meta.title,
+      icon: meta.icon,
+      to: { name },
+    })),
+);
+
+const progress = computed(() => {
+  const working = store.state.working;
+  return {
+    show: !!working,
+    indeterminate: working === true,
+    value:
+      working.curr != null && working.max != null
+        ? (working.curr / working.max) * 100
+        : 0,
+  };
+});
+
+const alert = computed(() => store.state.alert);
+
+const showAlert = computed({
+  get() {
+    return alert.value.show;
   },
-  watch: {
-    documentTitle: {
-      handler() {
-        this.updateDocumentTitle();
-      },
-      deep: true,
-    },
+  set(value) {
+    if (value === false) {
+      store.commit("clearAlert");
+    }
   },
-  mounted() {
-    this.updateDocumentTitle();
+});
+
+const isView = computed(() => route.meta.isView);
+
+watch(
+  documentTitle,
+  (newTitle) => {
+    document.title = newTitle;
   },
-  methods: {
-    updateDocumentTitle() {
-      document.title = this.documentTitle;
-    },
-    reload() {
-      window.location.reload();
-    },
-  },
-};
+  { immediate: true },
+);
 </script>
 
 <style>

@@ -24,7 +24,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="ipBase"
-                :rules="[validators.ipWithMask(ipBase)]"
+                :rules="[validators.ipWithMask()]"
                 clearable
                 data-cy="mininet-settings-ip-base"
                 label="IP Base"
@@ -32,9 +32,8 @@
             </v-col>
             <v-col cols="12">
               <v-text-field
-                ref="listenPortBase"
                 v-model.number="listenPortBase"
-                :rules="[validators.port(listenPortBase)]"
+                :rules="[validators.port()]"
                 clearable
                 data-cy="mininet-settings-listen-port-base"
                 label="Base Listening Port"
@@ -102,46 +101,56 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
+import { computed } from "vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import ThreeStateCheckbox from "@/components/ThreeStateCheckbox.vue";
 import { ipWithMask, port } from "@/validation/rules";
 import { logLevels } from "@/components/selects";
-import { mapGetters } from "vuex";
+import { useTopologyStore } from "@/composables/useTopologyStore";
 
-function ComputedStoreProperty(key) {
-  this.get = function () {
-    return this.data[key];
-  };
-  this.set = function (value) {
-    this.$store.commit("topology/setValues", {
-      [key]: value,
-    });
-  };
-}
+const { loading, data, commitTopology } = useTopologyStore();
 
-export default {
-  name: "MininetSettiongsPage",
-  components: { LoadingSpinner, ThreeStateCheckbox },
-  data: () => ({
-    logLevels,
-    validators: { ipWithMask, port },
-  }),
-  computed: {
-    ...mapGetters("topology", ["data"]),
-    loading() {
-      return this.$store.state.loading;
-    },
-    autoSetMAC: new ComputedStoreProperty("autoSetMAC"),
-    autoStaticARP: new ComputedStoreProperty("autoStaticARP"),
-    inNamespace: new ComputedStoreProperty("inNamespace"),
-    ipBase: new ComputedStoreProperty("ipBase"),
-    listenPortBase: new ComputedStoreProperty("listenPortBase"),
-    logLevel: new ComputedStoreProperty("logLevel"),
-    projectName: new ComputedStoreProperty("projectName"),
-    spawnTerminals: new ComputedStoreProperty("spawnTerminals"),
-    startScript: new ComputedStoreProperty("startScript"),
-    stopScript: new ComputedStoreProperty("stopScript"),
-  },
-};
+const validators = { ipWithMask, port };
+
+const autoSetMAC = computed({
+  get: () => data.value.autoSetMAC,
+  set: (value) => commitTopology("setValues", { autoSetMAC: value }),
+});
+const autoStaticARP = computed({
+  get: () => data.value.autoStaticARP,
+  set: (value) => commitTopology("setValues", { autoStaticARP: value }),
+});
+const inNamespace = computed({
+  get: () => data.value.inNamespace,
+  set: (value) => commitTopology("setValues", { inNamespace: value }),
+});
+const ipBase = computed({
+  get: () => data.value.ipBase,
+  set: (value) => commitTopology("setValues", { ipBase: value }),
+});
+const listenPortBase = computed({
+  get: () => data.value.listenPortBase,
+  set: (value) => commitTopology("setValues", { listenPortBase: value }),
+});
+const logLevel = computed({
+  get: () => data.value.logLevel,
+  set: (value) => commitTopology("setValues", { logLevel: value }),
+});
+const projectName = computed({
+  get: () => data.value.projectName,
+  set: (value) => commitTopology("setValues", { projectName: value }),
+});
+const spawnTerminals = computed({
+  get: () => data.value.spawnTerminals,
+  set: (value) => commitTopology("setValues", { spawnTerminals: value }),
+});
+const startScript = computed({
+  get: () => data.value.startScript,
+  set: (value) => commitTopology("setValues", { startScript: value }),
+});
+const stopScript = computed({
+  get: () => data.value.stopScript,
+  set: (value) => commitTopology("setValues", { stopScript: value }),
+});
 </script>

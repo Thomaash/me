@@ -28,50 +28,48 @@
   </v-row>
 </template>
 
-<script>
-export default {
-  name: "LogListing",
-  props: {
-    log: {
-      type: Array,
-      required: true,
-    },
-  },
-  data: () => ({
-    logCbs: [],
-    logPriority: {
-      error: 0,
-      warning: 1,
-      info: 2,
-    },
-  }),
-  computed: {
-    sortedLog() {
-      return [...this.log].sort(
-        ({ severity: a }, { severity: b }) =>
-          this.logPriority[a] - this.logPriority[b],
-      );
-    },
-  },
-  methods: {
-    selectInCanvas(id) {
-      let ids;
-      if (id) {
-        ids = [id];
-      } else if (this.logCbs.some((cb) => cb)) {
-        ids = this.logCbs
-          .map((cb, i) => (cb ? i : null))
-          .filter((i) => i !== null)
-          .map((i) => this.sortedLog[i].item.id);
-      } else {
-        ids = this.sortedLog.map((l) => l.item.id);
-      }
+<script setup>
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 
-      this.$router.push({
-        name: "Canvas without position",
-        params: { ids: ids.join(",") },
-      });
-    },
+const props = defineProps({
+  log: {
+    type: Array,
+    required: true,
   },
+});
+
+const router = useRouter();
+
+const logCbs = ref([]);
+const logPriority = {
+  error: 0,
+  warning: 1,
+  info: 2,
 };
+
+const sortedLog = computed(() => {
+  return [...props.log].sort(
+    ({ severity: a }, { severity: b }) => logPriority[a] - logPriority[b],
+  );
+});
+
+function selectInCanvas(id) {
+  let ids;
+  if (id) {
+    ids = [id];
+  } else if (logCbs.value.some((cb) => cb)) {
+    ids = logCbs.value
+      .map((cb, i) => (cb ? i : null))
+      .filter((i) => i !== null)
+      .map((i) => sortedLog.value[i].item.id);
+  } else {
+    ids = sortedLog.value.map((l) => l.item.id);
+  }
+
+  router.push({
+    name: "Canvas without position",
+    params: { ids: ids.join(",") },
+  });
+}
 </script>

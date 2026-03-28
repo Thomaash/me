@@ -7,10 +7,8 @@
   />
 </template>
 
-<script>
-export default {
-  name: "LoadingSpinner",
-};
+<script setup>
+defineOptions({ name: "LoadingSpinner" });
 </script>
 
 <style scoped>

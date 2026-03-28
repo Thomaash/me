@@ -6,8 +6,8 @@
           <v-text-field
             v-model="item.hostname"
             :rules="[
-              validators.required()(item.hostname),
-              validators.hostname()(item.hostname),
+              validators.required(),
+              validators.hostname(),
             ]"
             label="Hostname"
             autofocus
@@ -34,9 +34,9 @@
             ref="itemSTPPriority"
             v-model.number="item.stpPriority"
             :rules="[
-              validators.integer()(item.stpPriority),
-              validators.between(0, 65535)(item.stpPriority),
-              validators.divisible(4096)(item.stpPriority),
+              validators.integer(),
+              validators.between(0, 65535),
+              validators.divisible(4096),
             ]"
             label="STP Priority"
             type="number"
@@ -50,7 +50,7 @@
         <v-col cols="12">
           <v-text-field
             v-model="item.ip"
-            :rules="[validators.ip()(item.ip)]"
+            :rules="[validators.ip()]"
             label="IP"
             clearable
             data-cy="edit-ip"
@@ -60,7 +60,7 @@
           <v-text-field
             ref="itemDPCTLPort"
             v-model.number="item.dpctlPort"
-            :rules="[validators.port()(item.dpctlPort)]"
+            :rules="[validators.port()]"
             label="DPCTL Port"
             type="number"
             min="1"
@@ -89,9 +89,9 @@
           <v-text-field
             v-model="item.dpid"
             :rules="[
-              validators.hexData()(item.dpid),
-              validators.minLength(1)(item.dpid),
-              validators.maxLength(16)(item.dpid),
+              validators.hexData(),
+              validators.minLength(1),
+              validators.maxLength(16),
             ]"
             label="Datapath ID"
             type="text"
@@ -112,8 +112,8 @@
             ref="itemReconnectMs"
             v-model.number="item.reconnectms"
             :rules="[
-              validators.integer()(item.reconnectms),
-              validators.minValue(0)(item.reconnectms),
+              validators.integer(),
+              validators.minValue(0),
             ]"
             label="Reconnect Timeout"
             type="number"
@@ -190,9 +190,9 @@
   </v-form>
 </template>
 
-<script>
+<script setup>
+import { ref, watch } from "vue";
 import ThreeStateCheckbox from "@/components/ThreeStateCheckbox.vue";
-import common from "./common";
 import {
   required,
   hostname,
@@ -213,30 +213,23 @@ import {
   protocolsOF,
 } from "@/components/selects";
 
-export default {
-  name: "SwitchEdit",
-  components: { ThreeStateCheckbox },
-  mixins: [common],
-  data: () => ({
-    valid: false,
-    item: {},
-    switchTypes,
-    failModes,
-    datapaths,
-    protocolsOF,
-    validators: {
-      between,
-      divisible,
-      hexData,
-      hostname,
-      integer,
-      ip,
-      maxLength,
-      minLength,
-      minValue,
-      port,
-      required,
-    },
-  }),
+const item = defineModel({ type: Object, required: true });
+const valid = ref(false);
+const emit = defineEmits(["valid"]);
+
+watch(valid, (val) => emit("valid", val));
+
+const validators = {
+  between,
+  divisible,
+  hexData,
+  hostname,
+  integer,
+  ip,
+  maxLength,
+  minLength,
+  minValue,
+  port,
+  required,
 };
 </script>

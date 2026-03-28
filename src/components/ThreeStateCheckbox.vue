@@ -14,44 +14,41 @@
   />
 </template>
 
-<script>
-export default {
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: undefined,
-    },
-    color: {
-      type: String,
-      default: "primary",
-    },
-    label: {
-      type: String,
-      default: "",
-    },
+<script setup>
+defineOptions({ name: "ThreeStateCheckbox" });
+
+import { computed } from "vue";
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: undefined,
   },
-  emits: ["update:modelValue"],
-  data: () => ({
-    states: [
-      { value: undefined, title: "Default" },
-      { value: true, title: "Enabled" },
-      { value: false, title: "Disabled" },
-    ].map((value, index) => ({ ...value, index })),
-  }),
-  computed: {
-    state() {
-      return (
-        this.states.find(({ value }) => value === this.modelValue) ||
-        this.states[0]
-      );
-    },
+  color: {
+    type: String,
+    default: "primary",
   },
-  methods: {
-    cycle() {
-      const curr = this.state.index;
-      const next = (curr + 1) % this.states.length;
-      this.$emit("update:modelValue", this.states[next].value);
-    },
+  label: {
+    type: String,
+    default: "",
   },
-};
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const states = [
+  { value: undefined, title: "Default" },
+  { value: true, title: "Enabled" },
+  { value: false, title: "Disabled" },
+].map((value, index) => ({ ...value, index }));
+
+const state = computed(() => {
+  return states.find(({ value }) => value === props.modelValue) || states[0];
+});
+
+function cycle() {
+  const curr = state.value.index;
+  const next = (curr + 1) % states.length;
+  emit("update:modelValue", states[next].value);
+}
 </script>

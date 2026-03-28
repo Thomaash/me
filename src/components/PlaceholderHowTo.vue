@@ -24,34 +24,34 @@
   </section>
 </template>
 
-<script>
-export default {
-  name: "PlaceholderHowTo",
-  data: () => ({
-    headers: [
-      { text: "Placeholder", value: "name" },
-      { text: "Description", value: "description" },
-      { text: "Multiline", value: "multiline" },
-    ],
-    items: [
-      {
-        name: "{{HOSTNAMES}}",
-        description: "Lists hostnames of connected nodes.",
-        multiline: "no",
-      },
-      {
-        name: "{{IPS}}",
-        description: "Lists IPs of connected nodes.",
-        multiline: "with multiple IPs or nodes",
-      },
-      {
-        name: "{{TYPES}}",
-        description: "Lists types of connected nodes.",
-        multiline: "with multiple nodes",
-      },
-    ],
-  }),
-};
+<script setup>
+defineOptions({ name: "PlaceholderHowTo" });
+
+import { ref } from "vue";
+
+const headers = ref([
+  { text: "Placeholder", value: "name" },
+  { text: "Description", value: "description" },
+  { text: "Multiline", value: "multiline" },
+]);
+
+const items = ref([
+  {
+    name: "{{HOSTNAMES}}",
+    description: "Lists hostnames of connected nodes.",
+    multiline: "no",
+  },
+  {
+    name: "{{IPS}}",
+    description: "Lists IPs of connected nodes.",
+    multiline: "with multiple IPs or nodes",
+  },
+  {
+    name: "{{TYPES}}",
+    description: "Lists types of connected nodes.",
+    multiline: "with multiple nodes",
+  },
+]);
 </script>
 
 <style scoped>

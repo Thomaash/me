@@ -17,8 +17,8 @@
         :step="0.1"
         :model-value="size.widthScreenCm"
         :rules="[
-          validators.decimal(size.widthScreenCm),
-          validators.minValue(0)(size.widthScreenCm),
+          validators.decimal(),
+          validators.minValue(0),
         ]"
         label="Width on screen"
         type="number"
@@ -34,8 +34,8 @@
         :step="0.1"
         :model-value="size.widthPaperCm"
         :rules="[
-          validators.decimal(size.widthPaperCm),
-          validators.minValue(0)(size.widthPaperCm),
+          validators.decimal(),
+          validators.minValue(0),
         ]"
         label="Width on paper"
         type="number"
@@ -51,8 +51,8 @@
         :step="1"
         :model-value="size.widthPx"
         :rules="[
-          validators.integer(size.widthPx),
-          validators.minValue(1)(size.widthPx),
+          validators.integer(),
+          validators.minValue(1),
         ]"
         label="Width"
         type="number"
@@ -69,8 +69,8 @@
         :step="0.1"
         :model-value="size.heightScreenCm"
         :rules="[
-          validators.decimal(size.heightScreenCm),
-          validators.minValue(0)(size.heightScreenCm),
+          validators.decimal(),
+          validators.minValue(0),
         ]"
         label="Height on screen"
         type="number"
@@ -86,8 +86,8 @@
         :step="0.1"
         :model-value="size.heightPaperCm"
         :rules="[
-          validators.decimal(size.heightPaperCm),
-          validators.minValue(0)(size.heightPaperCm),
+          validators.decimal(),
+          validators.minValue(0),
         ]"
         label="Height on paper"
         type="number"
@@ -103,8 +103,8 @@
         :step="1"
         :model-value="size.heightPx"
         :rules="[
-          validators.integer(size.heightPx),
-          validators.minValue(1)(size.heightPx),
+          validators.integer(),
+          validators.minValue(1),
         ]"
         label="Height"
         type="number"
@@ -131,8 +131,8 @@
           :min="1"
           :step="1"
           :rules="[
-            validators.integer(tileWidthPx),
-            validators.minValue(1)(tileWidthPx),
+            validators.integer(),
+            validators.minValue(1),
           ]"
           label="The width of each tile"
           type="number"
@@ -147,8 +147,8 @@
           :min="1"
           :step="1"
           :rules="[
-            validators.integer(tileHeightPx),
-            validators.minValue(1)(tileHeightPx),
+            validators.integer(),
+            validators.minValue(1),
           ]"
           label="The height of each tile"
           type="number"
@@ -182,213 +182,142 @@
   </v-row>
 </template>
 
-<script>
+<script setup>
+defineOptions({ name: "ImageConfig" });
+
+import { ref, reactive, computed, watch, onMounted } from "vue";
 import { decimal, integer, minValue } from "@/validation/rules";
-import { mapGetters } from "vuex";
+import { useTopologyStore } from "@/composables/useTopologyStore";
 
 const SCREEN_DPCM = 38;
 const PAPER_DPCM = 120;
 
-class ValuesToScale {
-  constructor(width, height) {
-    this.width = width;
-    this.height = height;
-  }
-
-  widthScreenCm(v) {
-    return this.widthPx(v * SCREEN_DPCM);
-  }
-
-  widthPaperCm(v) {
-    return this.widthPx(v * PAPER_DPCM);
-  }
-
-  widthPx(v) {
-    return v / this.width;
-  }
-
-  heightScreenCm(v) {
-    return this.heightPx(v * SCREEN_DPCM);
-  }
-
-  heightPaperCm(v) {
-    return this.heightPx(v * PAPER_DPCM);
-  }
-
-  heightPx(v) {
-    return v / this.height;
-  }
+function createValuesToScale(w, h) {
+  const widthPx = (v) => v / w;
+  const heightPx = (v) => v / h;
+  return {
+    widthScreenCm: (v) => widthPx(v * SCREEN_DPCM),
+    widthPaperCm: (v) => widthPx(v * PAPER_DPCM),
+    widthPx,
+    heightScreenCm: (v) => heightPx(v * SCREEN_DPCM),
+    heightPaperCm: (v) => heightPx(v * PAPER_DPCM),
+    heightPx,
+  };
 }
 
-class ScaleValues {
-  constructor(width, height) {
-    this.width = width;
-    this.height = height;
-  }
-
-  widthScreenCm(s) {
-    return this.widthPx(s) / SCREEN_DPCM;
-  }
-
-  widthPaperCm(s) {
-    return this.widthPx(s) / PAPER_DPCM;
-  }
-
-  widthPx(s) {
-    return Math.ceil(s * this.width);
-  }
-
-  heightScreenCm(s) {
-    return this.heightPx(s) / SCREEN_DPCM;
-  }
-
-  heightPaperCm(s) {
-    return this.heightPx(s) / PAPER_DPCM;
-  }
-
-  heightPx(s) {
-    return Math.ceil(s * this.height);
-  }
+function createScaleValues(w, h) {
+  const widthPx = (s) => Math.ceil(s * w);
+  const heightPx = (s) => Math.ceil(s * h);
+  return {
+    widthScreenCm: (s) => widthPx(s) / SCREEN_DPCM,
+    widthPaperCm: (s) => widthPx(s) / PAPER_DPCM,
+    widthPx,
+    heightScreenCm: (s) => heightPx(s) / SCREEN_DPCM,
+    heightPaperCm: (s) => heightPx(s) / PAPER_DPCM,
+    heightPx,
+  };
 }
 
-class ValuesToString {
-  constructor(precision) {
-    this.precision = precision;
-  }
-
-  widthScreenCm(v) {
-    return v.toFixed(this.precision);
-  }
-
-  widthPaperCm(v) {
-    return v.toFixed(this.precision);
-  }
-
-  widthPx(v) {
-    return v.toFixed(0);
-  }
-
-  heightScreenCm(v) {
-    return v.toFixed(this.precision);
-  }
-
-  heightPaperCm(v) {
-    return v.toFixed(this.precision);
-  }
-
-  heightPx(v) {
-    return v.toFixed(0);
-  }
+function createValuesToString(precision) {
+  const fix = (v) => v.toFixed(precision);
+  const fixZero = (v) => v.toFixed(0);
+  return {
+    widthScreenCm: fix,
+    widthPaperCm: fix,
+    widthPx: fixZero,
+    heightScreenCm: fix,
+    heightPaperCm: fix,
+    heightPx: fixZero,
+  };
 }
 
-export default {
-  name: "ImageConfig",
-  props: {
-    working: {
-      required: true,
-      type: Boolean,
-    },
+const props = defineProps({
+  working: {
+    required: true,
+    type: Boolean,
   },
-  emits: ["render"],
-  data: () => ({
-    scale: 1,
-    dark: false,
-    tiles: false,
-    tileHeightPx: 256,
-    tileWidthPx: 256,
+});
+
+const emit = defineEmits(["render"]);
+
+const { boundingBox } = useTopologyStore();
+
+const scale = ref(1);
+const dark = ref(false);
+const tiles = ref(false);
+const tileHeightPx = ref(256);
+const tileWidthPx = ref(256);
+const size = reactive({
+  widthScreenCm: 0,
+  widthPaperCm: 0,
+  widthPx: 0,
+  heightScreenCm: 0,
+  heightPaperCm: 0,
+  heightPx: 0,
+});
+const validators = { decimal, integer, minValue };
+
+const width = computed(() => boundingBox.value().width);
+const height = computed(() => boundingBox.value().height);
+
+const disabled = computed(
+  () => props.working || width.value <= 0 || height.value <= 0,
+);
+
+const tilesWidthNumber = computed(() =>
+  Math.max(1, Math.ceil(size.widthPx / tileWidthPx.value)),
+);
+const tilesHeightNumber = computed(() =>
+  Math.max(1, Math.ceil(size.heightPx / tileHeightPx.value)),
+);
+
+const valuesToScale = computed(() =>
+  createValuesToScale(width.value, height.value),
+);
+const scaleValues = computed(() =>
+  createScaleValues(width.value, height.value),
+);
+const valuesToString = computed(() => createValuesToString(2));
+
+function recompute(initiator, value) {
+  const s = valuesToScale.value[initiator](Number(value));
+  Object.keys(size).forEach((key) => {
+    if (key === initiator) {
+      size[key] = Number(value);
+    } else {
+      size[key] = Number(
+        valuesToString.value[key](scaleValues.value[key](s)),
+      );
+    }
+  });
+  scale.value = s;
+}
+
+function recomputeAll(s) {
+  Object.keys(size).forEach((key) => {
+    size[key] = Number(valuesToString.value[key](scaleValues.value[key](s)));
+  });
+}
+
+function render() {
+  emit("render", {
     size: {
-      widthScreenCm: 0,
-      widthPaperCm: 0,
-      widthPx: 0,
-      heightScreenCm: 0,
-      heightPaperCm: 0,
-      heightPx: 0,
+      width: +size.widthPx,
+      height: +size.heightPx,
+      scale: scale.value,
     },
-    validators: {
-      decimal,
-      integer,
-      minValue,
-    },
-  }),
-  computed: {
-    ...mapGetters("topology", ["boundingBox"]),
-
-    disabled() {
-      return this.working || this.width <= 0 || this.height <= 0;
-    },
-
-    width() {
-      return this.boundingBox().width;
-    },
-    height() {
-      return this.boundingBox().height;
-    },
-
-    tilesWidthNumber() {
-      return Math.max(1, Math.ceil(this.size.widthPx / this.tileWidthPx));
-    },
-    tilesHeightNumber() {
-      return Math.max(1, Math.ceil(this.size.heightPx / this.tileHeightPx));
-    },
-
-    valuesToScale() {
-      return new ValuesToScale(this.width, this.height);
-    },
-    scaleValues() {
-      return new ScaleValues(this.width, this.height);
-    },
-    valuesToString() {
-      return new ValuesToString(2);
-    },
-  },
-  watch: {
-    width() {
-      this.recomputeAll(1);
-    },
-    height() {
-      this.recomputeAll(1);
-    },
-  },
-  mounted() {
-    this.recomputeAll(1);
-  },
-  methods: {
-    recompute(initiator, value) {
-      const scale = this.valuesToScale[initiator](Number(value));
-      Object.keys(this.size).forEach((key) => {
-        if (key === initiator) {
-          this.size[key] = Number(value);
-        } else {
-          this.size[key] = Number(
-            this.valuesToString[key](this.scaleValues[key](scale)),
-          );
+    tiles: tiles.value
+      ? {
+          width: tileWidthPx.value,
+          height: tileHeightPx.value,
         }
-      });
-      this.scale = scale;
-    },
-    recomputeAll(scale) {
-      Object.keys(this.size).forEach((key) => {
-        this.size[key] = Number(
-          this.valuesToString[key](this.scaleValues[key](scale)),
-        );
-      });
-    },
-    render() {
-      this.$emit("render", {
-        size: {
-          width: +this.size.widthPx,
-          height: +this.size.heightPx,
-          scale: this.scale,
-        },
-        tiles: this.tiles
-          ? {
-              width: this.tileWidthPx,
-              height: this.tileHeightPx,
-            }
-          : false,
-        dark: this.dark,
-      });
-    },
-  },
-};
+      : false,
+    dark: dark.value,
+  });
+}
+
+watch(width, () => recomputeAll(1));
+watch(height, () => recomputeAll(1));
+
+onMounted(() => recomputeAll(1));
 </script>

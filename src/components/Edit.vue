@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog
       v-model="dialog"
-      :fullscreen="fullscreen || $vuetify.display.xs"
+      :fullscreen="fullscreen || xs"
       persistent
       scrollable
       max-width="600px"
@@ -44,8 +44,11 @@
   </v-row>
 </template>
 
-<script>
-import AssociationEdit from "./edit/Associtaion.vue";
+<script setup>
+import { ref, computed } from "vue";
+import { useDisplay } from "vuetify";
+
+import AssociationEdit from "./edit/Association.vue";
 import ControllerEdit from "./edit/Controller.vue";
 import DummyEdit from "./edit/Dummy.vue";
 import HostEdit from "./edit/Host.vue";
@@ -54,14 +57,15 @@ import PortEdit from "./edit/Port.vue";
 import SwitchEdit from "./edit/Switch.vue";
 
 const typeComponentMap = {
-  association: "AssociationEdit",
-  controller: "ControllerEdit",
-  dummy: "DummyEdit",
-  host: "HostEdit",
-  link: "LinkEdit",
-  port: "PortEdit",
-  switch: "SwitchEdit",
+  association: AssociationEdit,
+  controller: ControllerEdit,
+  dummy: DummyEdit,
+  host: HostEdit,
+  link: LinkEdit,
+  port: PortEdit,
+  switch: SwitchEdit,
 };
+
 const typeHeadlineMap = {
   association: "Association",
   controller: "Controller",
@@ -72,70 +76,58 @@ const typeHeadlineMap = {
   switch: "Switch",
 };
 
-export default {
-  name: "ItemEdit",
-  components: {
-    AssociationEdit,
-    ControllerEdit,
-    DummyEdit,
-    HostEdit,
-    LinkEdit,
-    PortEdit,
-    SwitchEdit,
-  },
-  data: () => ({
-    dialog: false,
-    fullscreen: true,
-    item: {},
-    valid: false,
-  }),
-  computed: {
-    component() {
-      return typeComponentMap[this.item.type] || "div";
-    },
-    headline() {
-      return typeHeadlineMap[this.item.type] || "";
-    },
-    themeType() {
-      switch (this.item.type) {
-        case "association":
-        case "link":
-          return "edge";
-        default:
-          return this.item.type;
-      }
-    },
-  },
-  methods: {
-    edit(item, callback) {
-      this.item = JSON.parse(JSON.stringify(item));
-      this.callback = callback;
+const { xs } = useDisplay();
 
-      this.fullscreen = false;
-      this.dialog = true;
-    },
-    save(event) {
-      if (event.target.tagName === "TEXTAREA") {
-        return;
-      }
+const dialog = ref(false);
+const fullscreen = ref(true);
+const item = ref({});
+const valid = ref(false);
 
-      if (!this.valid) {
-        return;
-      }
+let callback = null;
 
-      const item = JSON.parse(JSON.stringify(this.item));
-      this.callback(item);
-      this.close();
-    },
-    cancel() {
-      this.callback();
-      this.close();
-    },
-    close() {
-      this.item = {};
-      this.callback = null;
-      this.dialog = false;
-    },
-  },
-};
+const component = computed(() => typeComponentMap[item.value.type] || "div");
+const headline = computed(() => typeHeadlineMap[item.value.type] || "");
+const themeType = computed(() => {
+  switch (item.value.type) {
+    case "association":
+    case "link":
+      return "edge";
+    default:
+      return item.value.type;
+  }
+});
+
+function edit(editItem, editCallback) {
+  item.value = JSON.parse(JSON.stringify(editItem));
+  callback = editCallback;
+  fullscreen.value = false;
+  dialog.value = true;
+}
+
+function save(event) {
+  if (event.target.tagName === "TEXTAREA") {
+    return;
+  }
+
+  if (!valid.value) {
+    return;
+  }
+
+  const savedItem = JSON.parse(JSON.stringify(item.value));
+  callback(savedItem);
+  close();
+}
+
+function cancel() {
+  callback();
+  close();
+}
+
+function close() {
+  item.value = {};
+  callback = null;
+  dialog.value = false;
+}
+
+defineExpose({ edit, save, cancel, dialog, component, headline, item, valid });
 </script>

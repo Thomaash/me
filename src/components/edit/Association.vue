@@ -16,15 +16,12 @@
   </v-form>
 </template>
 
-<script>
-import common from "./common";
+<script setup>
+import { ref, watch } from "vue";
 
-export default {
-  name: "AssociationEdit",
-  mixins: [common],
-  data: () => ({
-    valid: false,
-    item: {},
-  }),
-};
+const item = defineModel({ type: Object, required: true });
+const valid = ref(false);
+const emit = defineEmits(["valid"]);
+
+watch(valid, (val) => emit("valid", val));
 </script>

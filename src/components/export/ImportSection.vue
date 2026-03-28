@@ -110,11 +110,10 @@
   </v-row>
 </template>
 
-<script>
-import importScript from "@/importScript";
-import { ref } from "vue";
-import { mapGetters } from "vuex";
+<script setup>
+import { ref, computed } from "vue";
 import { useConfirmDialog } from "@vueuse/core";
+import importScript from "@/importScript";
 
 import exampleEmpty from "@/examples/empty";
 import exampleMedium1C from "@/examples/medium_1_controller";
@@ -124,156 +123,125 @@ import exampleTinyController from "@/examples/tiny_controller";
 import exampleTinyMininetConf from "@/examples/tiny_mininet_conf";
 import exampleTinyPhysicalInterface from "@/examples/tiny_physical_interface";
 import exampleTinyTC from "@/examples/tiny_tc";
+import { useTopologyStore } from "@/composables/useTopologyStore";
 
-export default {
-  name: "ImportSection",
-  emits: ["log"],
-  setup: () => {
-    const { isRevealed, reveal, confirm, cancel } = useConfirmDialog();
+const { working: storeWorking, setWorking, setAlert, clearAlert, importData: storeImportData } = useTopologyStore();
+const emit = defineEmits(["log"]);
+const { isRevealed, reveal, confirm, cancel } = useConfirmDialog();
 
-    return {
-      isRevealed,
-      reveal,
-      confirm,
-      cancel,
+const fileInput = ref(null);
+const scriptImportWarning = ref(false);
 
-      scriptImportWarning: ref(false),
-    };
+const emptyProject = exampleEmpty;
+const examples = [
+  { title: "Tiny without controller", data: exampleTiny },
+  { title: "Tiny with controller", data: exampleTinyController },
+  { title: "Tiny with physical interface", data: exampleTinyPhysicalInterface },
+  { title: "Tiny with traffic control", data: exampleTinyTC },
+  { title: "Tiny with Mininet settings", data: exampleTinyMininetConf },
+  { title: "Medium with 1 controller", data: exampleMedium1C },
+  { title: "Medium with 2 controllers", data: exampleMedium2C },
+];
+
+const working = computed({
+  get() {
+    return !!storeWorking.value;
   },
-  data: () => ({
-    emptyProject: exampleEmpty,
-    examples: [
-      {
-        title: "Tiny without controller",
-        data: exampleTiny,
-      },
-      {
-        title: "Tiny with controller",
-        data: exampleTinyController,
-      },
-      {
-        title: "Tiny with physical interface",
-        data: exampleTinyPhysicalInterface,
-      },
-      {
-        title: "Tiny with traffic control",
-        data: exampleTinyTC,
-      },
-      {
-        title: "Tiny with Mininet settings",
-        data: exampleTinyMininetConf,
-      },
-      {
-        title: "Medium with 1 controller",
-        data: exampleMedium1C,
-      },
-      {
-        title: "Medium with 2 controllers",
-        data: exampleMedium2C,
-      },
-    ],
-  }),
-  computed: {
-    ...mapGetters("topology", ["data"]),
-    working: {
-      get() {
-        return !!this.$store.state.working;
-      },
-      set(value) {
-        if (value) {
-          this.$store.commit("clearAlert");
-        }
-        this.$store.commit("setWorking", { working: !!value });
-      },
-    },
-    importers() {
-      function json(json) {
-        return { data: JSON.parse(json), log: [] };
-      }
-      function python(script) {
-        return importScript(script);
-      }
-      return {
-        ".json": json,
-        ".py": python,
-        "application/json": json,
-        "application/x-python-code": python,
-        "text/x-python": python,
-        json,
-        python,
-      };
-    },
-    importAccept() {
-      return Object.keys(this.importers)
-        .filter((key) => /(^.|\/)/.test(key))
-        .join(",");
-    },
+  set(value) {
+    if (value) {
+      clearAlert();
+    }
+    setWorking({ working: !!value });
   },
-  methods: {
-    showAlert(type, text) {
-      this.$store.commit("setAlert", { type, text });
-    },
-    openFileChooser() {
-      const input = this.$refs.fileInput;
-      input.click();
-    },
-    retrieveFile() {
-      const input = this.$refs.fileInput;
-      const file = input.files[0];
-      input.value = "";
+});
 
-      // Some browsers emit input, some change and some both.
-      // Return if the file was already collected by the other event handler.
-      if (!file) {
-        return;
-      }
+function jsonImporter(json) {
+  return { data: JSON.parse(json), log: [] };
+}
 
-      this.working = true;
+function pythonImporter(script) {
+  return importScript(script);
+}
 
-      const fr = new FileReader();
-      fr.readAsBinaryString(file);
-      fr.onloadend = async () => {
-        try {
-          const stringToImport =
-            this.importers[file.type] ||
-            this.importers[file.name.replace(/^.*(?=\.)/, "")];
-          if (stringToImport) {
-            const str = fr.result;
-            const { data, log } = stringToImport(str);
-            this.$emit("log", log);
-            if (stringToImport === this.importers.python) {
-              await this.confirmImport(data, ["script-import-warning"]);
-            } else {
-              await this.confirmImport(data);
-            }
-          } else {
-            this.showAlert("error", `Unknown file format: “${file.type}”.`);
-          }
-        } catch (error) {
-          console.error(error);
-          this.showAlert("error", "Import failed.");
-        } finally {
-          this.working = false;
-        }
-      };
-    },
-    async importData(data) {
-      this.working = true;
-      await this.confirmImport(data);
-      this.working = false;
-    },
-    async confirmImport(importData, warnings = []) {
-      this.scriptImportWarning = warnings.includes("script-import-warning");
-
-      const { isCanceled } = await this.reveal();
-
-      if (isCanceled) {
-        this.showAlert("info", "Import canceled.");
-      } else {
-        this.$store.commit("topology/importData", importData);
-        this.showAlert("success", "Successfully imported.");
-      }
-    },
-  },
+const importers = {
+  ".json": jsonImporter,
+  ".py": pythonImporter,
+  "application/json": jsonImporter,
+  "application/x-python-code": pythonImporter,
+  "text/x-python": pythonImporter,
+  json: jsonImporter,
+  python: pythonImporter,
 };
+
+const importAccept = Object.keys(importers)
+  .filter((key) => /(^.|\/)/.test(key))
+  .join(",");
+
+function showAlert(type, text) {
+  setAlert({ type, text });
+}
+
+function openFileChooser() {
+  fileInput.value.click();
+}
+
+async function confirmImport(importData, warnings = []) {
+  scriptImportWarning.value = warnings.includes("script-import-warning");
+
+  const { isCanceled } = await reveal();
+
+  if (isCanceled) {
+    showAlert("info", "Import canceled.");
+  } else {
+    storeImportData(importData);
+    showAlert("success", "Successfully imported.");
+  }
+}
+
+function retrieveFile() {
+  const input = fileInput.value;
+  const file = input.files[0];
+  input.value = "";
+
+  // Some browsers emit input, some change and some both.
+  // Return if the file was already collected by the other event handler.
+  if (!file) {
+    return;
+  }
+
+  working.value = true;
+
+  const fr = new FileReader();
+  fr.readAsBinaryString(file);
+  fr.onloadend = async () => {
+    try {
+      const stringToImport =
+        importers[file.type] ||
+        importers[file.name.replace(/^.*(?=\.)/, "")];
+      if (stringToImport) {
+        const str = fr.result;
+        const { data, log } = stringToImport(str);
+        emit("log", log);
+        if (stringToImport === importers.python) {
+          await confirmImport(data, ["script-import-warning"]);
+        } else {
+          await confirmImport(data);
+        }
+      } else {
+        showAlert("error", `Unknown file format: "${file.type}".`);
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert("error", "Import failed.");
+    } finally {
+      working.value = false;
+    }
+  };
+}
+
+async function importData(data) {
+  working.value = true;
+  await confirmImport(data);
+  working.value = false;
+}
 </script>

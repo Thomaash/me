@@ -20,26 +20,21 @@
       </v-btn>
     </p>
 
-    <p v-if="$store.state.isUpdateAvailable">
+    <p v-if="isUpdateAvailable">
       A new version is available and will be automatically installed when you
       close all open tabs.
     </p>
   </section>
 </template>
 
-<script>
-export default {
-  name: "BuildInfo",
-  computed: {
-    buildDate() {
-      return process.env.VITE_BUILD_DATE;
-    },
-    buildCommitHash() {
-      return process.env.VITE_BUILD_COMMIT_HASH;
-    },
-    buildCommitDate() {
-      return process.env.VITE_BUILD_COMMIT_DATE;
-    },
-  },
-};
+<script setup>
+defineOptions({ name: "BuildInfo" });
+
+import { useTopologyStore } from "@/composables/useTopologyStore";
+
+const { isUpdateAvailable } = useTopologyStore();
+
+const buildDate = import.meta.env.VITE_BUILD_DATE;
+const buildCommitHash = import.meta.env.VITE_BUILD_COMMIT_HASH;
+const buildCommitDate = import.meta.env.VITE_BUILD_COMMIT_DATE;
 </script>

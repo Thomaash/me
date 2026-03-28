@@ -27,7 +27,7 @@
             title="Edge"
             data-cy="fab-edge"
             icon="$net-edge"
-            @click="$refs.vis.addEdge()"
+            @click="vis.addEdge()"
           />
           <v-btn
             key="fab-port"
@@ -36,7 +36,7 @@
             title="Port"
             data-cy="fab-port"
             icon="$net-port"
-            @click="$refs.vis.addPort()"
+            @click="vis.addPort()"
           />
           <v-btn
             key="fab-host"
@@ -45,7 +45,7 @@
             title="Host"
             data-cy="fab-host"
             icon="$net-host"
-            @click="$refs.vis.addHost()"
+            @click="vis.addHost()"
           />
           <v-btn
             key="fab-switch"
@@ -54,7 +54,7 @@
             title="Switch"
             data-cy="fab-switch"
             icon="$net-switch"
-            @click="$refs.vis.addSwitch()"
+            @click="vis.addSwitch()"
           />
           <v-btn
             key="fab-controller"
@@ -63,7 +63,7 @@
             title="Controller"
             data-cy="fab-controller"
             icon="$net-controller"
-            @click="$refs.vis.addController()"
+            @click="vis.addController()"
           />
           <v-btn
             key="fab-dummy"
@@ -72,7 +72,7 @@
             title="Label"
             data-cy="fab-dummy"
             icon="$net-label"
-            @click="$refs.vis.addDummy()"
+            @click="vis.addDummy()"
           />
           <v-btn
             key="fab-delete"
@@ -81,7 +81,7 @@
             title="Delete"
             data-cy="fab-delete"
             icon="mdi-delete"
-            @click="$refs.vis.deleteSelected()"
+            @click="vis.deleteSelected()"
           />
         </v-speed-dial>
       </div>
@@ -89,33 +89,26 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from "vue";
 import Edit from "@/components/Edit.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import VisContainer from "@/components/VisContainer.vue";
 import { items as theme } from "@/theme";
+import { useRoute } from "vue-router";
+import { useTopologyStore } from "@/composables/useTopologyStore";
 
-export default {
-  name: "CanvasPage",
-  components: { Edit, LoadingSpinner, VisContainer },
-  data: () => ({
-    fab: false,
-    theme,
-  }),
-  computed: {
-    loading() {
-      return this.$store.state.loading;
-    },
-    isView() {
-      return this.$route.meta.isView;
-    },
-  },
-  methods: {
-    editItem(item, callback) {
-      this.$refs.edit.edit(item, callback);
-    },
-  },
-};
+const { loading } = useTopologyStore();
+const route = useRoute();
+
+const vis = ref(null);
+const edit = ref(null);
+const fab = ref(false);
+const isView = computed(() => route.meta?.isView);
+
+function editItem(item, callback) {
+  edit.value.edit(item, callback);
+}
 </script>
 
 <style scoped>
@@ -123,8 +116,5 @@ export default {
   width: 100%;
   height: 100%;
   padding: 0px;
-}
-.invert-color {
-  filter: invert(100%);
 }
 </style>

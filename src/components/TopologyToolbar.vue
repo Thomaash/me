@@ -13,65 +13,59 @@
   </div>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
+import { useRoute, useRouter } from "vue-router";
+import { useTopologyStore } from "@/composables/useTopologyStore";
 
-export default {
-  name: "TopologyToolbar",
-  props: {
-    undoRedo: {
-      type: Boolean,
-      default: false,
-    },
+const props = defineProps({
+  undoRedo: {
+    type: Boolean,
+    default: false,
   },
-  computed: {
-    ...mapGetters("topology", ["canUndo", "canRedo"]),
-    show() {
-      return !!this.items.length;
+});
+
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
+const { canUndo, canRedo } = useTopologyStore();
+
+const viewURL = computed(() =>
+  route.name.startsWith("Canvas")
+    ? `/view${route.fullPath}`
+    : "/view/canvas",
+);
+
+function openViewPopup() {
+  window.open(router.options.history.createHref(viewURL.value), "", "_blank");
+}
+
+const items = computed(() =>
+  [
+    {
+      icon: "mdi-undo",
+      text: "Undo",
+      action: () => store.dispatch("topology/undo"),
+      show: props.undoRedo,
+      enabled: canUndo.value,
     },
-    viewURL() {
-      return this.$route.name.startsWith("Canvas")
-        ? `/view${this.$route.fullPath}`
-        : "/view/canvas";
+    {
+      icon: "mdi-redo",
+      text: "Redo",
+      action: () => store.dispatch("topology/redo"),
+      show: props.undoRedo,
+      enabled: canRedo.value,
     },
-    items() {
-      return [
-        {
-          icon: "mdi-undo",
-          text: "Undo",
-          action: () => {
-            this.$store.dispatch("topology/undo");
-          },
-          show: this.undoRedo,
-          enabled: this.canUndo,
-        },
-        {
-          icon: "mdi-redo",
-          text: "Redo",
-          action: () => {
-            this.$store.dispatch("topology/redo");
-          },
-          show: this.undoRedo,
-          enabled: this.canRedo,
-        },
-        {
-          icon: "mdi-open-in-new",
-          text: "Open a new view",
-          action: this.openViewPopup,
-          show: true,
-          enabled: true,
-        },
-      ].filter(({ show }) => show);
+    {
+      icon: "mdi-open-in-new",
+      text: "Open a new view",
+      action: openViewPopup,
+      show: true,
+      enabled: true,
     },
-  },
-  methods: {
-    openViewPopup() {
-      window.open(
-        this.$router.options.history.createHref(this.viewURL),
-        "",
-        "_blank",
-      );
-    },
-  },
-};
+  ].filter(({ show }) => show),
+);
+
+const show = computed(() => !!items.value.length);
 </script>

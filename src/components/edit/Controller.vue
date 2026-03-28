@@ -6,8 +6,8 @@
           <v-text-field
             v-model="item.hostname"
             :rules="[
-              validators.required(item.hostname),
-              validators.hostname(item.hostname),
+              validators.required(),
+              validators.hostname(),
             ]"
             label="Label"
             autofocus
@@ -26,7 +26,7 @@
         <v-col cols="12">
           <v-text-field
             v-model="item.ip"
-            :rules="[validators.ip(item.ip)]"
+            :rules="[validators.ip()]"
             label="IP"
             clearable
             data-cy="edit-ip"
@@ -34,9 +34,8 @@
         </v-col>
         <v-col cols="12" md="6">
           <v-text-field
-            ref="port"
             v-model.number="item.port"
-            :rules="[validators.port(item.port)]"
+            :rules="[validators.port()]"
             label="Port"
             type="number"
             min="1"
@@ -58,25 +57,16 @@
   </v-form>
 </template>
 
-<script>
-import common from "./common";
+<script setup>
+import { ref, watch } from "vue";
 import { controllerTypes, protocolsIP } from "@/components/selects";
 import { required, hostname, ip, port } from "@/validation/rules";
 
-export default {
-  name: "ControllerEdit",
-  mixins: [common],
-  data: () => ({
-    valid: false,
-    item: {},
-    controllerTypes,
-    protocolsIP,
-    validators: {
-      required,
-      hostname,
-      ip,
-      port,
-    },
-  }),
-};
+const item = defineModel({ type: Object, required: true });
+const valid = ref(false);
+const emit = defineEmits(["valid"]);
+
+watch(valid, (val) => emit("valid", val));
+
+const validators = { required, hostname, ip, port };
 </script>

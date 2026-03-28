@@ -4,10 +4,8 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  name: "AppLogo",
-};
+<script setup>
+defineOptions({ name: "AppLogo" });
 </script>
 
 <style scoped>

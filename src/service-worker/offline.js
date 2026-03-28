@@ -1,6 +1,6 @@
 export function initOffline() {
   // Files to cache.
-  const cacheName = process.env.VITE_BUILD_COMMIT_HASH;
+  const cacheName = import.meta.env.VITE_BUILD_COMMIT_HASH;
   const cacheURLs = ["CACHE_URLS_PLACEHOLDER"];
 
   // Precache assets on install to enable offline usage (old service worker is

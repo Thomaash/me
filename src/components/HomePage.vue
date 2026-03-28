@@ -15,14 +15,9 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import BindingsList from "./BindingsList.vue";
 import AppDescription from "./AppDescription.vue";
 import AppLogo from "./AppLogo.vue";
 import PlaceholderHowTo from "./PlaceholderHowTo.vue";
-
-export default {
-  name: "HomePage",
-  components: { BindingsList, AppDescription, AppLogo, PlaceholderHowTo },
-};
 </script>

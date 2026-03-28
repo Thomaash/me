@@ -36,14 +36,13 @@
   </section>
 </template>
 
-<script>
-export default {
-  name: "AppDescription",
-  props: {
-    full: {
-      type: Boolean,
-      default: false,
-    },
+<script setup>
+defineOptions({ name: "AppDescription" });
+
+defineProps({
+  full: {
+    type: Boolean,
+    default: false,
   },
-};
+});
 </script>

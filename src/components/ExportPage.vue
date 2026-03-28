@@ -27,22 +27,14 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
+import { ref } from "vue";
 import ExportSection from "./export/ExportSection.vue";
 import ImportSection from "./export/ImportSection.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import LogListing from "./export/LogListing.vue";
+import { useTopologyStore } from "@/composables/useTopologyStore";
 
-export default {
-  name: "ExportPage",
-  components: { ExportSection, ImportSection, LoadingSpinner, LogListing },
-  data: () => ({
-    log: [],
-  }),
-  computed: {
-    loading() {
-      return this.$store.state.loading;
-    },
-  },
-};
+const { loading } = useTopologyStore();
+const log = ref([]);
 </script>

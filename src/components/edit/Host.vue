@@ -6,8 +6,8 @@
           <v-text-field
             v-model="item.hostname"
             :rules="[
-              validators.required()(item.hostname),
-              validators.hostname()(item.hostname),
+              validators.required(),
+              validators.hostname(),
             ]"
             label="Hostname"
             autofocus
@@ -17,7 +17,7 @@
         <v-col cols="12">
           <v-text-field
             v-model="item.defaultRoute"
-            :rules="[validators.ip()(item.defaultRoute)]"
+            :rules="[validators.ip()]"
             label="Default Route"
             clearable
             data-cy="edit-default-route"
@@ -36,8 +36,8 @@
             ref="itemCPULimit"
             v-model.number="item.cpuLimit"
             :rules="[
-              validators.decimal()(item.cpuLimit),
-              validators.between(0, 1)(item.cpuLimit),
+              validators.decimal(),
+              validators.between(0, 1),
             ]"
             label="CPU Utilization Limit"
             type="number"
@@ -80,8 +80,10 @@
   </v-form>
 </template>
 
-<script>
-import common from "./common";
+<script setup>
+defineOptions({ name: "HostEdit" });
+
+import { computed, ref, watch } from "vue";
 import {
   required,
   hostname,
@@ -92,48 +94,38 @@ import {
 } from "@/validation/rules";
 import { schedulers } from "@/components/selects";
 
-export default {
-  name: "HostEdit",
-  mixins: [common],
-  data: () => ({
-    valid: false,
-    item: {},
-    tralingCommaHack: false, // TODO: Fix properly.
-    schedulers,
-    validators: {
-      between,
-      decimal,
-      hostname,
-      ip,
-      naturalNumberList,
-      required,
-    },
-  }),
-  computed: {
-    cpuCoresStr: {
-      get() {
-        return (
-          (this.item.cpuCores ?? []).join(", ") +
-          (this.trailingCommaHack ? ", " : "")
-        );
-      },
-      set(val) {
-        if (val == null) {
-          delete this.item.cpuCores;
-          this.trailingCommaHack = false;
-        } else {
-          this.item.cpuCores = [
-            ...new Set(
-              val
-                .split(/\s*,\s*/)
-                .filter((str) => str !== "")
-                .map((str) => (/^\d+$/.test(str) ? Number(str) : NaN)),
-            ),
-          ];
-          this.trailingCommaHack = /\s*,\s*$/.test(val);
-        }
-      },
-    },
+const item = defineModel({ type: Object, required: true });
+const valid = ref(false);
+const emit = defineEmits(["valid"]);
+
+watch(valid, (val) => emit("valid", val));
+
+const validators = { between, decimal, hostname, ip, naturalNumberList, required };
+
+const trailingCommaHack = ref(false);
+
+const cpuCoresStr = computed({
+  get() {
+    return (
+      (item.value.cpuCores ?? []).join(", ") +
+      (trailingCommaHack.value ? ", " : "")
+    );
   },
-};
+  set(val) {
+    if (val == null) {
+      delete item.value.cpuCores;
+      trailingCommaHack.value = false;
+    } else {
+      item.value.cpuCores = [
+        ...new Set(
+          val
+            .split(/\s*,\s*/)
+            .filter((str) => str !== "")
+            .map((str) => (/^\d+$/.test(str) ? Number(str) : NaN)),
+        ),
+      ];
+      trailingCommaHack.value = /\s*,\s*$/.test(val);
+    }
+  },
+});
 </script>
