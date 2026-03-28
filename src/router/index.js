@@ -27,8 +27,7 @@ function createRoutes(mapper = (v) => v) {
         routerViewKey: "Home",
       },
       components: {
-        default: () =>
-          import(/* webpackPrefetch: true */ "@/components/HomePage.vue"),
+        default: () => import("@/components/HomePage.vue"),
       },
     },
     {
@@ -41,12 +40,8 @@ function createRoutes(mapper = (v) => v) {
         routerViewKey: "Canvas",
       },
       components: {
-        default: () =>
-          import(/* webpackPrefetch: true */ "@/components/CanvasPage.vue"),
-        toolbar: () =>
-          import(
-            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-          ),
+        default: () => import("@/components/CanvasPage.vue"),
+        toolbar: () => import("@/components/TopologyToolbar.vue"),
       },
       props: {
         toolbar: {
@@ -65,12 +60,8 @@ function createRoutes(mapper = (v) => v) {
             routerViewKey: "Canvas",
           },
           components: {
-            default: () =>
-              import(/* webpackPrefetch: true */ "@/components/CanvasPage.vue"),
-            toolbar: () =>
-              import(
-                /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-              ),
+            default: () => import("@/components/CanvasPage.vue"),
+            toolbar: () => import("@/components/TopologyToolbar.vue"),
           },
         },
         {
@@ -87,12 +78,8 @@ function createRoutes(mapper = (v) => v) {
             routerViewKey: "Canvas",
           },
           components: {
-            default: () =>
-              import(/* webpackPrefetch: true */ "@/components/CanvasPage.vue"),
-            toolbar: () =>
-              import(
-                /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-              ),
+            default: () => import("@/components/CanvasPage.vue"),
+            toolbar: () => import("@/components/TopologyToolbar.vue"),
           },
         },
       ],
@@ -107,14 +94,8 @@ function createRoutes(mapper = (v) => v) {
         routerViewKey: "Mininet settings",
       },
       components: {
-        default: () =>
-          import(
-            /* webpackPrefetch: true */ "@/components/MininetSettingsPage.vue"
-          ),
-        toolbar: () =>
-          import(
-            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-          ),
+        default: () => import("@/components/MininetSettingsPage.vue"),
+        toolbar: () => import("@/components/TopologyToolbar.vue"),
       },
     },
     {
@@ -127,12 +108,8 @@ function createRoutes(mapper = (v) => v) {
         routerViewKey: "Export",
       },
       components: {
-        default: () =>
-          import(/* webpackPrefetch: true */ "@/components/ExportPage.vue"),
-        toolbar: () =>
-          import(
-            /* webpackPrefetch: true */ "@/components/TopologyToolbar.vue"
-          ),
+        default: () => import("@/components/ExportPage.vue"),
+        toolbar: () => import("@/components/TopologyToolbar.vue"),
       },
     },
     {
@@ -145,8 +122,7 @@ function createRoutes(mapper = (v) => v) {
         routerViewKey: "About",
       },
       components: {
-        default: () =>
-          import(/* webpackPrefetch: true */ "@/components/AboutPage.vue"),
+        default: () => import("@/components/AboutPage.vue"),
       },
     },
   ].map(mapper);
