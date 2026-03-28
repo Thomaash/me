@@ -146,12 +146,13 @@ export const topology = {
       });
     },
     applyChange({ data: sd }, { remove, update, replace }) {
-      remove &&
+      if (remove) {
         remove.forEach((id) => {
           delete sd.items[id];
         });
+      }
 
-      update &&
+      if (update) {
         update.forEach((item) => {
           if (item.id == null) {
             throw new Error("Items have to have ids.");
@@ -161,14 +162,16 @@ export const topology = {
             saved[key] = item[key];
           });
         });
+      }
 
-      replace &&
+      if (replace) {
         replace.forEach((item) => {
           if (item.id == null) {
             throw new Error("Items have to have ids.");
           }
           sd.items[item.id] = item;
         });
+      }
     },
     pushChange({ past, future }, unit) {
       future.splice(0);

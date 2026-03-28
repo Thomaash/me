@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 
 import { config, ready } from "./config";
 
-export const store = new createStore(config);
+export const store = createStore(config);
 
 ready
   .then(() => {
