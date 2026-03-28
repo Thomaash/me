@@ -58,7 +58,7 @@ describe.concurrent("exporter", () => {
 
     it("throws with specific error message for unsupported version", ({ expect }) => {
       expect(() => importData({ version: 1, items: [] })).toThrow(
-        "Unsuported export version.",
+        "Unsupported export version.",
       );
     });
   });

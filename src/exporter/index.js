@@ -16,7 +16,7 @@ export default {
         items,
       };
     } else {
-      throw new TypeError("Unsuported export version.");
+      throw new TypeError("Unsupported export version.");
     }
   },
   exportData(internal) {
