@@ -203,7 +203,7 @@ describe.concurrent("VisCanvas", () => {
       expect(opts.nodes.borderWidth).toBeCloseTo(0.0001);
       expect(opts.nodes.borderWidthSelected).toBe(2);
       expect(opts.nodes.font.align).toBe("center");
-      expect(opts.nodes.font.face).toBe("Source Sans Pro");
+      expect(opts.nodes.font.face).toBe("Source Sans 3");
       expect(opts.nodes.font.strokeWidth).toBe(0);
       expect(opts.nodes.shapeProperties.borderRadius).toBe(6);
       expect(opts.nodes.shapeProperties.useBorderWithImage).toBe(true);
@@ -211,7 +211,7 @@ describe.concurrent("VisCanvas", () => {
 
       expect(opts.edges.smooth).toBe(false);
       expect(opts.edges.font.align).toBe("top");
-      expect(opts.edges.font.face).toBe("Source Sans Pro");
+      expect(opts.edges.font.face).toBe("Source Sans 3");
 
       expect(opts.interaction.hover).toBe(true);
       expect(opts.interaction.navigationButtons).toBe(false);

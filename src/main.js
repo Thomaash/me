@@ -1,4 +1,4 @@
-import "source-sans-pro/source-sans-pro.css";
+import "source-sans/source-sans-3.css";
 import "source-code-pro/source-code-pro.css";
 import "@mdi/font/css/materialdesignicons.css";
 import "vuetify/styles/main.css";

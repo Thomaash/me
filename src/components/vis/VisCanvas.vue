@@ -94,7 +94,7 @@ const options = computed(() => ({
     font: {
       align: "center",
       color: theme.value.foreground,
-      face: "Source Sans Pro",
+      face: "Source Sans 3",
       strokeWidth: 0,
     },
     shapeProperties: {
@@ -113,7 +113,7 @@ const options = computed(() => ({
     font: {
       align: "top",
       color: theme.value.foreground,
-      face: "Source Sans Pro",
+      face: "Source Sans 3",
       strokeWidth: 0,
     },
   },
