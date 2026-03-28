@@ -113,7 +113,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useConfirmDialog } from "@vueuse/core";
-import importScript from "@/importScript";
+import importer from "@/importer";
 
 import exampleEmpty from "@/examples/empty";
 import { useTopologyStore } from "@/composables/useTopologyStore";
@@ -175,27 +175,7 @@ const working = computed({
   },
 });
 
-function jsonImporter(json) {
-  return { data: JSON.parse(json), log: [] };
-}
-
-function pythonImporter(script) {
-  return importScript(script);
-}
-
-const importers = {
-  ".json": jsonImporter,
-  ".py": pythonImporter,
-  "application/json": jsonImporter,
-  "application/x-python-code": pythonImporter,
-  "text/x-python": pythonImporter,
-  json: jsonImporter,
-  python: pythonImporter,
-};
-
-const importAccept = Object.keys(importers)
-  .filter((key) => /(^.|\/)/.test(key))
-  .join(",");
+const importAccept = importer.importAccept;
 
 function showAlert(type, text) {
   setAlert({ type, text });
@@ -235,23 +215,20 @@ function retrieveFile() {
   fr.readAsBinaryString(file);
   fr.onloadend = async () => {
     try {
-      const stringToImport =
-        importers[file.type] || importers[file.name.replace(/^.*(?=\.)/, "")];
-      if (stringToImport) {
-        const str = fr.result;
-        const { data, log } = stringToImport(str);
-        emit("log", log);
-        if (stringToImport === importers.python) {
-          await confirmImport(data, ["script-import-warning"]);
-        } else {
-          await confirmImport(data);
-        }
-      } else {
-        showAlert("error", `Unknown file format: "${file.type}".`);
-      }
+      const { data, log, warnings } = importer.stringToImport(
+        file.type,
+        file.name,
+        fr.result,
+      );
+      emit("log", log);
+      await confirmImport(data, warnings);
     } catch (error) {
-      console.error(error);
-      showAlert("error", "Import failed.");
+      if (error instanceof TypeError) {
+        showAlert("error", error.message);
+      } else {
+        console.error(error);
+        showAlert("error", "Import failed.");
+      }
     } finally {
       working.value = false;
     }
