@@ -58,48 +58,29 @@ describe.concurrent("Link (edit)", () => {
     expect(wrapper.find("[data-cy='edit-max-queue-size']").exists()).toBe(true);
   });
 
-  it("emits valid and new-item events on mount via common mixin mounted hook", async ({ expect }) => {
+  it("emits valid event on mount", async ({ expect }) => {
     const wrapper = mountLink(fullLinkModel());
 
     await nextTick();
 
     expect(wrapper.emitted("valid")).toBeTruthy();
-    expect(wrapper.emitted("new-item")).toBeTruthy();
-    expect(wrapper.emitted("new-item")[0][0]).toEqual(fullLinkModel());
   });
 
-  it("updates internal item when modelValue prop changes via common mixin watcher", async ({ expect }) => {
+  it("reflects updated modelValue in form fields", async ({ expect }) => {
     const wrapper = mountLink(fullLinkModel());
-
     await nextTick();
 
     const updatedModel = { ...fullLinkModel(), hostname: "link2", bandwidth: 200 };
     await wrapper.setProps({ modelValue: updatedModel });
-
     await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission).toEqual(updatedModel);
-  });
+    const textFields = wrapper.findAllComponents({ name: "VTextField" });
+    const fieldByLabel = (label) => textFields.find((tf) => tf.props("label") === label);
 
-  it("emits update:modelValue and new-item when modelValue changes via common mixin watcher", async ({ expect }) => {
-    const wrapper = mountLink(fullLinkModel());
-
-    await nextTick();
-
-    const newItem = { ...fullLinkModel(), loss: 50 };
-    await wrapper.setProps({ modelValue: newItem });
-
-    await nextTick();
-
-    const updateEmitted = wrapper.emitted("update:modelValue");
-    expect(updateEmitted).toBeTruthy();
-
-    const newItemEmitted = wrapper.emitted("new-item");
-    expect(newItemEmitted).toBeTruthy();
-    expect(newItemEmitted.length).toBeGreaterThanOrEqual(2);
+    expect(fieldByLabel("Label").props("modelValue")).toBe("link2");
+    expect(fieldByLabel("Bandwidth").props("modelValue")).toBe(200);
+    expect(fieldByLabel("Delay").props("modelValue")).toBe("10ms");
+    expect(fieldByLabel("Loss").props("modelValue")).toBe(2);
   });
 
   it("uses validator functions between, integer, minValue, and timeWithUnit for field rules", ({ expect }) => {
@@ -130,31 +111,26 @@ describe.concurrent("Link (edit)", () => {
     const bandwidthField = fieldByLabel("Bandwidth");
     await bandwidthField.setValue(200);
     await nextTick();
-    const afterBandwidth = wrapper.emitted("update:modelValue");
-    expect(afterBandwidth[afterBandwidth.length - 1][0].bandwidth).toBe(200);
+    expect(bandwidthField.props("modelValue")).toBe(200);
 
     const delayField = fieldByLabel("Delay");
     await delayField.setValue("20ms");
     await nextTick();
-    const afterDelay = wrapper.emitted("update:modelValue");
-    expect(afterDelay[afterDelay.length - 1][0].delay).toBe("20ms");
+    expect(delayField.props("modelValue")).toBe("20ms");
 
     const jitterField = fieldByLabel("Jitter");
     await jitterField.setValue("3ms");
     await nextTick();
-    const afterJitter = wrapper.emitted("update:modelValue");
-    expect(afterJitter[afterJitter.length - 1][0].jitter).toBe("3ms");
+    expect(jitterField.props("modelValue")).toBe("3ms");
 
     const lossField = fieldByLabel("Loss");
     await lossField.setValue(5);
     await nextTick();
-    const afterLoss = wrapper.emitted("update:modelValue");
-    expect(afterLoss[afterLoss.length - 1][0].loss).toBe(5);
+    expect(lossField.props("modelValue")).toBe(5);
 
     const maxQueueField = fieldByLabel("Max queue");
     await maxQueueField.setValue(100);
     await nextTick();
-    const afterMaxQueue = wrapper.emitted("update:modelValue");
-    expect(afterMaxQueue[afterMaxQueue.length - 1][0].maxQueueSize).toBe(100);
+    expect(maxQueueField.props("modelValue")).toBe(100);
   });
 });

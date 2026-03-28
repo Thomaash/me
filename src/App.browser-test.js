@@ -163,7 +163,7 @@ async function mountApp() {
 
 describe("App", () => {
   it("renders v-app-bar with Mininet Editor title", async ({ expect }) => {
-    const w = await mountApp();
+    await mountApp();
 
     const appBar = document.querySelector(".v-app-bar");
     expect(appBar).not.toBeNull();
@@ -174,7 +174,7 @@ describe("App", () => {
   });
 
   it("renders navigation drawer with items for routes where meta.drawer is true", async ({ expect }) => {
-    const w = await mountApp();
+    await mountApp();
 
     const navDrawer = document.querySelector(".v-navigation-drawer");
     expect(navDrawer).not.toBeNull();
@@ -191,7 +191,7 @@ describe("App", () => {
   });
 
   it("renders v-main with router-view", async ({ expect }) => {
-    const w = await mountApp();
+    await mountApp();
 
     const main = document.querySelector(".v-main");
     expect(main).not.toBeNull();

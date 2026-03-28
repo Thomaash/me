@@ -46,19 +46,16 @@ function uid() {
   return `uid-${++_uid}`;
 }
 
-function makeHost(overrides = {}) {
-  const id = overrides.id || uid();
-  return { id, type: "host", hostname: "h1", ...overrides, id };
+function makeHost({ id = uid(), ...overrides } = {}) {
+  return { id, type: "host", hostname: "h1", ...overrides };
 }
 
-function makeSwitch(overrides = {}) {
-  const id = overrides.id || uid();
-  return { id, type: "switch", hostname: "s1", ...overrides, id };
+function makeSwitch({ id = uid(), ...overrides } = {}) {
+  return { id, type: "switch", hostname: "s1", ...overrides };
 }
 
-function makePort(overrides = {}) {
-  const id = overrides.id || uid();
-  return { id, type: "port", hostname: "eth0", ...overrides, id };
+function makePort({ id = uid(), ...overrides } = {}) {
+  return { id, type: "port", hostname: "eth0", ...overrides };
 }
 
 function makeAssociation(fromId, toId) {

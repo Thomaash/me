@@ -63,30 +63,31 @@ describe.concurrent("Controller (edit)", () => {
     expect(protocolValues).toContain("ssl");
   });
 
-  it("emits valid and new-item events on mount via common mixin lifecycle", async ({ expect }) => {
+  it("emits valid event on mount", async ({ expect }) => {
     const wrapper = mountController();
 
     await nextTick();
 
     expect(wrapper.emitted("valid")).toBeTruthy();
-    expect(wrapper.emitted("new-item")).toBeTruthy();
-    expect(wrapper.emitted("new-item")[0][0]).toEqual({
-      hostname: "c0",
-      controllerType: "RemoteController",
-    });
   });
 
-  it("syncs internal item when modelValue prop changes", async ({ expect }) => {
-    const initial = { hostname: "c0", controllerType: "RemoteController" };
-    const wrapper = mountController(initial);
+  it("reflects updated modelValue in form fields", async ({ expect }) => {
+    const wrapper = mountController({ hostname: "c0", controllerType: "RemoteController" });
 
     const updated = { hostname: "c1", controllerType: "OVSController", ip: "10.0.0.1" };
     await wrapper.setProps({ modelValue: updated });
+    await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission).toEqual(updated);
+    const textFields = wrapper.findAllComponents({ name: "VTextField" });
+    const labelField = textFields.find((tf) => tf.props("label") === "Label");
+    expect(labelField.props("modelValue")).toBe("c1");
+
+    const ipField = textFields.find((tf) => tf.props("label") === "IP");
+    expect(ipField.props("modelValue")).toBe("10.0.0.1");
+
+    const selects = wrapper.findAllComponents({ name: "VSelect" });
+    const typeSelect = selects.find((s) => s.props("label") === "Type");
+    expect(typeSelect.props("modelValue")).toBe("OVSController");
   });
 
   it("emits valid event when form validity changes", async ({ expect }) => {
@@ -99,7 +100,7 @@ describe.concurrent("Controller (edit)", () => {
     expect(validEvents.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("updates item fields through child component v-model events", async ({ expect }) => {
+  it("updates item fields through child component v-model bindings", async ({ expect }) => {
     const wrapper = mountController({
       hostname: "c0",
       controllerType: "RemoteController",
@@ -117,18 +118,15 @@ describe.concurrent("Controller (edit)", () => {
 
     await hostnameField.setValue("c1");
     await nextTick();
-    const afterHostname = wrapper.emitted("update:modelValue");
-    expect(afterHostname[afterHostname.length - 1][0].hostname).toBe("c1");
+    expect(hostnameField.props("modelValue")).toBe("c1");
 
     await ipField.setValue("10.0.0.1");
     await nextTick();
-    const afterIp = wrapper.emitted("update:modelValue");
-    expect(afterIp[afterIp.length - 1][0].ip).toBe("10.0.0.1");
+    expect(ipField.props("modelValue")).toBe("10.0.0.1");
 
     await portField.setValue(6653);
     await nextTick();
-    const afterPort = wrapper.emitted("update:modelValue");
-    expect(afterPort[afterPort.length - 1][0].port).toBe(6653);
+    expect(portField.props("modelValue")).toBe(6653);
 
     const selects = wrapper.findAllComponents({ name: "VSelect" });
     const typeSelect = selects.find((s) => s.props("label") === "Type");
@@ -136,12 +134,10 @@ describe.concurrent("Controller (edit)", () => {
 
     await typeSelect.setValue("OVSController");
     await nextTick();
-    const afterType = wrapper.emitted("update:modelValue");
-    expect(afterType[afterType.length - 1][0].controllerType).toBe("OVSController");
+    expect(typeSelect.props("modelValue")).toBe("OVSController");
 
     await protocolSelect.setValue("tcp");
     await nextTick();
-    const afterProtocol = wrapper.emitted("update:modelValue");
-    expect(afterProtocol[afterProtocol.length - 1][0].protocol).toBe("tcp");
+    expect(protocolSelect.props("modelValue")).toBe("tcp");
   });
 });

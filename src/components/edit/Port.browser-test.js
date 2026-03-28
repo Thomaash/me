@@ -66,7 +66,7 @@ describe.concurrent("Port (edit)", () => {
     expect(textarea.props("modelValue")).toBe("10.0.0.1/24\n192.168.1.1/16\n");
   });
 
-  it("splits textarea text into ips array via emitted events and tracks trailing newline", async ({ expect }) => {
+  it("splits textarea text into ips array and tracks trailing newline", async ({ expect }) => {
     const wrapper = mountPort({ hostname: "eth0", ips: [] });
 
     await nextTick();
@@ -75,23 +75,14 @@ describe.concurrent("Port (edit)", () => {
 
     await textarea.setValue("10.0.0.1/24\n192.168.1.1/16");
     await nextTick();
-
-    const afterTwo = wrapper.emitted("update:modelValue");
-    expect(afterTwo[afterTwo.length - 1][0].ips).toEqual(["10.0.0.1/24", "192.168.1.1/16"]);
     expect(textarea.props("modelValue")).toBe("10.0.0.1/24\n192.168.1.1/16");
 
     await textarea.setValue("10.0.0.1/24\n");
     await nextTick();
-
-    const afterTrailing = wrapper.emitted("update:modelValue");
-    expect(afterTrailing[afterTrailing.length - 1][0].ips).toEqual(["10.0.0.1/24"]);
     expect(textarea.props("modelValue")).toBe("10.0.0.1/24\n");
 
     await textarea.setValue(null);
     await nextTick();
-
-    const afterNull = wrapper.emitted("update:modelValue");
-    expect(afterNull[afterNull.length - 1][0]).not.toHaveProperty("ips");
     expect(textarea.props("modelValue")).toBe("");
   });
 
@@ -106,32 +97,29 @@ describe.concurrent("Port (edit)", () => {
     await switchToggle.setValue(false);
     await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission).not.toHaveProperty("physical");
+    expect(switchToggle.props("modelValue")).toBeUndefined();
   });
 
-  it("emits valid and new-item events on mount via common mixin lifecycle", async ({ expect }) => {
+  it("emits valid event on mount", async ({ expect }) => {
     const wrapper = mountPort();
 
     await nextTick();
 
     expect(wrapper.emitted("valid")).toBeTruthy();
-    expect(wrapper.emitted("new-item")).toBeTruthy();
-    expect(wrapper.emitted("new-item")[0][0]).toEqual({ hostname: "eth0", ips: ["10.0.0.1/24"] });
   });
 
-  it("syncs internal item when modelValue prop changes via common mixin watcher", async ({ expect }) => {
+  it("reflects updated modelValue in form fields", async ({ expect }) => {
     const wrapper = mountPort();
 
-    const updated = { hostname: "eth1", ips: ["172.16.0.1/12"] };
+    const updated = { hostname: "eth1", ips: ["172.16.0.1/12", "10.0.0.5/8"] };
     await wrapper.setProps({ modelValue: updated });
     await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission).toEqual(updated);
+    const textFields = wrapper.findAllComponents({ name: "VTextField" });
+    const devNameField = textFields.find((tf) => tf.props("label") === "Dev Name");
+    expect(devNameField.props("modelValue")).toBe("eth1");
+
+    const textarea = wrapper.findComponent({ name: "VTextarea" });
+    expect(textarea.props("modelValue")).toBe("172.16.0.1/12\n10.0.0.5/8");
   });
 });

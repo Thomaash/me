@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { nextTick } from "vue";
-import { mount, flushPromises } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
 import { createStore } from "vuex";
 import ImageConfig from "@/components/export/ImageConfig.vue";

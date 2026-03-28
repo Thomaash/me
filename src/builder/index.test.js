@@ -13,8 +13,7 @@ function makeAssociation(fromId, toId) {
   return { id: uid(), type: "association", from: fromId, to: toId };
 }
 
-function makeController(overrides = {}) {
-  const id = overrides.id || uid();
+function makeController({ id = uid(), ...overrides } = {}) {
   return {
     id,
     type: "controller",
@@ -22,17 +21,14 @@ function makeController(overrides = {}) {
     x: 0,
     y: 0,
     ...overrides,
-    id,
   };
 }
 
-function makeHost(overrides = {}) {
-  const id = overrides.id || uid();
-  return { id, type: "host", hostname: "h1", x: 0, y: 0, ...overrides, id };
+function makeHost({ id = uid(), ...overrides } = {}) {
+  return { id, type: "host", hostname: "h1", x: 0, y: 0, ...overrides };
 }
 
-function makeSwitch(overrides = {}) {
-  const id = overrides.id || uid();
+function makeSwitch({ id = uid(), ...overrides } = {}) {
   return {
     id,
     type: "switch",
@@ -40,12 +36,10 @@ function makeSwitch(overrides = {}) {
     x: 0,
     y: 0,
     ...overrides,
-    id,
   };
 }
 
-function makePort(overrides = {}) {
-  const id = overrides.id || uid();
+function makePort({ id = uid(), ...overrides } = {}) {
   return {
     id,
     type: "port",
@@ -53,19 +47,16 @@ function makePort(overrides = {}) {
     x: 0,
     y: 0,
     ...overrides,
-    id,
   };
 }
 
-function makeLink(fromPortId, toPortId, overrides = {}) {
-  const id = overrides.id || uid();
+function makeLink(fromPortId, toPortId, { id = uid(), ...overrides } = {}) {
   return {
     id,
     type: "link",
     from: fromPortId,
     to: toPortId,
     ...overrides,
-    id,
   };
 }
 
@@ -517,18 +508,6 @@ describe("Builder", () => {
       const s1Eth0 = makePort({ hostname: "eth0" });
       const h1Eth0 = makePort({ hostname: "eth0" });
       const disconnectedPort = makePort({ hostname: "eth9" });
-
-      const items = [
-        s1,
-        h1,
-        s1Eth0,
-        h1Eth0,
-        disconnectedPort, // not associated with any node
-        makeAssociation(s1.id, s1Eth0.id),
-        makeAssociation(h1.id, h1Eth0.id),
-        makeLink(h1Eth0.id, s1Eth0.id),
-        makeLink(disconnectedPort.id, s1Eth0.id), // will fail: s1Eth0 double linked
-      ];
 
       // The disconnected port link will either trigger multi-link or disconnected warning
       // Let's create a proper scenario: link between a disconnected port and a connected port

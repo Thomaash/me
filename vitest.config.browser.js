@@ -15,6 +15,17 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
+      "@vueuse/core",
+      "antlr4",
+      "jspdf",
+      "jspdf-autotable",
+      "uuid",
+      "vis-data/peer",
+      "vis-network/peer",
+      "vue",
+      "vue-router",
+      "vuetify",
+      "vuetify/components",
       "vuetify/components/VAlert",
       "vuetify/components/VApp",
       "vuetify/components/VAppBar",
@@ -41,6 +52,7 @@ export default defineConfig({
       "vuetify/components/VTextarea",
       "vuetify/components/VToolbar",
       "vuetify/components/transitions",
+      "vuex",
     ],
   },
   resolve: {

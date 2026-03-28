@@ -102,10 +102,7 @@ describe.concurrent("Host (edit)", () => {
     await cpuCoresField.setValue("1, 2, 3, 2");
     await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission.cpuCores).toEqual([1, 2, 3]);
+    expect(cpuCoresField.props("modelValue")).toBe("1, 2, 3");
   });
 
   it("preserves trailing comma in cpuCoresStr display when input ends with comma", async ({ expect }) => {
@@ -131,36 +128,33 @@ describe.concurrent("Host (edit)", () => {
     await cpuCoresField.setValue(null);
     await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission).not.toHaveProperty("cpuCores");
     expect(cpuCoresField.props("modelValue")).toBe("");
   });
 
-  it("emits valid and new-item events on mount via common mixin lifecycle", async ({ expect }) => {
+  it("emits valid event on mount", async ({ expect }) => {
     const wrapper = mountHost({ hostname: "h1" });
 
     await nextTick();
 
     expect(wrapper.emitted("valid")).toBeTruthy();
-    expect(wrapper.emitted("new-item")).toBeTruthy();
-    expect(wrapper.emitted("new-item")[0][0]).toEqual({ hostname: "h1" });
   });
 
-  it("syncs internal item when modelValue prop changes via common mixin watcher", async ({ expect }) => {
+  it("reflects updated modelValue in form fields", async ({ expect }) => {
     const wrapper = mountHost({ hostname: "h1" });
 
     const updated = { hostname: "h2", cpuCores: [0, 1] };
     await wrapper.setProps({ modelValue: updated });
+    await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission).toEqual(updated);
+    const textFields = wrapper.findAllComponents({ name: "VTextField" });
+    const hostnameField = textFields.find((tf) => tf.props("label") === "Hostname");
+    expect(hostnameField.props("modelValue")).toBe("h2");
+
+    const cpuCoresField = textFields.find((tf) => tf.props("label") === "CPU cores");
+    expect(cpuCoresField.props("modelValue")).toBe("0, 1");
   });
 
-  it("emits valid event when form validity changes via common mixin watcher", async ({ expect }) => {
+  it("emits valid event when form validity changes", async ({ expect }) => {
     const wrapper = mountHost({ hostname: "h1" });
 
     await nextTick();

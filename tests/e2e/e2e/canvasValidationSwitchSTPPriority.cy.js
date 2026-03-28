@@ -13,7 +13,7 @@ testSet({
     { valid: false, values: ["65536"] },
     { valid: false, values: [`${8 * 2 ** 12 + 1}`] },
     { valid: false, values: [`${8 * 2 ** 12 - 1}`] },
-    { valid: true, values: [`${0 * 2 ** 12}`] },
+    { valid: true, values: [`${0}`] },
     { valid: true, values: [`${1 * 2 ** 12}`] },
     { valid: true, values: [`${15 * 2 ** 12}`] },
     { valid: true, values: [`${8 * 2 ** 12}`] },

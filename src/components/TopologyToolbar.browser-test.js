@@ -2,6 +2,7 @@ import { describe, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
 import { createStore } from "vuex";
+import { createRouter, createMemoryHistory } from "vue-router";
 import TopologyToolbar from "@/components/TopologyToolbar.vue";
 
 function createMockStore({ canUndo = 0, canRedo = 0 } = {}) {
@@ -38,46 +39,48 @@ function createMockStore({ canUndo = 0, canRedo = 0 } = {}) {
   });
 }
 
-function mountToolbar({
+function createMockRouter() {
+  return createRouter({
+    history: createMemoryHistory(),
+    routes: [
+      { path: "/canvas", name: "CanvasEditor", component: { template: "<div />" } },
+      { path: "/canvas/:id", name: "CanvasEditorWithId", component: { template: "<div />" } },
+      { path: "/home", name: "HomePage", component: { template: "<div />" } },
+      { path: "/view/canvas", name: "ViewCanvas", component: { template: "<div />" } },
+      { path: "/view/canvas/:id", name: "ViewCanvasWithId", component: { template: "<div />" } },
+    ],
+  });
+}
+
+async function mountToolbar({
   undoRedo = false,
   canUndo = 0,
   canRedo = 0,
-  routeName = "CanvasEditor",
   routeFullPath = "/canvas",
 } = {}) {
   const vuetify = createVuetify();
   const store = createMockStore({ canUndo, canRedo });
+  const router = createMockRouter();
+  await router.push(routeFullPath);
+  await router.isReady();
   const wrapper = mount(TopologyToolbar, {
     props: { undoRedo },
     global: {
-      plugins: [vuetify, store],
-      mocks: {
-        $route: {
-          name: routeName,
-          fullPath: routeFullPath,
-        },
-        $router: {
-          options: {
-            history: {
-              createHref: (url) => url,
-            },
-          },
-        },
-      },
+      plugins: [vuetify, store, router],
     },
   });
-  return { wrapper, store };
+  return { wrapper, store, router };
 }
 
-describe.concurrent("TopologyToolbar", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({ expect }) => {
-    const { wrapper } = mountToolbar();
+describe("TopologyToolbar", () => {
+  it("mounts successfully in Vuetify context with mock Vuex store", async ({ expect }) => {
+    const { wrapper } = await mountToolbar();
 
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders undo and redo buttons when undoRedo prop is true", ({ expect }) => {
-    const { wrapper } = mountToolbar({ undoRedo: true });
+  it("renders undo and redo buttons when undoRedo prop is true", async ({ expect }) => {
+    const { wrapper } = await mountToolbar({ undoRedo: true });
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     const buttonTexts = buttons.map((btn) => {
@@ -89,8 +92,8 @@ describe.concurrent("TopologyToolbar", () => {
     expect(buttonTexts).toContain("Redo");
   });
 
-  it("does not render undo and redo buttons when undoRedo prop is false", ({ expect }) => {
-    const { wrapper } = mountToolbar({ undoRedo: false });
+  it("does not render undo and redo buttons when undoRedo prop is false", async ({ expect }) => {
+    const { wrapper } = await mountToolbar({ undoRedo: false });
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     const buttonTexts = buttons.map((btn) => {
@@ -102,8 +105,8 @@ describe.concurrent("TopologyToolbar", () => {
     expect(buttonTexts).not.toContain("Redo");
   });
 
-  it("disables undo button when canUndo is falsy and enables when truthy", ({ expect }) => {
-    const { wrapper: wrapperDisabled } = mountToolbar({
+  it("disables undo button when canUndo is falsy and enables when truthy", async ({ expect }) => {
+    const { wrapper: wrapperDisabled } = await mountToolbar({
       undoRedo: true,
       canUndo: 0,
       canRedo: 0,
@@ -116,7 +119,7 @@ describe.concurrent("TopologyToolbar", () => {
     expect(undoDisabled).toBeDefined();
     expect(undoDisabled.attributes("disabled")).toBeDefined();
 
-    const { wrapper: wrapperEnabled } = mountToolbar({
+    const { wrapper: wrapperEnabled } = await mountToolbar({
       undoRedo: true,
       canUndo: 3,
       canRedo: 0,
@@ -130,15 +133,15 @@ describe.concurrent("TopologyToolbar", () => {
     expect(undoEnabled.attributes("disabled")).toBeUndefined();
   });
 
-  it("renders toolbar buttons when items exist", ({ expect }) => {
-    const { wrapper } = mountToolbar();
+  it("renders toolbar buttons when items exist", async ({ expect }) => {
+    const { wrapper } = await mountToolbar();
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     expect(buttons.length).toBeGreaterThan(0);
   });
 
   it("dispatches topology/undo when undo button is clicked", async ({ expect }) => {
-    const { wrapper, store } = mountToolbar({
+    const { wrapper, store } = await mountToolbar({
       undoRedo: true,
       canUndo: 3,
     });
@@ -155,7 +158,7 @@ describe.concurrent("TopologyToolbar", () => {
   });
 
   it("dispatches topology/redo when redo button is clicked", async ({ expect }) => {
-    const { wrapper, store } = mountToolbar({
+    const { wrapper, store } = await mountToolbar({
       undoRedo: true,
       canRedo: 2,
     });
@@ -174,8 +177,8 @@ describe.concurrent("TopologyToolbar", () => {
   it("opens view URL based on route when open view popup button is clicked", async ({ expect }) => {
     const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
 
-    const { wrapper: canvasWrapper } = mountToolbar({
-      routeName: "CanvasEditor",
+    const { wrapper: canvasWrapper } = await mountToolbar({
+      routeName: "CanvasEditorWithId",
       routeFullPath: "/canvas/123",
     });
     const canvasButtons = canvasWrapper.findAllComponents({ name: "VBtn" });
@@ -188,7 +191,7 @@ describe.concurrent("TopologyToolbar", () => {
 
     openSpy.mockClear();
 
-    const { wrapper: otherWrapper } = mountToolbar({
+    const { wrapper: otherWrapper } = await mountToolbar({
       routeName: "HomePage",
       routeFullPath: "/home",
     });

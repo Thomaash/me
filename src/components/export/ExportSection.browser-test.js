@@ -268,7 +268,7 @@ describe("ExportSection download methods", () => {
   });
 
   it("working setter clears alert when set to true and commits working state", async ({ expect }) => {
-    const { wrapper, store } = mountExportSection();
+    const { store } = mountExportSection();
     store.commit("setAlert", { type: "error", text: "old error" });
 
     // Trigger working=true by clicking a button that sets working=true

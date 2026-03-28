@@ -2,6 +2,23 @@
 export default {
   forbidden: [
     {
+      name: "no-orphans",
+      comment:
+        "This is a restatement of the default no-orphans rule from recommended-strict, with src/test-setup-unit.js excluded. That file is referenced by Vitest as a setup file (via vitest config), but dependency-cruiser cannot detect that relationship automatically.",
+      severity: "error",
+      from: {
+        orphan: true,
+        pathNot: [
+          "(^|/)\\.[^/]+\\.(js|cjs|mjs|ts|json)$",
+          "\\.d\\.ts$",
+          "(^|/)tsconfig\\.json$",
+          "(^|/)(babel|webpack)\\.config\\.(js|cjs|mjs|ts|json)$",
+          "^src/test-setup-unit\\.js$",
+        ],
+      },
+      to: {},
+    },
+    {
       name: "not-to-test",
       comment:
         "This module depends on code within a folder that should only contain tests. As tests don't implement functionality this is odd. Either you're writing a test outside the test folder or there's something in the test folder that isn't a test.",
@@ -30,8 +47,10 @@ export default {
         "This module depends on an npm package from the 'devDependencies' section of your package.json. It looks like something that ships to production, though. To prevent problems with npm packages that aren't there on production declare it (only!) in the 'dependencies' section of your package.json. If this module is development only - add it to the from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration",
       from: {
         path: "^(src)",
-        pathNot:
-          "\\.(spec|test)\\.(js|mjs|cjs|ts|ls|coffee|litcoffee|coffee\\.md)$",
+        pathNot: [
+          "\\.(spec|test|browser-test)\\.(js|mjs|cjs|ts|ls|coffee|litcoffee|coffee\\.md)$",
+          "/test-utils/",
+        ],
       },
       to: {
         dependencyTypes: ["npm-dev"],

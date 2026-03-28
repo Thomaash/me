@@ -3,6 +3,7 @@ import { defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
 import { createStore } from "vuex";
+import { createRouter, createMemoryHistory } from "vue-router";
 import CanvasPage from "@/components/CanvasPage.vue";
 
 const visMethodSpies = {
@@ -107,25 +108,24 @@ afterEach(() => {
   wrapper?.unmount();
 });
 
-function mountCanvasPage({ loading = false, isView = false } = {}) {
+async function mountCanvasPage({ loading = false, isView = false } = {}) {
   const vuetify = createVuetify();
   const store = createMockStore({ loading });
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [
+      { path: "/", component: CanvasPage, meta: { isView } },
+    ],
+  });
+  await router.push("/");
+  await router.isReady();
   wrapper = mount(CanvasPage, {
     attachTo: document.body,
     global: {
-      plugins: [vuetify, store],
+      plugins: [vuetify, store, router],
       stubs: {
         VisContainer: VisContainerStub,
         Edit: EditStub,
-      },
-      mocks: {
-        $route: {
-          params: {},
-          meta: { isView },
-        },
-        $router: {
-          push: () => Promise.resolve(),
-        },
       },
     },
   });
@@ -133,8 +133,8 @@ function mountCanvasPage({ loading = false, isView = false } = {}) {
 }
 
 describe("CanvasPage", () => {
-  it("renders LoadingSpinner when loading is true", ({ expect }) => {
-    const w = mountCanvasPage({ loading: true });
+  it("renders LoadingSpinner when loading is true", async ({ expect }) => {
+    const w = await mountCanvasPage({ loading: true });
 
     const spinner = w.findComponent({ name: "LoadingSpinner" });
     expect(spinner.exists()).toBe(true);
@@ -143,8 +143,8 @@ describe("CanvasPage", () => {
     expect(w.find(".edit-stub").exists()).toBe(false);
   });
 
-  it("renders VisContainer and Edit when loading is false", ({ expect }) => {
-    const w = mountCanvasPage({ loading: false });
+  it("renders VisContainer and Edit when loading is false", async ({ expect }) => {
+    const w = await mountCanvasPage({ loading: false });
 
     const spinner = w.findComponent({ name: "LoadingSpinner" });
     expect(spinner.exists()).toBe(false);
@@ -154,7 +154,7 @@ describe("CanvasPage", () => {
   });
 
   it("renders speed dial FAB with activator and item buttons when not in view mode", async ({ expect }) => {
-    const w = mountCanvasPage({ loading: false, isView: false });
+    const w = await mountCanvasPage({ loading: false, isView: false });
 
     const fabActivator = w.find('[data-cy="fab-activator"]');
     expect(fabActivator.exists()).toBe(true);
@@ -181,8 +181,8 @@ describe("CanvasPage", () => {
     }
   });
 
-  it("hides speed dial FAB when in view mode", ({ expect }) => {
-    const w = mountCanvasPage({ loading: false, isView: true });
+  it("hides speed dial FAB when in view mode", async ({ expect }) => {
+    const w = await mountCanvasPage({ loading: false, isView: true });
 
     const fabActivator = w.find('[data-cy="fab-activator"]');
     expect(fabActivator.exists()).toBe(false);
@@ -193,7 +193,7 @@ describe("CanvasPage", () => {
 
   it("FAB button clicks delegate to VisContainer methods", async ({ expect }) => {
     Object.values(visMethodSpies).forEach((spy) => spy.mockClear());
-    const w = mountCanvasPage({ loading: false, isView: false });
+    const w = await mountCanvasPage({ loading: false, isView: false });
 
     // Open the speed dial by hovering over the FAB activator
     const fabActivator = w.find('[data-cy="fab-activator"]');
@@ -224,7 +224,7 @@ describe("CanvasPage", () => {
 
   it("delegates editItem to Edit component ref", async ({ expect }) => {
     editSpy.mockClear();
-    const w = mountCanvasPage({ loading: false, isView: false });
+    const w = await mountCanvasPage({ loading: false, isView: false });
 
     const item = { id: "test-item", type: "host" };
     const callback = vi.fn();

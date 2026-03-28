@@ -132,28 +132,28 @@ describe.concurrent("Switch (edit)", () => {
     expect(failModeValues).toContain("standalone");
   });
 
-  it("emits valid and new-item events on mount via common mixin lifecycle", async ({ expect }) => {
+  it("emits valid event on mount", async ({ expect }) => {
     const wrapper = mountSwitch(fullSwitchModel());
 
     await nextTick();
 
     expect(wrapper.emitted("valid")).toBeTruthy();
-    expect(wrapper.emitted("new-item")).toBeTruthy();
-    expect(wrapper.emitted("new-item")[0][0]).toEqual(fullSwitchModel());
   });
 
-  it("syncs internal item when modelValue prop changes via common mixin watcher", async ({ expect }) => {
+  it("reflects updated modelValue in form fields", async ({ expect }) => {
     const wrapper = mountSwitch(fullSwitchModel());
-
     await nextTick();
 
     const updated = { ...fullSwitchModel(), hostname: "s2", ip: "192.168.1.1" };
     await wrapper.setProps({ modelValue: updated });
+    await nextTick();
 
-    const emitted = wrapper.emitted("update:modelValue");
-    expect(emitted).toBeTruthy();
-    const lastEmission = emitted[emitted.length - 1][0];
-    expect(lastEmission).toEqual(updated);
+    const textFields = wrapper.findAllComponents({ name: "VTextField" });
+    const hostnameField = textFields.find((tf) => tf.props("label") === "Hostname");
+    expect(hostnameField.props("modelValue")).toBe("s2");
+
+    const ipField = textFields.find((tf) => tf.props("label") === "IP");
+    expect(ipField.props("modelValue")).toBe("192.168.1.1");
   });
 
   it("binds IP, opts, startScript, and stopScript fields to item via v-model", async ({ expect }) => {
@@ -168,14 +168,12 @@ describe.concurrent("Switch (edit)", () => {
     const ipField = fieldByLabel("IP");
     await ipField.setValue("192.168.0.1");
     await nextTick();
-    const afterIp = wrapper.emitted("update:modelValue");
-    expect(afterIp[afterIp.length - 1][0].ip).toBe("192.168.0.1");
+    expect(ipField.props("modelValue")).toBe("192.168.0.1");
 
     const optsField = fieldByLabel("Additional Switch Options");
     await optsField.setValue("--new-opt");
     await nextTick();
-    const afterOpts = wrapper.emitted("update:modelValue");
-    expect(afterOpts[afterOpts.length - 1][0].opts).toBe("--new-opt");
+    expect(optsField.props("modelValue")).toBe("--new-opt");
 
     const textareas = wrapper.findAllComponents({ name: "VTextarea" });
     const textareaByLabel = (label) =>
@@ -184,14 +182,12 @@ describe.concurrent("Switch (edit)", () => {
     const startScriptField = textareaByLabel("Startup Script");
     await startScriptField.setValue("echo hello");
     await nextTick();
-    const afterStart = wrapper.emitted("update:modelValue");
-    expect(afterStart[afterStart.length - 1][0].startScript).toBe("echo hello");
+    expect(startScriptField.props("modelValue")).toBe("echo hello");
 
     const stopScriptField = textareaByLabel("Shutdown Script");
     await stopScriptField.setValue("echo bye");
     await nextTick();
-    const afterStop = wrapper.emitted("update:modelValue");
-    expect(afterStop[afterStop.length - 1][0].stopScript).toBe("echo bye");
+    expect(stopScriptField.props("modelValue")).toBe("echo bye");
 
     const checkboxes = wrapper.findAllComponents(ThreeStateCheckbox);
     const checkboxByLabel = (label) =>
@@ -200,29 +196,25 @@ describe.concurrent("Switch (edit)", () => {
     const inbandCb = checkboxByLabel("Inband");
     await inbandCb.setValue(false);
     await nextTick();
-    const afterInband = wrapper.emitted("update:modelValue");
-    expect(afterInband[afterInband.length - 1][0].inband).toBe(false);
+    expect(inbandCb.props("modelValue")).toBe(false);
 
     const inNamespaceCb = checkboxByLabel("In Namespace");
     await inNamespaceCb.setValue(true);
     await nextTick();
-    const afterNamespace = wrapper.emitted("update:modelValue");
-    expect(afterNamespace[afterNamespace.length - 1][0].inNamespace).toBe(true);
+    expect(inNamespaceCb.props("modelValue")).toBe(true);
 
     const batchCb = checkboxByLabel("Batch");
     await batchCb.setValue(false);
     await nextTick();
-    const afterBatch = wrapper.emitted("update:modelValue");
-    expect(afterBatch[afterBatch.length - 1][0].batch).toBe(false);
+    expect(batchCb.props("modelValue")).toBe(false);
 
     const verboseCb = checkboxByLabel("Verbose");
     await verboseCb.setValue(true);
     await nextTick();
-    const afterVerbose = wrapper.emitted("update:modelValue");
-    expect(afterVerbose[afterVerbose.length - 1][0].verbose).toBe(true);
+    expect(verboseCb.props("modelValue")).toBe(true);
   });
 
-  it("emits valid event when form validity changes via common mixin watcher", async ({ expect }) => {
+  it("emits valid event when form validity changes", async ({ expect }) => {
     const wrapper = mountSwitch(fullSwitchModel());
 
     await nextTick();

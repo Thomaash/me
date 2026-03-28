@@ -20,6 +20,8 @@ export default defineConfig({
     fixturesFolder: "tests/e2e/fixtures",
     specPattern: "tests/e2e/e2e/**/*.cy.js",
     supportFile: "tests/e2e/support/index.js",
+
+    experimentalRunAllSpecs: true,
   },
 
   component: {
@@ -28,5 +30,7 @@ export default defineConfig({
     indexHtmlFile: "tests/unit/support/component-index.html",
     specPattern: "tests/unit/unit/**/*.cy.js",
     supportFile: "tests/unit/support/index.js",
+
+    experimentalRunAllSpecs: true,
   },
 });

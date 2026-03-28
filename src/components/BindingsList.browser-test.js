@@ -1,4 +1,4 @@
-import { describe, it, vi } from "vitest";
+import { describe, it } from "vitest";
 import { mountWithVuetify } from "../test-utils/browser-setup.js";
 import BindingsList from "@/components/BindingsList.vue";
 

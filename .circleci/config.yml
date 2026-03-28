@@ -26,13 +26,15 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run deps:ci
-      - run: npm run lint:ci
-      - run: npm run style:ci
-
       - run: npm run build
 
-      - run: npm test
+      - run: deps:ci
+      - run: style:ci
+      - run: lint:ci
+      - run: test:vitest:unit:coverage
+      - run: test:unit
+      - run: test:vitest:browser:coverage
+      - run: test:e2e
 
       - persist_to_workspace:
           root: .
