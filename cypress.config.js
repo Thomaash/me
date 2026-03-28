@@ -23,14 +23,4 @@ export default defineConfig({
 
     experimentalRunAllSpecs: true,
   },
-
-  component: {
-    devServer: { bundler: "vite", framework: "vue" },
-    fixturesFolder: "tests/unit/fixtures",
-    indexHtmlFile: "tests/unit/support/component-index.html",
-    specPattern: "tests/unit/unit/**/*.cy.js",
-    supportFile: "tests/unit/support/index.js",
-
-    experimentalRunAllSpecs: true,
-  },
 });

@@ -4,7 +4,6 @@
 /dist/
 /tests/e2e/reports/
 /tests/e2e/videos/
-/tests/unit/coverage/
 __screenshots__/
 .stryker-tmp/
 node_modules/
