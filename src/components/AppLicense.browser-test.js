@@ -12,7 +12,7 @@ describe.concurrent("AppLicense", () => {
   it("renders a section with headline License", ({ expect }) => {
     const wrapper = mountWithVuetify(AppLicense);
 
-    const headline = wrapper.find("h3.headline");
+    const headline = wrapper.find("h3.text-h6");
     expect(headline.exists()).toBe(true);
     expect(headline.text()).toBe("License");
   });

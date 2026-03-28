@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="headline">Placeholders</h3>
+    <h3 class="text-h6">Placeholders</h3>
 
     <p>
       Placeholders can be used in labels to display information about connected
@@ -30,9 +30,9 @@ defineOptions({ name: "PlaceholderHowTo" });
 import { ref } from "vue";
 
 const headers = ref([
-  { text: "Placeholder", value: "name" },
-  { text: "Description", value: "description" },
-  { text: "Multiline", value: "multiline" },
+  { title: "Placeholder", key: "name" },
+  { title: "Description", key: "description" },
+  { title: "Multiline", key: "multiline" },
 ]);
 
 const items = ref([

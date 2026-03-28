@@ -9,7 +9,7 @@ describe.concurrent("PlaceholderHowTo", () => {
     const wrapper = mountWithVuetify(PlaceholderHowTo);
 
     expect(wrapper.exists()).toBe(true);
-    const headline = wrapper.find("h3.headline");
+    const headline = wrapper.find("h3.text-h6");
     expect(headline.exists()).toBe(true);
     expect(headline.text()).toBe("Placeholders");
   });

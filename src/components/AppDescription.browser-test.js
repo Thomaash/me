@@ -12,7 +12,7 @@ describe.concurrent("AppDescription", () => {
   it("renders a section with headline Description", ({ expect }) => {
     const wrapper = mountWithVuetify(AppDescription);
 
-    const headline = wrapper.find("h3.headline");
+    const headline = wrapper.find("h3.text-h6");
     expect(headline.exists()).toBe(true);
     expect(headline.text()).toBe("Description");
   });

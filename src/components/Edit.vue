@@ -10,13 +10,9 @@
       @keydown.enter="save"
     >
       <v-card :data-cy="`edit-${item.type}`">
-        <v-card-title
-          primary-title
-          style="flex-grow: 0"
-          @dblclick="fullscreen = !fullscreen"
-        >
+        <v-card-title style="flex-grow: 0" @dblclick="fullscreen = !fullscreen">
           <v-icon class="mr-2">{{ `$net-${themeType}` }}</v-icon>
-          <h3 class="headline" v-text="headline" />
+          <h3 class="text-h6" v-text="headline" />
         </v-card-title>
         <v-card-text style="flex-grow: 1">
           <component
@@ -27,13 +23,17 @@
         </v-card-text>
         <v-card-actions style="flex-grow: 0">
           <v-spacer />
-          <v-btn color="primary" text data-cy="edit-cancel" @click="cancel"
+          <v-btn
+            color="primary"
+            variant="text"
+            data-cy="edit-cancel"
+            @click="cancel"
             >Cancel</v-btn
           >
           <v-btn
             :disabled="!valid"
             color="primary"
-            text
+            variant="text"
             data-cy="edit-save"
             @click="save"
             >Save</v-btn

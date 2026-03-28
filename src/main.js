@@ -1,7 +1,7 @@
 import "source-sans/source-sans-3.css";
 import "source-code-pro/source-code-pro.css";
 import "@mdi/font/css/materialdesignicons.css";
-import "vuetify/styles/main.css";
+import "vuetify/styles";
 
 import { createApp } from "vue";
 import { createVuetify } from "vuetify";

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="headline">Build</h3>
+    <h3 class="text-h6">Build</h3>
 
     <p>
       Build date: {{ buildDate }}

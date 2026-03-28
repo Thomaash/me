@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="headline">Bindings</h3>
+    <h3 class="text-h6">Bindings</h3>
 
     <v-data-table
       :headers="headers"
@@ -39,8 +39,8 @@ import { ref, onMounted, onBeforeUnmount, markRaw } from "vue";
 import { VIcon } from "vuetify/components";
 
 const headers = [
-  { text: "Combination", value: "combination" },
-  { text: "Description", value: "description" },
+  { title: "Combination", key: "combination" },
+  { title: "Description", key: "description" },
 ];
 
 const items = [

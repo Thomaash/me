@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="headline">Description</h3>
+    <h3 class="text-h6">Description</h3>
 
     <p>SDN topology editor in your web browser with Mininet export.</p>
 

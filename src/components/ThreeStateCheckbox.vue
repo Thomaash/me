@@ -6,7 +6,7 @@
     :indeterminate="state.value === undefined"
     :color="color"
     readonly
-    class="primary--text"
+    class="text-primary"
     true-icon="$checkboxTrue"
     false-icon="$checkboxFalse"
     indeterminate-icon="$checkboxUndefined"

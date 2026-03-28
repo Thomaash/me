@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="headline">License</h3>
+    <h3 class="text-h6">License</h3>
 
     <p
       v-for="(part, i) in licenseParts"

@@ -53,7 +53,7 @@ describe("Edit", () => {
 
     expect(w.exists()).toBe(true);
     // Dialog not visible: headline element should not be present in DOM
-    const headline = document.querySelector(".headline");
+    const headline = document.querySelector(".text-h6");
     expect(headline).toBeNull();
   });
 
@@ -74,7 +74,7 @@ describe("Edit", () => {
     await nextTick();
 
     // Dialog visible: headline element should be present in DOM with correct text
-    const headline = document.querySelector(".headline");
+    const headline = document.querySelector(".text-h6");
     expect(headline).not.toBeNull();
     expect(headline.textContent).toBe("Host");
   });
@@ -122,7 +122,7 @@ describe("Edit", () => {
     await nextTick();
 
     // Dialog should still be open and callback not called
-    const headline = document.querySelector(".headline");
+    const headline = document.querySelector(".text-h6");
     expect(headline).not.toBeNull();
     expect(callback).not.toHaveBeenCalled();
   });
@@ -144,7 +144,7 @@ describe("Edit", () => {
     await nextTick();
 
     // Dialog should still be open and callback not called
-    const headline = document.querySelector(".headline");
+    const headline = document.querySelector(".text-h6");
     expect(headline).not.toBeNull();
     expect(callback).not.toHaveBeenCalled();
   });

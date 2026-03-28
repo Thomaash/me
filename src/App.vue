@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <template v-if="isView !== true">
-      <v-app-bar color="primary" dark app extension-height="7">
+      <v-app-bar color="primary" theme="dark" extension-height="7">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         <v-toolbar-title
           style="font-weight: 300; font-size: 24px; letter-spacing: unset"
@@ -131,6 +131,12 @@ watch(
 </script>
 
 <style>
+@layer vuetify-core {
+  :root {
+    font-family: "Source Sans 3", "Roboto", sans-serif;
+  }
+}
+
 html::-webkit-scrollbar {
   width: 0px !important;
 }
