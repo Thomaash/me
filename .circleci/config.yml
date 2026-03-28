@@ -13,7 +13,7 @@ executors:
 
   node-browsers:
     docker:
-      - image: cimg/node:24.14.1-browsers
+      - image: mcr.microsoft.com/playwright:v1.52.0-jammy
     working_directory: ~/repo
     resource_class: medium
 
