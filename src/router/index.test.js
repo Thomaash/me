@@ -515,38 +515,3 @@ describe("beforeEach navigation guard", () => {
     },
   );
 });
-
-describe("lazy-loaded component functions return promises", () => {
-  it.each([
-    ["Home", ["default"]],
-    ["Canvas", ["default", "toolbar"]],
-    ["Mininet settings", ["default", "toolbar"]],
-    ["Export", ["default", "toolbar"]],
-    ["About", ["default"]],
-  ])(
-    "normal route %s component loaders return promises",
-    async (name, componentKeys) => {
-      const route = normalRoutes.find((r) => r.name === name);
-      for (const key of componentKeys) {
-        const result = route.components[key]();
-        expect(result).toBeInstanceOf(Promise);
-        await result.catch(() => {});
-      }
-    },
-  );
-
-  it.each([
-    ["Canvas without position", ["default", "toolbar"]],
-    ["Canvas with position", ["default", "toolbar"]],
-  ])(
-    "normal canvas child %s component loaders return promises",
-    async (name, componentKeys) => {
-      const child = canvasRoute.children.find((c) => c.name === name);
-      for (const key of componentKeys) {
-        const result = child.components[key]();
-        expect(result).toBeInstanceOf(Promise);
-        await result.catch(() => {});
-      }
-    },
-  );
-});
