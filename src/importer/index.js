@@ -1,10 +1,9 @@
-import importScript from "@/importScript";
-
 function jsonImporter(content) {
   return { data: JSON.parse(content), log: [], warnings: [] };
 }
 
-function pythonImporter(content) {
+async function pythonImporter(content) {
+  const { default: importScript } = await import("@/importScript");
   const { data, log } = importScript(content);
   return { data, log, warnings: ["script-import-warning"] };
 }
@@ -26,7 +25,7 @@ const importAccept = Object.keys(importersByKey)
 export default {
   importAccept,
 
-  stringToImport(fileType, fileName, content) {
+  async stringToImport(fileType, fileName, content) {
     const importer =
       importersByKey[fileType] ||
       importersByKey[fileName.replace(/^.*(?=\.)/, "")];

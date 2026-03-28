@@ -215,7 +215,7 @@ function retrieveFile() {
   fr.readAsBinaryString(file);
   fr.onloadend = async () => {
     try {
-      const { data, log, warnings } = importer.stringToImport(
+      const { data, log, warnings } = await importer.stringToImport(
         file.type,
         file.name,
         fr.result,
