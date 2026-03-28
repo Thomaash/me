@@ -164,7 +164,9 @@ describe("CanvasPage", () => {
     await fabActivator.trigger("mouseenter");
     await nextTick();
     // Allow Vuetify transition/rendering to complete
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await expect
+      .poll(() => document.querySelector('[data-cy="fab-edge"]'))
+      .toBeTruthy();
 
     const expectedButtons = [
       "fab-edge",
@@ -205,7 +207,9 @@ describe("CanvasPage", () => {
     const fabActivator = w.find('[data-cy="fab-activator"]');
     await fabActivator.trigger("mouseenter");
     await nextTick();
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await expect
+      .poll(() => document.querySelector('[data-cy="fab-edge"]'))
+      .toBeTruthy();
 
     const buttonMethodPairs = [
       ["fab-edge", "addEdge"],
