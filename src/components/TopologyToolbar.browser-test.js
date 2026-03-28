@@ -43,11 +43,27 @@ function createMockRouter() {
   return createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: "/canvas", name: "CanvasEditor", component: { template: "<div />" } },
-      { path: "/canvas/:id", name: "CanvasEditorWithId", component: { template: "<div />" } },
+      {
+        path: "/canvas",
+        name: "CanvasEditor",
+        component: { template: "<div />" },
+      },
+      {
+        path: "/canvas/:id",
+        name: "CanvasEditorWithId",
+        component: { template: "<div />" },
+      },
       { path: "/home", name: "HomePage", component: { template: "<div />" } },
-      { path: "/view/canvas", name: "ViewCanvas", component: { template: "<div />" } },
-      { path: "/view/canvas/:id", name: "ViewCanvasWithId", component: { template: "<div />" } },
+      {
+        path: "/view/canvas",
+        name: "ViewCanvas",
+        component: { template: "<div />" },
+      },
+      {
+        path: "/view/canvas/:id",
+        name: "ViewCanvasWithId",
+        component: { template: "<div />" },
+      },
     ],
   });
 }
@@ -73,13 +89,17 @@ async function mountToolbar({
 }
 
 describe("TopologyToolbar", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", async ({ expect }) => {
+  it("mounts successfully in Vuetify context with mock Vuex store", async ({
+    expect,
+  }) => {
     const { wrapper } = await mountToolbar();
 
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders undo and redo buttons when undoRedo prop is true", async ({ expect }) => {
+  it("renders undo and redo buttons when undoRedo prop is true", async ({
+    expect,
+  }) => {
     const { wrapper } = await mountToolbar({ undoRedo: true });
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
@@ -92,7 +112,9 @@ describe("TopologyToolbar", () => {
     expect(buttonTexts).toContain("Redo");
   });
 
-  it("does not render undo and redo buttons when undoRedo prop is false", async ({ expect }) => {
+  it("does not render undo and redo buttons when undoRedo prop is false", async ({
+    expect,
+  }) => {
     const { wrapper } = await mountToolbar({ undoRedo: false });
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
@@ -105,7 +127,9 @@ describe("TopologyToolbar", () => {
     expect(buttonTexts).not.toContain("Redo");
   });
 
-  it("disables undo button when canUndo is falsy and enables when truthy", async ({ expect }) => {
+  it("disables undo button when canUndo is falsy and enables when truthy", async ({
+    expect,
+  }) => {
     const { wrapper: wrapperDisabled } = await mountToolbar({
       undoRedo: true,
       canUndo: 0,
@@ -140,7 +164,9 @@ describe("TopologyToolbar", () => {
     expect(buttons.length).toBeGreaterThan(0);
   });
 
-  it("dispatches topology/undo when undo button is clicked", async ({ expect }) => {
+  it("dispatches topology/undo when undo button is clicked", async ({
+    expect,
+  }) => {
     const { wrapper, store } = await mountToolbar({
       undoRedo: true,
       canUndo: 3,
@@ -157,7 +183,9 @@ describe("TopologyToolbar", () => {
     expect(dispatchSpy).toHaveBeenCalledWith("topology/undo");
   });
 
-  it("dispatches topology/redo when redo button is clicked", async ({ expect }) => {
+  it("dispatches topology/redo when redo button is clicked", async ({
+    expect,
+  }) => {
     const { wrapper, store } = await mountToolbar({
       undoRedo: true,
       canRedo: 2,
@@ -174,7 +202,9 @@ describe("TopologyToolbar", () => {
     expect(dispatchSpy).toHaveBeenCalledWith("topology/redo");
   });
 
-  it("opens view URL based on route when open view popup button is clicked", async ({ expect }) => {
+  it("opens view URL based on route when open view popup button is clicked", async ({
+    expect,
+  }) => {
     const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
 
     const { wrapper: canvasWrapper } = await mountToolbar({

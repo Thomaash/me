@@ -32,9 +32,7 @@ const router = useRouter();
 const { canUndo, canRedo } = useTopologyStore();
 
 const viewURL = computed(() =>
-  route.name.startsWith("Canvas")
-    ? `/view${route.fullPath}`
-    : "/view/canvas",
+  route.name.startsWith("Canvas") ? `/view${route.fullPath}` : "/view/canvas",
 );
 
 function openViewPopup() {

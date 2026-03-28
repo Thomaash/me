@@ -5,10 +5,7 @@
         <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
-            :rules="[
-              validators.required(),
-              validators.hostname(),
-            ]"
+            :rules="[validators.required(), validators.hostname()]"
             label="Hostname"
             autofocus
             data-cy="edit-hostname"
@@ -35,10 +32,7 @@
           <v-text-field
             ref="itemCPULimit"
             v-model.number="item.cpuLimit"
-            :rules="[
-              validators.decimal(),
-              validators.between(0, 1),
-            ]"
+            :rules="[validators.decimal(), validators.between(0, 1)]"
             label="CPU Utilization Limit"
             type="number"
             min="0"
@@ -100,7 +94,14 @@ const emit = defineEmits(["valid"]);
 
 watch(valid, (val) => emit("valid", val));
 
-const validators = { between, decimal, hostname, ip, naturalNumberList, required };
+const validators = {
+  between,
+  decimal,
+  hostname,
+  ip,
+  naturalNumberList,
+  required,
+};
 
 const trailingCommaHack = ref(false);
 

@@ -9,7 +9,9 @@ describe.concurrent("AppLogo", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders an img element with alt text 'Mininet Editor logo'", ({ expect }) => {
+  it("renders an img element with alt text 'Mininet Editor logo'", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(AppLogo);
 
     const img = wrapper.find("img");

@@ -18,7 +18,11 @@ const VisCanvasStub = defineComponent({
   },
 });
 
-function createMockStore({ loading = false, undoThrows = false, redoThrows = false } = {}) {
+function createMockStore({
+  loading = false,
+  undoThrows = false,
+  redoThrows = false,
+} = {}) {
   return createStore({
     state() {
       return {
@@ -46,16 +50,15 @@ function createMockStore({ loading = false, undoThrows = false, redoThrows = fal
           data: (s) => s.data,
           canUndo: () => 0,
           canRedo: () => 0,
-          boundingBox:
-            () => () => ({
-              sX: 0,
-              eX: 100,
-              sY: 0,
-              eY: 100,
-              width: 100,
-              height: 100,
-              empty: false,
-            }),
+          boundingBox: () => () => ({
+            sX: 0,
+            eX: 100,
+            sY: 0,
+            eY: 100,
+            width: 100,
+            height: 100,
+            empty: false,
+          }),
         },
         mutations: {
           importData() {},
@@ -114,8 +117,16 @@ function createTestRouter() {
   return createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: "/:ids?", name: "Canvas without position", component: { template: "<div />" } },
-      { path: "/:x/:y/:scale/:ids?", name: "Canvas with position", component: { template: "<div />" } },
+      {
+        path: "/:ids?",
+        name: "Canvas without position",
+        component: { template: "<div />" },
+      },
+      {
+        path: "/:x/:y/:scale/:ids?",
+        name: "Canvas with position",
+        component: { template: "<div />" },
+      },
     ],
   });
 }
@@ -127,17 +138,28 @@ async function mountVisContainer({ loading = false } = {}) {
   await router.push("/");
   await router.isReady();
   const mockRouterPush = vi.spyOn(router, "push");
-  return { wrapper: mount(VisContainer, {
-    global: {
-      plugins: [vuetify, store, router],
-      stubs: {
-        VisCanvas: VisCanvasStub,
+  return {
+    wrapper: mount(VisContainer, {
+      global: {
+        plugins: [vuetify, store, router],
+        stubs: {
+          VisCanvas: VisCanvasStub,
+        },
       },
-    },
-  }), store, mockRouter: { push: mockRouterPush }, router };
+    }),
+    store,
+    mockRouter: { push: mockRouterPush },
+    router,
+  };
 }
 
-async function mountWithNet({ undoThrows = false, redoThrows = false, items = {}, nodeItems = [], edgeItems = [] } = {}) {
+async function mountWithNet({
+  undoThrows = false,
+  redoThrows = false,
+  items = {},
+  nodeItems = [],
+  edgeItems = [],
+} = {}) {
   const vuetify = createVuetify();
   const store = createMockStore({ loading: false, undoThrows, redoThrows });
   if (Object.keys(items).length > 0) {
@@ -165,11 +187,21 @@ async function mountWithNet({ undoThrows = false, redoThrows = false, items = {}
   const visCanvasStub = wrapper.findComponent({ name: "VisCanvas" });
   visCanvasStub.vm.emitReady({ container, net, nodes, edges });
 
-  return { wrapper, net, nodes, edges, store, mockRouter: { push: mockRouterPush }, router };
+  return {
+    wrapper,
+    net,
+    nodes,
+    edges,
+    store,
+    mockRouter: { push: mockRouterPush },
+    router,
+  };
 }
 
 describe.concurrent("VisContainer", () => {
-  it("renders root div with tabindex=0 and class component-container", async ({ expect }) => {
+  it("renders root div with tabindex=0 and class component-container", async ({
+    expect,
+  }) => {
     const { wrapper } = await mountVisContainer({ loading: false });
 
     const root = wrapper.find(".component-container");
@@ -196,7 +228,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("newItem.set", () => {
-    it("sets type, connectTo, label, noEdit fields on the data object", async ({ expect }) => {
+    it("sets type, connectTo, label, noEdit fields on the data object", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       wrapper.vm.newItem.set("controller", ["switch"], "myLabel", true);
@@ -207,7 +241,9 @@ describe.concurrent("VisContainer", () => {
       expect(wrapper.vm.newItem.noEdit).toBe(true);
     });
 
-    it("resets all fields to null/false when called with no arguments", async ({ expect }) => {
+    it("resets all fields to null/false when called with no arguments", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       wrapper.vm.newItem.set("host", ["port"], "h1", true);
@@ -221,7 +257,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("moveMouseTag", () => {
-    it("updates mouseTag x and y from clientX and clientY", async ({ expect }) => {
+    it("updates mouseTag x and y from clientX and clientY", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       wrapper.vm.moveMouseTag({ clientX: 150, clientY: 250 });
@@ -232,7 +270,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("add* methods", () => {
-    it("addEdge sets newItem type to edge and calls net.addEdgeMode", async ({ expect }) => {
+    it("addEdge sets newItem type to edge and calls net.addEdgeMode", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addEdge();
@@ -241,7 +281,9 @@ describe.concurrent("VisContainer", () => {
       expect(net.addEdgeMode).toHaveBeenCalledOnce();
     });
 
-    it("addController sets newItem type to controller and calls net.addNodeMode", async ({ expect }) => {
+    it("addController sets newItem type to controller and calls net.addNodeMode", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addController();
@@ -250,7 +292,9 @@ describe.concurrent("VisContainer", () => {
       expect(net.addNodeMode).toHaveBeenCalledOnce();
     });
 
-    it("addDummy sets newItem type to dummy and calls net.addNodeMode", async ({ expect }) => {
+    it("addDummy sets newItem type to dummy and calls net.addNodeMode", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addDummy();
@@ -262,19 +306,28 @@ describe.concurrent("VisContainer", () => {
       expect(net.addNodeMode).toHaveBeenCalledOnce();
     });
 
-    it("addIPsDummy sets newItem with IPS label, connectTo list, and noEdit true", async ({ expect }) => {
+    it("addIPsDummy sets newItem with IPS label, connectTo list, and noEdit true", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addIPsDummy();
 
       expect(wrapper.vm.newItem.type).toBe("dummy");
-      expect(wrapper.vm.newItem.connectTo).toEqual(["port", "host", "switch", "controller"]);
+      expect(wrapper.vm.newItem.connectTo).toEqual([
+        "port",
+        "host",
+        "switch",
+        "controller",
+      ]);
       expect(wrapper.vm.newItem.label).toBe("{{IPS}}");
       expect(wrapper.vm.newItem.noEdit).toBe(true);
       expect(net.addNodeMode).toHaveBeenCalledOnce();
     });
 
-    it("addTypesDummy sets newItem with TYPES label and connectTo for switch and controller", async ({ expect }) => {
+    it("addTypesDummy sets newItem with TYPES label and connectTo for switch and controller", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addTypesDummy();
@@ -286,7 +339,9 @@ describe.concurrent("VisContainer", () => {
       expect(net.addNodeMode).toHaveBeenCalledOnce();
     });
 
-    it("addHost sets newItem type to host and calls net.addNodeMode", async ({ expect }) => {
+    it("addHost sets newItem type to host and calls net.addNodeMode", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addHost();
@@ -295,7 +350,9 @@ describe.concurrent("VisContainer", () => {
       expect(net.addNodeMode).toHaveBeenCalledOnce();
     });
 
-    it("addPort sets newItem type to port with connectTo host and switch", async ({ expect }) => {
+    it("addPort sets newItem type to port with connectTo host and switch", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addPort();
@@ -305,7 +362,9 @@ describe.concurrent("VisContainer", () => {
       expect(net.addNodeMode).toHaveBeenCalledOnce();
     });
 
-    it("addSwitch sets newItem type to switch and calls net.addNodeMode", async ({ expect }) => {
+    it("addSwitch sets newItem type to switch and calls net.addNodeMode", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.addSwitch();
@@ -316,19 +375,27 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("deleteSelected", () => {
-    it("removes items and shows snackbar when selection exists", async ({ expect }) => {
+    it("removes items and shows snackbar when selection exists", async ({
+      expect,
+    }) => {
       const { wrapper, net, store } = await mountWithNet();
       net.getSelection.mockReturnValue({ nodes: ["n1", "n2"], edges: ["e1"] });
       const dispatchSpy = vi.spyOn(store, "dispatch");
 
       wrapper.vm.deleteSelected();
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/removeItems", ["n1", "n2", "e1"]);
+      expect(dispatchSpy).toHaveBeenCalledWith("topology/removeItems", [
+        "n1",
+        "n2",
+        "e1",
+      ]);
       expect(wrapper.vm.snackbar.type).toBe("items-deleted");
       expect(wrapper.vm.snackbar.values).toEqual([3]);
     });
 
-    it("still shows snackbar when store dispatch rejects", async ({ expect }) => {
+    it("still shows snackbar when store dispatch rejects", async ({
+      expect,
+    }) => {
       const { wrapper, net, store } = await mountWithNet();
       net.getSelection.mockReturnValue({ nodes: ["n1"], edges: [] });
       vi.spyOn(store, "dispatch").mockRejectedValue(new Error("store failure"));
@@ -354,7 +421,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("selectAll", () => {
-    it("selects all nodes and edges via net.setSelection", async ({ expect }) => {
+    it("selects all nodes and edges via net.setSelection", async ({
+      expect,
+    }) => {
       const { wrapper, net, nodes, edges } = await mountWithNet();
       nodes.getIds.mockReturnValue(["n1", "n2"]);
       edges.getIds.mockReturnValue(["e1", "e2"]);
@@ -369,7 +438,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("fitAll", () => {
-    it("calls net.fit with animation and clears URL position", async ({ expect }) => {
+    it("calls net.fit with animation and clears URL position", async ({
+      expect,
+    }) => {
       const { wrapper, net, mockRouter } = await mountWithNet();
 
       wrapper.vm.fitAll();
@@ -392,7 +463,9 @@ describe.concurrent("VisContainer", () => {
       });
     });
 
-    it("fits to selected nodes without animation when animate is false", async ({ expect }) => {
+    it("fits to selected nodes without animation when animate is false", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
       net.getSelectedNodes.mockReturnValue(["n1"]);
 
@@ -406,7 +479,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("setScale", () => {
-    it("calls net.moveTo with the given scale and animation", async ({ expect }) => {
+    it("calls net.moveTo with the given scale and animation", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.setScale(2.5);
@@ -430,7 +505,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("undo", () => {
-    it("dispatches undo and shows undone snackbar on success", async ({ expect }) => {
+    it("dispatches undo and shows undone snackbar on success", async ({
+      expect,
+    }) => {
       const { wrapper, store } = await mountWithNet({ undoThrows: false });
       const dispatchSpy = vi.spyOn(store, "dispatch");
 
@@ -440,7 +517,9 @@ describe.concurrent("VisContainer", () => {
       expect(wrapper.vm.snackbar.type).toBe("undone");
     });
 
-    it("shows nothing-to-undo snackbar when undo throws", async ({ expect }) => {
+    it("shows nothing-to-undo snackbar when undo throws", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet({ undoThrows: true });
 
       wrapper.vm.undo();
@@ -450,7 +529,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("redo", () => {
-    it("dispatches redo and shows redone snackbar on success", async ({ expect }) => {
+    it("dispatches redo and shows redone snackbar on success", async ({
+      expect,
+    }) => {
       const { wrapper, store } = await mountWithNet({ redoThrows: false });
       const dispatchSpy = vi.spyOn(store, "dispatch");
 
@@ -460,7 +541,9 @@ describe.concurrent("VisContainer", () => {
       expect(wrapper.vm.snackbar.type).toBe("redone");
     });
 
-    it("shows nothing-to-redo snackbar when redo throws", async ({ expect }) => {
+    it("shows nothing-to-redo snackbar when redo throws", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet({ redoThrows: true });
 
       wrapper.vm.redo();
@@ -470,7 +553,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("showSnackbar", () => {
-    it("sets snackbar type, values, actionName, and actionFunction", async ({ expect }) => {
+    it("sets snackbar type, values, actionName, and actionFunction", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
       const customAction = vi.fn();
 
@@ -482,7 +567,9 @@ describe.concurrent("VisContainer", () => {
       expect(wrapper.vm.snackbar.actionFunction).toBe(customAction);
     });
 
-    it("defaults to Close action and empty values when not provided", async ({ expect }) => {
+    it("defaults to Close action and empty values when not provided", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       wrapper.vm.showSnackbar("undone");
@@ -493,7 +580,9 @@ describe.concurrent("VisContainer", () => {
       expect(typeof wrapper.vm.snackbar.actionFunction).toBe("function");
     });
 
-    it("snackbarMessage returns correct text for known types", async ({ expect }) => {
+    it("snackbarMessage returns correct text for known types", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       wrapper.vm.showSnackbar("undone");
@@ -515,7 +604,9 @@ describe.concurrent("VisContainer", () => {
       expect(wrapper.vm.snackbarMessage).toBe("3 items deleted.");
     });
 
-    it("snackbarMessage returns fallback for unknown type", async ({ expect }) => {
+    it("snackbarMessage returns fallback for unknown type", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       wrapper.vm.showSnackbar("unknown-type");
@@ -525,7 +616,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("keypress handler", () => {
-    it("dispatches non-ctrl keybindings to the correct methods", async ({ expect }) => {
+    it("dispatches non-ctrl keybindings to the correct methods", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       // Each test case verifies a side effect on net or newItem
@@ -546,7 +639,9 @@ describe.concurrent("VisContainer", () => {
 
       for (const { key, verify } of testCases) {
         // Reset all net mocks between iterations
-        Object.values(net).forEach((fn) => typeof fn.mockClear === "function" && fn.mockClear());
+        Object.values(net).forEach(
+          (fn) => typeof fn.mockClear === "function" && fn.mockClear(),
+        );
         const event = { key, ctrlKey: false, preventDefault: vi.fn() };
 
         wrapper.vm.keypress(event);
@@ -556,17 +651,27 @@ describe.concurrent("VisContainer", () => {
       }
     });
 
-    it("dispatches ctrl keybindings to the correct methods", async ({ expect }) => {
+    it("dispatches ctrl keybindings to the correct methods", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       const ctrlCases = [
         { key: "a", verify: () => expect(net.setSelection).toHaveBeenCalled() },
-        { key: "z", verify: () => expect(wrapper.vm.snackbarMessage).toBeTruthy() },
-        { key: "y", verify: () => expect(wrapper.vm.snackbarMessage).toBeTruthy() },
+        {
+          key: "z",
+          verify: () => expect(wrapper.vm.snackbarMessage).toBeTruthy(),
+        },
+        {
+          key: "y",
+          verify: () => expect(wrapper.vm.snackbarMessage).toBeTruthy(),
+        },
       ];
 
       for (const { key, verify } of ctrlCases) {
-        Object.values(net).forEach((fn) => typeof fn.mockClear === "function" && fn.mockClear());
+        Object.values(net).forEach(
+          (fn) => typeof fn.mockClear === "function" && fn.mockClear(),
+        );
         const event = { key, ctrlKey: true, preventDefault: vi.fn() };
 
         wrapper.vm.keypress(event);
@@ -606,7 +711,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("init", () => {
-    it("wires vis-network events and sets manipulation options", async ({ expect }) => {
+    it("wires vis-network events and sets manipulation options", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountVisContainer({ loading: false });
       const net = createMockNet();
       const nodes = createMockDataSet();
@@ -648,7 +755,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("stopEditMode", () => {
-    it("resets newItem and disables edit mode on the network", async ({ expect }) => {
+    it("resets newItem and disables edit mode on the network", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
       wrapper.vm.newItem.set("host", ["port"], "h1", true);
@@ -669,7 +778,9 @@ describe.concurrent("VisContainer", () => {
 
       wrapper.vm.commit("replaceItems", [{ id: "x", type: "host" }]);
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/replaceItems", [{ id: "x", type: "host" }]);
+      expect(dispatchSpy).toHaveBeenCalledWith("topology/replaceItems", [
+        { id: "x", type: "host" },
+      ]);
     });
   });
 
@@ -684,7 +795,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("updateURL", () => {
-    it("pushes Canvas with position route including view position, scale, and selection", async ({ expect }) => {
+    it("pushes Canvas with position route including view position, scale, and selection", async ({
+      expect,
+    }) => {
       const { wrapper, net, mockRouter } = await mountWithNet();
       net.getViewPosition.mockReturnValue({ x: 100.4, y: 200.6 });
       net.getScale.mockReturnValue(1.5);
@@ -720,7 +833,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("applyURL", () => {
-    it("calls fitSelected when no position params in route", async ({ expect }) => {
+    it("calls fitSelected when no position params in route", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
       net.getSelectedNodes.mockReturnValue([]);
 
@@ -731,7 +846,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("commitPositions", () => {
-    it("dispatches updateItems with positions from the network", async ({ expect }) => {
+    it("dispatches updateItems with positions from the network", async ({
+      expect,
+    }) => {
       const { wrapper, net, store } = await mountWithNet();
       net.getPositions.mockReturnValue({
         n1: { x: 10, y: 20 },
@@ -769,7 +886,6 @@ describe.concurrent("VisContainer", () => {
 
       wrapper.vm.commitUncommitedPositions();
 
-
       expect(dispatchSpy).toHaveBeenCalledWith("topology/updateItems", [
         { x: 100, y: 200, id: "n1" },
         { x: 50, y: 60, id: "n3" },
@@ -778,7 +894,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("orderNodes", () => {
-    it("swaps from/to when source has higher priority than destination", async ({ expect }) => {
+    it("swaps from/to when source has higher priority than destination", async ({
+      expect,
+    }) => {
       const items = {
         n1: { type: "host" },
         n2: { type: "controller" },
@@ -809,7 +927,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("getEdgeType", () => {
-    it("returns existing item type if edge already has an item", async ({ expect }) => {
+    it("returns existing item type if edge already has an item", async ({
+      expect,
+    }) => {
       const items = {
         e1: { type: "association" },
         n1: { type: "port" },
@@ -829,19 +949,29 @@ describe.concurrent("VisContainer", () => {
       };
       const { wrapper } = await mountWithNet({ items });
 
-      const result = wrapper.vm.getEdgeType({ id: "new-edge", from: "n1", to: "n2" });
+      const result = wrapper.vm.getEdgeType({
+        id: "new-edge",
+        from: "n1",
+        to: "n2",
+      });
 
       expect(result).toBe("link");
     });
 
-    it("returns association when endpoints are not both ports", async ({ expect }) => {
+    it("returns association when endpoints are not both ports", async ({
+      expect,
+    }) => {
       const items = {
         n1: { type: "controller" },
         n2: { type: "switch" },
       };
       const { wrapper } = await mountWithNet({ items });
 
-      const result = wrapper.vm.getEdgeType({ id: "new-edge", from: "n1", to: "n2" });
+      const result = wrapper.vm.getEdgeType({
+        id: "new-edge",
+        from: "n1",
+        to: "n2",
+      });
 
       expect(result).toBe("association");
     });
@@ -855,35 +985,50 @@ describe.concurrent("VisContainer", () => {
       };
       const { wrapper } = await mountWithNet({ items });
 
-      expect(wrapper.vm.isEdgeValid({ from: "n1", to: "n2" }, "link")).toBe(true);
+      expect(wrapper.vm.isEdgeValid({ from: "n1", to: "n2" }, "link")).toBe(
+        true,
+      );
     });
 
-    it("rejects link edge when endpoints are not both ports", async ({ expect }) => {
+    it("rejects link edge when endpoints are not both ports", async ({
+      expect,
+    }) => {
       const items = {
         n1: { type: "host" },
         n2: { type: "port" },
       };
       const { wrapper } = await mountWithNet({ items });
 
-      expect(wrapper.vm.isEdgeValid({ from: "n1", to: "n2" }, "link")).toBe(false);
+      expect(wrapper.vm.isEdgeValid({ from: "n1", to: "n2" }, "link")).toBe(
+        false,
+      );
     });
 
-    it("validates association between controller and switch", async ({ expect }) => {
+    it("validates association between controller and switch", async ({
+      expect,
+    }) => {
       const items = {
         n1: { type: "controller" },
         n2: { type: "switch" },
       };
       const { wrapper } = await mountWithNet({ items });
 
-      expect(wrapper.vm.isEdgeValid({ from: "n1", to: "n2" }, "association")).toBe(true);
+      expect(
+        wrapper.vm.isEdgeValid({ from: "n1", to: "n2" }, "association"),
+      ).toBe(true);
     });
   });
 
   describe("generateOrganizedPortCoors", () => {
-    it("generates correct port coordinates for small port counts", async ({ expect }) => {
+    it("generates correct port coordinates for small port counts", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
-      const coords = wrapper.vm.generateOrganizedPortCoors({ x: 100, y: 200 }, 2);
+      const coords = wrapper.vm.generateOrganizedPortCoors(
+        { x: 100, y: 200 },
+        2,
+      );
 
       expect(coords).toHaveLength(2);
       expect(coords[0].y).toBe(270); // y + 70
@@ -893,7 +1038,10 @@ describe.concurrent("VisContainer", () => {
     it("generates offset y for large port counts", async ({ expect }) => {
       const { wrapper } = await mountWithNet();
 
-      const coords = wrapper.vm.generateOrganizedPortCoors({ x: 100, y: 200 }, 10);
+      const coords = wrapper.vm.generateOrganizedPortCoors(
+        { x: 100, y: 200 },
+        10,
+      );
 
       expect(coords).toHaveLength(10);
       // Even indices get yEvenOffset=25
@@ -909,13 +1057,17 @@ describe.concurrent("VisContainer", () => {
       expect(wrapper.vm.getNextHostname([], "h1")).toBe("h1");
     });
 
-    it("increments the numeric part of the last hostname", async ({ expect }) => {
+    it("increments the numeric part of the last hostname", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       expect(wrapper.vm.getNextHostname(["h1", "h2", "h3"], "h1")).toBe("h4");
     });
 
-    it("returns fallback when hostname has no numeric suffix", async ({ expect }) => {
+    it("returns fallback when hostname has no numeric suffix", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       expect(wrapper.vm.getNextHostname(["abc"], "h1")).toBe("h1");
@@ -981,7 +1133,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("getNextFreeHostname", () => {
-    it("returns base hostname for port type when rootNodeId is null", async ({ expect }) => {
+    it("returns base hostname for port type when rootNodeId is null", async ({
+      expect,
+    }) => {
       const { wrapper } = await mountWithNet();
 
       const result = wrapper.vm.getNextFreeHostname("port", null);
@@ -989,7 +1143,9 @@ describe.concurrent("VisContainer", () => {
       expect(result).toBe("eth0");
     });
 
-    it("returns next hostname for port based on connected nodes", async ({ expect }) => {
+    it("returns next hostname for port based on connected nodes", async ({
+      expect,
+    }) => {
       const items = {
         p1: { type: "port", hostname: "eth0" },
         p2: { type: "port", hostname: "eth1" },
@@ -1011,7 +1167,9 @@ describe.concurrent("VisContainer", () => {
       expect(result).toBe("eth2");
     });
 
-    it("returns next hostname for global namespace types like host", async ({ expect }) => {
+    it("returns next hostname for global namespace types like host", async ({
+      expect,
+    }) => {
       const items = {
         h1: { type: "host", hostname: "h1" },
         h2: { type: "host", hostname: "h2" },
@@ -1039,10 +1197,7 @@ describe.concurrent("VisContainer", () => {
         n1: { type: "host" },
         n2: { type: "host" },
       };
-      const testNodeItems = [
-        { id: "n1" },
-        { id: "n2" },
-      ];
+      const testNodeItems = [{ id: "n1" }, { id: "n2" }];
       const { wrapper, net, nodes } = await mountWithNet({ items });
       nodes.get.mockImplementation((id) => {
         if (id == null) return testNodeItems;
@@ -1059,13 +1214,13 @@ describe.concurrent("VisContainer", () => {
       expect(result).toBe("n1");
     });
 
-    it("returns null when no node is within maxDistance", async ({ expect }) => {
+    it("returns null when no node is within maxDistance", async ({
+      expect,
+    }) => {
       const items = {
         n1: { type: "host" },
       };
-      const testNodeItems = [
-        { id: "n1" },
-      ];
+      const testNodeItems = [{ id: "n1" }];
       const { wrapper, net, nodes } = await mountWithNet({ items });
       nodes.get.mockImplementation((id) => {
         if (id == null) return testNodeItems;
@@ -1083,13 +1238,17 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("editItem", () => {
-    it("emits edit-item event and returns item when resolved with data", async ({ expect }) => {
+    it("emits edit-item event and returns item when resolved with data", async ({
+      expect,
+    }) => {
       const { wrapper, store } = await mountWithNet();
       const dispatchSpy = vi.spyOn(store, "dispatch");
 
-      const editPromise = wrapper.vm.editItem(
-        { id: "n1", group: "host", label: "h1" },
-      );
+      const editPromise = wrapper.vm.editItem({
+        id: "n1",
+        group: "host",
+        label: "h1",
+      });
 
       // The component emits edit-item with a resolve callback
       const emitted = wrapper.emitted("edit-item");
@@ -1102,18 +1261,21 @@ describe.concurrent("VisContainer", () => {
 
       const result = await editPromise;
       expect(result.item.id).toBe("n1");
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        "topology/replaceItems",
-        [{ id: "n1", type: "host", hostname: "h1" }],
-      );
+      expect(dispatchSpy).toHaveBeenCalledWith("topology/replaceItems", [
+        { id: "n1", type: "host", hostname: "h1" },
+      ]);
     });
 
-    it("returns empty object and stops edit mode when resolved with null", async ({ expect }) => {
+    it("returns empty object and stops edit mode when resolved with null", async ({
+      expect,
+    }) => {
       const { wrapper, net } = await mountWithNet();
 
-      const editPromise = wrapper.vm.editItem(
-        { id: "n1", group: "host", label: "h1" },
-      );
+      const editPromise = wrapper.vm.editItem({
+        id: "n1",
+        group: "host",
+        label: "h1",
+      });
 
       const [, resolve] = wrapper.emitted("edit-item")[0];
       resolve(null);
@@ -1146,9 +1308,13 @@ describe.concurrent("VisContainer", () => {
     it("sets from/to on item when node has from and to", async ({ expect }) => {
       const { wrapper } = await mountWithNet();
 
-      const editPromise = wrapper.vm.editItem(
-        { id: "e1", from: "n1", to: "n2", group: "link", label: "" },
-      );
+      const editPromise = wrapper.vm.editItem({
+        id: "e1",
+        from: "n1",
+        to: "n2",
+        group: "link",
+        label: "",
+      });
 
       const [, resolve] = wrapper.emitted("edit-item")[0];
       resolve({ id: "e1", type: "link" });
@@ -1164,9 +1330,11 @@ describe.concurrent("VisContainer", () => {
       };
       const { wrapper } = await mountWithNet({ items });
 
-      const editPromise = wrapper.vm.editItem(
-        { id: "n1", group: "host", label: "h1" },
-      );
+      const editPromise = wrapper.vm.editItem({
+        id: "n1",
+        group: "host",
+        label: "h1",
+      });
 
       const [oldItem, resolve] = wrapper.emitted("edit-item")[0];
       expect(oldItem.hostname).toBe("existingHost");
@@ -1177,7 +1345,9 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("applyURL", () => {
-    it("selects nodes/edges and moves to position when URL has params", async ({ expect }) => {
+    it("selects nodes/edges and moves to position when URL has params", async ({
+      expect,
+    }) => {
       const vuetify = createVuetify();
       const store = createMockStore({ loading: false });
       const router = createTestRouter();
@@ -1257,7 +1427,16 @@ describe.concurrent("VisContainer", () => {
         handlers[event].push(handler);
       });
 
-      return { wrapper, net, nodes, edges, store, handlers, mockRouter: { push: mockRouterPush }, router };
+      return {
+        wrapper,
+        net,
+        nodes,
+        edges,
+        store,
+        handlers,
+        mockRouter: { push: mockRouterPush },
+        router,
+      };
     }
 
     it("dragEnd with nodes commits positions", async ({ expect }) => {
@@ -1274,7 +1453,9 @@ describe.concurrent("VisContainer", () => {
       );
     });
 
-    it("dragEnd with no nodes does not commit positions", async ({ expect }) => {
+    it("dragEnd with no nodes does not commit positions", async ({
+      expect,
+    }) => {
       const { store, handlers } = await initWithHandlers();
       const dispatchSpy = vi.spyOn(store, "dispatch");
 
@@ -1287,7 +1468,9 @@ describe.concurrent("VisContainer", () => {
       );
     });
 
-    it("dragStart with single host selects connected ports", async ({ expect }) => {
+    it("dragStart with single host selects connected ports", async ({
+      expect,
+    }) => {
       const { net, handlers, edges } = await initWithHandlers();
       net.getSelectedEdges.mockReturnValue(["e1"]);
       edges.get.mockImplementation((id) => {
@@ -1301,7 +1484,9 @@ describe.concurrent("VisContainer", () => {
       expect(net.selectNodes).toHaveBeenCalledWith(["n1", "p1"]);
     });
 
-    it("dragStart with non-host/switch does not select ports", async ({ expect }) => {
+    it("dragStart with non-host/switch does not select ports", async ({
+      expect,
+    }) => {
       const { net, handlers, store } = await initWithHandlers();
       store.state.topology.data.items.n3 = { type: "controller" };
 
@@ -1329,7 +1514,9 @@ describe.concurrent("VisContainer", () => {
       expect(net.editEdgeMode).toHaveBeenCalledOnce();
     });
 
-    it("hold on host/switch node triggers organizePorts", async ({ expect }) => {
+    it("hold on host/switch node triggers organizePorts", async ({
+      expect,
+    }) => {
       const { store, handlers, net } = await initWithHandlers();
       const dispatchSpy = vi.spyOn(store, "dispatch");
       net.getConnectedNodes.mockReturnValue(["p1"]);
@@ -1376,14 +1563,18 @@ describe.concurrent("VisContainer", () => {
       mockRouter.push.mockRejectedValueOnce(navError);
 
       // Should not throw
-      await expect(wrapper.vm.routerPush({ name: "test" })).resolves.toBeUndefined();
+      await expect(
+        wrapper.vm.routerPush({ name: "test" }),
+      ).resolves.toBeUndefined();
     });
 
     it("re-throws non-NavigationDuplicated errors", async ({ expect }) => {
       const { wrapper, mockRouter } = await mountWithNet();
       mockRouter.push.mockRejectedValueOnce(new Error("Other error"));
 
-      await expect(wrapper.vm.routerPush({ name: "test" })).rejects.toThrow("Other error");
+      await expect(wrapper.vm.routerPush({ name: "test" })).rejects.toThrow(
+        "Other error",
+      );
     });
   });
 });

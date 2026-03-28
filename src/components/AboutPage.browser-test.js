@@ -23,13 +23,17 @@ function mountAboutPage(isUpdateAvailable = false) {
 }
 
 describe.concurrent("AboutPage", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({ expect }) => {
+  it("mounts successfully in Vuetify context with mock Vuex store", ({
+    expect,
+  }) => {
     const wrapper = mountAboutPage();
 
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders AppLogo, AppDescription, AppLicense, and BuildInfo child components", ({ expect }) => {
+  it("renders AppLogo, AppDescription, AppLicense, and BuildInfo child components", ({
+    expect,
+  }) => {
     const wrapper = mountAboutPage();
 
     const appLogo = wrapper.findComponent({ name: "AppLogo" });

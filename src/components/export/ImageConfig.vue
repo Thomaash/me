@@ -16,10 +16,7 @@
         :min="0"
         :step="0.1"
         :model-value="size.widthScreenCm"
-        :rules="[
-          validators.decimal(),
-          validators.minValue(0),
-        ]"
+        :rules="[validators.decimal(), validators.minValue(0)]"
         label="Width on screen"
         type="number"
         suffix="cm"
@@ -33,10 +30,7 @@
         :min="0"
         :step="0.1"
         :model-value="size.widthPaperCm"
-        :rules="[
-          validators.decimal(),
-          validators.minValue(0),
-        ]"
+        :rules="[validators.decimal(), validators.minValue(0)]"
         label="Width on paper"
         type="number"
         suffix="cm"
@@ -50,10 +44,7 @@
         :min="1"
         :step="1"
         :model-value="size.widthPx"
-        :rules="[
-          validators.integer(),
-          validators.minValue(1),
-        ]"
+        :rules="[validators.integer(), validators.minValue(1)]"
         label="Width"
         type="number"
         suffix="px"
@@ -68,10 +59,7 @@
         :min="0"
         :step="0.1"
         :model-value="size.heightScreenCm"
-        :rules="[
-          validators.decimal(),
-          validators.minValue(0),
-        ]"
+        :rules="[validators.decimal(), validators.minValue(0)]"
         label="Height on screen"
         type="number"
         suffix="cm"
@@ -85,10 +73,7 @@
         :min="0"
         :step="0.1"
         :model-value="size.heightPaperCm"
-        :rules="[
-          validators.decimal(),
-          validators.minValue(0),
-        ]"
+        :rules="[validators.decimal(), validators.minValue(0)]"
         label="Height on paper"
         type="number"
         suffix="cm"
@@ -102,10 +87,7 @@
         :min="1"
         :step="1"
         :model-value="size.heightPx"
-        :rules="[
-          validators.integer(),
-          validators.minValue(1),
-        ]"
+        :rules="[validators.integer(), validators.minValue(1)]"
         label="Height"
         type="number"
         suffix="px"
@@ -130,10 +112,7 @@
           :disabled="disabled"
           :min="1"
           :step="1"
-          :rules="[
-            validators.integer(),
-            validators.minValue(1),
-          ]"
+          :rules="[validators.integer(), validators.minValue(1)]"
           label="The width of each tile"
           type="number"
           suffix="px"
@@ -146,10 +125,7 @@
           :disabled="disabled"
           :min="1"
           :step="1"
-          :rules="[
-            validators.integer(),
-            validators.minValue(1),
-          ]"
+          :rules="[validators.integer(), validators.minValue(1)]"
           label="The height of each tile"
           type="number"
           suffix="px"
@@ -285,9 +261,7 @@ function recompute(initiator, value) {
     if (key === initiator) {
       size[key] = Number(value);
     } else {
-      size[key] = Number(
-        valuesToString.value[key](scaleValues.value[key](s)),
-      );
+      size[key] = Number(valuesToString.value[key](scaleValues.value[key](s)));
     }
   });
   scale.value = s;

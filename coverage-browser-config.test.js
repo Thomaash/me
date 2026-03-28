@@ -3,23 +3,28 @@ import { describe, it } from "vitest";
 
 import config from "./vitest.config.browser.js";
 
-describe.concurrent("browser coverage config uses v8 provider and reports to reports/coverage/browser", () => {
-  it("configures v8 as the coverage provider", ({ expect }) => {
-    expect(config.test.coverage.provider).toBe("v8");
-  });
+describe.concurrent(
+  "browser coverage config uses v8 provider and reports to reports/coverage/browser",
+  () => {
+    it("configures v8 as the coverage provider", ({ expect }) => {
+      expect(config.test.coverage.provider).toBe("v8");
+    });
 
-  it("sets reportsDirectory to reports/coverage/browser", ({ expect }) => {
-    expect(config.test.coverage.reportsDirectory).toBe(
-      "reports/coverage/browser",
-    );
-  });
+    it("sets reportsDirectory to reports/coverage/browser", ({ expect }) => {
+      expect(config.test.coverage.reportsDirectory).toBe(
+        "reports/coverage/browser",
+      );
+    });
 
-  it("uses a different reportsDirectory than the unit coverage config", ({ expect }) => {
-    expect(config.test.coverage.reportsDirectory).not.toBe(
-      "reports/coverage/unit",
-    );
-  });
-});
+    it("uses a different reportsDirectory than the unit coverage config", ({
+      expect,
+    }) => {
+      expect(config.test.coverage.reportsDirectory).not.toBe(
+        "reports/coverage/unit",
+      );
+    });
+  },
+);
 
 describe("browser config permits file-level parallel execution", () => {
   it("does not disable fileParallelism", ({ expect }) => {

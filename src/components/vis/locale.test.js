@@ -1,13 +1,37 @@
 import { describe, it, expect } from "vitest";
-import { compare, compareNodes, compareItems } from "@/components/vis/locale.js";
+import {
+  compare,
+  compareNodes,
+  compareItems,
+} from "@/components/vis/locale.js";
 
 describe.concurrent("compare", () => {
   it.each([
-    { a: "apple", b: "banana", desc: "alphabetically lesser", check: "negative" },
-    { a: "banana", b: "apple", desc: "alphabetically greater", check: "positive" },
+    {
+      a: "apple",
+      b: "banana",
+      desc: "alphabetically lesser",
+      check: "negative",
+    },
+    {
+      a: "banana",
+      b: "apple",
+      desc: "alphabetically greater",
+      check: "positive",
+    },
     { a: "same", b: "same", desc: "identical strings", check: "zero" },
-    { a: "h2", b: "h10", desc: "numeric collation (h2 before h10)", check: "negative" },
-    { a: "file10", b: "file2", desc: "numeric collation (file10 after file2)", check: "positive" },
+    {
+      a: "h2",
+      b: "h10",
+      desc: "numeric collation (h2 before h10)",
+      check: "negative",
+    },
+    {
+      a: "file10",
+      b: "file2",
+      desc: "numeric collation (file10 after file2)",
+      check: "positive",
+    },
   ])("returns $check for $desc ($a vs $b)", ({ a, b, check }) => {
     const result = compare(a, b);
     if (check === "negative") {
@@ -37,12 +61,10 @@ describe("compareNodes", () => {
 });
 
 describe("compareItems", () => {
-  it("sorts objects by hostname property with numeric collation", ({ expect }) => {
-    const items = [
-      { hostname: "h10" },
-      { hostname: "h2" },
-      { hostname: "h1" },
-    ];
+  it("sorts objects by hostname property with numeric collation", ({
+    expect,
+  }) => {
+    const items = [{ hostname: "h10" }, { hostname: "h2" }, { hostname: "h1" }];
     const sorted = [...items].sort(compareItems);
     expect(sorted.map((i) => i.hostname)).toEqual(["h1", "h2", "h10"]);
   });

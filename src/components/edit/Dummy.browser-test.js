@@ -16,7 +16,9 @@ describe.concurrent("Dummy (edit)", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a v-form with a v-textarea labeled Label and data-cy edit-hostname", ({ expect }) => {
+  it("renders a v-form with a v-textarea labeled Label and data-cy edit-hostname", ({
+    expect,
+  }) => {
     const wrapper = mountDummy();
 
     const form = wrapper.findComponent({ name: "VForm" });

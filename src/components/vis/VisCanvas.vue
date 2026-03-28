@@ -237,15 +237,11 @@ const exposedApi = {
 
     // Nodes
     nodes.clear();
-    nodes.add(
-      items.filter(({ type }) => !isEdge(type)).map(toNode),
-    );
+    nodes.add(items.filter(({ type }) => !isEdge(type)).map(toNode));
 
     // Edges
     edges.clear();
-    edges.add(
-      items.filter(({ type }) => isEdge(type)).map(toEdge),
-    );
+    edges.add(items.filter(({ type }) => isEdge(type)).map(toEdge));
 
     // Some labels contain placeholders for info from connected nodes.
     // Therefore this can't be done before the topology is built.
@@ -375,10 +371,7 @@ const storeActions = computed(() => ({
 
     // Save old neighbors for label update
     const updatedIds = new Set(
-      [].concat(
-        ...ids,
-        ...ids.map((id) => net.getConnectedNodes(id)),
-      ),
+      [].concat(...ids, ...ids.map((id) => net.getConnectedNodes(id))),
     );
 
     if (update) {
@@ -432,9 +425,21 @@ const storeActions = computed(() => ({
 
 // Add storeActions and non-reactive getters to the exposed API
 exposedApi.storeActions = storeActions;
-Object.defineProperty(exposedApi, "net", { get: () => net, enumerable: true, configurable: true });
-Object.defineProperty(exposedApi, "nodes", { get: () => nodes, enumerable: true, configurable: true });
-Object.defineProperty(exposedApi, "edges", { get: () => edges, enumerable: true, configurable: true });
+Object.defineProperty(exposedApi, "net", {
+  get: () => net,
+  enumerable: true,
+  configurable: true,
+});
+Object.defineProperty(exposedApi, "nodes", {
+  get: () => nodes,
+  enumerable: true,
+  configurable: true,
+});
+Object.defineProperty(exposedApi, "edges", {
+  get: () => edges,
+  enumerable: true,
+  configurable: true,
+});
 
 // Watch options changes
 watch(options, (v) => {

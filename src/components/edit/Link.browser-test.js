@@ -28,7 +28,9 @@ describe.concurrent("Link (edit)", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a v-form with Label, Bandwidth, Delay, Jitter, Loss, and Max queue fields", ({ expect }) => {
+  it("renders a v-form with Label, Bandwidth, Delay, Jitter, Loss, and Max queue fields", ({
+    expect,
+  }) => {
     const wrapper = mountLink();
 
     const form = wrapper.findComponent({ name: "VForm" });
@@ -70,12 +72,17 @@ describe.concurrent("Link (edit)", () => {
     const wrapper = mountLink(fullLinkModel());
     await nextTick();
 
-    const updatedModel = { ...fullLinkModel(), hostname: "link2", bandwidth: 200 };
+    const updatedModel = {
+      ...fullLinkModel(),
+      hostname: "link2",
+      bandwidth: 200,
+    };
     await wrapper.setProps({ modelValue: updatedModel });
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const fieldByLabel = (label) => textFields.find((tf) => tf.props("label") === label);
+    const fieldByLabel = (label) =>
+      textFields.find((tf) => tf.props("label") === label);
 
     expect(fieldByLabel("Label").props("modelValue")).toBe("link2");
     expect(fieldByLabel("Bandwidth").props("modelValue")).toBe(200);
@@ -83,7 +90,9 @@ describe.concurrent("Link (edit)", () => {
     expect(fieldByLabel("Loss").props("modelValue")).toBe(2);
   });
 
-  it("uses validator functions between, integer, minValue, and timeWithUnit for field rules", ({ expect }) => {
+  it("uses validator functions between, integer, minValue, and timeWithUnit for field rules", ({
+    expect,
+  }) => {
     expect(typeof between).toBe("function");
     expect(typeof integer).toBe("function");
     expect(typeof minValue).toBe("function");
@@ -96,10 +105,14 @@ describe.concurrent("Link (edit)", () => {
     expect(minValue(0)(10)).toBe(true);
     expect(minValue(0)(-1)).toBe("Has to be at least 0.");
     expect(timeWithUnit()("10ms")).toBe(true);
-    expect(timeWithUnit()("bad")).toBe("Has to be expressed as time + unit (e.g. 10ms or 443us).");
+    expect(timeWithUnit()("bad")).toBe(
+      "Has to be expressed as time + unit (e.g. 10ms or 443us).",
+    );
   });
 
-  it("binds field values to item properties via v-model", async ({ expect }) => {
+  it("binds field values to item properties via v-model", async ({
+    expect,
+  }) => {
     const wrapper = mountLink(fullLinkModel());
 
     await nextTick();

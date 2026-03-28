@@ -68,7 +68,9 @@ function mountMininetSettings(loading = false) {
 }
 
 describe.concurrent("MininetSettingsPage", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({ expect }) => {
+  it("mounts successfully in Vuetify context with mock Vuex store", ({
+    expect,
+  }) => {
     const { wrapper } = mountMininetSettings();
 
     expect(wrapper.exists()).toBe(true);
@@ -110,7 +112,9 @@ describe.concurrent("MininetSettingsPage", () => {
     expect(startScriptField.exists()).toBe(true);
   });
 
-  it("commits text field values to Vuex store when form fields change", async ({ expect }) => {
+  it("commits text field values to Vuex store when form fields change", async ({
+    expect,
+  }) => {
     const { wrapper, store } = mountMininetSettings(false);
 
     const projectNameInput = wrapper
@@ -145,7 +149,9 @@ describe.concurrent("MininetSettingsPage", () => {
     expect(store.state.topology.data.stopScript).toBe("echo stop");
   });
 
-  it("commits log level to Vuex store when select changes", async ({ expect }) => {
+  it("commits log level to Vuex store when select changes", async ({
+    expect,
+  }) => {
     const { wrapper, store } = mountMininetSettings(false);
 
     const logLevelSelect = wrapper
@@ -156,7 +162,9 @@ describe.concurrent("MininetSettingsPage", () => {
     expect(store.state.topology.data.logLevel).toBe("debug");
   });
 
-  it("commits checkbox values to Vuex store when checkboxes are clicked", async ({ expect }) => {
+  it("commits checkbox values to Vuex store when checkboxes are clicked", async ({
+    expect,
+  }) => {
     const { wrapper, store } = mountMininetSettings(false);
 
     const autoSetMAC = wrapper.find(

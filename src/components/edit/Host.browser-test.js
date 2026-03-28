@@ -16,7 +16,9 @@ describe.concurrent("Host (edit)", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a v-form with Hostname, Default Route, and other host-specific fields", ({ expect }) => {
+  it("renders a v-form with Hostname, Default Route, and other host-specific fields", ({
+    expect,
+  }) => {
     const wrapper = mountHost();
 
     const form = wrapper.findComponent({ name: "VForm" });
@@ -37,11 +39,15 @@ describe.concurrent("Host (edit)", () => {
     expect(defaultRouteField.exists()).toBe(true);
   });
 
-  it("enforces validation on the Hostname field with required and hostname rules", ({ expect }) => {
+  it("enforces validation on the Hostname field with required and hostname rules", ({
+    expect,
+  }) => {
     const wrapper = mountHost({ hostname: "" });
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const hostnameField = textFields.find((tf) => tf.props("label") === "Hostname");
+    const hostnameField = textFields.find(
+      (tf) => tf.props("label") === "Hostname",
+    );
 
     expect(hostnameField).toBeDefined();
     const rules = hostnameField.props("rules");
@@ -69,7 +75,9 @@ describe.concurrent("Host (edit)", () => {
     expect(stopField.exists()).toBe(true);
   });
 
-  it("computes cpuCoresStr getter as comma-separated string from cpuCores array", async ({ expect }) => {
+  it("computes cpuCoresStr getter as comma-separated string from cpuCores array", async ({
+    expect,
+  }) => {
     const wrapper = mountHost({
       hostname: "h1",
       cpuCores: [0, 2, 4],
@@ -78,53 +86,71 @@ describe.concurrent("Host (edit)", () => {
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const cpuCoresField = textFields.find((tf) => tf.props("label") === "CPU cores");
+    const cpuCoresField = textFields.find(
+      (tf) => tf.props("label") === "CPU cores",
+    );
     expect(cpuCoresField.props("modelValue")).toBe("0, 2, 4");
   });
 
-  it("returns empty string from cpuCoresStr getter when cpuCores is undefined", async ({ expect }) => {
+  it("returns empty string from cpuCoresStr getter when cpuCores is undefined", async ({
+    expect,
+  }) => {
     const wrapper = mountHost({ hostname: "h1" });
 
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const cpuCoresField = textFields.find((tf) => tf.props("label") === "CPU cores");
+    const cpuCoresField = textFields.find(
+      (tf) => tf.props("label") === "CPU cores",
+    );
     expect(cpuCoresField.props("modelValue")).toBe("");
   });
 
-  it("parses cpuCoresStr setter into deduplicated numeric array", async ({ expect }) => {
+  it("parses cpuCoresStr setter into deduplicated numeric array", async ({
+    expect,
+  }) => {
     const wrapper = mountHost({ hostname: "h1", cpuCores: [] });
 
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const cpuCoresField = textFields.find((tf) => tf.props("label") === "CPU cores");
+    const cpuCoresField = textFields.find(
+      (tf) => tf.props("label") === "CPU cores",
+    );
     await cpuCoresField.setValue("1, 2, 3, 2");
     await nextTick();
 
     expect(cpuCoresField.props("modelValue")).toBe("1, 2, 3");
   });
 
-  it("preserves trailing comma in cpuCoresStr display when input ends with comma", async ({ expect }) => {
+  it("preserves trailing comma in cpuCoresStr display when input ends with comma", async ({
+    expect,
+  }) => {
     const wrapper = mountHost({ hostname: "h1", cpuCores: [] });
 
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const cpuCoresField = textFields.find((tf) => tf.props("label") === "CPU cores");
+    const cpuCoresField = textFields.find(
+      (tf) => tf.props("label") === "CPU cores",
+    );
     await cpuCoresField.setValue("1, 2, ");
     await nextTick();
 
     expect(cpuCoresField.props("modelValue")).toBe("1, 2, ");
   });
 
-  it("clears cpuCores when cpuCoresStr field is cleared", async ({ expect }) => {
+  it("clears cpuCores when cpuCoresStr field is cleared", async ({
+    expect,
+  }) => {
     const wrapper = mountHost({ hostname: "h1", cpuCores: [1, 2] });
 
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const cpuCoresField = textFields.find((tf) => tf.props("label") === "CPU cores");
+    const cpuCoresField = textFields.find(
+      (tf) => tf.props("label") === "CPU cores",
+    );
     await cpuCoresField.setValue(null);
     await nextTick();
 
@@ -147,10 +173,14 @@ describe.concurrent("Host (edit)", () => {
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const hostnameField = textFields.find((tf) => tf.props("label") === "Hostname");
+    const hostnameField = textFields.find(
+      (tf) => tf.props("label") === "Hostname",
+    );
     expect(hostnameField.props("modelValue")).toBe("h2");
 
-    const cpuCoresField = textFields.find((tf) => tf.props("label") === "CPU cores");
+    const cpuCoresField = textFields.find(
+      (tf) => tf.props("label") === "CPU cores",
+    );
     expect(cpuCoresField.props("modelValue")).toBe("0, 1");
   });
 

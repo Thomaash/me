@@ -18,11 +18,15 @@ describe("Stryker configs exclude browser-test files from mutation", () => {
     ),
   );
 
-  it("stryker.config.json mutate array contains !src/**/*.browser-test.js exclusion", ({ expect }) => {
+  it("stryker.config.json mutate array contains !src/**/*.browser-test.js exclusion", ({
+    expect,
+  }) => {
     expect(strykerConfig.mutate).toContain("!src/**/*.browser-test.js");
   });
 
-  it("stryker.config.browser.json mutate array contains !src/**/*.browser-test.js exclusion", ({ expect }) => {
+  it("stryker.config.browser.json mutate array contains !src/**/*.browser-test.js exclusion", ({
+    expect,
+  }) => {
     expect(strykerBrowserConfig.mutate).toContain("!src/**/*.browser-test.js");
   });
 });

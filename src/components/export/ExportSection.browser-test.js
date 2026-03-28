@@ -10,7 +10,11 @@ import AddressingPlan from "@/builder/AddressingPlan";
 
 vi.mock("@/exporter", () => ({
   default: {
-    exportData: vi.fn(() => ({ version: 0, items: [], projectName: "test-project" })),
+    exportData: vi.fn(() => ({
+      version: 0,
+      items: [],
+      projectName: "test-project",
+    })),
   },
 }));
 
@@ -30,7 +34,10 @@ vi.mock("@/builder/AddressingPlan", () => {
   return { default: MockAddressingPlan };
 });
 
-function createMockStore({ working = false, projectName = "test-project" } = {}) {
+function createMockStore({
+  working = false,
+  projectName = "test-project",
+} = {}) {
   return createStore({
     state() {
       return {
@@ -65,15 +72,14 @@ function createMockStore({ working = false, projectName = "test-project" } = {})
           data: (s) => s.data,
           canUndo: (s) => s.past.length,
           canRedo: (s) => s.future.length,
-          boundingBox:
-            () => () => ({
-              sX: 0,
-              eX: 100,
-              sY: 0,
-              eY: 100,
-              width: 100,
-              height: 100,
-            }),
+          boundingBox: () => () => ({
+            sX: 0,
+            eX: 100,
+            sY: 0,
+            eY: 100,
+            width: 100,
+            height: 100,
+          }),
         },
         mutations: {
           importData() {},
@@ -88,13 +94,19 @@ function findButtonByText(wrapper, text) {
   return buttons.find((btn) => btn.text() === text);
 }
 
-function mountExportSection({ working = false, projectName = "test-project", toTileBlobsFn } = {}) {
+function mountExportSection({
+  working = false,
+  projectName = "test-project",
+  toTileBlobsFn,
+} = {}) {
   const vuetify = createVuetify();
   const store = createMockStore({ working, projectName });
   const imageConfigStub = defineComponent({
     name: "ImageConfig",
     emits: ["render"],
-    render() { return h("div", { class: "image-config-stub" }, "Image"); },
+    render() {
+      return h("div", { class: "image-config-stub" }, "Image");
+    },
   });
   const visCanvasStub = defineComponent({
     name: "VisCanvas",
@@ -102,20 +114,30 @@ function mountExportSection({ working = false, projectName = "test-project", toT
     setup(_, { emit, expose }) {
       const toTileBlobsImpl = toTileBlobsFn || vi.fn();
       expose({ toTileBlobs: toTileBlobsImpl });
-      return { toTileBlobs: toTileBlobsImpl, triggerReady: () => emit("ready") };
+      return {
+        toTileBlobs: toTileBlobsImpl,
+        triggerReady: () => emit("ready"),
+      };
     },
-    mounted() { this.triggerReady(); },
-    render() { return h("div"); },
+    mounted() {
+      this.triggerReady();
+    },
+    render() {
+      return h("div");
+    },
   });
-  return { wrapper: mount(ExportSection, {
-    global: {
-      plugins: [vuetify, store],
-      stubs: {
-        ImageConfig: imageConfigStub,
-        VisCanvas: visCanvasStub,
+  return {
+    wrapper: mount(ExportSection, {
+      global: {
+        plugins: [vuetify, store],
+        stubs: {
+          ImageConfig: imageConfigStub,
+          VisCanvas: visCanvasStub,
+        },
       },
-    },
-  }), store };
+    }),
+    store,
+  };
 }
 
 beforeEach(() => {
@@ -141,13 +163,17 @@ afterEach(() => {
 });
 
 describe.concurrent("ExportSection", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({ expect }) => {
+  it("mounts successfully in Vuetify context with mock Vuex store", ({
+    expect,
+  }) => {
     const { wrapper } = mountExportSection();
 
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders export buttons for JSON, Python script, and Addressing plan", ({ expect }) => {
+  it("renders export buttons for JSON, Python script, and Addressing plan", ({
+    expect,
+  }) => {
     const { wrapper } = mountExportSection();
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
@@ -180,15 +206,22 @@ describe.concurrent("ExportSection", () => {
 });
 
 describe("ExportSection download methods", () => {
-  it("downloadJSON exports data, shows success alert, and triggers file download", async ({ expect }) => {
+  it("downloadJSON exports data, shows success alert, and triggers file download", async ({
+    expect,
+  }) => {
     const { wrapper, store } = mountExportSection();
 
     const jsonBtn = findButtonByText(wrapper, "JSON");
     await jsonBtn.trigger("click");
     await flushPromises();
 
-    expect(exporter.exportData).toHaveBeenCalledWith(store.getters["topology/data"]);
-    expect(store.state.alert).toEqual({ type: "success", text: "Successfully exported." });
+    expect(exporter.exportData).toHaveBeenCalledWith(
+      store.getters["topology/data"],
+    );
+    expect(store.state.alert).toEqual({
+      type: "success",
+      text: "Successfully exported.",
+    });
     expect(store.state.working).toBe(false);
     expect(wrapper.emitted("log")).toBeTruthy();
   });
@@ -204,12 +237,17 @@ describe("ExportSection download methods", () => {
     await jsonBtn.trigger("click");
     await flushPromises();
 
-    expect(store.state.alert).toEqual({ type: "error", text: "Export failed." });
+    expect(store.state.alert).toEqual({
+      type: "error",
+      text: "Export failed.",
+    });
     expect(store.state.working).toBe(false);
     consoleSpy.mockRestore();
   });
 
-  it("downloadScript builds script, shows success alert, and triggers file download", async ({ expect }) => {
+  it("downloadScript builds script, shows success alert, and triggers file download", async ({
+    expect,
+  }) => {
     const { wrapper, store } = mountExportSection();
 
     const scriptBtn = findButtonByText(wrapper, "Python 2 script");
@@ -217,13 +255,18 @@ describe("ExportSection download methods", () => {
     await flushPromises();
 
     expect(Builder).toHaveBeenCalled();
-    expect(store.state.alert).toEqual({ type: "success", text: "Script built." });
+    expect(store.state.alert).toEqual({
+      type: "success",
+      text: "Script built.",
+    });
     expect(store.state.working).toBe(false);
     const logEmissions = wrapper.emitted("log");
     expect(logEmissions.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("downloadScript shows error alert when build fails", async ({ expect }) => {
+  it("downloadScript shows error alert when build fails", async ({
+    expect,
+  }) => {
     Builder.mockImplementationOnce(() => {
       throw new Error("build failure");
     });
@@ -234,12 +277,17 @@ describe("ExportSection download methods", () => {
     await scriptBtn.trigger("click");
     await flushPromises();
 
-    expect(store.state.alert).toEqual({ type: "error", text: "Script was not built." });
+    expect(store.state.alert).toEqual({
+      type: "error",
+      text: "Script was not built.",
+    });
     expect(store.state.working).toBe(false);
     consoleSpy.mockRestore();
   });
 
-  it("downloadAddressingPlan builds plan, saves PDF, and shows success alert", async ({ expect }) => {
+  it("downloadAddressingPlan builds plan, saves PDF, and shows success alert", async ({
+    expect,
+  }) => {
     const { wrapper, store } = mountExportSection();
 
     const planBtn = findButtonByText(wrapper, "Addressing plan");
@@ -247,11 +295,16 @@ describe("ExportSection download methods", () => {
     await flushPromises();
 
     expect(AddressingPlan).toHaveBeenCalled();
-    expect(store.state.alert).toEqual({ type: "success", text: "Addressing plan built." });
+    expect(store.state.alert).toEqual({
+      type: "success",
+      text: "Addressing plan built.",
+    });
     expect(store.state.working).toBe(false);
   });
 
-  it("downloadAddressingPlan shows error alert when build fails", async ({ expect }) => {
+  it("downloadAddressingPlan shows error alert when build fails", async ({
+    expect,
+  }) => {
     AddressingPlan.mockImplementationOnce(() => {
       throw new Error("plan failure");
     });
@@ -262,12 +315,17 @@ describe("ExportSection download methods", () => {
     await planBtn.trigger("click");
     await flushPromises();
 
-    expect(store.state.alert).toEqual({ type: "error", text: "Addressing plan was not built." });
+    expect(store.state.alert).toEqual({
+      type: "error",
+      text: "Addressing plan was not built.",
+    });
     expect(store.state.working).toBe(false);
     consoleSpy.mockRestore();
   });
 
-  it("working setter clears alert when set to true and commits working state", async ({ expect }) => {
+  it("working setter clears alert when set to true and commits working state", async ({
+    expect,
+  }) => {
     const { store } = mountExportSection();
     store.commit("setAlert", { type: "error", text: "old error" });
 
@@ -282,7 +340,9 @@ describe("ExportSection download methods", () => {
     expect(store.state.working).toBe(true);
   });
 
-  it("getFilename returns project name with extension via download anchor", async ({ expect }) => {
+  it("getFilename returns project name with extension via download anchor", async ({
+    expect,
+  }) => {
     const { wrapper } = mountExportSection({ projectName: "my-network" });
 
     const jsonBtn = findButtonByText(wrapper, "JSON");
@@ -302,7 +362,9 @@ describe("ExportSection download methods", () => {
     expect(downloadCall[1]).toBe("my-network.json");
   });
 
-  it("getFilename uses fallback name when projectName is empty via download anchor", async ({ expect }) => {
+  it("getFilename uses fallback name when projectName is empty via download anchor", async ({
+    expect,
+  }) => {
     const { wrapper } = mountExportSection({ projectName: "" });
 
     const scriptBtn = findButtonByText(wrapper, "Python 2 script");
@@ -337,7 +399,9 @@ async function withMockBlobURL(fn) {
 }
 
 describe("ExportSection downloadImage", () => {
-  it("downloadImage success without tiles shows success alert and resets working", async ({ expect }) => {
+  it("downloadImage success without tiles shows success alert and resets working", async ({
+    expect,
+  }) => {
     const toTileBlobsFn = vi.fn(async () => {});
     const { wrapper, store } = mountExportSection({ toTileBlobsFn });
 
@@ -367,7 +431,9 @@ describe("ExportSection downloadImage", () => {
     );
   });
 
-  it("downloadImage success with tiles computes tile dimensions and shows success alert", async ({ expect }) => {
+  it("downloadImage success with tiles computes tile dimensions and shows success alert", async ({
+    expect,
+  }) => {
     const toTileBlobsFn = vi.fn(async () => {});
     const { wrapper, store } = mountExportSection({ toTileBlobsFn });
 
@@ -395,7 +461,9 @@ describe("ExportSection downloadImage", () => {
     );
   });
 
-  it("downloadImage error path shows error alert and resets working", async ({ expect }) => {
+  it("downloadImage error path shows error alert and resets working", async ({
+    expect,
+  }) => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const toTileBlobsFn = vi.fn(async () => {
       throw new Error("render failure");
@@ -419,11 +487,20 @@ describe("ExportSection downloadImage", () => {
     consoleSpy.mockRestore();
   });
 
-  it("downloadImage onBlob callback triggers download and updates working progress", async ({ expect }) => {
+  it("downloadImage onBlob callback triggers download and updates working progress", async ({
+    expect,
+  }) => {
     await withMockBlobURL(async (fakeUrl) => {
       const mockBlob = new Blob(["test"], { type: "image/png" });
       const toTileBlobsFn = vi.fn(async ({ onBlob }) => {
-        await onBlob(mockBlob, { col: 0, cols: 1, doneTiles: 1, row: 0, rows: 1, totalTiles: 1 });
+        await onBlob(mockBlob, {
+          col: 0,
+          cols: 1,
+          doneTiles: 1,
+          row: 0,
+          rows: 1,
+          totalTiles: 1,
+        });
       });
       const { wrapper } = mountExportSection({ toTileBlobsFn });
 
@@ -444,11 +521,20 @@ describe("ExportSection downloadImage", () => {
     });
   });
 
-  it("downloadImage onBlob callback with multiple tiles generates tile suffixes", async ({ expect }) => {
+  it("downloadImage onBlob callback with multiple tiles generates tile suffixes", async ({
+    expect,
+  }) => {
     await withMockBlobURL(async (fakeUrl) => {
       const mockBlob = new Blob(["test"], { type: "image/png" });
       const toTileBlobsFn = vi.fn(async ({ onBlob }) => {
-        await onBlob(mockBlob, { col: 0, cols: 2, doneTiles: 1, row: 0, rows: 2, totalTiles: 4 });
+        await onBlob(mockBlob, {
+          col: 0,
+          cols: 2,
+          doneTiles: 1,
+          row: 0,
+          rows: 2,
+          totalTiles: 4,
+        });
       });
       const { wrapper } = mountExportSection({ toTileBlobsFn });
 

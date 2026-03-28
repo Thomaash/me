@@ -60,7 +60,13 @@ import exporter from "@/exporter";
 import ImageConfig from "./ImageConfig.vue";
 import { useTopologyStore } from "@/composables/useTopologyStore";
 
-const { data, working: storeWorking, setWorking, setAlert, clearAlert } = useTopologyStore();
+const {
+  data,
+  working: storeWorking,
+  setWorking,
+  setAlert,
+  clearAlert,
+} = useTopologyStore();
 const emit = defineEmits(["log"]);
 
 const visCanvas = ref(null);
@@ -109,17 +115,9 @@ function downloadJSON() {
     working.value = true;
     emit("log", []);
 
-    const json = JSON.stringify(
-      exporter.exportData(data.value),
-      undefined,
-      4,
-    );
+    const json = JSON.stringify(exporter.exportData(data.value), undefined, 4);
     showAlert("success", "Successfully exported.");
-    download(
-      getFilename("json"),
-      "application/json;charset=utf-8",
-      json,
-    );
+    download(getFilename("json"), "application/json;charset=utf-8", json);
   } catch (error) {
     console.error(error);
     showAlert("error", "Export failed.");
@@ -219,9 +217,7 @@ async function downloadImage({ size, tiles, dark: darkParam }) {
         try {
           await new Promise((resolve) => setTimeout(resolve, 50));
           download(
-            getFilename(
-              [tileSuffix, "png"].filter((v) => v != null).join("."),
-            ),
+            getFilename([tileSuffix, "png"].filter((v) => v != null).join(".")),
             url,
           );
           await new Promise((resolve) => setTimeout(resolve, 50));
@@ -254,10 +250,7 @@ function downloadAddressingPlan() {
 
     const ap = new AddressingPlan(exporter.exportData(data.value));
     ap.build();
-    ap.savePDF(
-      data.value.projectName || "Mininet Network",
-      getFilename("pdf"),
-    );
+    ap.savePDF(data.value.projectName || "Mininet Network", getFilename("pdf"));
 
     showAlert("success", "Addressing plan built.");
   } catch (error) {

@@ -13,7 +13,9 @@ import {
 } from "@/components/selects.js";
 
 describe.concurrent("switchTypes", () => {
-  it("contains exactly 5 entries with correct value/title pairs", ({ expect }) => {
+  it("contains exactly 5 entries with correct value/title pairs", ({
+    expect,
+  }) => {
     expect(switchTypes).toEqual([
       { value: "IVSSwitch", title: "IVS Switch" },
       { value: "LinuxBridge", title: "Linux Bridge" },
@@ -54,7 +56,9 @@ describe("protocolsOF", () => {
 });
 
 describe("controllerTypes", () => {
-  it("contains Controller, NOX, OVSController, RemoteController, Ryu entries", ({ expect }) => {
+  it("contains Controller, NOX, OVSController, RemoteController, Ryu entries", ({
+    expect,
+  }) => {
     expect(controllerTypes).toEqual([
       { value: "Controller", title: "OpenFlow Reference Implementation" },
       { value: "NOX", title: "NOX" },
@@ -84,7 +88,9 @@ describe("schedulers", () => {
 });
 
 describe("logLevels", () => {
-  it("contains debug, info, output, warning, error, critical entries", ({ expect }) => {
+  it("contains debug, info, output, warning, error, critical entries", ({
+    expect,
+  }) => {
     expect(logLevels).toEqual([
       { value: "debug", title: "Debug" },
       { value: "info", title: "Info" },

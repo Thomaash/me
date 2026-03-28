@@ -48,7 +48,9 @@ describe("matchMedia integration", () => {
 });
 
 describe("addAlpha with short hex format", () => {
-  it("correctly parses 4-char hex (#RGB) into individual color channels", async ({ expect }) => {
+  it("correctly parses 4-char hex (#RGB) into individual color channels", async ({
+    expect,
+  }) => {
     vi.resetModules();
 
     vi.doMock("@/theme-colors.js", () => ({
@@ -129,7 +131,9 @@ describe("theme exports", () => {
   });
 
   describe("canvas theme objects", () => {
-    it("canvasLight has foreground and background keys with color values", ({ expect }) => {
+    it("canvasLight has foreground and background keys with color values", ({
+      expect,
+    }) => {
       expect(canvasLight).toEqual({
         foreground: expect.any(String),
         background: expect.any(String),
@@ -138,7 +142,9 @@ describe("theme exports", () => {
       expect(canvasLight.background).toBe("#ffffff");
     });
 
-    it("canvasDark has foreground and background keys with color values", ({ expect }) => {
+    it("canvasDark has foreground and background keys with color values", ({
+      expect,
+    }) => {
       expect(canvasDark).toEqual({
         foreground: expect.any(String),
         background: expect.any(String),
@@ -149,7 +155,9 @@ describe("theme exports", () => {
   });
 
   describe("re-exported constants select light variants when prefers-color-scheme is light", () => {
-    it("dark is false and vuetify, items, selection, canvas equal their light variants", ({ expect }) => {
+    it("dark is false and vuetify, items, selection, canvas equal their light variants", ({
+      expect,
+    }) => {
       expect(dark).toBe(false);
       expect(vuetify).toBe(vuetifyLight);
       expect(items).toBe(itemsLight);
@@ -160,7 +168,9 @@ describe("theme exports", () => {
 });
 
 describe("dark mode branch paths", () => {
-  it("exports dark variant values when prefers-color-scheme is dark", async ({ expect }) => {
+  it("exports dark variant values when prefers-color-scheme is dark", async ({
+    expect,
+  }) => {
     vi.resetModules();
 
     vi.stubGlobal(

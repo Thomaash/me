@@ -35,16 +35,15 @@ function createMockStore({ width = 100, height = 100 } = {}) {
           data: (s) => s.data,
           canUndo: (s) => s.past.length,
           canRedo: (s) => s.future.length,
-          boundingBox:
-            (s) => () => ({
-              sX: 0,
-              eX: s.boundingBoxOverride.width,
-              sY: 0,
-              eY: s.boundingBoxOverride.height,
-              width: s.boundingBoxOverride.width,
-              height: s.boundingBoxOverride.height,
-              empty: false,
-            }),
+          boundingBox: (s) => () => ({
+            sX: 0,
+            eX: s.boundingBoxOverride.width,
+            sY: 0,
+            eY: s.boundingBoxOverride.height,
+            width: s.boundingBoxOverride.width,
+            height: s.boundingBoxOverride.height,
+            empty: false,
+          }),
         },
         mutations: {
           importData() {},
@@ -94,13 +93,17 @@ function setFieldValue(wrapper, label, value) {
 }
 
 describe.concurrent("ImageConfig", () => {
-  it("mounts successfully in Vuetify context with mock store providing topology boundingBox getter", ({ expect }) => {
+  it("mounts successfully in Vuetify context with mock store providing topology boundingBox getter", ({
+    expect,
+  }) => {
     const wrapper = mountImageConfig();
 
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders width and height input fields and Render image button", ({ expect }) => {
+  it("renders width and height input fields and Render image button", ({
+    expect,
+  }) => {
     const wrapper = mountImageConfig();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
@@ -113,7 +116,9 @@ describe.concurrent("ImageConfig", () => {
     expect(renderButton).toBeDefined();
   });
 
-  it("disables the Render image button when working prop is true", ({ expect }) => {
+  it("disables the Render image button when working prop is true", ({
+    expect,
+  }) => {
     const wrapper = mountImageConfig({ working: true });
 
     const renderButton = findRenderButton(wrapper);
@@ -121,7 +126,9 @@ describe.concurrent("ImageConfig", () => {
     expect(renderButton.attributes("disabled")).toBeDefined();
   });
 
-  it("recomputes all size fields proportionally when a single dimension changes on non-square bounding box", async ({ expect }) => {
+  it("recomputes all size fields proportionally when a single dimension changes on non-square bounding box", async ({
+    expect,
+  }) => {
     const wrapper = mountImageConfig({ width: 200, height: 100 });
 
     // Trigger recompute via the Width field's update:modelValue event
@@ -156,7 +163,9 @@ describe.concurrent("ImageConfig", () => {
     expect(emitted[0][0].size.scale).toBeCloseTo(2, 5);
   });
 
-  it("emits render event with size, tiles, and dark configuration when Render image button is clicked", async ({ expect }) => {
+  it("emits render event with size, tiles, and dark configuration when Render image button is clicked", async ({
+    expect,
+  }) => {
     const wrapper = mountImageConfig();
 
     // Set width to 200 via field interaction
@@ -192,7 +201,9 @@ describe.concurrent("ImageConfig", () => {
     expect(widthField.props("disabled")).toBe(true);
   });
 
-  it("computes tile counts based on image size and tile dimensions", async ({ expect }) => {
+  it("computes tile counts based on image size and tile dimensions", async ({
+    expect,
+  }) => {
     const wrapper = mountImageConfig();
 
     // Set width to 500 via field interaction
@@ -206,11 +217,17 @@ describe.concurrent("ImageConfig", () => {
     await nextTick();
 
     // Set tile dimensions via field interactions
-    const tileWidthField = findTextFieldByLabel(wrapper, "The width of each tile");
+    const tileWidthField = findTextFieldByLabel(
+      wrapper,
+      "The width of each tile",
+    );
     tileWidthField.vm.$emit("update:modelValue", 256);
     await nextTick();
 
-    const tileHeightField = findTextFieldByLabel(wrapper, "The height of each tile");
+    const tileHeightField = findTextFieldByLabel(
+      wrapper,
+      "The height of each tile",
+    );
     tileHeightField.vm.$emit("update:modelValue", 256);
     await nextTick();
 
@@ -226,7 +243,9 @@ describe.concurrent("ImageConfig", () => {
     );
   });
 
-  it("emits render event with tile configuration when tiles mode is enabled", async ({ expect }) => {
+  it("emits render event with tile configuration when tiles mode is enabled", async ({
+    expect,
+  }) => {
     const wrapper = mountImageConfig();
 
     // Set width to 200 via field interaction
@@ -239,11 +258,17 @@ describe.concurrent("ImageConfig", () => {
     await nextTick();
 
     // Set tile dimensions
-    const tileWidthField = findTextFieldByLabel(wrapper, "The width of each tile");
+    const tileWidthField = findTextFieldByLabel(
+      wrapper,
+      "The width of each tile",
+    );
     tileWidthField.vm.$emit("update:modelValue", 128);
     await nextTick();
 
-    const tileHeightField = findTextFieldByLabel(wrapper, "The height of each tile");
+    const tileHeightField = findTextFieldByLabel(
+      wrapper,
+      "The height of each tile",
+    );
     tileHeightField.vm.$emit("update:modelValue", 64);
     await nextTick();
 
@@ -255,11 +280,12 @@ describe.concurrent("ImageConfig", () => {
     expect(emitted).toBeDefined();
     expect(emitted[0][0].tiles).toEqual({ width: 128, height: 64 });
   });
-
 });
 
 describe("ImageConfig watcher", () => {
-  it("recomputes all size fields when boundingBox dimensions change via watcher", async ({ expect }) => {
+  it("recomputes all size fields when boundingBox dimensions change via watcher", async ({
+    expect,
+  }) => {
     const vuetify = createVuetify();
     const store = createMockStore({ width: 100, height: 100 });
     const wrapper = mount(ImageConfig, {

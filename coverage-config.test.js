@@ -5,26 +5,30 @@ import { resolve } from "node:path";
 
 import config from "./vitest.config.unit.js";
 
-describe.concurrent("unit coverage config uses v8 provider and reports to reports/coverage/unit", () => {
-  it("configures v8 as the coverage provider", ({ expect }) => {
-    expect(config.test.coverage.provider).toBe("v8");
-  });
+describe.concurrent(
+  "unit coverage config uses v8 provider and reports to reports/coverage/unit",
+  () => {
+    it("configures v8 as the coverage provider", ({ expect }) => {
+      expect(config.test.coverage.provider).toBe("v8");
+    });
 
-  it("sets reportsDirectory to reports/coverage/unit", ({ expect }) => {
-    expect(config.test.coverage.reportsDirectory).toBe("reports/coverage/unit");
-  });
-});
+    it("sets reportsDirectory to reports/coverage/unit", ({ expect }) => {
+      expect(config.test.coverage.reportsDirectory).toBe(
+        "reports/coverage/unit",
+      );
+    });
+  },
+);
 
 describe("package.json contains coverage npm scripts", () => {
   const packageJson = JSON.parse(
-    readFileSync(
-      resolve(import.meta.dirname, "./package.json"),
-      "utf-8",
-    ),
+    readFileSync(resolve(import.meta.dirname, "./package.json"), "utf-8"),
   );
   const scripts = packageJson.scripts;
 
-  it("has test:vitest:unit:coverage script with unit config and --coverage flag", ({ expect }) => {
+  it("has test:vitest:unit:coverage script with unit config and --coverage flag", ({
+    expect,
+  }) => {
     expect(scripts["test:vitest:unit:coverage"]).toBeDefined();
     expect(scripts["test:vitest:unit:coverage"]).toContain(
       "vitest.config.unit.js",
@@ -32,7 +36,9 @@ describe("package.json contains coverage npm scripts", () => {
     expect(scripts["test:vitest:unit:coverage"]).toContain("--coverage");
   });
 
-  it("has test:vitest:browser:coverage script with browser config and --coverage flag", ({ expect }) => {
+  it("has test:vitest:browser:coverage script with browser config and --coverage flag", ({
+    expect,
+  }) => {
     expect(scripts["test:vitest:browser:coverage"]).toBeDefined();
     expect(scripts["test:vitest:browser:coverage"]).toContain(
       "vitest.config.browser.js",
@@ -76,10 +82,10 @@ describe("gitignore excludes coverage reports directory", () => {
     "utf-8",
   );
 
-  it("contains reports/coverage/ entry to exclude generated coverage artifacts", ({ expect }) => {
-    const lines = gitignoreContent
-      .split("\n")
-      .map((line) => line.trim());
+  it("contains reports/coverage/ entry to exclude generated coverage artifacts", ({
+    expect,
+  }) => {
+    const lines = gitignoreContent.split("\n").map((line) => line.trim());
     expect(lines).toContain("reports/coverage/");
   });
 });

@@ -17,20 +17,26 @@ describe.concurrent("AppDescription", () => {
     expect(headline.text()).toBe("Description");
   });
 
-  it("renders description text mentioning SDN topology editor", ({ expect }) => {
+  it("renders description text mentioning SDN topology editor", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(AppDescription);
 
     expect(wrapper.text()).toContain("SDN topology editor");
   });
 
-  it("does not render Repository and New Issue buttons when full is false", ({ expect }) => {
+  it("does not render Repository and New Issue buttons when full is false", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(AppDescription);
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     expect(buttons).toHaveLength(0);
   });
 
-  it("renders Repository and New Issue buttons when full is true", ({ expect }) => {
+  it("renders Repository and New Issue buttons when full is true", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(AppDescription, {
       props: { full: true },
     });

@@ -4,7 +4,12 @@
   "vitest": {
     "configFile": "vitest.config.browser.js"
   },
-  "mutate": ["src/**/*.vue", "src/**/*.js", "!src/**/*.test.js", "!src/**/*.browser-test.js"],
+  "mutate": [
+    "src/**/*.vue",
+    "src/**/*.js",
+    "!src/**/*.test.js",
+    "!src/**/*.browser-test.js"
+  ],
   "reporters": ["clear-text", "html", "progress"],
   "thresholds": {
     "high": 80,

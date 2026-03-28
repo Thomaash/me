@@ -76,7 +76,9 @@ describe("selectionTitleSuffix (tested via canvas child subtitle)", () => {
     expect(result).toBe(" with 3 selected items");
   });
 
-  it("produces correct position and selection text for canvas with position", ({ expect }) => {
+  it("produces correct position and selection text for canvas with position", ({
+    expect,
+  }) => {
     const result = canvasWithPosition.meta.subtitle({
       params: { x: "10", y: "20", scale: "0.5", ids: "a,b" },
     });
@@ -85,7 +87,9 @@ describe("selectionTitleSuffix (tested via canvas child subtitle)", () => {
     );
   });
 
-  it("produces position text without selection when ids is falsy", ({ expect }) => {
+  it("produces position text without selection when ids is falsy", ({
+    expect,
+  }) => {
     const result = canvasWithPosition.meta.subtitle({
       params: { x: "5", y: "15", scale: "1", ids: undefined },
     });
@@ -208,7 +212,9 @@ describe("route components", () => {
     }
   });
 
-  it("canvas children have both default and toolbar components", ({ expect }) => {
+  it("canvas children have both default and toolbar components", ({
+    expect,
+  }) => {
     for (const child of canvasRoute.children) {
       expect(child.components).toHaveProperty("default");
       expect(child.components).toHaveProperty("toolbar");
@@ -270,7 +276,9 @@ describe("createViewRoute (tested via view routes in router)", () => {
     expect(viewCanvasRoute.children[0].name).toBe(
       "View | Canvas without position",
     );
-    expect(viewCanvasRoute.children[1].name).toBe("View | Canvas with position");
+    expect(viewCanvasRoute.children[1].name).toBe(
+      "View | Canvas with position",
+    );
     // Children with relative paths should NOT be prefixed with /view
     expect(viewCanvasRoute.children[0].path).toBe(":ids?");
   });
@@ -312,7 +320,10 @@ describe("view route meta properties are fully transformed", () => {
   it.each([
     ["View | Home", { title: "Home", drawer: false, isView: true }],
     ["View | Canvas", { title: "Canvas", drawer: false, isView: true }],
-    ["View | Mininet settings", { title: "Mininet Settings", drawer: false, isView: true }],
+    [
+      "View | Mininet settings",
+      { title: "Mininet Settings", drawer: false, isView: true },
+    ],
     ["View | Export", { title: "Export/Import", drawer: false, isView: true }],
     ["View | About", { title: "About", drawer: false, isView: true }],
   ])("view route %s has correct meta", (name, expectedMeta) => {
@@ -353,7 +364,9 @@ describe("view canvas child route details", () => {
     expect(viewCanvasRoute.children[0].path).toBe(":ids?");
   });
 
-  it("view canvas with position child has path ':x/:y/:scale/:ids?'", ({ expect }) => {
+  it("view canvas with position child has path ':x/:y/:scale/:ids?'", ({
+    expect,
+  }) => {
     expect(viewCanvasRoute.children[1].path).toBe(":x/:y/:scale/:ids?");
   });
 
@@ -436,7 +449,9 @@ describe("beforeEach navigation guard", () => {
     store.commit.mockClear();
   });
 
-  it("redirects to /view path when navigating from view route to non-view route", ({ expect }) => {
+  it("redirects to /view path when navigating from view route to non-view route", ({
+    expect,
+  }) => {
     const to = { meta: { isView: false }, fullPath: "/about", matched: [] };
     const from = { meta: { isView: true }, matched: [] };
     const next = vi.fn();
@@ -446,7 +461,9 @@ describe("beforeEach navigation guard", () => {
     expect(next).toHaveBeenCalledWith("/view/about");
   });
 
-  it("calls clearAlert and setWorking when navigating between routes with different top-level names", ({ expect }) => {
+  it("calls clearAlert and setWorking when navigating between routes with different top-level names", ({
+    expect,
+  }) => {
     const to = {
       meta: { isView: false },
       fullPath: "/about",
@@ -467,7 +484,9 @@ describe("beforeEach navigation guard", () => {
     expect(next).toHaveBeenCalledWith();
   });
 
-  it("does not call clearAlert or setWorking when navigating between child routes of the same parent", ({ expect }) => {
+  it("does not call clearAlert or setWorking when navigating between child routes of the same parent", ({
+    expect,
+  }) => {
     const to = {
       meta: { isView: false },
       fullPath: "/canvas/some-ids",
@@ -500,18 +519,15 @@ describe("beforeEach navigation guard", () => {
       },
       { meta: { isView: false }, matched: [] },
     ],
-  ])(
-    "calls clearAlert and setWorking when %s",
-    (_label, to, from) => {
-      const next = vi.fn();
+  ])("calls clearAlert and setWorking when %s", (_label, to, from) => {
+    const next = vi.fn();
 
-      capturedBeforeEachGuard(to, from, next);
+    capturedBeforeEachGuard(to, from, next);
 
-      expect(store.commit).toHaveBeenCalledWith("clearAlert");
-      expect(store.commit).toHaveBeenCalledWith("setWorking", {
-        working: false,
-      });
-      expect(next).toHaveBeenCalledWith();
-    },
-  );
+    expect(store.commit).toHaveBeenCalledWith("clearAlert");
+    expect(store.commit).toHaveBeenCalledWith("setWorking", {
+      working: false,
+    });
+    expect(next).toHaveBeenCalledWith();
+  });
 });

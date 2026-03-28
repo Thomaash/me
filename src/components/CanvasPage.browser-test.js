@@ -78,16 +78,15 @@ function createMockStore({ loading = false } = {}) {
           data: (s) => s.data,
           canUndo: () => 0,
           canRedo: () => 0,
-          boundingBox:
-            () => () => ({
-              sX: 0,
-              eX: 100,
-              sY: 0,
-              eY: 100,
-              width: 100,
-              height: 100,
-              empty: false,
-            }),
+          boundingBox: () => () => ({
+            sX: 0,
+            eX: 100,
+            sY: 0,
+            eY: 100,
+            width: 100,
+            height: 100,
+            empty: false,
+          }),
         },
         mutations: {
           importData() {},
@@ -113,9 +112,7 @@ async function mountCanvasPage({ loading = false, isView = false } = {}) {
   const store = createMockStore({ loading });
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: [
-      { path: "/", component: CanvasPage, meta: { isView } },
-    ],
+    routes: [{ path: "/", component: CanvasPage, meta: { isView } }],
   });
   await router.push("/");
   await router.isReady();
@@ -143,7 +140,9 @@ describe("CanvasPage", () => {
     expect(w.find(".edit-stub").exists()).toBe(false);
   });
 
-  it("renders VisContainer and Edit when loading is false", async ({ expect }) => {
+  it("renders VisContainer and Edit when loading is false", async ({
+    expect,
+  }) => {
     const w = await mountCanvasPage({ loading: false });
 
     const spinner = w.findComponent({ name: "LoadingSpinner" });
@@ -153,7 +152,9 @@ describe("CanvasPage", () => {
     expect(w.find(".edit-stub").exists()).toBe(true);
   });
 
-  it("renders speed dial FAB with activator and item buttons when not in view mode", async ({ expect }) => {
+  it("renders speed dial FAB with activator and item buttons when not in view mode", async ({
+    expect,
+  }) => {
     const w = await mountCanvasPage({ loading: false, isView: false });
 
     const fabActivator = w.find('[data-cy="fab-activator"]');
@@ -177,7 +178,10 @@ describe("CanvasPage", () => {
 
     for (const cy of expectedButtons) {
       const btn = document.querySelector(`[data-cy="${cy}"]`);
-      expect(btn, `Expected button with data-cy="${cy}" to exist`).not.toBeNull();
+      expect(
+        btn,
+        `Expected button with data-cy="${cy}" to exist`,
+      ).not.toBeNull();
     }
   });
 
@@ -191,7 +195,9 @@ describe("CanvasPage", () => {
     expect(speedDial.exists()).toBe(false);
   });
 
-  it("FAB button clicks delegate to VisContainer methods", async ({ expect }) => {
+  it("FAB button clicks delegate to VisContainer methods", async ({
+    expect,
+  }) => {
     Object.values(visMethodSpies).forEach((spy) => spy.mockClear());
     const w = await mountCanvasPage({ loading: false, isView: false });
 

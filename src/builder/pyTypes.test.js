@@ -34,12 +34,9 @@ describe.concurrent("pyTypes", () => {
       ["empty string", "", "''"],
       ["string with single quote", "it's", "'it\\'s'"],
       ["string with special characters", "a&b<c>d", "'a&b<c>d'"],
-    ])(
-      "wraps %s in single quotes with escaping",
-      (_label, input, expected) => {
-        expect(pyString(input)).toBe(expected);
-      },
-    );
+    ])("wraps %s in single quotes with escaping", (_label, input, expected) => {
+      expect(pyString(input)).toBe(expected);
+    });
   });
 
   describe("pyRaw (via pyTypes.get(null))", () => {
@@ -55,7 +52,9 @@ describe.concurrent("pyTypes", () => {
   });
 
   describe("Map structure", () => {
-    it("contains exactly four entries mapping constructors to converters", ({ expect }) => {
+    it("contains exactly four entries mapping constructors to converters", ({
+      expect,
+    }) => {
       expect(pyTypes.size).toBe(4);
       expect(pyTypes.has(Boolean)).toBe(true);
       expect(pyTypes.has(Number)).toBe(true);

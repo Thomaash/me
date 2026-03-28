@@ -125,7 +125,13 @@ import exampleTinyPhysicalInterface from "@/examples/tiny_physical_interface";
 import exampleTinyTC from "@/examples/tiny_tc";
 import { useTopologyStore } from "@/composables/useTopologyStore";
 
-const { working: storeWorking, setWorking, setAlert, clearAlert, importData: storeImportData } = useTopologyStore();
+const {
+  working: storeWorking,
+  setWorking,
+  setAlert,
+  clearAlert,
+  importData: storeImportData,
+} = useTopologyStore();
 const emit = defineEmits(["log"]);
 const { isRevealed, reveal, confirm, cancel } = useConfirmDialog();
 
@@ -216,8 +222,7 @@ function retrieveFile() {
   fr.onloadend = async () => {
     try {
       const stringToImport =
-        importers[file.type] ||
-        importers[file.name.replace(/^.*(?=\.)/, "")];
+        importers[file.type] || importers[file.name.replace(/^.*(?=\.)/, "")];
       if (stringToImport) {
         const str = fr.result;
         const { data, log } = stringToImport(str);

@@ -39,7 +39,9 @@ describe("topology store module", () => {
 
   describe("mutations", () => {
     describe("importData", () => {
-      it("clears past and future arrays and replaces all state data keys with imported data", ({ expect }) => {
+      it("clears past and future arrays and replaces all state data keys with imported data", ({
+        expect,
+      }) => {
         const state = createState({
           data: { items: {}, projectName: "old" },
           past: [["entry1"]],
@@ -65,7 +67,9 @@ describe("topology store module", () => {
     });
 
     describe("setValues", () => {
-      it("sets non-null non-empty values and deletes null or empty values from state data", ({ expect }) => {
+      it("sets non-null non-empty values and deletes null or empty values from state data", ({
+        expect,
+      }) => {
         const state = createState({
           data: { items: {}, toDelete: "old", toEmpty: "old", toKeep: "keep" },
         });
@@ -99,7 +103,9 @@ describe("topology store module", () => {
         });
       });
 
-      it("removes items by id array, updates items by merging properties, and replaces items entirely", ({ expect }) => {
+      it("removes items by id array, updates items by merging properties, and replaces items entirely", ({
+        expect,
+      }) => {
         mutations.applyChange(state, {
           remove: ["i1"],
           update: [{ id: "i2", label: "B-updated", extra: true }],
@@ -120,18 +126,17 @@ describe("topology store module", () => {
       it.each([
         ["update", { update: [{ label: "no-id" }] }],
         ["replace", { replace: [{ label: "no-id" }] }],
-      ])(
-        "throws Error when %s items lack an id",
-        (_kind, change) => {
-          expect(() => mutations.applyChange(state, change)).toThrow(
-            "Items have to have ids.",
-          );
-        },
-      );
+      ])("throws Error when %s items lack an id", (_kind, change) => {
+        expect(() => mutations.applyChange(state, change)).toThrow(
+          "Items have to have ids.",
+        );
+      });
     });
 
     describe("pushChange", () => {
-      it("clears future, trims past to MAX_UNDO_LENGTH, and appends new change unit", ({ expect }) => {
+      it("clears future, trims past to MAX_UNDO_LENGTH, and appends new change unit", ({
+        expect,
+      }) => {
         const pastEntries = Array.from({ length: MAX_UNDO_LENGTH }, (_, i) => [
           `entry-${i}`,
         ]);
@@ -151,7 +156,9 @@ describe("topology store module", () => {
     });
 
     describe("undoShift", () => {
-      it("pops from past and pushes to future, respecting MAX_UNDO_LENGTH", ({ expect }) => {
+      it("pops from past and pushes to future, respecting MAX_UNDO_LENGTH", ({
+        expect,
+      }) => {
         const futureEntries = Array.from(
           { length: MAX_UNDO_LENGTH },
           (_, i) => [`future-${i}`],
@@ -170,11 +177,12 @@ describe("topology store module", () => {
     });
 
     describe("redoShift", () => {
-      it("pops from future and pushes to past, respecting MAX_UNDO_LENGTH", ({ expect }) => {
-        const pastEntries = Array.from(
-          { length: MAX_UNDO_LENGTH },
-          (_, i) => [`past-${i}`],
-        );
+      it("pops from future and pushes to past, respecting MAX_UNDO_LENGTH", ({
+        expect,
+      }) => {
+        const pastEntries = Array.from({ length: MAX_UNDO_LENGTH }, (_, i) => [
+          `past-${i}`,
+        ]);
         const state = createState({
           past: [...pastEntries],
           future: [["last-future"]],
@@ -205,7 +213,9 @@ describe("topology store module", () => {
     }
 
     describe("removeItems", () => {
-      it("records before state and commits pushChange and applyChange with remove", ({ expect }) => {
+      it("records before state and commits pushChange and applyChange with remove", ({
+        expect,
+      }) => {
         const state = createState({
           data: {
             items: createItems([
@@ -220,7 +230,10 @@ describe("topology store module", () => {
 
         expect(ctx.commits[0].type).toBe("pushChange");
         const changeLog = ctx.commits[0].payload;
-        expect(JSON.parse(changeLog[0].before)).toEqual({ id: "i1", label: "A" });
+        expect(JSON.parse(changeLog[0].before)).toEqual({
+          id: "i1",
+          label: "A",
+        });
         expect(JSON.parse(changeLog[0].after)).toBeNull();
 
         expect(ctx.commits[1]).toEqual({
@@ -231,7 +244,9 @@ describe("topology store module", () => {
     });
 
     describe("updateItems", () => {
-      it("records before and after state and commits pushChange and applyChange with update", ({ expect }) => {
+      it("records before and after state and commits pushChange and applyChange with update", ({
+        expect,
+      }) => {
         const state = createState({
           data: {
             items: createItems([["i1", { label: "A", x: 10 }]]),
@@ -262,7 +277,9 @@ describe("topology store module", () => {
     });
 
     describe("replaceItems", () => {
-      it("records before and after state and commits pushChange and applyChange with replace", ({ expect }) => {
+      it("records before and after state and commits pushChange and applyChange with replace", ({
+        expect,
+      }) => {
         const state = createState({
           data: {
             items: createItems([["i1", { label: "A", x: 10 }]]),
@@ -290,7 +307,9 @@ describe("topology store module", () => {
     });
 
     describe("undo", () => {
-      it("retrieves last past entry, commits undoShift and applyChange with swapped change", ({ expect }) => {
+      it("retrieves last past entry, commits undoShift and applyChange with swapped change", ({
+        expect,
+      }) => {
         const item = { id: "i1", label: "before-label" };
         const updatedItem = { id: "i1", label: "after-label" };
         const state = createState({
@@ -329,7 +348,9 @@ describe("topology store module", () => {
     });
 
     describe("redo", () => {
-      it("retrieves last future entry, commits redoShift and applyChange with double-swapped change", ({ expect }) => {
+      it("retrieves last future entry, commits redoShift and applyChange with double-swapped change", ({
+        expect,
+      }) => {
         const item = { id: "i1", label: "before-label" };
         const updatedItem = { id: "i1", label: "after-label" };
         const state = createState({
@@ -367,7 +388,9 @@ describe("topology store module", () => {
     });
 
     describe("prepareUndoRedoChange (tested indirectly via undo)", () => {
-      it("adds id to remove array when after is present but before is null (reversal of an add)", ({ expect }) => {
+      it("adds id to remove array when after is present but before is null (reversal of an add)", ({
+        expect,
+      }) => {
         // An item was added: before=null, after=item
         // Undo should remove it: prepareUndoRedoChange swaps => parse(after)=item as "before", parse(before)=null as "after"
         // When before is present and after is null => remove.push(before.id)
@@ -393,7 +416,9 @@ describe("topology store module", () => {
         expect(ctx.commits[1].payload.replace).toEqual([]);
       });
 
-      it("adds parsed object to replace array when before is present", ({ expect }) => {
+      it("adds parsed object to replace array when before is present", ({
+        expect,
+      }) => {
         // An item was updated: before=oldItem, after=newItem
         // Undo: prepareUndoRedoChange swaps => parse(after)=newItem as "before", parse(before)=oldItem as "after"
         // Both present => replace.push(after) = oldItem
@@ -424,7 +449,9 @@ describe("topology store module", () => {
 
   describe("getters", () => {
     describe("boundingBox", () => {
-      it("computes bounding box from item coordinates with margin and scale", ({ expect }) => {
+      it("computes bounding box from item coordinates with margin and scale", ({
+        expect,
+      }) => {
         const state = createState({
           data: {
             items: createItems([
@@ -457,7 +484,9 @@ describe("topology store module", () => {
         expect(bbScaled.height).toBe(600);
       });
 
-      it("returns empty bounding box with zero dimensions when no items have coordinates", ({ expect }) => {
+      it("returns empty bounding box with zero dimensions when no items have coordinates", ({
+        expect,
+      }) => {
         const state = createState({
           data: {
             items: createItems([
@@ -475,7 +504,9 @@ describe("topology store module", () => {
         expect(bb.height).toBe(0);
       });
 
-      it("updates sX and sY when a later item has smaller x or y than the first item with coordinates", ({ expect }) => {
+      it("updates sX and sY when a later item has smaller x or y than the first item with coordinates", ({
+        expect,
+      }) => {
         const state = createState({
           data: {
             items: createItems([
@@ -724,7 +755,9 @@ describe("topology store module", () => {
     });
 
     describe("applyChange", () => {
-      it("with all arguments valid (checking originals not mutated)", ({ expect }) => {
+      it("with all arguments valid (checking originals not mutated)", ({
+        expect,
+      }) => {
         const state = createStateWithTopo();
 
         const originalValues = Object.values(state.data.items);
@@ -822,28 +855,102 @@ describe("topology store module", () => {
       const full = MAX_UNDO_LENGTH;
 
       const shiftCases = [
-        { operation: "undoShift", before: { past: 0, future: 0 }, after: { past: 0, future: 0 } },
-        { operation: "undoShift", before: { past: 0, future: half }, after: { past: 0, future: half } },
-        { operation: "undoShift", before: { past: 0, future: full }, after: { past: 0, future: full } },
-        { operation: "undoShift", before: { past: half, future: 0 }, after: { past: half - 1, future: 1 } },
-        { operation: "undoShift", before: { past: half, future: half }, after: { past: half - 1, future: half + 1 } },
-        { operation: "undoShift", before: { past: half, future: full }, after: { past: half - 1, future: full } },
-        { operation: "undoShift", before: { past: full, future: 0 }, after: { past: full - 1, future: 1 } },
-        { operation: "undoShift", before: { past: full, future: half }, after: { past: full - 1, future: half + 1 } },
-        { operation: "undoShift", before: { past: full, future: full }, after: { past: full - 1, future: full } },
-        { operation: "redoShift", before: { past: 0, future: 0 }, after: { past: 0, future: 0 } },
-        { operation: "redoShift", before: { past: 0, future: half }, after: { past: 1, future: half - 1 } },
-        { operation: "redoShift", before: { past: 0, future: full }, after: { past: 1, future: full - 1 } },
-        { operation: "redoShift", before: { past: half, future: 0 }, after: { past: half, future: 0 } },
-        { operation: "redoShift", before: { past: half, future: half }, after: { past: half + 1, future: half - 1 } },
-        { operation: "redoShift", before: { past: half, future: full }, after: { past: half + 1, future: full - 1 } },
-        { operation: "redoShift", before: { past: full, future: 0 }, after: { past: full, future: 0 } },
-        { operation: "redoShift", before: { past: full, future: half }, after: { past: full, future: half - 1 } },
-        { operation: "redoShift", before: { past: full, future: full }, after: { past: full, future: full - 1 } },
+        {
+          operation: "undoShift",
+          before: { past: 0, future: 0 },
+          after: { past: 0, future: 0 },
+        },
+        {
+          operation: "undoShift",
+          before: { past: 0, future: half },
+          after: { past: 0, future: half },
+        },
+        {
+          operation: "undoShift",
+          before: { past: 0, future: full },
+          after: { past: 0, future: full },
+        },
+        {
+          operation: "undoShift",
+          before: { past: half, future: 0 },
+          after: { past: half - 1, future: 1 },
+        },
+        {
+          operation: "undoShift",
+          before: { past: half, future: half },
+          after: { past: half - 1, future: half + 1 },
+        },
+        {
+          operation: "undoShift",
+          before: { past: half, future: full },
+          after: { past: half - 1, future: full },
+        },
+        {
+          operation: "undoShift",
+          before: { past: full, future: 0 },
+          after: { past: full - 1, future: 1 },
+        },
+        {
+          operation: "undoShift",
+          before: { past: full, future: half },
+          after: { past: full - 1, future: half + 1 },
+        },
+        {
+          operation: "undoShift",
+          before: { past: full, future: full },
+          after: { past: full - 1, future: full },
+        },
+        {
+          operation: "redoShift",
+          before: { past: 0, future: 0 },
+          after: { past: 0, future: 0 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: 0, future: half },
+          after: { past: 1, future: half - 1 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: 0, future: full },
+          after: { past: 1, future: full - 1 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: half, future: 0 },
+          after: { past: half, future: 0 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: half, future: half },
+          after: { past: half + 1, future: half - 1 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: half, future: full },
+          after: { past: half + 1, future: full - 1 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: full, future: 0 },
+          after: { past: full, future: 0 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: full, future: half },
+          after: { past: full, future: half - 1 },
+        },
+        {
+          operation: "redoShift",
+          before: { past: full, future: full },
+          after: { past: full, future: full - 1 },
+        },
       ];
 
       shiftCases.forEach(({ operation, before, after }) => {
-        it(`${operation}: past=${before.past}, future=${before.future} -> past=${after.past}, future=${after.future}`, ({ expect }) => {
+        it(`${operation}: past=${before.past}, future=${before.future} -> past=${after.past}, future=${after.future}`, ({
+          expect,
+        }) => {
           const unitPast = {
             before: { id: "B past" },
             after: { id: "A past" },

@@ -3,7 +3,9 @@ import { nextTick } from "vue";
 import { mountWithVuetify } from "../../test-utils/browser-setup.js";
 import Controller from "@/components/edit/Controller.vue";
 
-function mountController(modelValue = { hostname: "c0", controllerType: "RemoteController" }) {
+function mountController(
+  modelValue = { hostname: "c0", controllerType: "RemoteController" },
+) {
   return mountWithVuetify(Controller, {
     props: { modelValue },
   });
@@ -16,7 +18,9 @@ describe.concurrent("Controller (edit)", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a v-form with Label (required, hostname validated), IP, and Port fields", ({ expect }) => {
+  it("renders a v-form with Label (required, hostname validated), IP, and Port fields", ({
+    expect,
+  }) => {
     const wrapper = mountController();
 
     const form = wrapper.findComponent({ name: "VForm" });
@@ -38,7 +42,9 @@ describe.concurrent("Controller (edit)", () => {
     expect(hostnameEl.exists()).toBe(true);
   });
 
-  it("renders Type select with controller types and Protocol select", ({ expect }) => {
+  it("renders Type select with controller types and Protocol select", ({
+    expect,
+  }) => {
     const wrapper = mountController();
 
     const typeCol = wrapper.find("[data-cy='edit-controller-type']");
@@ -72,9 +78,16 @@ describe.concurrent("Controller (edit)", () => {
   });
 
   it("reflects updated modelValue in form fields", async ({ expect }) => {
-    const wrapper = mountController({ hostname: "c0", controllerType: "RemoteController" });
+    const wrapper = mountController({
+      hostname: "c0",
+      controllerType: "RemoteController",
+    });
 
-    const updated = { hostname: "c1", controllerType: "OVSController", ip: "10.0.0.1" };
+    const updated = {
+      hostname: "c1",
+      controllerType: "OVSController",
+      ip: "10.0.0.1",
+    };
     await wrapper.setProps({ modelValue: updated });
     await nextTick();
 
@@ -91,7 +104,10 @@ describe.concurrent("Controller (edit)", () => {
   });
 
   it("emits valid event when form validity changes", async ({ expect }) => {
-    const wrapper = mountController({ hostname: "c0", controllerType: "RemoteController" });
+    const wrapper = mountController({
+      hostname: "c0",
+      controllerType: "RemoteController",
+    });
 
     await nextTick();
 
@@ -100,7 +116,9 @@ describe.concurrent("Controller (edit)", () => {
     expect(validEvents.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("updates item fields through child component v-model bindings", async ({ expect }) => {
+  it("updates item fields through child component v-model bindings", async ({
+    expect,
+  }) => {
     const wrapper = mountController({
       hostname: "c0",
       controllerType: "RemoteController",
@@ -112,7 +130,9 @@ describe.concurrent("Controller (edit)", () => {
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const hostnameField = textFields.find((tf) => tf.props("label") === "Label");
+    const hostnameField = textFields.find(
+      (tf) => tf.props("label") === "Label",
+    );
     const ipField = textFields.find((tf) => tf.props("label") === "IP");
     const portField = textFields.find((tf) => tf.props("label") === "Port");
 

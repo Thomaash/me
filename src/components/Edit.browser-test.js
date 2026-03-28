@@ -11,7 +11,11 @@ const HostEditStub = defineComponent({
   setup(props, { emit }) {
     emit("valid", true);
     return () =>
-      h("div", { class: "host-edit-stub" }, `HostEdit: ${props.modelValue?.hostname}`);
+      h(
+        "div",
+        { class: "host-edit-stub" },
+        `HostEdit: ${props.modelValue?.hostname}`,
+      );
   },
 });
 
@@ -42,7 +46,9 @@ function mountEdit() {
 }
 
 describe("Edit", () => {
-  it("mounts in Vuetify context and dialog is not visible initially", ({ expect }) => {
+  it("mounts in Vuetify context and dialog is not visible initially", ({
+    expect,
+  }) => {
     const w = mountEdit();
 
     expect(w.exists()).toBe(true);
@@ -51,7 +57,9 @@ describe("Edit", () => {
     expect(headline).toBeNull();
   });
 
-  it("opens dialog with correct headline when edit is called with a host item", async ({ expect }) => {
+  it("opens dialog with correct headline when edit is called with a host item", async ({
+    expect,
+  }) => {
     const w = mountEdit();
     const callback = vi.fn();
     const hostItem = {
@@ -71,7 +79,9 @@ describe("Edit", () => {
     expect(headline.textContent).toBe("Host");
   });
 
-  it("renders Cancel and Save buttons when dialog is open", async ({ expect }) => {
+  it("renders Cancel and Save buttons when dialog is open", async ({
+    expect,
+  }) => {
     const w = mountEdit();
     const callback = vi.fn();
     const hostItem = { id: "h1", type: "host", hostname: "h1" };
@@ -87,7 +97,9 @@ describe("Edit", () => {
     expect(saveBtn.textContent).toContain("Save");
   });
 
-  it("save does nothing when Enter is pressed in a TEXTAREA", async ({ expect }) => {
+  it("save does nothing when Enter is pressed in a TEXTAREA", async ({
+    expect,
+  }) => {
     const w = mountEdit();
     const callback = vi.fn();
     const hostItem = { id: "h1", type: "host", hostname: "h1" };
@@ -137,7 +149,9 @@ describe("Edit", () => {
     expect(callback).not.toHaveBeenCalled();
   });
 
-  it("save calls callback with item copy and closes dialog when valid", async ({ expect }) => {
+  it("save calls callback with item copy and closes dialog when valid", async ({
+    expect,
+  }) => {
     const w = mountEdit();
     const callback = vi.fn();
     const hostItem = { id: "h1", type: "host", hostname: "h1" };
@@ -161,7 +175,9 @@ describe("Edit", () => {
     expect(activeOverlay).toBeNull();
   });
 
-  it("cancel calls callback without arguments and closes dialog", async ({ expect }) => {
+  it("cancel calls callback without arguments and closes dialog", async ({
+    expect,
+  }) => {
     const w = mountEdit();
     const callback = vi.fn();
     const hostItem = { id: "h1", type: "host", hostname: "h1" };

@@ -59,10 +59,7 @@
           <v-text-field
             ref="itemMaxQueueSize"
             v-model.number="item.maxQueueSize"
-            :rules="[
-              validators.integer(),
-              validators.minValue(0),
-            ]"
+            :rules="[validators.integer(), validators.minValue(0)]"
             label="Max queue"
             type="number"
             min="0"

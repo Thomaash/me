@@ -16,7 +16,9 @@ describe.concurrent("Port (edit)", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a v-form with a required Dev Name field and IPs textarea", ({ expect }) => {
+  it("renders a v-form with a required Dev Name field and IPs textarea", ({
+    expect,
+  }) => {
     const wrapper = mountPort();
 
     const form = wrapper.findComponent({ name: "VForm" });
@@ -26,7 +28,9 @@ describe.concurrent("Port (edit)", () => {
     expect(hostnameEl.exists()).toBe(true);
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const devNameField = textFields.find((tf) => tf.props("label") === "Dev Name");
+    const devNameField = textFields.find(
+      (tf) => tf.props("label") === "Dev Name",
+    );
     expect(devNameField).toBeDefined();
 
     const rules = devNameField.props("rules");
@@ -52,8 +56,13 @@ describe.concurrent("Port (edit)", () => {
     expect(switchToggle.props("label")).toBe("Physical");
   });
 
-  it("displays ips as newline-joined text in textarea and preserves trailing newline", async ({ expect }) => {
-    const wrapper = mountPort({ hostname: "eth0", ips: ["10.0.0.1/24", "192.168.1.1/16"] });
+  it("displays ips as newline-joined text in textarea and preserves trailing newline", async ({
+    expect,
+  }) => {
+    const wrapper = mountPort({
+      hostname: "eth0",
+      ips: ["10.0.0.1/24", "192.168.1.1/16"],
+    });
 
     await nextTick();
 
@@ -66,7 +75,9 @@ describe.concurrent("Port (edit)", () => {
     expect(textarea.props("modelValue")).toBe("10.0.0.1/24\n192.168.1.1/16\n");
   });
 
-  it("splits textarea text into ips array and tracks trailing newline", async ({ expect }) => {
+  it("splits textarea text into ips array and tracks trailing newline", async ({
+    expect,
+  }) => {
     const wrapper = mountPort({ hostname: "eth0", ips: [] });
 
     await nextTick();
@@ -86,8 +97,14 @@ describe.concurrent("Port (edit)", () => {
     expect(textarea.props("modelValue")).toBe("");
   });
 
-  it("deletes physical property from item when physical switch is set to false", async ({ expect }) => {
-    const wrapper = mountPort({ hostname: "eth0", ips: ["10.0.0.1/24"], physical: true });
+  it("deletes physical property from item when physical switch is set to false", async ({
+    expect,
+  }) => {
+    const wrapper = mountPort({
+      hostname: "eth0",
+      ips: ["10.0.0.1/24"],
+      physical: true,
+    });
 
     await nextTick();
 
@@ -116,7 +133,9 @@ describe.concurrent("Port (edit)", () => {
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const devNameField = textFields.find((tf) => tf.props("label") === "Dev Name");
+    const devNameField = textFields.find(
+      (tf) => tf.props("label") === "Dev Name",
+    );
     expect(devNameField.props("modelValue")).toBe("eth1");
 
     const textarea = wrapper.findComponent({ name: "VTextarea" });

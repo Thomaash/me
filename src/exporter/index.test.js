@@ -5,7 +5,9 @@ const { importData, exportData } = exporter;
 
 describe.concurrent("exporter", () => {
   describe("importData", () => {
-    it("converts version 0 external format to internal format, removing version and keying items by id", ({ expect }) => {
+    it("converts version 0 external format to internal format, removing version and keying items by id", ({
+      expect,
+    }) => {
       const external = {
         version: 0,
         name: "my-project",
@@ -29,7 +31,9 @@ describe.concurrent("exporter", () => {
       expect(result).not.toHaveProperty("version");
     });
 
-    it("deep-clones input data and does not mutate the original", ({ expect }) => {
+    it("deep-clones input data and does not mutate the original", ({
+      expect,
+    }) => {
       const external = {
         version: 0,
         items: [{ id: "x", nested: { deep: true } }],
@@ -49,14 +53,13 @@ describe.concurrent("exporter", () => {
       ["undefined version", { items: [] }],
       ["null version", { version: null, items: [] }],
       ["string version", { version: "0", items: [] }],
-    ])(
-      "throws TypeError for unsupported version: %s",
-      (_label, external) => {
-        expect(() => importData(external)).toThrow(TypeError);
-      },
-    );
+    ])("throws TypeError for unsupported version: %s", (_label, external) => {
+      expect(() => importData(external)).toThrow(TypeError);
+    });
 
-    it("throws with specific error message for unsupported version", ({ expect }) => {
+    it("throws with specific error message for unsupported version", ({
+      expect,
+    }) => {
       expect(() => importData({ version: 1, items: [] })).toThrow(
         "Unsupported export version.",
       );
@@ -64,7 +67,9 @@ describe.concurrent("exporter", () => {
   });
 
   describe("exportData", () => {
-    it("converts internal format to version 0 external format with items as array and version property", ({ expect }) => {
+    it("converts internal format to version 0 external format with items as array and version property", ({
+      expect,
+    }) => {
       const internal = {
         name: "my-project",
         settings: { theme: "dark" },
@@ -88,7 +93,9 @@ describe.concurrent("exporter", () => {
       expect(result.version).toBe(0);
     });
 
-    it("deep-clones input data and does not mutate the original", ({ expect }) => {
+    it("deep-clones input data and does not mutate the original", ({
+      expect,
+    }) => {
       const internal = {
         items: {
           x: { id: "x", nested: { deep: true } },
@@ -105,7 +112,9 @@ describe.concurrent("exporter", () => {
   });
 
   describe("round-trip", () => {
-    it("exportData(importData(data)) produces structure equivalent to original data", ({ expect }) => {
+    it("exportData(importData(data)) produces structure equivalent to original data", ({
+      expect,
+    }) => {
       const original = {
         version: 0,
         name: "round-trip-test",

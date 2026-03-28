@@ -15,13 +15,10 @@ describe.concurrent("pyArgs", () => {
       ["Boolean false", false, Boolean, "False"],
       ["Number", 42, Number, "42"],
       ["String", "hello", String, "'hello'"],
-    ])(
-      "applies the type converter for %s",
-      (_label, value, type, expected) => {
-        const result = pyArgs([[value, type]]);
-        expect(result).toEqual([expected]);
-      },
-    );
+    ])("applies the type converter for %s", (_label, value, type, expected) => {
+      const result = pyArgs([[value, type]]);
+      expect(result).toEqual([expected]);
+    });
   });
 
   describe("pyArgPre with 3 args (value, type, name) where name is a string", () => {
@@ -44,7 +41,9 @@ describe.concurrent("pyArgs", () => {
       expect(result).toEqual(["42"]);
     });
 
-    it("returns empty array when test is falsy (null filtered out)", ({ expect }) => {
+    it("returns empty array when test is falsy (null filtered out)", ({
+      expect,
+    }) => {
       const result = pyArgs([[false, 42, Number]]);
       expect(result).toEqual([]);
     });
@@ -56,7 +55,9 @@ describe.concurrent("pyArgs", () => {
       expect(result).toEqual(["msg='hello'"]);
     });
 
-    it("returns empty array when test is falsy (null filtered out)", ({ expect }) => {
+    it("returns empty array when test is falsy (null filtered out)", ({
+      expect,
+    }) => {
       const result = pyArgs([[false, "hello", String, "msg"]]);
       expect(result).toEqual([]);
     });
@@ -71,7 +72,9 @@ describe.concurrent("pyArgs", () => {
       expect(() => pyArgs([args])).toThrow(TypeError);
     });
 
-    it("throws TypeError with message containing the actual argument count", ({ expect }) => {
+    it("throws TypeError with message containing the actual argument count", ({
+      expect,
+    }) => {
       expect(() => pyArgs([[]])).toThrow(/0/);
       expect(() => pyArgs([[1, 2, 3, 4, 5]])).toThrow(/5/);
     });
@@ -88,7 +91,9 @@ describe.concurrent("pyArgs", () => {
       expect(result).toEqual(["1", "3"]);
     });
 
-    it("returns only truthy results with mixed truthy/falsy test values", ({ expect }) => {
+    it("returns only truthy results with mixed truthy/falsy test values", ({
+      expect,
+    }) => {
       const result = pyArgs([
         ["visible"],
         [true, "active", Boolean, "is_active"],
@@ -96,7 +101,12 @@ describe.concurrent("pyArgs", () => {
         [100, Number],
         [true, 0, Boolean, "flag"],
       ]);
-      expect(result).toEqual(["visible", "is_active=True", "100", "flag=False"]);
+      expect(result).toEqual([
+        "visible",
+        "is_active=True",
+        "100",
+        "flag=False",
+      ]);
     });
   });
 });

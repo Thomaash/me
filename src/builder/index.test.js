@@ -106,14 +106,23 @@ function buildMinimalTopology(dataOverrides = {}) {
  * each with one port (eth0), wired together via association + link.
  * Accepts optional overrides for host, switch, and ports, plus extra items.
  */
-function buildSimpleTopology({ hostOverrides, switchOverrides, h1PortOverrides, s1PortOverrides, extraItems = [] } = {}) {
+function buildSimpleTopology({
+  hostOverrides,
+  switchOverrides,
+  h1PortOverrides,
+  s1PortOverrides,
+  extraItems = [],
+} = {}) {
   const s1 = makeSwitch({ hostname: "s1", ...switchOverrides });
   const h1 = makeHost({ hostname: "h1", ...hostOverrides });
   const s1Eth0 = makePort({ hostname: "eth0", ...s1PortOverrides });
   const h1Eth0 = makePort({ hostname: "eth0", ...h1PortOverrides });
 
   const items = [
-    s1, h1, s1Eth0, h1Eth0,
+    s1,
+    h1,
+    s1Eth0,
+    h1Eth0,
     makeAssociation(s1.id, s1Eth0.id),
     makeAssociation(h1.id, h1Eth0.id),
     makeLink(h1Eth0.id, s1Eth0.id),
@@ -136,7 +145,9 @@ describe("Builder", () => {
   });
 
   describe("controller generation", () => {
-    it("generates addController with hostname, type, IP, port, and protocol", ({ expect }) => {
+    it("generates addController with hostname, type, IP, port, and protocol", ({
+      expect,
+    }) => {
       const ctrl = makeController({
         hostname: "c1",
         controllerType: "RemoteController",
@@ -181,7 +192,9 @@ describe("Builder", () => {
       );
     });
 
-    it("generates addHost with CPULimitedHost class when CPU settings present", ({ expect }) => {
+    it("generates addHost with CPULimitedHost class when CPU settings present", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({
         hostname: "h1",
@@ -205,15 +218,15 @@ describe("Builder", () => {
       const script = buildAndGetScript({ version: 0, items });
 
       expect(script).toContain("cls=mininet.node.CPULimitedHost");
-      expect(script).toContain(
-        "h1.setCPUFrac(sched='cfs', f=0.5)",
-      );
+      expect(script).toContain("h1.setCPUFrac(sched='cfs', f=0.5)");
       expect(script).toContain("h1.setCPUs(cores='0,1')");
     });
   });
 
   describe("switch generation", () => {
-    it("generates addSwitch with hostname and optional parameters", ({ expect }) => {
+    it("generates addSwitch with hostname and optional parameters", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({
         hostname: "s1",
         switchType: "OVSSwitch",
@@ -268,7 +281,9 @@ describe("Builder", () => {
       expect(script).toContain("verbose=True");
     });
 
-    it("generates switch start with connected controller hostnames", ({ expect }) => {
+    it("generates switch start with connected controller hostnames", ({
+      expect,
+    }) => {
       const ctrl = makeController({ hostname: "c1" });
       const s1 = makeSwitch({ hostname: "s1", switchType: "OVSSwitch" });
       const h1 = makeHost({ hostname: "h1" });
@@ -294,7 +309,9 @@ describe("Builder", () => {
   });
 
   describe("link generation", () => {
-    it("generates addLink with interface names and traffic control parameters", ({ expect }) => {
+    it("generates addLink with interface names and traffic control parameters", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -353,30 +370,26 @@ describe("Builder", () => {
 
       const script = buildAndGetScript({ version: 0, items });
 
-      expect(script).toContain(
-        "mininet.link.Intf('eth1', node=h1)",
-      );
+      expect(script).toContain("mininet.link.Intf('eth1', node=h1)");
     });
 
-    it("generates IP address assignment commands for ports with IPs", ({ expect }) => {
+    it("generates IP address assignment commands for ports with IPs", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology();
       const script = buildAndGetScript(data);
 
       // First IP on an interface sets .ip and .prefixLen
-      expect(script).toContain(
-        "h1.intf('h1-eth0').ip = '192.168.1.1'",
-      );
-      expect(script).toContain(
-        "h1.intf('h1-eth0').prefixLen = 8",
-      );
-      expect(script).toContain(
-        "h1.cmd('ip a a 192.168.1.1/8 dev h1-eth0')",
-      );
+      expect(script).toContain("h1.intf('h1-eth0').ip = '192.168.1.1'");
+      expect(script).toContain("h1.intf('h1-eth0').prefixLen = 8");
+      expect(script).toContain("h1.cmd('ip a a 192.168.1.1/8 dev h1-eth0')");
     });
   });
 
   describe("global configuration", () => {
-    it("includes log level setting in preInit when logLevel is specified", ({ expect }) => {
+    it("includes log level setting in preInit when logLevel is specified", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology({ logLevel: "debug" });
       const script = buildAndGetScript(data);
 
@@ -421,9 +434,9 @@ describe("Builder", () => {
 
       const items = [s1, h1];
 
-      expect(() =>
-        buildAndGetScript({ version: 0, items }),
-      ).toThrow("Script building failure.");
+      expect(() => buildAndGetScript({ version: 0, items })).toThrow(
+        "Script building failure.",
+      );
     });
 
     it("throws Error on devname collision", ({ expect }) => {
@@ -447,9 +460,9 @@ describe("Builder", () => {
         makeLink(s1Eth0b.id, s1Eth0b.id), // need a second link to trigger devname check
       ];
 
-      expect(() =>
-        buildAndGetScript({ version: 0, items }),
-      ).toThrow("Script building failure.");
+      expect(() => buildAndGetScript({ version: 0, items })).toThrow(
+        "Script building failure.",
+      );
     });
 
     it("throws Error when a single port has multiple links", ({ expect }) => {
@@ -478,12 +491,14 @@ describe("Builder", () => {
         makeLink(h1Eth0.id, s1Eth1.id), // h1Eth0 used twice
       ];
 
-      expect(() =>
-        buildAndGetScript({ version: 0, items }),
-      ).toThrow("Script building failure.");
+      expect(() => buildAndGetScript({ version: 0, items })).toThrow(
+        "Script building failure.",
+      );
     });
 
-    it("throws Error when a physical port is connected to a link", ({ expect }) => {
+    it("throws Error when a physical port is connected to a link", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -499,14 +514,16 @@ describe("Builder", () => {
         makeLink(h1Eth0.id, s1Eth0.id),
       ];
 
-      expect(() =>
-        buildAndGetScript({ version: 0, items }),
-      ).toThrow("Script building failure.");
+      expect(() => buildAndGetScript({ version: 0, items })).toThrow(
+        "Script building failure.",
+      );
     });
   });
 
   describe("edge cases", () => {
-    it("logs warning for links connected to disconnected ports", ({ expect }) => {
+    it("logs warning for links connected to disconnected ports", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -575,10 +592,10 @@ describe("Builder", () => {
   });
 
   describe("integration with example data", () => {
-    it("generates complete script from tiny_controller example", async ({ expect }) => {
-      const { default: data } = await import(
-        "@/examples/tiny_controller.json"
-      );
+    it("generates complete script from tiny_controller example", async ({
+      expect,
+    }) => {
+      const { default: data } = await import("@/examples/tiny_controller.json");
       const script = buildAndGetScript(data);
 
       // Verify script structure
@@ -646,7 +663,9 @@ describe("Builder", () => {
       });
     });
 
-    it("prefixes multi-line log messages with '# ' on each line", ({ expect }) => {
+    it("prefixes multi-line log messages with '# ' on each line", ({
+      expect,
+    }) => {
       // Create a scenario that generates a log message
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
@@ -680,7 +699,9 @@ describe("Builder", () => {
   });
 
   describe("script command generation (_scriptToCmds)", () => {
-    it("filters out comment lines starting with # from scripts", ({ expect }) => {
+    it("filters out comment lines starting with # from scripts", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology({
         startScript: "# This is a comment\npingall\n",
       });
@@ -700,18 +721,20 @@ describe("Builder", () => {
       expect(script).toContain("cli.onecmd('links')");
     });
 
-    it("generates debug log lines with [mininet] prefix for global scripts", ({ expect }) => {
+    it("generates debug log lines with [mininet] prefix for global scripts", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology({
         startScript: "pingall\n",
       });
       const script = buildAndGetScript(data);
 
-      expect(script).toContain(
-        "mininet.log.debug('[mininet]> pingall\\n')",
-      );
+      expect(script).toContain("mininet.log.debug('[mininet]> pingall\\n')");
     });
 
-    it("generates debug log lines with node hostname prefix for node scripts", ({ expect }) => {
+    it("generates debug log lines with node hostname prefix for node scripts", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({
         hostname: "h1",
@@ -736,7 +759,9 @@ describe("Builder", () => {
       expect(script).toContain("h1.cmdPrint('ifconfig')");
     });
 
-    it("generates cmdPrint for node scripts instead of cli.onecmd", ({ expect }) => {
+    it("generates cmdPrint for node scripts instead of cli.onecmd", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({
         hostname: "h1",
@@ -763,8 +788,13 @@ describe("Builder", () => {
   });
 
   describe("node start and stop scripts", () => {
-    it("generates node start script commands in the correct section", ({ expect }) => {
-      const s1 = makeSwitch({ hostname: "s1", startScript: "ovs-vsctl show\n" });
+    it("generates node start script commands in the correct section", ({
+      expect,
+    }) => {
+      const s1 = makeSwitch({
+        hostname: "s1",
+        startScript: "ovs-vsctl show\n",
+      });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
       const h1Eth0 = makePort({ hostname: "eth0" });
@@ -806,7 +836,9 @@ describe("Builder", () => {
       expect(script).toContain("s1.cmdPrint('cleanup')");
     });
 
-    it("generates both start and stop scripts for a host node", ({ expect }) => {
+    it("generates both start and stop scripts for a host node", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({
         hostname: "h1",
@@ -834,7 +866,9 @@ describe("Builder", () => {
   });
 
   describe("global stop script", () => {
-    it("generates global stop script commands with cli.onecmd", ({ expect }) => {
+    it("generates global stop script commands with cli.onecmd", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology({
         stopScript: "net\nlinks\n",
       });
@@ -848,7 +882,9 @@ describe("Builder", () => {
   });
 
   describe("error message details", () => {
-    it("logs specific conflicting hostname error messages for each colliding node", ({ expect }) => {
+    it("logs specific conflicting hostname error messages for each colliding node", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "clash" });
       const h1 = makeHost({ hostname: "clash" });
 
@@ -875,7 +911,9 @@ describe("Builder", () => {
       expect(messages[0]).toContain("conflicting hostname");
     });
 
-    it("logs devname collision error messages with the conflicting interface name", ({ expect }) => {
+    it("logs devname collision error messages with the conflicting interface name", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       // Two ports that will generate the same devname (s1-eth0)
@@ -916,7 +954,9 @@ describe("Builder", () => {
       expect(devnameMessages[0].msg).toContain("s1-eth0");
     });
 
-    it("logs multiple links per port error message with port details", ({ expect }) => {
+    it("logs multiple links per port error message with port details", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const h2 = makeHost({ hostname: "h2" });
@@ -993,7 +1033,9 @@ describe("Builder", () => {
   });
 
   describe("port skipping conditions", () => {
-    it("logs info when port is neither physical nor connected to a link", ({ expect }) => {
+    it("logs info when port is neither physical nor connected to a link", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1028,7 +1070,9 @@ describe("Builder", () => {
   });
 
   describe("host CPU configuration variants", () => {
-    it("generates setCPUFrac with only cpuScheduler (no cpuLimit)", ({ expect }) => {
+    it("generates setCPUFrac with only cpuScheduler (no cpuLimit)", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1", cpuScheduler: "rt" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1050,7 +1094,9 @@ describe("Builder", () => {
       expect(script).toContain("cls=mininet.node.CPULimitedHost");
     });
 
-    it("generates setCPUFrac with only cpuLimit (no cpuScheduler)", ({ expect }) => {
+    it("generates setCPUFrac with only cpuLimit (no cpuScheduler)", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1", cpuLimit: 0.25 });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1072,7 +1118,9 @@ describe("Builder", () => {
       expect(script).toContain("cls=mininet.node.CPULimitedHost");
     });
 
-    it("generates setCPUs with only cpuCores (no scheduler or limit)", ({ expect }) => {
+    it("generates setCPUs with only cpuCores (no scheduler or limit)", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1", cpuCores: [2, 3] });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1098,7 +1146,9 @@ describe("Builder", () => {
   });
 
   describe("multiple IPs per port", () => {
-    it("sets .ip and .prefixLen only for the first IP on an interface", ({ expect }) => {
+    it("sets .ip and .prefixLen only for the first IP on an interface", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1133,7 +1183,9 @@ describe("Builder", () => {
       expect(ipAssignments).toHaveLength(1);
     });
 
-    it("uses physical port hostname as dev when port is physical with multiple IPs", ({ expect }) => {
+    it("uses physical port hostname as dev when port is physical with multiple IPs", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1167,7 +1219,9 @@ describe("Builder", () => {
   });
 
   describe("link with disconnected ports", () => {
-    it("logs warning when both ports of a link are disconnected from nodes", ({ expect }) => {
+    it("logs warning when both ports of a link are disconnected from nodes", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1231,7 +1285,9 @@ describe("Builder", () => {
       expect(script).toContain("import mininet.node");
     });
 
-    it("includes Mininet initialization with default arguments", ({ expect }) => {
+    it("includes Mininet initialization with default arguments", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology();
       const script = buildAndGetScript(data);
 
@@ -1282,7 +1338,9 @@ describe("Builder", () => {
   });
 
   describe("controller without optional params", () => {
-    it("generates addController with hostname only when no type/ip/port/protocol", ({ expect }) => {
+    it("generates addController with hostname only when no type/ip/port/protocol", ({
+      expect,
+    }) => {
       const ctrl = makeController({ hostname: "c0" });
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
@@ -1357,7 +1415,9 @@ describe("Builder", () => {
   });
 
   describe("link without traffic control parameters", () => {
-    it("generates addLink with only node names and interface names", ({ expect }) => {
+    it("generates addLink with only node names and interface names", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "h1" });
       const s1Eth0 = makePort({ hostname: "eth0" });
@@ -1385,7 +1445,9 @@ describe("Builder", () => {
   });
 
   describe("log level omission", () => {
-    it("does not include setLogLevel when logLevel is not specified", ({ expect }) => {
+    it("does not include setLogLevel when logLevel is not specified", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology();
       const script = buildAndGetScript(data);
 
@@ -1394,7 +1456,9 @@ describe("Builder", () => {
   });
 
   describe("scripts omission", () => {
-    it("does not include start or stop script sections when not specified", ({ expect }) => {
+    it("does not include start or stop script sections when not specified", ({
+      expect,
+    }) => {
       const { data } = buildMinimalTopology();
       const script = buildAndGetScript(data);
 
@@ -1405,11 +1469,18 @@ describe("Builder", () => {
 
   describe("full script fixture comparison", () => {
     function removeNonCode(script) {
-      return script.split("\n").filter((line) => !/^($|#)/.test(line)).join("\n");
+      return script
+        .split("\n")
+        .filter((line) => !/^($|#)/.test(line))
+        .join("\n");
     }
 
-    it("builds the expected script from medium_2_controllers example", ({ expect }) => {
-      const script = new Builder(JSON.parse(JSON.stringify(medium2Controllers))).build();
+    it("builds the expected script from medium_2_controllers example", ({
+      expect,
+    }) => {
+      const script = new Builder(
+        JSON.parse(JSON.stringify(medium2Controllers)),
+      ).build();
       const correctScript = readFileSync(
         resolve(import.meta.dirname, "../../tests/unit/fixtures/me-script.py"),
         "utf-8",

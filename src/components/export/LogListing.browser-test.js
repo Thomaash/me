@@ -37,13 +37,17 @@ const sampleLog = [
 ];
 
 describe.concurrent("LogListing", () => {
-  it("mounts successfully in Vuetify context with mock router", ({ expect }) => {
+  it("mounts successfully in Vuetify context with mock router", ({
+    expect,
+  }) => {
     const { wrapper } = mountLogListing({ log: sampleLog });
 
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a list with log entries displaying their msg text", ({ expect }) => {
+  it("renders a list with log entries displaying their msg text", ({
+    expect,
+  }) => {
     const { wrapper } = mountLogListing({ log: sampleLog });
 
     const listItems = wrapper.findAllComponents({ name: "VListItem" });
@@ -65,7 +69,9 @@ describe.concurrent("LogListing", () => {
     expect(selectButton).toBeDefined();
   });
 
-  it("sorts log entries by severity priority: error first, then warning, then info", ({ expect }) => {
+  it("sorts log entries by severity priority: error first, then warning, then info", ({
+    expect,
+  }) => {
     const unsortedLog = [
       { item: { id: "h2" }, severity: "info", msg: "Info message" },
       { item: { id: "h1" }, severity: "error", msg: "Error message" },
@@ -81,7 +87,9 @@ describe.concurrent("LogListing", () => {
     expect(displayedMessages[2]).toContain("Info message");
   });
 
-  it("navigates to canvas with single item id when per-item button is clicked", async ({ expect }) => {
+  it("navigates to canvas with single item id when per-item button is clicked", async ({
+    expect,
+  }) => {
     const { wrapper, router } = mountLogListing({ log: sampleLog });
     const pushSpy = vi.spyOn(router, "push").mockResolvedValue();
 
@@ -97,7 +105,9 @@ describe.concurrent("LogListing", () => {
     });
   });
 
-  it("navigates to canvas with checked item ids when Select in Canvas is clicked with checkboxes checked", async ({ expect }) => {
+  it("navigates to canvas with checked item ids when Select in Canvas is clicked with checkboxes checked", async ({
+    expect,
+  }) => {
     const { wrapper, router } = mountLogListing({ log: sampleLog });
     const pushSpy = vi.spyOn(router, "push").mockResolvedValue();
 
@@ -118,7 +128,9 @@ describe.concurrent("LogListing", () => {
     });
   });
 
-  it("navigates to canvas with all item ids when Select in Canvas is clicked with no checkboxes checked", async ({ expect }) => {
+  it("navigates to canvas with all item ids when Select in Canvas is clicked with no checkboxes checked", async ({
+    expect,
+  }) => {
     const { wrapper, router } = mountLogListing({ log: sampleLog });
     const pushSpy = vi.spyOn(router, "push").mockResolvedValue();
 

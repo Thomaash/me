@@ -12,7 +12,9 @@ function mountCheckbox(props = {}) {
 }
 
 describe.concurrent("ThreeStateCheckbox", () => {
-  it("mounts in Vuetify context and renders a checkbox with provided label", ({ expect }) => {
+  it("mounts in Vuetify context and renders a checkbox with provided label", ({
+    expect,
+  }) => {
     const wrapper = mountCheckbox({ label: "My Option" });
 
     const checkbox = wrapper.findComponent({ name: "VCheckbox" });
@@ -36,14 +38,18 @@ describe.concurrent("ThreeStateCheckbox", () => {
     },
   );
 
-  it("displays indeterminate state when modelValue is undefined", ({ expect }) => {
+  it("displays indeterminate state when modelValue is undefined", ({
+    expect,
+  }) => {
     const wrapper = mountCheckbox({ modelValue: undefined });
 
     const checkbox = wrapper.findComponent({ name: "VCheckbox" });
     expect(checkbox.props("indeterminate")).toBe(true);
   });
 
-  it("emits update:modelValue cycling undefined -> true -> false -> undefined on clicks", async ({ expect }) => {
+  it("emits update:modelValue cycling undefined -> true -> false -> undefined on clicks", async ({
+    expect,
+  }) => {
     const wrapper = mountCheckbox({ modelValue: undefined });
 
     await wrapper.findComponent({ name: "VCheckbox" }).trigger("click");

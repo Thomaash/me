@@ -41,7 +41,9 @@ describe("vuex store initialization and ready lifecycle", () => {
     expect(store.commit).toBe(mockCommit);
   });
 
-  it("commits loaded mutation when the ready promise resolves", async ({ expect }) => {
+  it("commits loaded mutation when the ready promise resolves", async ({
+    expect,
+  }) => {
     mockConfigWithPromise(
       () =>
         new Promise((resolve) => {
@@ -59,7 +61,9 @@ describe("vuex store initialization and ready lifecycle", () => {
     expect(mockCommit).toHaveBeenCalledWith("loaded");
   });
 
-  it("logs error to console.error when the ready promise rejects", async ({ expect }) => {
+  it("logs error to console.error when the ready promise rejects", async ({
+    expect,
+  }) => {
     const testError = new Error("storage failure");
     const consoleErrorSpy = vi
       .spyOn(console, "error")

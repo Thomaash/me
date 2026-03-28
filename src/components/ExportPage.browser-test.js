@@ -55,16 +55,15 @@ function createMockStore({ loading = false } = {}) {
           data: (s) => s.data,
           canUndo: (s) => s.past.length,
           canRedo: (s) => s.future.length,
-          boundingBox:
-            () => () => ({
-              sX: 0,
-              eX: 100,
-              sY: 0,
-              eY: 100,
-              width: 100,
-              height: 100,
-              empty: false,
-            }),
+          boundingBox: () => () => ({
+            sX: 0,
+            eX: 100,
+            sY: 0,
+            eY: 100,
+            width: 100,
+            height: 100,
+            empty: false,
+          }),
         },
         mutations: {
           importData() {},
@@ -111,7 +110,9 @@ describe.concurrent("ExportPage", () => {
     expect(wrapper.text()).not.toContain("Export");
   });
 
-  it("renders Import and Export headings with ImportSection and ExportSection when loading is false", ({ expect }) => {
+  it("renders Import and Export headings with ImportSection and ExportSection when loading is false", ({
+    expect,
+  }) => {
     const wrapper = mountExportPage({ loading: false });
 
     const spinner = wrapper.findComponent({ name: "LoadingSpinner" });

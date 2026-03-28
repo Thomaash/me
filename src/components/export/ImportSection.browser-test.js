@@ -39,15 +39,14 @@ function createMockStore({ working = false } = {}) {
           data: (s) => s.data,
           canUndo: (s) => s.past.length,
           canRedo: (s) => s.future.length,
-          boundingBox:
-            () => () => ({
-              sX: 0,
-              eX: 100,
-              sY: 0,
-              eY: 100,
-              width: 100,
-              height: 100,
-            }),
+          boundingBox: () => () => ({
+            sX: 0,
+            eX: 100,
+            sY: 0,
+            eY: 100,
+            width: 100,
+            height: 100,
+          }),
         },
         mutations: {
           importData(state, data) {
@@ -86,7 +85,9 @@ async function waitForDialog() {
 }
 
 describe.concurrent("ImportSection", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({ expect }) => {
+  it("mounts successfully in Vuetify context with mock Vuex store", ({
+    expect,
+  }) => {
     const { wrapper } = mountImportSection();
 
     expect(wrapper.exists()).toBe(true);
@@ -117,7 +118,9 @@ describe.concurrent("ImportSection", () => {
     }
   });
 
-  it("opens dropdown with example project titles when Examples is clicked", async ({ expect }) => {
+  it("opens dropdown with example project titles when Examples is clicked", async ({
+    expect,
+  }) => {
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container });
 
@@ -148,7 +151,9 @@ describe.concurrent("ImportSection", () => {
     container.remove();
   });
 
-  it("configures file input accept attribute with json and python extensions and MIME types", ({ expect }) => {
+  it("configures file input accept attribute with json and python extensions and MIME types", ({
+    expect,
+  }) => {
     const { wrapper } = mountImportSection();
 
     const fileInput = wrapper.find('input[type="file"]');
@@ -161,7 +166,9 @@ describe.concurrent("ImportSection", () => {
     expect(accept).toContain("text/x-python");
   });
 
-  it("returns early from retrieveFile when no file is present", async ({ expect }) => {
+  it("returns early from retrieveFile when no file is present", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
@@ -182,16 +189,22 @@ describe.concurrent("ImportSection", () => {
 });
 
 describe("ImportSection dialog interactions", () => {
-  it("shows confirmation dialog and imports data when confirmed via Empty button", async ({ expect }) => {
+  it("shows confirmation dialog and imports data when confirmed via Empty button", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
-    const emptyBtn = wrapper.findAllComponents({ name: "VBtn" }).find((btn) => btn.text() === "Empty");
+    const emptyBtn = wrapper
+      .findAllComponents({ name: "VBtn" })
+      .find((btn) => btn.text() === "Empty");
     emptyBtn.trigger("click");
     await waitForDialog();
 
-    const confirmBtn = document.querySelector('[data-cy="import-warning-confirm"]');
+    const confirmBtn = document.querySelector(
+      '[data-cy="import-warning-confirm"]',
+    );
     expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
     await waitForDialog();
@@ -203,16 +216,22 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("shows confirmation dialog and cancels import when cancel is clicked", async ({ expect }) => {
+  it("shows confirmation dialog and cancels import when cancel is clicked", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
-    const emptyBtn = wrapper.findAllComponents({ name: "VBtn" }).find((btn) => btn.text() === "Empty");
+    const emptyBtn = wrapper
+      .findAllComponents({ name: "VBtn" })
+      .find((btn) => btn.text() === "Empty");
     emptyBtn.trigger("click");
     await waitForDialog();
 
-    const cancelBtn = document.querySelector('[data-cy="import-warning-cancel"]');
+    const cancelBtn = document.querySelector(
+      '[data-cy="import-warning-cancel"]',
+    );
     expect(cancelBtn).not.toBeNull();
     cancelBtn.click();
     await waitForDialog();
@@ -224,18 +243,24 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("sets working state during importData and resets after confirm", async ({ expect }) => {
+  it("sets working state during importData and resets after confirm", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
-    const emptyBtn = wrapper.findAllComponents({ name: "VBtn" }).find((btn) => btn.text() === "Empty");
+    const emptyBtn = wrapper
+      .findAllComponents({ name: "VBtn" })
+      .find((btn) => btn.text() === "Empty");
     emptyBtn.trigger("click");
     await flushPromises();
 
     expect(store.state.working).toBe(true);
 
-    const confirmBtn = document.querySelector('[data-cy="import-warning-confirm"]');
+    const confirmBtn = document.querySelector(
+      '[data-cy="import-warning-confirm"]',
+    );
     confirmBtn.click();
     await waitForDialog();
 
@@ -245,18 +270,24 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("commits topology importData mutation when import is confirmed", async ({ expect }) => {
+  it("commits topology importData mutation when import is confirmed", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const commitSpy = vi.fn(store.commit.bind(store));
     store.commit = commitSpy;
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
-    const emptyBtn = wrapper.findAllComponents({ name: "VBtn" }).find((btn) => btn.text() === "Empty");
+    const emptyBtn = wrapper
+      .findAllComponents({ name: "VBtn" })
+      .find((btn) => btn.text() === "Empty");
     emptyBtn.trigger("click");
     await waitForDialog();
 
-    const confirmBtn = document.querySelector('[data-cy="import-warning-confirm"]');
+    const confirmBtn = document.querySelector(
+      '[data-cy="import-warning-confirm"]',
+    );
     confirmBtn.click();
     await waitForDialog();
 
@@ -269,13 +300,17 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("processes a JSON file via retrieveFile and imports after confirmation", async ({ expect }) => {
+  it("processes a JSON file via retrieveFile and imports after confirmation", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
     const jsonContent = '{"version":1,"items":[{"id":"test"}]}';
-    const file = new File([jsonContent], "test.json", { type: "application/json" });
+    const file = new File([jsonContent], "test.json", {
+      type: "application/json",
+    });
 
     const fileInput = wrapper.find('input[type="file"]');
     const inputEl = fileInput.element;
@@ -290,7 +325,9 @@ describe("ImportSection dialog interactions", () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
     await flushPromises();
 
-    const confirmBtn = document.querySelector('[data-cy="import-warning-confirm"]');
+    const confirmBtn = document.querySelector(
+      '[data-cy="import-warning-confirm"]',
+    );
     expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
     await waitForDialog();
@@ -303,12 +340,16 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("shows error alert when file type is unknown in retrieveFile", async ({ expect }) => {
+  it("shows error alert when file type is unknown in retrieveFile", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
-    const file = new File(["some content"], "data.xyz", { type: "application/octet-stream" });
+    const file = new File(["some content"], "data.xyz", {
+      type: "application/octet-stream",
+    });
 
     const fileInput = wrapper.find('input[type="file"]');
     const inputEl = fileInput.element;
@@ -331,12 +372,15 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("shows script import warning in dialog for Python files", async ({ expect }) => {
+  it("shows script import warning in dialog for Python files", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
-    const pyContent = "from mininet.net import Mininet\nnet = Mininet()\nnet.start()\nnet.stop()\n";
+    const pyContent =
+      "from mininet.net import Mininet\nnet = Mininet()\nnet.start()\nnet.stop()\n";
     const file = new File([pyContent], "network.py", { type: "text/x-python" });
 
     const fileInput = wrapper.find('input[type="file"]');
@@ -354,9 +398,13 @@ describe("ImportSection dialog interactions", () => {
 
     // The dialog should be showing with script import warning text
     const dialogText = document.body.textContent;
-    expect(dialogText).toContain("Imported project won't contain node positions");
+    expect(dialogText).toContain(
+      "Imported project won't contain node positions",
+    );
 
-    const confirmBtn = document.querySelector('[data-cy="import-warning-confirm"]');
+    const confirmBtn = document.querySelector(
+      '[data-cy="import-warning-confirm"]',
+    );
     if (confirmBtn) {
       confirmBtn.click();
       await waitForDialog();
@@ -366,7 +414,9 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("triggers click on hidden file input when File button is clicked", async ({ expect }) => {
+  it("triggers click on hidden file input when File button is clicked", async ({
+    expect,
+  }) => {
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container });
 
@@ -384,13 +434,17 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("shows error alert when file content is malformed and parsing throws", async ({ expect }) => {
+  it("shows error alert when file content is malformed and parsing throws", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
     const malformedJson = "{ this is not valid json !!!";
-    const file = new File([malformedJson], "broken.json", { type: "application/json" });
+    const file = new File([malformedJson], "broken.json", {
+      type: "application/json",
+    });
 
     const fileInput = wrapper.find('input[type="file"]');
     const inputEl = fileInput.element;
@@ -413,7 +467,9 @@ describe("ImportSection dialog interactions", () => {
     container.remove();
   });
 
-  it("imports example data when an example item is clicked", async ({ expect }) => {
+  it("imports example data when an example item is clicked", async ({
+    expect,
+  }) => {
     const store = createMockStore();
     const container = createContainer();
     const { wrapper } = mountImportSection({ attachTo: container, store });
@@ -430,7 +486,9 @@ describe("ImportSection dialog interactions", () => {
     await waitForDialog();
 
     // The confirmation dialog should appear; confirm the import
-    const confirmBtn = document.querySelector('[data-cy="import-warning-confirm"]');
+    const confirmBtn = document.querySelector(
+      '[data-cy="import-warning-confirm"]',
+    );
     expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
     await waitForDialog();
@@ -448,7 +506,9 @@ describe("ImportSection dialog interactions", () => {
     const { wrapper } = mountImportSection({ attachTo: container, store });
 
     const jsonContent = '{"version":0,"items":[]}';
-    const file = new File([jsonContent], "test.json", { type: "application/json" });
+    const file = new File([jsonContent], "test.json", {
+      type: "application/json",
+    });
 
     const fileInput = wrapper.find('input[type="file"]');
     const inputEl = fileInput.element;
@@ -465,7 +525,9 @@ describe("ImportSection dialog interactions", () => {
     expect(wrapper.emitted("log")).toBeTruthy();
     expect(wrapper.emitted("log")[0][0]).toEqual([]);
 
-    const confirmBtn = document.querySelector('[data-cy="import-warning-confirm"]');
+    const confirmBtn = document.querySelector(
+      '[data-cy="import-warning-confirm"]',
+    );
     if (confirmBtn) {
       confirmBtn.click();
       await waitForDialog();

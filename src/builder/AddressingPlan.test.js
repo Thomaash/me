@@ -74,7 +74,9 @@ describe("AddressingPlan", () => {
   });
 
   describe("build() groups ports by parent node hostname", () => {
-    it("creates plan entries keyed by node hostname with ports and length", ({ expect }) => {
+    it("creates plan entries keyed by node hostname with ports and length", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "host-1" });
       const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
       const assoc = makeAssociation(h1.id, p1.id);
@@ -87,7 +89,9 @@ describe("AddressingPlan", () => {
       expect(ap.plan["host-1"].length).toBe(1);
     });
 
-    it("groups multiple ports under the same parent node and sums IP count", ({ expect }) => {
+    it("groups multiple ports under the same parent node and sums IP count", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "host-1" });
       const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
       const p2 = makePort({
@@ -108,7 +112,9 @@ describe("AddressingPlan", () => {
       expect(ap.plan["host-1"].length).toBe(3);
     });
 
-    it("creates separate plan entries for ports under different nodes", ({ expect }) => {
+    it("creates separate plan entries for ports under different nodes", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "alpha" });
       const h2 = makeHost({ hostname: "beta" });
       const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
@@ -116,9 +122,7 @@ describe("AddressingPlan", () => {
       const a1 = makeAssociation(h1.id, p1.id);
       const a2 = makeAssociation(h2.id, p2.id);
 
-      const ap = new AddressingPlan(
-        buildTopology([h1, h2, p1, p2, a1, a2]),
-      );
+      const ap = new AddressingPlan(buildTopology([h1, h2, p1, p2, a1, a2]));
       ap.build();
 
       expect(Object.keys(ap.plan)).toHaveLength(2);
@@ -158,7 +162,9 @@ describe("AddressingPlan", () => {
       expect(ap.plan["switch-1"].ports["eth0"]).toEqual(["172.16.0.1/16"]);
     });
 
-    it("uses empty string hostname when port has no parent node", ({ expect }) => {
+    it("uses empty string hostname when port has no parent node", ({
+      expect,
+    }) => {
       const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
 
       const ap = new AddressingPlan(buildTopology([p1]));
@@ -171,7 +177,9 @@ describe("AddressingPlan", () => {
   });
 
   describe("_getNeighbors filters by type", () => {
-    it("ignores non-host/switch neighbors such as controllers", ({ expect }) => {
+    it("ignores non-host/switch neighbors such as controllers", ({
+      expect,
+    }) => {
       const ctrl = { id: uid(), type: "controller", hostname: "c1" };
       const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
       const assoc = makeAssociation(ctrl.id, p1.id);
@@ -186,7 +194,9 @@ describe("AddressingPlan", () => {
   });
 
   describe("build() initializes plan node structure correctly", () => {
-    it("initializes length to 0 before adding IPs and ports as empty object", ({ expect }) => {
+    it("initializes length to 0 before adding IPs and ports as empty object", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "node-a" });
       const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
       const a1 = makeAssociation(h1.id, p1.id);
@@ -201,7 +211,9 @@ describe("AddressingPlan", () => {
       expect(Object.keys(planNode.ports)).toEqual(["eth0"]);
     });
 
-    it("accumulates IPs from same port hostname into existing array", ({ expect }) => {
+    it("accumulates IPs from same port hostname into existing array", ({
+      expect,
+    }) => {
       // When a port hostname appears twice (same port processed), IPs are pushed
       const h1 = makeHost({ hostname: "node-b" });
       const p1 = makePort({
@@ -231,7 +243,11 @@ describe("AddressingPlan", () => {
       lastAutoTableArgs = null;
     });
 
-    function buildAndSavePDF(items, headline = "Test Plan", filename = "test.pdf") {
+    function buildAndSavePDF(
+      items,
+      headline = "Test Plan",
+      filename = "test.pdf",
+    ) {
       const ap = new AddressingPlan(buildTopology(items));
       ap.build();
       ap.savePDF(headline, filename);
@@ -248,16 +264,22 @@ describe("AddressingPlan", () => {
     it("sets document properties with the headline as title", ({ expect }) => {
       buildAndSavePDF(singlePortTopology(), "My Network Plan");
 
-      expect(mockSetProperties).toHaveBeenCalledWith({ title: "My Network Plan" });
+      expect(mockSetProperties).toHaveBeenCalledWith({
+        title: "My Network Plan",
+      });
     });
 
     it("sets viewer preferences with DisplayDocTitle enabled", ({ expect }) => {
       buildAndSavePDF(singlePortTopology());
 
-      expect(mockViewerPreferences).toHaveBeenCalledWith({ DisplayDocTitle: true });
+      expect(mockViewerPreferences).toHaveBeenCalledWith({
+        DisplayDocTitle: true,
+      });
     });
 
-    it("renders headline text at position (14, 20) with font size 18 then resets to 11", ({ expect }) => {
+    it("renders headline text at position (14, 20) with font size 18 then resets to 11", ({
+      expect,
+    }) => {
       buildAndSavePDF(singlePortTopology(), "Network Addressing");
 
       expect(mockSetFontSize).toHaveBeenCalledWith(18);
@@ -271,7 +293,9 @@ describe("AddressingPlan", () => {
       expect(mockSave).toHaveBeenCalledWith("my-plan.pdf");
     });
 
-    it("configures autoTable with grid theme, correct headers, and startY", ({ expect }) => {
+    it("configures autoTable with grid theme, correct headers, and startY", ({
+      expect,
+    }) => {
       buildAndSavePDF(singlePortTopology());
 
       expect(lastAutoTableArgs.theme).toBe("grid");
@@ -280,7 +304,9 @@ describe("AddressingPlan", () => {
       expect(lastAutoTableArgs.headStyles).toHaveProperty("fillColor");
     });
 
-    it("builds body rows with node hostname rowSpan, port rowSpan, and IP address", ({ expect }) => {
+    it("builds body rows with node hostname rowSpan, port rowSpan, and IP address", ({
+      expect,
+    }) => {
       buildAndSavePDF(singlePortTopology());
 
       const body = lastAutoTableArgs.body;
@@ -300,10 +326,15 @@ describe("AddressingPlan", () => {
       expect(body[0][2]).toBe("10.0.0.1/24");
     });
 
-    it("uses rowSpan for node hostname spanning multiple IPs across ports", ({ expect }) => {
+    it("uses rowSpan for node hostname spanning multiple IPs across ports", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "host-1" });
       const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
-      const p2 = makePort({ hostname: "eth1", ips: ["10.0.0.2/24", "10.0.0.3/24"] });
+      const p2 = makePort({
+        hostname: "eth1",
+        ips: ["10.0.0.2/24", "10.0.0.3/24"],
+      });
       const a1 = makeAssociation(h1.id, p1.id);
       const a2 = makeAssociation(h1.id, p2.id);
 
@@ -321,7 +352,10 @@ describe("AddressingPlan", () => {
       // Second row: only port cell (rowSpan for eth1) + IP, no hostname cell
       // Find the row for eth1 first IP
       const eth1FirstRow = body.find(
-        (row) => row.length === 2 && typeof row[0] === "object" && row[0].content === "eth1",
+        (row) =>
+          row.length === 2 &&
+          typeof row[0] === "object" &&
+          row[0].content === "eth1",
       );
       expect(eth1FirstRow).toBeDefined();
       expect(eth1FirstRow[0].rowSpan).toBe(2);
@@ -333,7 +367,9 @@ describe("AddressingPlan", () => {
       expect(ipOnlyRows[0][0]).toBe("10.0.0.3/24");
     });
 
-    it("omits hostname and port cells for subsequent IPs in the same port", ({ expect }) => {
+    it("omits hostname and port cells for subsequent IPs in the same port", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "host-1" });
       const p1 = makePort({
         hostname: "eth0",
@@ -374,7 +410,9 @@ describe("AddressingPlan", () => {
       expect(body[1][0].content).toBe("zebra");
     });
 
-    it("sorts ports within a node alphabetically in the PDF body", ({ expect }) => {
+    it("sorts ports within a node alphabetically in the PDF body", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "host-1" });
       const p1 = makePort({ hostname: "eth9", ips: ["10.0.0.1/24"] });
       const p2 = makePort({ hostname: "eth0", ips: ["10.0.0.2/24"] });
@@ -388,15 +426,23 @@ describe("AddressingPlan", () => {
       expect(body[0][1].content).toBe("eth0");
       // Second row has only port cell (no hostname cell) + IP
       const secondPortRow = body.find(
-        (row) => row.length === 2 && typeof row[0] === "object" && row[0].content === "eth9",
+        (row) =>
+          row.length === 2 &&
+          typeof row[0] === "object" &&
+          row[0].content === "eth9",
       );
       expect(secondPortRow).toBeDefined();
     });
 
-    it("produces multiple node sections with correct rowSpans for complex topology", ({ expect }) => {
+    it("produces multiple node sections with correct rowSpans for complex topology", ({
+      expect,
+    }) => {
       const h1 = makeHost({ hostname: "node-a" });
       const h2 = makeHost({ hostname: "node-b" });
-      const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24", "10.0.0.2/24"] });
+      const p1 = makePort({
+        hostname: "eth0",
+        ips: ["10.0.0.1/24", "10.0.0.2/24"],
+      });
       const p2 = makePort({ hostname: "eth0", ips: ["10.0.0.3/24"] });
       const a1 = makeAssociation(h1.id, p1.id);
       const a2 = makeAssociation(h2.id, p2.id);

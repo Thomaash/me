@@ -37,7 +37,9 @@ describe("labelPlaceholderReplacers", () => {
   describe("{{HOSTNAMES}}", () => {
     const replacer = labelPlaceholderReplacers["{{HOSTNAMES}}"];
 
-    it("returns comma-separated sorted hostnames of port, host, switch, and controller neighbors", ({ expect }) => {
+    it("returns comma-separated sorted hostnames of port, host, switch, and controller neighbors", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "switch", hostname: "s1" },
         { type: "host", hostname: "h2" },
@@ -56,7 +58,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(replacer(neighbors)).toBe("p1");
     });
 
-    it("excludes types that only partially match allowed type names", ({ expect }) => {
+    it("excludes types that only partially match allowed type names", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "viewport", hostname: "vp1" },
         { type: "portico", hostname: "pt1" },
@@ -94,7 +98,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(replacer(neighbors)).toBe("127.0.0.1:6653");
     });
 
-    it("returns '<default IP>:<default port>' for a controller without ip and port", ({ expect }) => {
+    it("returns '<default IP>:<default port>' for a controller without ip and port", ({
+      expect,
+    }) => {
       const neighbors = [{ type: "controller", hostname: "c0" }];
       expect(replacer(neighbors)).toBe("<default IP>:<default port>");
     });
@@ -106,7 +112,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(replacer(neighbors)).toBe("10.0.0.1");
     });
 
-    it("returns 'no default route' for a host without defaultRoute", ({ expect }) => {
+    it("returns 'no default route' for a host without defaultRoute", ({
+      expect,
+    }) => {
       const neighbors = [{ type: "host", hostname: "h1" }];
       expect(replacer(neighbors)).toBe("no default route");
     });
@@ -132,7 +140,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(result).toBe("h1: 10.0.0.1\ns1: 10.0.0.2");
     });
 
-    it("aligns indentation based on longest hostname across all items", ({ expect }) => {
+    it("aligns indentation based on longest hostname across all items", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "host", hostname: "h1", defaultRoute: "10.0.0.1" },
         { type: "switch", hostname: "switch1", ip: "10.0.0.2" },
@@ -144,7 +154,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(result).toBe("h1:      10.0.0.1\nswitch1: 10.0.0.2");
     });
 
-    it("indents continuation lines of multi-value entries to align with the first value", ({ expect }) => {
+    it("indents continuation lines of multi-value entries to align with the first value", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "port", hostname: "p1", ips: ["10.0.0.1", "10.0.0.2"] },
         { type: "switch", hostname: "s1", ip: "10.0.0.3" },
@@ -156,7 +168,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(result).toBe("p1: 10.0.0.1\n    10.0.0.2\n\ns1: 10.0.0.3");
     });
 
-    it("uses single newline separator when all items have single-value arrays", ({ expect }) => {
+    it("uses single newline separator when all items have single-value arrays", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "host", hostname: "h1", defaultRoute: "10.0.0.1" },
         { type: "host", hostname: "h2", defaultRoute: "10.0.0.2" },
@@ -168,7 +182,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(result).not.toContain("\n\n");
     });
 
-    it("uses double newline separator when any item has multiple values", ({ expect }) => {
+    it("uses double newline separator when any item has multiple values", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "port", hostname: "p1", ips: ["10.0.0.1", "10.0.0.2"] },
         { type: "host", hostname: "h1", defaultRoute: "10.0.0.3" },
@@ -196,7 +212,11 @@ describe("labelPlaceholderReplacers", () => {
 
     it("returns mapped type title for a controller", ({ expect }) => {
       const neighbors = [
-        { type: "controller", hostname: "c0", controllerType: "RemoteController" },
+        {
+          type: "controller",
+          hostname: "c0",
+          controllerType: "RemoteController",
+        },
       ];
       expect(replacer(neighbors)).toBe("Remote Controller");
     });
@@ -208,7 +228,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(replacer(neighbors)).toBe("OVS Switch");
     });
 
-    it("returns 'default type' when controllerType is not set", ({ expect }) => {
+    it("returns 'default type' when controllerType is not set", ({
+      expect,
+    }) => {
       const neighbors = [{ type: "controller", hostname: "c0" }];
       expect(replacer(neighbors)).toBe("default type");
     });
@@ -227,7 +249,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(replacer(neighbors)).toBe("Ryu Controller");
     });
 
-    it("pads and aligns types output for multiple controller/switch neighbors", ({ expect }) => {
+    it("pads and aligns types output for multiple controller/switch neighbors", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "controller", hostname: "c0", controllerType: "Ryu" },
         { type: "switch", hostname: "switch1", switchType: "OVSSwitch" },
@@ -240,7 +264,9 @@ describe("labelPlaceholderReplacers", () => {
       expect(result).toBe("c0:      Ryu Controller\nswitch1: OVS Switch");
     });
 
-    it("returns the raw type value for unmapped controllerType", ({ expect }) => {
+    it("returns the raw type value for unmapped controllerType", ({
+      expect,
+    }) => {
       const neighbors = [
         { type: "controller", hostname: "c0", controllerType: "CustomCtrl" },
       ];
@@ -260,7 +286,9 @@ describe("labelPlaceholderReplacers", () => {
   });
 
   describe("fallback", () => {
-    it("returns 'unknown placeholder: <match>' for unrecognized placeholders", ({ expect }) => {
+    it("returns 'unknown placeholder: <match>' for unrecognized placeholders", ({
+      expect,
+    }) => {
       expect(labelPlaceholderReplacers.fallback([], "{{FOO}}")).toBe(
         "unknown placeholder: {{FOO}}",
       );

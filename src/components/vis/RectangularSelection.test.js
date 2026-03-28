@@ -81,7 +81,9 @@ describe("RectangularSelection", () => {
 
   // --- ACCEPTANCE TEST: Full drag-select workflow ---
   describe("full drag-select workflow", () => {
-    it("attaches, performs right-click drag, selects nodes within bounds, and emits select event", ({ expect }) => {
+    it("attaches, performs right-click drag, selects nodes within bounds, and emits select event", ({
+      expect,
+    }) => {
       // Node n1 at (5,5) is inside rect (0,0)-(10,10), n2 at (50,50) is outside
       network.getPositions.mockImplementation((id) => {
         const positions = { n1: { x: 5, y: 5 }, n2: { x: 50, y: 50 } };
@@ -138,7 +140,9 @@ describe("RectangularSelection", () => {
   // --- UNIT TESTS ---
 
   describe("attach", () => {
-    it("registers mousedown, mousemove, mouseup on container and afterDrawing on network, and disables context menu", ({ expect }) => {
+    it("registers mousedown, mousemove, mouseup on container and afterDrawing on network, and disables context menu", ({
+      expect,
+    }) => {
       const originalContextMenu = container.oncontextmenu;
 
       rs.attach();
@@ -165,7 +169,9 @@ describe("RectangularSelection", () => {
   });
 
   describe("detach", () => {
-    it("removes all listeners, restores context menu, and triggers redraw", ({ expect }) => {
+    it("removes all listeners, restores context menu, and triggers redraw", ({
+      expect,
+    }) => {
       const originalContextMenu = container.oncontextmenu;
       rs.attach();
 
@@ -195,7 +201,9 @@ describe("RectangularSelection", () => {
   });
 
   describe("_mousedownListener", () => {
-    it("initializes drag state and rectDOM on right-click (which === 3)", ({ expect }) => {
+    it("initializes drag state and rectDOM on right-click (which === 3)", ({
+      expect,
+    }) => {
       rs._mousedownListener({ which: 3, offsetX: 100, offsetY: 200 });
 
       expect(rs._drag).toBe(true);
@@ -220,7 +228,9 @@ describe("RectangularSelection", () => {
       rs._mousedownListener({ which: 3, offsetX: 10, offsetY: 20 });
     });
 
-    it("updates rectDOM endX/endY and triggers redraw during right-button drag", ({ expect }) => {
+    it("updates rectDOM endX/endY and triggers redraw during right-button drag", ({
+      expect,
+    }) => {
       rs._mousemoveListener({ which: 3, offsetX: 50, offsetY: 60 });
 
       expect(rs._rectDOM.endX).toBe(50);
@@ -228,7 +238,9 @@ describe("RectangularSelection", () => {
       expect(network.redraw).toHaveBeenCalled();
     });
 
-    it("aborts drag and redraws when mouse button is released outside container (which !== 3 while dragging)", ({ expect }) => {
+    it("aborts drag and redraws when mouse button is released outside container (which !== 3 while dragging)", ({
+      expect,
+    }) => {
       rs._mousemoveListener({ which: 0, offsetX: 50, offsetY: 60 });
 
       expect(rs._drag).toBe(false);
@@ -248,7 +260,9 @@ describe("RectangularSelection", () => {
   });
 
   describe("_mouseupListener", () => {
-    it("stops drag, redraws, and calls _selectNodes on right-click release", ({ expect }) => {
+    it("stops drag, redraws, and calls _selectNodes on right-click release", ({
+      expect,
+    }) => {
       // Setup: position nodes, set rectDOM so n1 is inside
       network.getPositions.mockImplementation((id) => ({
         [id]: { x: 5, y: 5 },
@@ -294,14 +308,12 @@ describe("RectangularSelection", () => {
         };
         return { [id]: positions[id] };
       });
-      nodes.get.mockReturnValue([
-        { id: "n1" },
-        { id: "n2" },
-        { id: "n3" },
-      ]);
+      nodes.get.mockReturnValue([{ id: "n1" }, { id: "n2" }, { id: "n3" }]);
     });
 
-    it("selects only nodes within rectangular bounds and emits select event", ({ expect }) => {
+    it("selects only nodes within rectangular bounds and emits select event", ({
+      expect,
+    }) => {
       const fakeEvent = { offsetX: 10, offsetY: 10 };
 
       rs._selectNodes("set", fakeEvent);
@@ -323,7 +335,9 @@ describe("RectangularSelection", () => {
       );
     });
 
-    it("uses 'add' mode to union with previously selected nodes", ({ expect }) => {
+    it("uses 'add' mode to union with previously selected nodes", ({
+      expect,
+    }) => {
       network.getSelectedNodes.mockReturnValue(["n2"]);
       const fakeEvent = { offsetX: 10, offsetY: 10 };
 
@@ -331,13 +345,13 @@ describe("RectangularSelection", () => {
 
       // Should be union of prev [n2] and curr [n1, n3]
       const selectedArg = network.selectNodes.mock.calls[0][0];
-      expect(selectedArg).toEqual(
-        expect.arrayContaining(["n1", "n2", "n3"]),
-      );
+      expect(selectedArg).toEqual(expect.arrayContaining(["n1", "n2", "n3"]));
       expect(selectedArg).toHaveLength(3);
     });
 
-    it("uses 'del' mode to remove selected nodes from previous selection", ({ expect }) => {
+    it("uses 'del' mode to remove selected nodes from previous selection", ({
+      expect,
+    }) => {
       network.getSelectedNodes.mockReturnValue(["n1", "n2", "n3"]);
       const fakeEvent = { offsetX: 10, offsetY: 10 };
 

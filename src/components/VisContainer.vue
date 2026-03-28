@@ -115,7 +115,11 @@ const keybindings = {
 };
 
 const emit = defineEmits(["edit-item"]);
-const { data: topoData, loading, dispatch: topologyDispatch } = useTopologyStore();
+const {
+  data: topoData,
+  loading,
+  dispatch: topologyDispatch,
+} = useTopologyStore();
 const route = useRoute();
 const router = useRouter();
 
@@ -562,7 +566,12 @@ function applyURL() {
   }
 }
 
-function init({ container, net: netInstance, nodes: nodesInstance, edges: edgesInstance }) {
+function init({
+  container,
+  net: netInstance,
+  nodes: nodesInstance,
+  edges: edgesInstance,
+}) {
   net = netInstance;
   nodes = nodesInstance;
   edges = edgesInstance;
@@ -759,12 +768,7 @@ function init({ container, net: netInstance, nodes: nodesInstance, edges: edgesI
   applyURL();
 
   // Set rectangular selection up
-  const rs = new RectangularSelection(
-    container,
-    net,
-    nodes,
-    selectionTheme,
-  );
+  const rs = new RectangularSelection(container, net, nodes, selectionTheme);
   rs.attach();
 }
 
@@ -783,12 +787,24 @@ defineExpose({
   snackbarMessage,
   mouseTagIcon,
   // Non-reactive vis instances (assigned in init)
-  get net() { return net; },
-  set net(v) { net = v; },
-  get nodes() { return nodes; },
-  set nodes(v) { nodes = v; },
-  get edges() { return edges; },
-  set edges(v) { edges = v; },
+  get net() {
+    return net;
+  },
+  set net(v) {
+    net = v;
+  },
+  get nodes() {
+    return nodes;
+  },
+  set nodes(v) {
+    nodes = v;
+  },
+  get edges() {
+    return edges;
+  },
+  set edges(v) {
+    edges = v;
+  },
   // Methods
   moveMouseTag,
   keypress,
@@ -830,7 +846,6 @@ defineExpose({
   init,
 });
 </script>
-
 
 <style scoped>
 .component-container {

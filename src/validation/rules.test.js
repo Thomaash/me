@@ -52,7 +52,9 @@ describe.concurrent("between", () => {
     expect(validate(value)).toBe("Has to be between 1 and 10 inclusive.");
   });
 
-  it("returns error string for string that coerces to number in range", ({ expect }) => {
+  it("returns error string for string that coerces to number in range", ({
+    expect,
+  }) => {
     expect(validate("5")).toBe("Has to be between 1 and 10 inclusive.");
   });
 });
@@ -145,16 +147,15 @@ describe("hostname", () => {
     ["contains dot", "my.host"],
     ["single letter", "a"],
     ["non-string number", 123],
-  ])(
-    "returns error string for invalid value: %s",
-    (_label, value) => {
-      expect(validate(value)).toBe(
-        "Has to start with a letter and contain only letters and numbers.",
-      );
-    },
-  );
+  ])("returns error string for invalid value: %s", (_label, value) => {
+    expect(validate(value)).toBe(
+      "Has to start with a letter and contain only letters and numbers.",
+    );
+  });
 
-  it("returns error string for boolean that coerces to valid hostname string", ({ expect }) => {
+  it("returns error string for boolean that coerces to valid hostname string", ({
+    expect,
+  }) => {
     expect(validate(true)).toBe(
       "Has to start with a letter and contain only letters and numbers.",
     );
@@ -207,7 +208,9 @@ describe("ip", () => {
     expect(validate(value)).toBe("Has to be valid IP 4/6 address.");
   });
 
-  it("returns error string for String object with valid IP content", ({ expect }) => {
+  it("returns error string for String object with valid IP content", ({
+    expect,
+  }) => {
     // eslint-disable-next-line no-new-wrappers
     expect(validate(new String("192.168.1.1"))).toBe(
       "Has to be valid IP 4/6 address.",
@@ -237,16 +240,15 @@ describe("ipWithMask", () => {
     ["no mask", "192.168.1.0"],
     ["double slash", "192.168.1.0/24/8"],
     ["non-string number", 12345],
-  ])(
-    "returns error string for invalid value: %s",
-    (_label, value) => {
-      expect(validate(value)).toBe(
-        "Has to contain a valid IP 4/6 address with a mask (CIDR notation).",
-      );
-    },
-  );
+  ])("returns error string for invalid value: %s", (_label, value) => {
+    expect(validate(value)).toBe(
+      "Has to contain a valid IP 4/6 address with a mask (CIDR notation).",
+    );
+  });
 
-  it("returns error string for String object with valid CIDR content", ({ expect }) => {
+  it("returns error string for String object with valid CIDR content", ({
+    expect,
+  }) => {
     // eslint-disable-next-line no-new-wrappers
     expect(validate(new String("192.168.1.0/24"))).toBe(
       "Has to contain a valid IP 4/6 address with a mask (CIDR notation).",
@@ -264,9 +266,7 @@ describe("ipsWithMasks", () => {
   });
 
   it("returns true for single-element array", ({ expect }) => {
-    expect(
-      validate(["2001:0db8:85a3:0000:0000:8a2e:0370:7334/64"]),
-    ).toBe(true);
+    expect(validate(["2001:0db8:85a3:0000:0000:8a2e:0370:7334/64"])).toBe(true);
   });
 
   it.each([
@@ -274,14 +274,11 @@ describe("ipsWithMasks", () => {
     ["non-array string", "192.168.1.0/24"],
     ["non-array number", 12345],
     ["non-array boolean", true],
-  ])(
-    "returns error string for invalid value: %s",
-    (_label, value) => {
-      expect(validate(value)).toBe(
-        "Has to contain only valid IP 4/6 addresses with masks (CIDR notation), one per line.",
-      );
-    },
-  );
+  ])("returns error string for invalid value: %s", (_label, value) => {
+    expect(validate(value)).toBe(
+      "Has to contain only valid IP 4/6 addresses with masks (CIDR notation), one per line.",
+    );
+  });
 });
 
 describe("maxLength", () => {
@@ -334,7 +331,9 @@ describe("maxValue", () => {
     expect(validate(value)).toBe("Has to be at most 100.");
   });
 
-  it("returns error string for string that coerces to number within max", ({ expect }) => {
+  it("returns error string for string that coerces to number within max", ({
+    expect,
+  }) => {
     expect(validate("50")).toBe("Has to be at most 100.");
   });
 });
@@ -387,7 +386,9 @@ describe("minValue", () => {
     expect(validate(value)).toBe("Has to be at least 10.");
   });
 
-  it("returns error string for string that coerces to number above min", ({ expect }) => {
+  it("returns error string for string that coerces to number above min", ({
+    expect,
+  }) => {
     expect(validate("50")).toBe("Has to be at least 10.");
   });
 });
@@ -484,16 +485,15 @@ describe("timeWithUnit", () => {
     ["non-string number", 100],
     ["prefix before valid time", "abc10ms"],
     ["suffix after valid time", "10msabc"],
-  ])(
-    "returns error string for invalid value: %s",
-    (_label, value) => {
-      expect(validate(value)).toBe(
-        "Has to be expressed as time + unit (e.g. 10ms or 443us).",
-      );
-    },
-  );
+  ])("returns error string for invalid value: %s", (_label, value) => {
+    expect(validate(value)).toBe(
+      "Has to be expressed as time + unit (e.g. 10ms or 443us).",
+    );
+  });
 
-  it("returns error string for array that coerces to valid time string", ({ expect }) => {
+  it("returns error string for array that coerces to valid time string", ({
+    expect,
+  }) => {
     expect(validate(["5s"])).toBe(
       "Has to be expressed as time + unit (e.g. 10ms or 443us).",
     );

@@ -28,7 +28,9 @@ function fullSwitchModel() {
   };
 }
 
-function mountSwitch(modelValue = { hostname: "test", switchType: "OVSSwitch" }) {
+function mountSwitch(
+  modelValue = { hostname: "test", switchType: "OVSSwitch" },
+) {
   return mountWithVuetify(Switch, {
     props: { modelValue },
   });
@@ -51,7 +53,9 @@ describe.concurrent("Switch (edit)", () => {
     expect(hostnameField.exists()).toBe(true);
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const hostnameTextField = textFields.find((tf) => tf.props("label") === "Hostname");
+    const hostnameTextField = textFields.find(
+      (tf) => tf.props("label") === "Hostname",
+    );
     expect(hostnameTextField).toBeDefined();
 
     const rules = hostnameTextField.props("rules");
@@ -78,7 +82,9 @@ describe.concurrent("Switch (edit)", () => {
     expect(values).toContain("LinuxBridge");
   });
 
-  it("renders IP, DPCTL Port, Datapath ID, Ofdatapath arguments, Reconnect Timeout, opts, and script fields", ({ expect }) => {
+  it("renders IP, DPCTL Port, Datapath ID, Ofdatapath arguments, Reconnect Timeout, opts, and script fields", ({
+    expect,
+  }) => {
     const wrapper = mountSwitch(fullSwitchModel());
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
@@ -108,7 +114,9 @@ describe.concurrent("Switch (edit)", () => {
     expect(wrapper.find("[data-cy='edit-stop-script']").exists()).toBe(true);
   });
 
-  it("renders Protocol, Datapath, and Fail Mode selects with correct options", ({ expect }) => {
+  it("renders Protocol, Datapath, and Fail Mode selects with correct options", ({
+    expect,
+  }) => {
     const wrapper = mountSwitch(fullSwitchModel());
 
     const selects = wrapper.findAllComponents({ name: "VSelect" });
@@ -125,7 +133,9 @@ describe.concurrent("Switch (edit)", () => {
     expect(datapathValues).toContain("kernel");
     expect(datapathValues).toContain("user");
 
-    const failModeSelect = selects.find((s) => s.props("label") === "Fail Mode");
+    const failModeSelect = selects.find(
+      (s) => s.props("label") === "Fail Mode",
+    );
     expect(failModeSelect).toBeDefined();
     const failModeValues = failModeSelect.props("items").map((i) => i.value);
     expect(failModeValues).toContain("secure");
@@ -149,14 +159,18 @@ describe.concurrent("Switch (edit)", () => {
     await nextTick();
 
     const textFields = wrapper.findAllComponents({ name: "VTextField" });
-    const hostnameField = textFields.find((tf) => tf.props("label") === "Hostname");
+    const hostnameField = textFields.find(
+      (tf) => tf.props("label") === "Hostname",
+    );
     expect(hostnameField.props("modelValue")).toBe("s2");
 
     const ipField = textFields.find((tf) => tf.props("label") === "IP");
     expect(ipField.props("modelValue")).toBe("192.168.1.1");
   });
 
-  it("binds IP, opts, startScript, and stopScript fields to item via v-model", async ({ expect }) => {
+  it("binds IP, opts, startScript, and stopScript fields to item via v-model", async ({
+    expect,
+  }) => {
     const wrapper = mountSwitch(fullSwitchModel());
 
     await nextTick();

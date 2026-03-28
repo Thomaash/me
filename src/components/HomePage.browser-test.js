@@ -9,7 +9,9 @@ describe.concurrent("HomePage", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders AppLogo, AppDescription, BindingsList, and PlaceholderHowTo child components", ({ expect }) => {
+  it("renders AppLogo, AppDescription, BindingsList, and PlaceholderHowTo child components", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(HomePage);
 
     const appLogo = wrapper.findComponent({ name: "AppLogo" });
@@ -21,7 +23,9 @@ describe.concurrent("HomePage", () => {
     const bindingsList = wrapper.findComponent({ name: "BindingsList" });
     expect(bindingsList.exists()).toBe(true);
 
-    const placeholderHowTo = wrapper.findComponent({ name: "PlaceholderHowTo" });
+    const placeholderHowTo = wrapper.findComponent({
+      name: "PlaceholderHowTo",
+    });
     expect(placeholderHowTo.exists()).toBe(true);
   });
 
@@ -37,7 +41,9 @@ describe.concurrent("HomePage", () => {
     const bindingsList = wrapper.findComponent({ name: "BindingsList" });
     expect(bindingsList.isVisible()).toBe(true);
 
-    const placeholderHowTo = wrapper.findComponent({ name: "PlaceholderHowTo" });
+    const placeholderHowTo = wrapper.findComponent({
+      name: "PlaceholderHowTo",
+    });
     expect(placeholderHowTo.isVisible()).toBe(true);
   });
 });

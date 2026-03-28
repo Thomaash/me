@@ -10,9 +10,7 @@ function itemsByType(items, type) {
 
 // Helper: find item by type and hostname
 function findItem(items, type, hostname) {
-  return items.find(
-    (item) => item.type === type && item.hostname === hostname,
-  );
+  return items.find((item) => item.type === type && item.hostname === hostname);
 }
 
 // Helper: strip id/x/y from items for comparison (edges strip id/hostname/from/to)
@@ -29,7 +27,9 @@ function cleanItem(item) {
 
 describe.concurrent("importScript", () => {
   describe("return structure", () => {
-    it("returns an object with log array and data object containing version, items, startScript, stopScript", ({ expect }) => {
+    it("returns an object with log array and data object containing version, items, startScript, stopScript", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -73,7 +73,9 @@ net.stop()
   });
 
   describe("addSwitch parsing", () => {
-    it("extracts hostname, switchType, and switch properties from addSwitch calls", ({ expect }) => {
+    it("extracts hostname, switchType, and switch properties from addSwitch calls", ({
+      expect,
+    }) => {
       const script = `
 from mininet.node import OVSKernelSwitch, UserSwitch
 net = Mininet(topo=None, build=False)
@@ -110,7 +112,9 @@ net.stop()
   });
 
   describe("addController parsing", () => {
-    it("extracts hostname, controllerType, ip, port, and protocol from addController calls", ({ expect }) => {
+    it("extracts hostname, controllerType, ip, port, and protocol from addController calls", ({
+      expect,
+    }) => {
       const script = `
 from mininet.node import RemoteController, OVSController
 net = Mininet(topo=None, build=False)
@@ -146,7 +150,9 @@ net.stop()
   });
 
   describe("addLink parsing", () => {
-    it("creates ports and links with bandwidth, delay, loss, maxQueueSize, and jitter properties", ({ expect }) => {
+    it("creates ports and links with bandwidth, delay, loss, maxQueueSize, and jitter properties", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -181,7 +187,9 @@ net.stop()
   });
 
   describe("IP assignment from cmd calls", () => {
-    it("assigns IP addresses from cmd('ip a a ...') calls to the correct ports", ({ expect }) => {
+    it("assigns IP addresses from cmd('ip a a ...') calls to the correct ports", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1', ip=None)
@@ -217,7 +225,9 @@ net.stop()
   });
 
   describe("startScript and stopScript split", () => {
-    it("places script lines before CLI.run() in startScript and after in stopScript", ({ expect }) => {
+    it("places script lines before CLI.run() in startScript and after in stopScript", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 cli = CLI(net, script='/dev/null')
@@ -240,26 +250,25 @@ net.stop()
       ["autoStaticARP", "autoStaticArp=True", { autoStaticARP: true }],
       ["spawnTerminals", "xterms=True", { spawnTerminals: true }],
       ["listenPortBase", "listenPort=6634", { listenPortBase: 6634 }],
-    ])(
-      "extracts %s from Mininet(%s)",
-      (_label, argString, expectedProps) => {
-        const script = `
+    ])("extracts %s from Mininet(%s)", (_label, argString, expectedProps) => {
+      const script = `
 net = Mininet(topo=None, build=False, ${argString})
 net.build()
 CLI(net)
 net.stop()
 `;
-        const result = importScript(script);
+      const result = importScript(script);
 
-        Object.entries(expectedProps).forEach(([key, value]) => {
-          expect(result.data[key]).toBe(value);
-        });
-      },
-    );
+      Object.entries(expectedProps).forEach(([key, value]) => {
+        expect(result.data[key]).toBe(value);
+      });
+    });
   });
 
   describe("switch-controller associations", () => {
-    it("creates associations from switch.start([controller]) calls", ({ expect }) => {
+    it("creates associations from switch.start([controller]) calls", ({
+      expect,
+    }) => {
       const script = `
 from mininet.node import RemoteController, OVSKernelSwitch
 net = Mininet(topo=None, build=False)
@@ -294,7 +303,9 @@ net.stop()
   });
 
   describe("node cmd scripts", () => {
-    it("assigns cmd output to startScript before CLI.run() and stopScript after", ({ expect }) => {
+    it("assigns cmd output to startScript before CLI.run() and stopScript after", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 s1 = net.addSwitch('s1')
@@ -316,7 +327,9 @@ net.stop()
   });
 
   describe("addSwitch comprehensive property parsing", () => {
-    it("extracts batch, datapath, dpid, dpopts, opts, failMode, inband from addSwitch", ({ expect }) => {
+    it("extracts batch, datapath, dpid, dpopts, opts, failMode, inband from addSwitch", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 s1 = net.addSwitch('s1', batch=True, datapath='kernel', dpid='ff01', dpopts='--no-slicing', opts='--verbose', failMode='secure', inband=True)
@@ -336,7 +349,9 @@ net.stop()
       expect(s1.inband).toBe(true);
     });
 
-    it("extracts protocols, reconnectms, ip, verbose, inNamespace, stp, prio from addSwitch", ({ expect }) => {
+    it("extracts protocols, reconnectms, ip, verbose, inNamespace, stp, prio from addSwitch", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 s1 = net.addSwitch('s1', protocols='OpenFlow10', reconnectms=5000, ip='10.0.0.1', verbose=True, inNamespace=True, stp=True, prio=1000)
@@ -415,7 +430,9 @@ net.stop()
   });
 
   describe("addController with positional name argument", () => {
-    it("extracts controller name from positional arg when name= keyword not used", ({ expect }) => {
+    it("extracts controller name from positional arg when name= keyword not used", ({
+      expect,
+    }) => {
       const script = `
 from mininet.node import Controller
 net = Mininet(topo=None, build=False)
@@ -459,7 +476,9 @@ net.stop()
   });
 
   describe("Mininet constructor autoStaticArp=False handling", () => {
-    it("extracts autoStaticARP as false when autoStaticArp=False", ({ expect }) => {
+    it("extracts autoStaticARP as false when autoStaticArp=False", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False, autoStaticArp=False)
 net.build()
@@ -515,7 +534,9 @@ net.stop()
       expect(h1.cpuScheduler).toBe("cfs");
     });
 
-    it("does not set cpuLimit or cpuScheduler when setCPUFrac has no args", ({ expect }) => {
+    it("does not set cpuLimit or cpuScheduler when setCPUFrac has no args", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -561,7 +582,9 @@ net.stop()
   });
 
   describe("Intf (physical port) parsing", () => {
-    it("creates physical port with Intf call with node argument", ({ expect }) => {
+    it("creates physical port with Intf call with node argument", ({
+      expect,
+    }) => {
       const script = `
 from mininet.link import Intf
 net = Mininet(topo=None, build=False)
@@ -580,7 +603,9 @@ net.stop()
       expect(physicalPort).toBeDefined();
     });
 
-    it("creates physical port item when Intf called without node argument", ({ expect }) => {
+    it("creates physical port item when Intf called without node argument", ({
+      expect,
+    }) => {
       const script = `
 from mininet.link import Intf
 net = Mininet(topo=None, build=False)
@@ -599,7 +624,9 @@ net.stop()
   });
 
   describe("link without intfName args uses positional varnames", () => {
-    it("auto-generates port names when intfName1/intfName2 not specified", ({ expect }) => {
+    it("auto-generates port names when intfName1/intfName2 not specified", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -619,7 +646,9 @@ net.stop()
   });
 
   describe("link properties are only set when present", () => {
-    it("does not set bandwidth/delay/loss/maxQueueSize/jitter when not provided", ({ expect }) => {
+    it("does not set bandwidth/delay/loss/maxQueueSize/jitter when not provided", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -641,7 +670,9 @@ net.stop()
   });
 
   describe("CLI(net) without script triggers beforeCLIRun=false", () => {
-    it("splits cmd scripts before/after CLI(net) without script arg", ({ expect }) => {
+    it("splits cmd scripts before/after CLI(net) without script arg", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -661,7 +692,9 @@ net.stop()
   });
 
   describe("CLI(net) without script sets beforeCLIRun to false immediately", () => {
-    it("CLI(net, script=None) sets beforeCLIRun=false, so onecmd after it goes to stopScript", ({ expect }) => {
+    it("CLI(net, script=None) sets beforeCLIRun=false, so onecmd after it goes to stopScript", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 cli = CLI(net, script=None)
@@ -674,7 +707,9 @@ net.stop()
       expect(result.data.stopScript).toBe("after_cmd");
     });
 
-    it("CLI(net) without any script arg sets beforeCLIRun=false", ({ expect }) => {
+    it("CLI(net) without any script arg sets beforeCLIRun=false", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 CLI(net)
@@ -704,7 +739,9 @@ net.stop()
   });
 
   describe("items merging by hostname", () => {
-    it("merges multiple operations on same hostname into one item", ({ expect }) => {
+    it("merges multiple operations on same hostname into one item", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -728,7 +765,9 @@ net.stop()
   });
 
   describe("script concatenation for same hostname", () => {
-    it("concatenates multiple startScript cmd calls for same host", ({ expect }) => {
+    it("concatenates multiple startScript cmd calls for same host", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -745,7 +784,9 @@ net.stop()
       expect(h1.startScript).toBe("echo first\necho second");
     });
 
-    it("concatenates multiple stopScript cmd calls for same host", ({ expect }) => {
+    it("concatenates multiple stopScript cmd calls for same host", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -764,7 +805,9 @@ net.stop()
   });
 
   describe("log entries for errors", () => {
-    it("returns log entries with severity, msg, and item properties", ({ expect }) => {
+    it("returns log entries with severity, msg, and item properties", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -782,7 +825,9 @@ net.stop()
   });
 
   describe("host defaultRoute via extraction", () => {
-    it("extracts only the IP from defaultRoute 'via X.X.X.X' format", ({ expect }) => {
+    it("extracts only the IP from defaultRoute 'via X.X.X.X' format", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1', defaultRoute='via 192.168.1.1')
@@ -797,7 +842,9 @@ net.stop()
   });
 
   describe("switch class name extraction strips module prefix", () => {
-    it("strips module prefix from cls argument for controller", ({ expect }) => {
+    it("strips module prefix from cls argument for controller", ({
+      expect,
+    }) => {
       const script = `
 import mininet.node
 net = Mininet(topo=None, build=False)
@@ -868,7 +915,9 @@ net.stop()
   });
 
   describe("addLink with only max_queue_size property", () => {
-    it("sets only maxQueueSize when only max_queue_size is provided", ({ expect }) => {
+    it("sets only maxQueueSize when only max_queue_size is provided", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -904,7 +953,9 @@ net.stop()
   });
 
   describe("switch.start with multiple controllers", () => {
-    it("creates associations for each controller in the start array", ({ expect }) => {
+    it("creates associations for each controller in the start array", ({
+      expect,
+    }) => {
       const script = `
 from mininet.node import RemoteController, OVSKernelSwitch
 net = Mininet(topo=None, build=False)
@@ -978,7 +1029,9 @@ net.stop()
   });
 
   describe("fixNextHostDev auto-generates dev names", () => {
-    it("auto-generates eth0 port name when no dev specified in link", ({ expect }) => {
+    it("auto-generates eth0 port name when no dev specified in link", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 h1 = net.addHost('h1')
@@ -998,7 +1051,9 @@ net.stop()
   });
 
   describe("data startScript and stopScript are joined with newlines", () => {
-    it("joins multiple global onecmd startScripts with newline", ({ expect }) => {
+    it("joins multiple global onecmd startScripts with newline", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 cli = CLI(net, script='/dev/null')
@@ -1012,7 +1067,9 @@ net.stop()
       expect(result.data.startScript).toBe("cmd1\ncmd2\ncmd3");
     });
 
-    it("joins multiple global onecmd stopScripts with newline", ({ expect }) => {
+    it("joins multiple global onecmd stopScripts with newline", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 cli = CLI(net, script='/dev/null')
@@ -1027,7 +1084,9 @@ net.stop()
   });
 
   describe("empty script produces correct defaults", () => {
-    it("produces empty startScript and stopScript for minimal script", ({ expect }) => {
+    it("produces empty startScript and stopScript for minimal script", ({
+      expect,
+    }) => {
       const script = `
 net = Mininet(topo=None, build=False)
 net.build()
@@ -1075,7 +1134,9 @@ net.stop()
       expect(s3.switchType).toBe("IVSSwitch");
     });
 
-    it("extracts h4 with cpuCores [2] and cpuLimit 0.4 and scheduler cfs", ({ expect }) => {
+    it("extracts h4 with cpuCores [2] and cpuLimit 0.4 and scheduler cfs", ({
+      expect,
+    }) => {
       const h4 = findItem(result.data.items, "host", "h4");
       expect(h4).toBeDefined();
       expect(h4.cpuCores).toEqual([2]);
@@ -1083,7 +1144,9 @@ net.stop()
       expect(h4.cpuScheduler).toBe("cfs");
     });
 
-    it("extracts h5 with cpuCores [1,2,4] and cpuLimit 0.5 and scheduler host", ({ expect }) => {
+    it("extracts h5 with cpuCores [1,2,4] and cpuLimit 0.5 and scheduler host", ({
+      expect,
+    }) => {
       const h5 = findItem(result.data.items, "host", "h5");
       expect(h5).toBeDefined();
       expect(h5.cpuCores).toEqual([1, 2, 4]);
@@ -1134,7 +1197,9 @@ net.stop()
       expect(s1.startScript).toBe("ip l");
     });
 
-    it("h6 has concatenated startScript from multiple cmd calls", ({ expect }) => {
+    it("h6 has concatenated startScript from multiple cmd calls", ({
+      expect,
+    }) => {
       const h6 = findItem(result.data.items, "host", "h6");
       expect(h6).toBeDefined();
       expect(h6.startScript).toContain("vconfig add h6-eth0 600");
@@ -1349,7 +1414,9 @@ net.stop()
       expect(h3Port).toBeDefined();
     });
 
-    it("link with only bw=10 (h4-h3 link) has bandwidth but no delay", ({ expect }) => {
+    it("link with only bw=10 (h4-h3 link) has bandwidth but no delay", ({
+      expect,
+    }) => {
       const links = itemsByType(result.data.items, "link");
       const bw10Link = links.find((l) => l.bandwidth === 10);
       expect(bw10Link).toBeDefined();
@@ -1363,7 +1430,9 @@ net.stop()
   });
 
   describe("fixture file integration", () => {
-    it("parses miniedit-script.py fixture with correct item counts and properties", ({ expect }) => {
+    it("parses miniedit-script.py fixture with correct item counts and properties", ({
+      expect,
+    }) => {
       const fixturePath = resolve(
         import.meta.dirname,
         "../../tests/unit/fixtures/miniedit-script.py",
@@ -1438,7 +1507,9 @@ net.stop()
       });
     });
 
-    it("parses me-script.py fixture with correct item counts and link properties", ({ expect }) => {
+    it("parses me-script.py fixture with correct item counts and link properties", ({
+      expect,
+    }) => {
       const fixturePath = resolve(
         import.meta.dirname,
         "../../tests/unit/fixtures/me-script.py",
@@ -1475,7 +1546,9 @@ net.stop()
       // Verify link with TC properties
       const tcLink = result.data.items.find(
         (item) =>
-          item.type === "link" && item.bandwidth === 100 && item.delay === "10ms",
+          item.type === "link" &&
+          item.bandwidth === 100 &&
+          item.delay === "10ms",
       );
       expect(tcLink).toMatchObject({
         type: "link",
@@ -1487,8 +1560,7 @@ net.stop()
 
       // Verify IPv6 on ports
       const h1Port = result.data.items.find(
-        (p) =>
-          p.type === "port" && p.ips && p.ips.includes("172.18.1.1/16"),
+        (p) => p.type === "port" && p.ips && p.ips.includes("172.18.1.1/16"),
       );
       expect(h1Port).toBeDefined();
       expect(h1Port.ips).toContain("fc00::1/32");

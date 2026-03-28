@@ -16,7 +16,9 @@ describe.concurrent("Association (edit)", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a v-form with a Label text field with data-cy edit-hostname", ({ expect }) => {
+  it("renders a v-form with a Label text field with data-cy edit-hostname", ({
+    expect,
+  }) => {
     const wrapper = mountAssociation();
 
     const form = wrapper.findComponent({ name: "VForm" });
@@ -30,7 +32,9 @@ describe.concurrent("Association (edit)", () => {
     expect(textField.props("label")).toBe("Label");
   });
 
-  it("typing updates item.hostname via modelValue binding", async ({ expect }) => {
+  it("typing updates item.hostname via modelValue binding", async ({
+    expect,
+  }) => {
     const wrapper = mountAssociation({ hostname: "initial" });
 
     await nextTick();

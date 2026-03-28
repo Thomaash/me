@@ -40,7 +40,9 @@ describe.concurrent("importScript/pyTypes", () => {
       expect(pyNotNull(input)).toBeFalsy();
     });
 
-    it("returns falsy specifically for the string 'None' (not other similar strings)", ({ expect }) => {
+    it("returns falsy specifically for the string 'None' (not other similar strings)", ({
+      expect,
+    }) => {
       expect(pyNotNull("None")).toBeFalsy();
       expect(pyNotNull("none")).toBeTruthy();
       expect(pyNotNull("NONE")).toBeTruthy();
@@ -86,7 +88,7 @@ describe.concurrent("importScript/pyTypes", () => {
       ["'it\\'s'", "it\\'s"],
       ["'a'", "a"],
       ["'ab'", "ab"],
-    ])('strips surrounding quotes from %s', (input, expected) => {
+    ])("strips surrounding quotes from %s", (input, expected) => {
       expect(pyString(input)).toBe(expected);
     });
 
@@ -97,7 +99,9 @@ describe.concurrent("importScript/pyTypes", () => {
       expect(result).not.toContain("'");
     });
 
-    it("preserves exact content between quotes (no extra chars stripped)", ({ expect }) => {
+    it("preserves exact content between quotes (no extra chars stripped)", ({
+      expect,
+    }) => {
       expect(pyString("'abc'")).toBe("abc");
       expect(pyString("'abc'").length).toBe(3);
       // If substr(1,...) offset was 0 instead of 1, we'd get "'abc" or "'ab"

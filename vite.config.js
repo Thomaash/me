@@ -87,9 +87,7 @@ export default defineConfig({
     },
   },
   define: {
-    "import.meta.env.VITE_BUILD_DATE": JSON.stringify(
-      new Date().toISOString(),
-    ),
+    "import.meta.env.VITE_BUILD_DATE": JSON.stringify(new Date().toISOString()),
     "import.meta.env.VITE_BUILD_COMMIT_HASH": JSON.stringify(
       execSync("git log -1 --format=%H", {
         encoding: "ascii",

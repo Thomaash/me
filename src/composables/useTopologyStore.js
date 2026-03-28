@@ -22,8 +22,10 @@ export function useTopologyStore() {
     clearAlert: () => store.commit("clearAlert"),
 
     // Topology actions
-    dispatch: (action, payload) => store.dispatch(`topology/${action}`, payload),
-    commitTopology: (mutation, payload) => store.commit(`topology/${mutation}`, payload),
+    dispatch: (action, payload) =>
+      store.dispatch(`topology/${action}`, payload),
+    commitTopology: (mutation, payload) =>
+      store.commit(`topology/${mutation}`, payload),
     importData: (data) => store.commit("topology/importData", data),
 
     // For components that still need store.subscribe (VisCanvas)

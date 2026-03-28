@@ -17,7 +17,9 @@ const { mutations } = config;
 
 describe("config store module", () => {
   describe("strict mode", () => {
-    it("enables strict mode when NODE_ENV is 'development'", async ({ expect }) => {
+    it("enables strict mode when NODE_ENV is 'development'", async ({
+      expect,
+    }) => {
       const originalNodeEnv = process.env.NODE_ENV;
       process.env.NODE_ENV = "development";
       vi.resetModules();
@@ -26,7 +28,9 @@ describe("config store module", () => {
       process.env.NODE_ENV = originalNodeEnv;
     });
 
-    it("disables strict mode when NODE_ENV is not 'development'", async ({ expect }) => {
+    it("disables strict mode when NODE_ENV is not 'development'", async ({
+      expect,
+    }) => {
       const originalNodeEnv = process.env.NODE_ENV;
       process.env.NODE_ENV = "production";
       vi.resetModules();
@@ -37,7 +41,9 @@ describe("config store module", () => {
   });
 
   describe("state initialization", () => {
-    it("initializes loading to true, working to false, isUpdateAvailable to false, and alert to {show: false}", ({ expect }) => {
+    it("initializes loading to true, working to false, isUpdateAvailable to false, and alert to {show: false}", ({
+      expect,
+    }) => {
       expect(config.state.loading).toBe(true);
       expect(config.state.working).toBe(false);
       expect(config.state.isUpdateAvailable).toBe(false);
@@ -53,7 +59,9 @@ describe("config store module", () => {
     });
 
     describe("setWorking", () => {
-      it("sets state.working to {curr, max} object when both are numbers", ({ expect }) => {
+      it("sets state.working to {curr, max} object when both are numbers", ({
+        expect,
+      }) => {
         const state = { working: false };
         mutations.setWorking(state, { working: true, curr: 3, max: 10 });
         expect(state.working).toEqual({ curr: 3, max: 10 });
@@ -74,7 +82,9 @@ describe("config store module", () => {
       );
     });
 
-    it("setAlert sets state.alert to {show: true, type, text}", ({ expect }) => {
+    it("setAlert sets state.alert to {show: true, type, text}", ({
+      expect,
+    }) => {
       const state = { alert: { show: false } };
       mutations.setAlert(state, { type: "error", text: "Something failed" });
       expect(state.alert).toEqual({
@@ -90,7 +100,9 @@ describe("config store module", () => {
       expect(state.alert.show).toBe(false);
     });
 
-    it("setUpdateAvailable sets state.isUpdateAvailable to true", ({ expect }) => {
+    it("setUpdateAvailable sets state.isUpdateAvailable to true", ({
+      expect,
+    }) => {
       const state = { isUpdateAvailable: false };
       mutations.setUpdateAvailable(state);
       expect(state.isUpdateAvailable).toBe(true);

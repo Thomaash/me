@@ -5,10 +5,7 @@
         <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
-            :rules="[
-              validators.required(),
-              validators.hostname(),
-            ]"
+            :rules="[validators.required(), validators.hostname()]"
             label="Hostname"
             autofocus
             data-cy="edit-hostname"
@@ -111,10 +108,7 @@
           <v-text-field
             ref="itemReconnectMs"
             v-model.number="item.reconnectms"
-            :rules="[
-              validators.integer(),
-              validators.minValue(0),
-            ]"
+            :rules="[validators.integer(), validators.minValue(0)]"
             label="Reconnect Timeout"
             type="number"
             min="0"

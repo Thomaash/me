@@ -22,7 +22,9 @@ describe("deselectHandler", () => {
     expect(net.setSelection).not.toHaveBeenCalled();
   });
 
-  it("removes items from selection when ctrlKey is true and all selected items are already in previousSelection", ({ expect }) => {
+  it("removes items from selection when ctrlKey is true and all selected items are already in previousSelection", ({
+    expect,
+  }) => {
     const srcEvent = { ctrlKey: true };
     const event = {
       event: { srcEvent, _id: "remove-test" },
@@ -42,7 +44,9 @@ describe("deselectHandler", () => {
     });
   });
 
-  it("adds new items to previousSelection when ctrlKey is true and items are not all in previousSelection", ({ expect }) => {
+  it("adds new items to previousSelection when ctrlKey is true and items are not all in previousSelection", ({
+    expect,
+  }) => {
     const srcEvent = { ctrlKey: true };
     const event = {
       event: { srcEvent },
@@ -62,7 +66,9 @@ describe("deselectHandler", () => {
     expect(call.edges).toHaveLength(2);
   });
 
-  it("ignores duplicate events (same event.event object reference)", ({ expect }) => {
+  it("ignores duplicate events (same event.event object reference)", ({
+    expect,
+  }) => {
     const sharedInnerEvent = { srcEvent: { ctrlKey: true } };
     const event1 = {
       event: sharedInnerEvent,

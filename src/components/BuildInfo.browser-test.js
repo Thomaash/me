@@ -23,7 +23,9 @@ function mountBuildInfo(isUpdateAvailable = false) {
 }
 
 describe.concurrent("BuildInfo", () => {
-  it("mounts in Vuetify context and renders section with headline Build", ({ expect }) => {
+  it("mounts in Vuetify context and renders section with headline Build", ({
+    expect,
+  }) => {
     const wrapper = mountBuildInfo();
 
     expect(wrapper.exists()).toBe(true);
@@ -45,13 +47,13 @@ describe.concurrent("BuildInfo", () => {
     const wrapper = mountBuildInfo();
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
-    const githubButton = buttons.find(
-      (btn) => btn.text() === "Open on GitHub",
-    );
+    const githubButton = buttons.find((btn) => btn.text() === "Open on GitHub");
     expect(githubButton).toBeDefined();
   });
 
-  it("renders update available message when isUpdateAvailable is true", ({ expect }) => {
+  it("renders update available message when isUpdateAvailable is true", ({
+    expect,
+  }) => {
     const wrapper = mountBuildInfo(true);
 
     expect(wrapper.text()).toContain(
@@ -59,7 +61,9 @@ describe.concurrent("BuildInfo", () => {
     );
   });
 
-  it("does not render update message when isUpdateAvailable is false", ({ expect }) => {
+  it("does not render update message when isUpdateAvailable is false", ({
+    expect,
+  }) => {
     const wrapper = mountBuildInfo(false);
 
     expect(wrapper.text()).not.toContain(

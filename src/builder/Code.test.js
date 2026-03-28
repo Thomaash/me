@@ -3,7 +3,9 @@ import Code from "@/builder/Code.js";
 
 describe.concurrent("Code", () => {
   describe("constructor initialization", () => {
-    it("initializes imports with mininet CLI, net, link, log, and node imports", ({ expect }) => {
+    it("initializes imports with mininet CLI, net, link, log, and node imports", ({
+      expect,
+    }) => {
       const code = new Code();
       expect(code.imports).toEqual([
         "from mininet.cli import CLI",
@@ -14,21 +16,27 @@ describe.concurrent("Code", () => {
       ]);
     });
 
-    it("initializes init with Mininet instantiation function and CLI creation string", ({ expect }) => {
+    it("initializes init with Mininet instantiation function and CLI creation string", ({
+      expect,
+    }) => {
       const code = new Code();
       expect(code.init).toHaveLength(2);
       expect(typeof code.init[0]).toBe("function");
       expect(code.init[1]).toBe("cli = CLI(net, script='/dev/null')");
     });
 
-    it("initializes build, cli, and finish arrays with correct commands", ({ expect }) => {
+    it("initializes build, cli, and finish arrays with correct commands", ({
+      expect,
+    }) => {
       const code = new Code();
       expect(code.build).toEqual(["net.build()"]);
       expect(code.cli).toEqual(["cli.run()"]);
       expect(code.finish).toEqual(["net.stop()"]);
     });
 
-    it("initializes empty arrays for all metadata sections not pre-initialized", ({ expect }) => {
+    it("initializes empty arrays for all metadata sections not pre-initialized", ({
+      expect,
+    }) => {
       const code = new Code();
       const expectedEmpty = [
         "preInit",
@@ -50,7 +58,9 @@ describe.concurrent("Code", () => {
       });
     });
 
-    it("initializes mininetArgs with build, controller, link, and topo defaults", ({ expect }) => {
+    it("initializes mininetArgs with build, controller, link, and topo defaults", ({
+      expect,
+    }) => {
       const code = new Code();
       expect(code.mininetArgs).toEqual([
         "build=False",
@@ -75,9 +85,7 @@ describe.concurrent("Code", () => {
       const output = code.toString();
       const lines = output.split("\n");
       const nonEmptyLines = lines.filter((l) => l.length > 0);
-      expect(nonEmptyLines[nonEmptyLines.length - 1]).toBe(
-        "# vim:fdm=marker",
-      );
+      expect(nonEmptyLines[nonEmptyLines.length - 1]).toBe("# vim:fdm=marker");
     });
 
     it("wraps each non-empty section in fold markers", ({ expect }) => {
@@ -94,7 +102,9 @@ describe.concurrent("Code", () => {
       expect(closingMarkers.length).toBeGreaterThanOrEqual(5);
     });
 
-    it("adds mininet.log.info for non-silent sections and omits for silent sections", ({ expect }) => {
+    it("adds mininet.log.info for non-silent sections and omits for silent sections", ({
+      expect,
+    }) => {
       const code = new Code();
       const output = code.toString();
 
@@ -133,7 +143,9 @@ describe.concurrent("Code", () => {
       expect(output).not.toContain("# Add links {{{");
     });
 
-    it("includes content from sections populated after construction", ({ expect }) => {
+    it("includes content from sections populated after construction", ({
+      expect,
+    }) => {
       const code = new Code();
       code.nodes.push("net.addHost('h1')");
       code.log.push("print('done')");
@@ -170,13 +182,13 @@ describe.concurrent("Code", () => {
         const output = code.toString();
 
         expect(output).toContain(`# ${name} {{{`);
-        expect(output).toContain(
-          `mininet.log.info('\\n*** ${name}\\n')`,
-        );
+        expect(output).toContain(`mininet.log.info('\\n*** ${name}\\n')`);
       },
     );
 
-    it("produces no content between shebang header and first section when all optional sections are empty", ({ expect }) => {
+    it("produces no content between shebang header and first section when all optional sections are empty", ({
+      expect,
+    }) => {
       const code = new Code();
       const output = code.toString();
       const lines = output.split("\n");
@@ -186,7 +198,9 @@ describe.concurrent("Code", () => {
       expect(lines[3]).toBe("# Imports {{{");
     });
 
-    it("separates section content with blank lines in the correct pattern", ({ expect }) => {
+    it("separates section content with blank lines in the correct pattern", ({
+      expect,
+    }) => {
       const code = new Code();
       code.preInit.push("os.mkdir('/tmp/mn')");
       const output = code.toString();
@@ -199,15 +213,15 @@ describe.concurrent("Code", () => {
       expect(sectionMatch).not.toBeNull();
     });
 
-    it("for silent sections, omits log.info line but keeps blank line separators", ({ expect }) => {
+    it("for silent sections, omits log.info line but keeps blank line separators", ({
+      expect,
+    }) => {
       const code = new Code();
       const output = code.toString();
 
       // Imports is silent: "# Imports {{{", "", ...imports..., "", "# }}}"
       // There should be no mininet.log.info between the fold marker and the import lines
-      const importsSection = output.match(
-        /# Imports \{\{\{\n\n(.*?)# \}\}\}/s,
-      );
+      const importsSection = output.match(/# Imports \{\{\{\n\n(.*?)# \}\}\}/s);
       expect(importsSection).not.toBeNull();
       expect(importsSection[1]).not.toContain("mininet.log.info");
     });

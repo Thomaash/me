@@ -9,10 +9,22 @@ function makeItem(overrides) {
 
 function buildFixtureItems() {
   return [
-    { id: "c1", type: "controller", hostname: "ctrl0", from: undefined, to: undefined },
+    {
+      id: "c1",
+      type: "controller",
+      hostname: "ctrl0",
+      from: undefined,
+      to: undefined,
+    },
     { id: "h1", type: "host", hostname: "h1", from: undefined, to: undefined },
     { id: "h2", type: "host", hostname: "h2", from: undefined, to: undefined },
-    { id: "s1", type: "switch", hostname: "s1", from: undefined, to: undefined },
+    {
+      id: "s1",
+      type: "switch",
+      hostname: "s1",
+      from: undefined,
+      to: undefined,
+    },
     { id: "p1", type: "port", hostname: "p1", from: undefined, to: undefined },
     { id: "l1", type: "link", hostname: "link1", from: "h1", to: "s1" },
     { id: "a1", type: "association", hostname: "assoc1", from: "c1", to: "s1" },
@@ -32,7 +44,9 @@ describe.concurrent("Items", () => {
       });
     });
 
-    it("places only link and association items into map.$edges", ({ expect }) => {
+    it("places only link and association items into map.$edges", ({
+      expect,
+    }) => {
       const items = new Items(buildFixtureItems());
 
       const edgeIds = Object.keys(items.map.$edges);
@@ -41,7 +55,9 @@ describe.concurrent("Items", () => {
       expect(items.map.$edges["a1"].type).toBe("association");
     });
 
-    it("places non-edge items into map.$nodes with relationship arrays", ({ expect }) => {
+    it("places non-edge items into map.$nodes with relationship arrays", ({
+      expect,
+    }) => {
       const items = new Items(buildFixtureItems());
 
       const nodeIds = Object.keys(items.map.$nodes);
@@ -82,7 +98,9 @@ describe.concurrent("Items", () => {
   });
 
   describe("arr sorting", () => {
-    it("sorts arr.$all by hostname using en-US numeric collation", ({ expect }) => {
+    it("sorts arr.$all by hostname using en-US numeric collation", ({
+      expect,
+    }) => {
       const input = [
         makeItem({ id: "a", hostname: "z10" }),
         makeItem({ id: "b", hostname: "z2" }),
@@ -100,9 +118,7 @@ describe.concurrent("Items", () => {
         const items = new Items(buildFixtureItems());
 
         expect(Array.isArray(items.arr[key])).toBe(true);
-        expect(items.arr[key]).toHaveLength(
-          Object.keys(items.map[key]).length,
-        );
+        expect(items.arr[key]).toHaveLength(Object.keys(items.map[key]).length);
 
         for (let i = 1; i < items.arr[key].length; i++) {
           const prev = items.arr[key][i - 1].hostname;
@@ -115,7 +131,9 @@ describe.concurrent("Items", () => {
   });
 
   describe("edge-node relationship wiring", () => {
-    it("populates edge.$nodes with from and to node references", ({ expect }) => {
+    it("populates edge.$nodes with from and to node references", ({
+      expect,
+    }) => {
       const items = new Items(buildFixtureItems());
 
       const link = items.map.$edges["l1"];
@@ -156,7 +174,9 @@ describe.concurrent("Items", () => {
       expect(h1.$links[0].id).toBe("l1");
     });
 
-    it("populates node.$associations with connected association edges only", ({ expect }) => {
+    it("populates node.$associations with connected association edges only", ({
+      expect,
+    }) => {
       const items = new Items(buildFixtureItems());
 
       const s1 = items.map.$nodes["s1"];
@@ -171,7 +191,9 @@ describe.concurrent("Items", () => {
   });
 
   describe("numeric-aware collation", () => {
-    it("sorts hostnames numerically so item2 comes before item10", ({ expect }) => {
+    it("sorts hostnames numerically so item2 comes before item10", ({
+      expect,
+    }) => {
       const input = [
         makeItem({ id: "a", hostname: "item10" }),
         makeItem({ id: "b", hostname: "item2" }),
@@ -187,7 +209,9 @@ describe.concurrent("Items", () => {
   });
 
   describe("data immutability", () => {
-    it("does not modify original input items via Object.create", ({ expect }) => {
+    it("does not modify original input items via Object.create", ({
+      expect,
+    }) => {
       const input = buildFixtureItems();
       const frozen = input.map((item) => ({ ...item }));
 
@@ -204,7 +228,9 @@ describe.concurrent("Items", () => {
   });
 
   describe("dynamic type maps", () => {
-    it("creates map entries for types not in the predefined set", ({ expect }) => {
+    it("creates map entries for types not in the predefined set", ({
+      expect,
+    }) => {
       const input = [makeItem({ id: "x1", type: "router", hostname: "r1" })];
       const items = new Items(input);
 

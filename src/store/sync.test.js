@@ -13,12 +13,16 @@ vi.mock("vuex-shared-mutations", () => ({
 const { syncPlugin } = await import("@/store/sync.js");
 
 describe("vuex-shared-mutations sync plugin", () => {
-  it("exports syncPlugin as the return value of createMutationsSharer", ({ expect }) => {
+  it("exports syncPlugin as the return value of createMutationsSharer", ({
+    expect,
+  }) => {
     expect(syncPlugin).toBe(mockPlugin);
     expect(typeof syncPlugin).toBe("function");
   });
 
-  it("configures predicate to sync all mutations regardless of type", ({ expect }) => {
+  it("configures predicate to sync all mutations regardless of type", ({
+    expect,
+  }) => {
     expect(sharerConfig.predicate()).toBe(true);
     expect(sharerConfig.predicate("any-mutation")).toBe(true);
     expect(sharerConfig.predicate(null)).toBe(true);

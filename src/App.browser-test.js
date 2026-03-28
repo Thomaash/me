@@ -41,16 +41,15 @@ function createMockStore() {
           canUndo: () => 0,
           canRedo: () => 0,
           data: (s) => s.data,
-          boundingBox:
-            () => () => ({
-              sX: 0,
-              eX: 100,
-              sY: 0,
-              eY: 100,
-              width: 100,
-              height: 100,
-              empty: false,
-            }),
+          boundingBox: () => () => ({
+            sX: 0,
+            eX: 100,
+            sY: 0,
+            eY: 100,
+            width: 100,
+            height: 100,
+            empty: false,
+          }),
         },
         mutations: {
           importData() {},
@@ -173,16 +172,22 @@ describe("App", () => {
     expect(titleEl.textContent).toContain("Mininet Editor");
   });
 
-  it("renders navigation drawer with items for routes where meta.drawer is true", async ({ expect }) => {
+  it("renders navigation drawer with items for routes where meta.drawer is true", async ({
+    expect,
+  }) => {
     await mountApp();
 
     const navDrawer = document.querySelector(".v-navigation-drawer");
     expect(navDrawer).not.toBeNull();
 
-    const drawerItems = document.querySelectorAll(".v-navigation-drawer .v-list-item");
+    const drawerItems = document.querySelectorAll(
+      ".v-navigation-drawer .v-list-item",
+    );
     expect(drawerItems.length).toBe(5);
 
-    const itemTexts = Array.from(drawerItems).map((el) => el.textContent.trim());
+    const itemTexts = Array.from(drawerItems).map((el) =>
+      el.textContent.trim(),
+    );
     expect(itemTexts).toContain("Home");
     expect(itemTexts).toContain("Canvas");
     expect(itemTexts).toContain("Mininet Settings");

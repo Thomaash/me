@@ -112,7 +112,9 @@ describe.concurrent("theme-colors exports and immutability", () => {
     );
   });
 
-  it("themeColorShades has black, white, and transparent keys with string values", ({ expect }) => {
+  it("themeColorShades has black, white, and transparent keys with string values", ({
+    expect,
+  }) => {
     expect(Object.keys(themeColorShades).sort()).toEqual(shadesKeys.sort());
     for (const value of Object.values(themeColorShades)) {
       expect(value).toEqual(expect.any(String));
@@ -142,7 +144,9 @@ describe.concurrent("theme-colors exports and immutability", () => {
       expect(Object.isFrozen(themeColors)).toBe(true);
     });
 
-    it("maps 20 color names to their corresponding color objects", ({ expect }) => {
+    it("maps 20 color names to their corresponding color objects", ({
+      expect,
+    }) => {
       const expectedMapping = {
         red: themeColorRed,
         pink: themeColorPink,

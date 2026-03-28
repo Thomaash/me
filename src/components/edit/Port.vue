@@ -5,10 +5,7 @@
         <v-col cols="12">
           <v-text-field
             v-model="item.hostname"
-            :rules="[
-              validators.required(),
-              validators.hostname(),
-            ]"
+            :rules="[validators.required(), validators.hostname()]"
             label="Dev Name"
             autofocus
             clearable

@@ -17,7 +17,9 @@ describe.concurrent("AppLicense", () => {
     expect(headline.text()).toBe("License");
   });
 
-  it("renders license text paragraphs split by double newlines", ({ expect }) => {
+  it("renders license text paragraphs split by double newlines", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(AppLicense);
 
     const paragraphs = wrapper.findAll("section > p");

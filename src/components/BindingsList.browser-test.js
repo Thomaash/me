@@ -3,7 +3,9 @@ import { mountWithVuetify } from "../test-utils/browser-setup.js";
 import BindingsList from "@/components/BindingsList.vue";
 
 describe.concurrent("BindingsList", () => {
-  it("mounts in Vuetify context and renders section with headline Bindings", ({ expect }) => {
+  it("mounts in Vuetify context and renders section with headline Bindings", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(BindingsList);
 
     expect(wrapper.exists()).toBe(true);
@@ -29,7 +31,9 @@ describe.concurrent("BindingsList", () => {
     expect(text).toContain("Delete selected items.");
   });
 
-  it("renders entries with both combination keys and description text", ({ expect }) => {
+  it("renders entries with both combination keys and description text", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(BindingsList);
 
     const text = wrapper.text();

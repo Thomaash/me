@@ -9,7 +9,9 @@ describe.concurrent("LoadingSpinner", () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it("renders a v-progress-circular element with indeterminate prop", ({ expect }) => {
+  it("renders a v-progress-circular element with indeterminate prop", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(LoadingSpinner);
 
     const progressCircular = wrapper.findComponent({
@@ -19,7 +21,9 @@ describe.concurrent("LoadingSpinner", () => {
     expect(progressCircular.props("indeterminate")).toBe(true);
   });
 
-  it("has CSS class loading-spinner and is visible in the DOM", ({ expect }) => {
+  it("has CSS class loading-spinner and is visible in the DOM", ({
+    expect,
+  }) => {
     const wrapper = mountWithVuetify(LoadingSpinner);
 
     const spinner = wrapper.find(".loading-spinner");
