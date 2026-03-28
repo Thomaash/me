@@ -30,7 +30,7 @@
             :key="'example' + i"
             @click.stop
           >
-            <v-list-item-title @click="importData(example.data)">{{
+            <v-list-item-title @click="importExample(example.load)">{{
               example.title
             }}</v-list-item-title>
           </v-list-item>
@@ -116,13 +116,6 @@ import { useConfirmDialog } from "@vueuse/core";
 import importScript from "@/importScript";
 
 import exampleEmpty from "@/examples/empty";
-import exampleMedium1C from "@/examples/medium_1_controller";
-import exampleMedium2C from "@/examples/medium_2_controllers";
-import exampleTiny from "@/examples/tiny";
-import exampleTinyController from "@/examples/tiny_controller";
-import exampleTinyMininetConf from "@/examples/tiny_mininet_conf";
-import exampleTinyPhysicalInterface from "@/examples/tiny_physical_interface";
-import exampleTinyTC from "@/examples/tiny_tc";
 import { useTopologyStore } from "@/composables/useTopologyStore";
 
 const {
@@ -140,13 +133,34 @@ const scriptImportWarning = ref(false);
 
 const emptyProject = exampleEmpty;
 const examples = [
-  { title: "Tiny without controller", data: exampleTiny },
-  { title: "Tiny with controller", data: exampleTinyController },
-  { title: "Tiny with physical interface", data: exampleTinyPhysicalInterface },
-  { title: "Tiny with traffic control", data: exampleTinyTC },
-  { title: "Tiny with Mininet settings", data: exampleTinyMininetConf },
-  { title: "Medium with 1 controller", data: exampleMedium1C },
-  { title: "Medium with 2 controllers", data: exampleMedium2C },
+  {
+    title: "Tiny without controller",
+    load: () => import("@/examples/tiny.json"),
+  },
+  {
+    title: "Tiny with controller",
+    load: () => import("@/examples/tiny_controller.json"),
+  },
+  {
+    title: "Tiny with physical interface",
+    load: () => import("@/examples/tiny_physical_interface.json"),
+  },
+  {
+    title: "Tiny with traffic control",
+    load: () => import("@/examples/tiny_tc.json"),
+  },
+  {
+    title: "Tiny with Mininet settings",
+    load: () => import("@/examples/tiny_mininet_conf.json"),
+  },
+  {
+    title: "Medium with 1 controller",
+    load: () => import("@/examples/medium_1_controller.json"),
+  },
+  {
+    title: "Medium with 2 controllers",
+    load: () => import("@/examples/medium_2_controllers.json"),
+  },
 ];
 
 const working = computed({
@@ -242,6 +256,16 @@ function retrieveFile() {
       working.value = false;
     }
   };
+}
+
+async function importExample(load) {
+  working.value = true;
+  try {
+    const mod = await load();
+    await confirmImport(mod.default);
+  } finally {
+    working.value = false;
+  }
 }
 
 async function importData(data) {
