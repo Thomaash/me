@@ -55,6 +55,7 @@ export default defineConfig({
       "vuetify/components/VMain",
       "vuetify/components/VMenu",
       "vuetify/components/VNavigationDrawer",
+      "vuetify/components/VNumberInput",
       "vuetify/components/VProgressCircular",
       "vuetify/components/VProgressLinear",
       "vuetify/components/VSelect",
