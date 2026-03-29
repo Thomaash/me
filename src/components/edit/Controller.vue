@@ -30,13 +30,13 @@
           />
         </v-col>
         <v-col cols="12" md="6">
-          <v-text-field
-            v-model.number="item.port"
+          <v-number-input
+            v-model="item.port"
             :rules="[validators.port()]"
             label="Port"
-            type="number"
-            min="1"
-            max="65535"
+            :min="1"
+            :max="65535"
+            control-variant="hidden"
             clearable
             data-cy="edit-port"
           />

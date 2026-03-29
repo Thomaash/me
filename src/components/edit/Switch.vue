@@ -27,19 +27,18 @@
           />
         </v-col>
         <v-col cols="12" md="9">
-          <v-text-field
-            ref="itemSTPPriority"
-            v-model.number="item.stpPriority"
+          <v-number-input
+            v-model="item.stpPriority"
             :rules="[
               validators.integer(),
               validators.between(0, 65535),
               validators.divisible(4096),
             ]"
             label="STP Priority"
-            type="number"
-            step="4096"
-            min="0"
-            max="65535"
+            :step="4096"
+            :min="0"
+            :max="65535"
+            control-variant="hidden"
             clearable
             data-cy="edit-stp-priority"
           />
@@ -54,14 +53,13 @@
           />
         </v-col>
         <v-col cols="12">
-          <v-text-field
-            ref="itemDPCTLPort"
-            v-model.number="item.dpctlPort"
+          <v-number-input
+            v-model="item.dpctlPort"
             :rules="[validators.port()]"
             label="DPCTL Port"
-            type="number"
-            min="1"
-            max="65535"
+            :min="1"
+            :max="65535"
+            control-variant="hidden"
             clearable
             data-cy="edit-dpctl-port"
           />
