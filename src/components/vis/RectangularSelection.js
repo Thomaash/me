@@ -139,7 +139,8 @@ export default class {
     }
   }
 
-  _mouseupListener({ which, ctrlKey, shiftKey }) {
+  _mouseupListener(event) {
+    const { which, ctrlKey, shiftKey } = event;
     if (which === 3) {
       // Select nodes
       this._drag = false;
