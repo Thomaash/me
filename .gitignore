@@ -1,7 +1,9 @@
 .DS_Store
+.playwright-artifacts-1/
 .vitest-attachments/
 /dependency-graph.svg
 /dist/
+/test-results/
 /tests/e2e/reports/
 /tests/e2e/videos/
 __screenshots__/

@@ -1,4 +1,4 @@
-import { testSet } from "../support/testItemsFieldValidity";
+import { testSet } from "../playwright-support/testItemsFieldValidity.js";
 
 const values = [
   { valid: false, values: ["-1"] },

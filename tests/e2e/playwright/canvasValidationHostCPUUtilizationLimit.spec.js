@@ -1,4 +1,7 @@
-import { testSet, decimals } from "../support/testItemsFieldValidity";
+import {
+  testSet,
+  decimals,
+} from "../playwright-support/testItemsFieldValidity.js";
 
 testSet({
   name: "Host CPU utilization limit",

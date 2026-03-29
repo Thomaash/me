@@ -1,4 +1,7 @@
-import { testSet, ports } from "../support/testItemsFieldValidity";
+import {
+  testSet,
+  ports,
+} from "../playwright-support/testItemsFieldValidity.js";
 
 testSet({
   name: "Switch DPCTL port",

@@ -1,53 +1,85 @@
+import { test, expect } from "@playwright/test";
+import {
+  meOpen,
+  meImportEmpty,
+  meClickMenu,
+  meVisFabClick,
+  meVisAddItem,
+  meSetVuetifyInputs,
+} from "./commands.js";
+
 export function testSet({ name, type, field, values }) {
-  describe(name, { testIsolation: false }, () => {
-    describe("Init", () => {
-      it("Open new empty canvas", () => {
-        cy.meOpen();
-        cy.meImportEmpty();
-        cy.meClickMenu("canvas");
+  test.describe.serial(name, () => {
+    /** @type {import("@playwright/test").Page} */
+    let page;
+
+    test.beforeAll(async ({ browser }) => {
+      page = await browser.newPage();
+    });
+
+    test.afterAll(async () => {
+      await page.close();
+    });
+
+    test.describe.serial("Init", () => {
+      test("Open new empty canvas", async () => {
+        await meOpen(page);
+        await meImportEmpty(page);
+        await meClickMenu(page, "canvas");
       });
 
-      it("Place the item", () => {
-        cy.get("[data-cy=vis] canvas").trigger("keydown", {
-          ctrlKey: true,
-          key: "a",
+      test("Place the item", async () => {
+        await page.locator("[data-cy=vis] canvas").evaluate((el) => {
+          el.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              ctrlKey: true,
+              key: "a",
+              bubbles: true,
+            }),
+          );
         });
 
-        cy.meVisFabClick("delete");
-
-        cy.meVisAddItem(type);
+        await meVisFabClick(page, "delete");
+        await meVisAddItem(page, type);
       });
     });
 
-    describe("Test the values", () => {
-      values.forEach(({ valid, values, expectedValue }) => {
-        describe(values.join(", "), () => {
-          it("Change properties", () => {
-            cy.meSetVuetifyInputs({
+    test.describe.serial("Test the values", () => {
+      values.forEach(({ valid, values: vals, expectedValue }, index) => {
+        test.describe.serial(`${index + 1}. ${vals.join(", ")}`, () => {
+          test("Change properties", async () => {
+            await meSetVuetifyInputs(page, {
               textProps: {
-                [field]: values,
+                [field]: vals,
               },
             });
           });
 
           if (expectedValue != null) {
-            it(`Expected: ${expectedValue}`, () => {
-              cy.get(`[data-cy=${field}]`).should("have.value", expectedValue);
+            test(`Expected: ${expectedValue}`, async () => {
+              await expect(page.locator(`[data-cy=${field}]`)).toHaveValue(
+                expectedValue,
+              );
             });
           }
 
-          it(`Is ${valid ? "" : "in"}valid?`, () => {
-            cy.get("[data-cy=edit-save]").should(
-              valid ? "not.be.disabled" : "be.disabled",
-            );
+          test(`Is ${valid ? "" : "in"}valid?`, async () => {
+            if (valid) {
+              await expect(page.locator("[data-cy=edit-save]")).toBeEnabled();
+            } else {
+              await expect(page.locator("[data-cy=edit-save]")).toBeDisabled();
+            }
           });
         });
       });
     });
 
-    describe("Close", () => {
-      it("Cancel", () => {
-        cy.get(`[data-cy=edit-${type}]`).get("[data-cy=edit-cancel]").click();
+    test.describe.serial("Close", () => {
+      test("Cancel", async () => {
+        await page
+          .locator(`[data-cy=edit-${type}]`)
+          .locator("[data-cy=edit-cancel]")
+          .click();
       });
     });
   });

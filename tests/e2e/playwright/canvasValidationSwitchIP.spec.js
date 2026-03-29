@@ -1,4 +1,4 @@
-import { testSet, ips } from "../support/testItemsFieldValidity";
+import { testSet, ips } from "../playwright-support/testItemsFieldValidity.js";
 
 testSet({
   name: "Switch IP",

@@ -1,4 +1,7 @@
-import { testSet, integers } from "../support/testItemsFieldValidity";
+import {
+  testSet,
+  integers,
+} from "../playwright-support/testItemsFieldValidity.js";
 
 testSet({
   name: "Switch reconnect timeout",
