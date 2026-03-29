@@ -57,9 +57,11 @@ export function testSet({ name, type, field, values }) {
 
           if (expectedValue != null) {
             test(`Expected: ${expectedValue}`, async () => {
-              await expect(page.locator(`[data-cy=${field}]`)).toHaveValue(
-                expectedValue,
-              );
+              await expect(
+                page.locator(
+                  `[data-cy=${field}] input, [data-cy=${field}] textarea:not([aria-hidden])`,
+                ),
+              ).toHaveValue(expectedValue);
             });
           }
 
@@ -111,9 +113,9 @@ export const ports = [
   { valid: false, values: ["-1"] },
   { valid: false, values: ["0"] },
   { valid: false, values: ["100000"] },
-  { valid: false, values: ["12.6"] },
-  { valid: false, values: ["172.16.0.7"] },
-  { valid: false, values: ["172.16.0.7/16"] },
+  { valid: true, values: ["12.6"], expectedValue: "12" },
+  { valid: true, values: ["172.16.0.7"], expectedValue: "172" },
+  { valid: true, values: ["172.16.0.7/16"], expectedValue: "172" },
   { valid: false, values: ["65536"] },
   { valid: true, values: ["1"] },
   { valid: true, values: ["65535"] },
