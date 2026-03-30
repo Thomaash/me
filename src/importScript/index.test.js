@@ -1263,7 +1263,7 @@ net.stop()
     });
   });
 
-  describe("miniedit comprehensive import (migrated from Cypress)", () => {
+  describe("miniedit comprehensive import", () => {
     const fixturePath = resolve(
       import.meta.dirname,
       "../../tests/unit/fixtures/miniedit-script.py",
