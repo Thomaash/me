@@ -1,7 +1,7 @@
 import { store } from "./store";
 
 export function initServiceWorker() {
-  if (!("Cypress" in globalThis) && "serviceWorker" in navigator) {
+  if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("./service-worker.js")
       .then((reg) => {
