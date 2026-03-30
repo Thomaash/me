@@ -14,5 +14,10 @@ export default defineConfig({
   ],
   categories: {
     correctness: "error",
+    perf: "error",
+  },
+  rules: {
+    "oxc/no-map-spread": "off",
+    "eslint/no-await-in-loop": "off",
   },
 });
