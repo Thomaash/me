@@ -32,6 +32,46 @@ function createStateWithTopo(...overrides) {
   };
 }
 
+function verifyImportedProject(state, externalData, { expect }) {
+  expect(state).toHaveProperty("future");
+  expect(state).toHaveProperty("past");
+  expect(state).toHaveProperty("data");
+
+  // Future and past should be cleared
+  expect(state.future).toEqual([]);
+  expect(state.future).toHaveLength(0);
+  expect(state.past).toEqual([]);
+  expect(state.past).toHaveLength(0);
+
+  // Data should be an object with 3 properties
+  expect(state.data).toHaveProperty("items");
+  expect(state.data).toHaveProperty("projectName");
+  expect(state.data).toHaveProperty("startScript");
+
+  // Items should contain all the items but not more
+  const expectedIds = externalData.items.map((item) => item.id);
+  const actualIds = Object.keys(state.data.items);
+  expect(actualIds).toHaveLength(expectedIds.length);
+  expectedIds.forEach((id) => {
+    expect(state.data.items).toHaveProperty(id);
+  });
+
+  // Values should deep equal the items
+  expect(Object.values(state.data.items)).toEqual(
+    expect.arrayContaining(externalData.items),
+  );
+  expect(externalData.items).toEqual(
+    expect.arrayContaining(Object.values(state.data.items)),
+  );
+}
+
+function generateUnit(suffix = "") {
+  return {
+    before: { id: `B${suffix}` },
+    after: { id: `A${suffix}` },
+  };
+}
+
 describe("topology store module", () => {
   it("is namespaced", ({ expect }) => {
     expect(topology.namespaced).toBe(true);
@@ -686,39 +726,6 @@ describe("topology store module", () => {
     });
 
     describe("importData", () => {
-      function verifyImportedProject(state, externalData, { expect }) {
-        expect(state).toHaveProperty("future");
-        expect(state).toHaveProperty("past");
-        expect(state).toHaveProperty("data");
-
-        // Future and past should be cleared
-        expect(state.future).toEqual([]);
-        expect(state.future).toHaveLength(0);
-        expect(state.past).toEqual([]);
-        expect(state.past).toHaveLength(0);
-
-        // Data should be an object with 3 properties
-        expect(state.data).toHaveProperty("items");
-        expect(state.data).toHaveProperty("projectName");
-        expect(state.data).toHaveProperty("startScript");
-
-        // Items should contain all the items but not more
-        const expectedIds = externalData.items.map((item) => item.id);
-        const actualIds = Object.keys(state.data.items);
-        expect(actualIds).toHaveLength(expectedIds.length);
-        expectedIds.forEach((id) => {
-          expect(state.data.items).toHaveProperty(id);
-        });
-
-        // Values should deep equal the items
-        expect(Object.values(state.data.items)).toEqual(
-          expect.arrayContaining(externalData.items),
-        );
-        expect(externalData.items).toEqual(
-          expect.arrayContaining(Object.values(state.data.items)),
-        );
-      }
-
       it("into empty store", ({ expect }) => {
         const state = createState();
 
@@ -817,13 +824,6 @@ describe("topology store module", () => {
     });
 
     describe("pushChange", () => {
-      function generateUnit(suffix = "") {
-        return {
-          before: { id: `B${suffix}` },
-          after: { id: `A${suffix}` },
-        };
-      }
-
       it("add to empty", ({ expect }) => {
         const state = createState();
         const unit = generateUnit();

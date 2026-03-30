@@ -41,11 +41,11 @@ export default class {
   savePDF(headline, filename) {
     const body = [];
     Object.entries(this.plan)
-      .sort(compareEntries)
+      .toSorted(compareEntries)
       .forEach(([nodeHostname, node]) => {
         let firstInNode = true;
         Object.entries(node.ports)
-          .sort(compareEntries)
+          .toSorted(compareEntries)
           .forEach(([portHostname, ips]) => {
             let firstInPort = true;
             ips.forEach((ip) => {

@@ -137,6 +137,13 @@ function buildAndGetScript(data) {
   return builder.build();
 }
 
+function removeNonCode(script) {
+  return script
+    .split("\n")
+    .filter((line) => !/^($|#)/.test(line))
+    .join("\n");
+}
+
 // --- Tests ---
 
 describe("Builder", () => {
@@ -1468,13 +1475,6 @@ describe("Builder", () => {
   });
 
   describe("full script fixture comparison", () => {
-    function removeNonCode(script) {
-      return script
-        .split("\n")
-        .filter((line) => !/^($|#)/.test(line))
-        .join("\n");
-    }
-
     it("builds the expected script from medium_2_controllers example", ({
       expect,
     }) => {

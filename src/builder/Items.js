@@ -40,7 +40,7 @@ export default class {
     // Arrays
     this.arr = {};
     Object.keys(this.map).forEach((key) => {
-      this.arr[key] = Object.values(this.map[key]).sort(
+      this.arr[key] = Object.values(this.map[key]).toSorted(
         ({ hostname: a }, { hostname: b }) => collator.compare(a, b),
       );
     });

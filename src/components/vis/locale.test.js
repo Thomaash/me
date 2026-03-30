@@ -51,7 +51,7 @@ describe("compareNodes", () => {
       { label: "switch2" },
       { label: "switch1" },
     ];
-    const sorted = [...nodes].sort(compareNodes);
+    const sorted = nodes.toSorted(compareNodes);
     expect(sorted.map((n) => n.label)).toEqual([
       "switch1",
       "switch2",
@@ -65,7 +65,7 @@ describe("compareItems", () => {
     expect,
   }) => {
     const items = [{ hostname: "h10" }, { hostname: "h2" }, { hostname: "h1" }];
-    const sorted = [...items].sort(compareItems);
+    const sorted = items.toSorted(compareItems);
     expect(sorted.map((i) => i.hostname)).toEqual(["h1", "h2", "h10"]);
   });
 });

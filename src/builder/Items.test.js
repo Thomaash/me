@@ -153,7 +153,7 @@ describe.concurrent("Items", () => {
       // s1 is connected to both l1 (link) and a1 (association)
       const s1 = items.map.$nodes["s1"];
       expect(s1.$edges).toHaveLength(2);
-      expect(s1.$edges.map((e) => e.id).sort()).toEqual(["a1", "l1"]);
+      expect(s1.$edges.map((e) => e.id).toSorted()).toEqual(["a1", "l1"]);
 
       // h1 is connected to l1 only
       const h1 = items.map.$nodes["h1"];
@@ -215,7 +215,7 @@ describe.concurrent("Items", () => {
       const input = buildFixtureItems();
       const frozen = input.map((item) => ({ ...item }));
 
-      new Items(input);
+      const _items = new Items(input);
 
       input.forEach((item, i) => {
         expect(item).toEqual(frozen[i]);

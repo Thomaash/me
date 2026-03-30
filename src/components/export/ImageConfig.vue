@@ -194,9 +194,10 @@ function createScaleValues(w, h) {
   };
 }
 
+const fixZero = (v) => v.toFixed(0);
+
 function createValuesToString(precision) {
   const fix = (v) => v.toFixed(precision);
-  const fixZero = (v) => v.toFixed(0);
   return {
     widthScreenCm: fix,
     widthPaperCm: fix,

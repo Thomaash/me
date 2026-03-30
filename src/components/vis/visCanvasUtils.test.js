@@ -7,6 +7,8 @@ import {
   processLabel,
 } from "@/components/vis/visCanvasUtils.js";
 
+const processLabelFn = () => "processed-label";
+
 describe.concurrent("visCanvasUtils", () => {
   describe("isEdge", () => {
     it("returns true for link and association, false for node types", ({
@@ -86,7 +88,6 @@ describe.concurrent("visCanvasUtils", () => {
         x: 5,
         y: 15,
       };
-      const processLabelFn = () => "processed-label";
       const result = itemToNode(item, processLabelFn);
 
       expect(result.id).toBe("d1");

@@ -15,9 +15,13 @@ export default defineConfig({
   categories: {
     correctness: "error",
     perf: "error",
+    suspicious: "error",
   },
   rules: {
     "oxc/no-map-spread": "off",
     "eslint/no-await-in-loop": "off",
+    "eslint/no-shadow": "off",
+    "import/no-unassigned-import": "off",
+    "typescript/no-extraneous-class": "off",
   },
 });

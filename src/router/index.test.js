@@ -206,7 +206,9 @@ describe("route components", () => {
     ["About", ["default"]],
   ])("normal route %s has component keys %j", (name, expectedKeys) => {
     const route = normalRoutes.find((r) => r.name === name);
-    expect(Object.keys(route.components).sort()).toEqual(expectedKeys.sort());
+    expect(Object.keys(route.components).toSorted()).toEqual(
+      expectedKeys.toSorted(),
+    );
     for (const key of expectedKeys) {
       expect(typeof route.components[key]).toBe("function");
     }

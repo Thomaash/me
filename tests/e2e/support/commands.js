@@ -194,5 +194,6 @@ Cypress.Commands.add("meOpen", { prevSubject: false }, () => {
       cy.visit("/");
       cy.hash().should("eq", "#/home");
     }
+    return undefined;
   });
 });

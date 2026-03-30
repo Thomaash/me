@@ -13,6 +13,33 @@ function findItem(items, type, hostname) {
   return items.find((item) => item.type === type && item.hostname === hostname);
 }
 
+// getCleanItems helper (from exportImportCommon.js)
+function getCleanItems(items, typeOnly) {
+  return items
+    .filter((node) => !typeOnly || node.type === typeOnly)
+    .map((orig) => {
+      const type = orig.type;
+      const isEdge = type === "link" || type === "association";
+      const clean = {};
+      Object.keys(orig).forEach((key) => {
+        if (type === "port" && key === "ips") {
+          clean[key] = orig[key].toSorted();
+        } else if (key === "startScript" || key === "stopScript") {
+          clean[key] = orig[key]
+            .split("\n")
+            .filter((line) => !/^(\s*#|$)/.test(line))
+            .join("\n");
+        } else if (
+          (isEdge && !/^(id|hostname|from|to)$/.test(key)) ||
+          (!isEdge && !/^(id|x|y)$/.test(key))
+        ) {
+          clean[key] = orig[key];
+        }
+      });
+      return clean;
+    });
+}
+
 // Helper: strip id/x/y from items for comparison (edges strip id/hostname/from/to)
 function cleanItem(item) {
   const clean = {};
@@ -1258,33 +1285,6 @@ net.stop()
       stopScript: "string",
       version: "number",
     };
-
-    // getCleanItems helper (from exportImportCommon.js)
-    function getCleanItems(items, typeOnly) {
-      return items
-        .filter((node) => !typeOnly || node.type === typeOnly)
-        .map((orig) => {
-          const type = orig.type;
-          const isEdge = type === "link" || type === "association";
-          const clean = {};
-          Object.keys(orig).forEach((key) => {
-            if (type === "port" && key === "ips") {
-              clean[key] = orig[key].sort();
-            } else if (key === "startScript" || key === "stopScript") {
-              clean[key] = orig[key]
-                .split("\n")
-                .filter((line) => !/^(\s*#|$)/.test(line))
-                .join("\n");
-            } else if (
-              (isEdge && !/^(id|hostname|from|to)$/.test(key)) ||
-              (!isEdge && !/^(id|x|y)$/.test(key))
-            ) {
-              clean[key] = orig[key];
-            }
-          });
-          return clean;
-        });
-    }
 
     describe("Types", () => {
       Object.keys(json).forEach((key) => {

@@ -92,7 +92,9 @@ describe.concurrent("theme-colors exports and immutability", () => {
     it.each(standardColors)(
       "%s has base, lighten1-5, darken1-4, and accent1-4 keys with string values",
       (_name, colorObj) => {
-        expect(Object.keys(colorObj).sort()).toEqual(standardKeys.sort());
+        expect(Object.keys(colorObj).toSorted()).toEqual(
+          standardKeys.toSorted(),
+        );
         for (const value of Object.values(colorObj)) {
           expect(value).toEqual(expect.any(String));
         }
@@ -104,7 +106,9 @@ describe.concurrent("theme-colors exports and immutability", () => {
     it.each(noAccentColors)(
       "%s has base, lighten1-5, and darken1-4 keys (no accents) with string values",
       (_name, colorObj) => {
-        expect(Object.keys(colorObj).sort()).toEqual(noAccentKeys.sort());
+        expect(Object.keys(colorObj).toSorted()).toEqual(
+          noAccentKeys.toSorted(),
+        );
         for (const value of Object.values(colorObj)) {
           expect(value).toEqual(expect.any(String));
         }
@@ -115,7 +119,9 @@ describe.concurrent("theme-colors exports and immutability", () => {
   it("themeColorShades has black, white, and transparent keys with string values", ({
     expect,
   }) => {
-    expect(Object.keys(themeColorShades).sort()).toEqual(shadesKeys.sort());
+    expect(Object.keys(themeColorShades).toSorted()).toEqual(
+      shadesKeys.toSorted(),
+    );
     for (const value of Object.values(themeColorShades)) {
       expect(value).toEqual(expect.any(String));
     }

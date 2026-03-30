@@ -409,7 +409,7 @@ function getConnectedNodes(id, type) {
 }
 
 function organizePorts(node) {
-  const ports = getConnectedNodes(node.id, "port").sort(compareNodes);
+  const ports = getConnectedNodes(node.id, "port").toSorted(compareNodes);
   const coords = generateOrganizedPortCoors(
     net.getPositions([node.id])[node.id],
     ports.length,
@@ -429,7 +429,7 @@ function getNextHostname(hostnames, fallback) {
     return fallback;
   }
 
-  const prevHostname = hostnames.sort(compare)[hostnames.length - 1];
+  const prevHostname = hostnames.toSorted(compare)[hostnames.length - 1];
   const res = /^(.*?)(\d+)([^\d]*?)$/.exec(prevHostname);
   if (res == null) {
     return fallback;

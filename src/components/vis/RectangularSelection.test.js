@@ -20,7 +20,6 @@ function createMockContainer() {
     removeEventListener: vi.fn(),
     offsetLeft: 0,
     offsetTop: 0,
-    oncontextmenu: vi.fn(),
   };
 }
 
@@ -140,11 +139,9 @@ describe("RectangularSelection", () => {
   // --- UNIT TESTS ---
 
   describe("attach", () => {
-    it("registers mousedown, mousemove, mouseup on container and afterDrawing on network, and disables context menu", ({
+    it("registers mousedown, mousemove, mouseup, contextmenu on container and afterDrawing on network", ({
       expect,
     }) => {
-      const originalContextMenu = container.oncontextmenu;
-
       rs.attach();
 
       // Container listeners registered
@@ -152,27 +149,25 @@ describe("RectangularSelection", () => {
         ([name]) => name,
       );
       expect(eventNames).toEqual(
-        expect.arrayContaining(["mousedown", "mousemove", "mouseup"]),
+        expect.arrayContaining([
+          "mousedown",
+          "mousemove",
+          "mouseup",
+          "contextmenu",
+        ]),
       );
-      expect(container.addEventListener).toHaveBeenCalledTimes(3);
+      expect(container.addEventListener).toHaveBeenCalledTimes(4);
 
       // Network listener registered
       expect(network.on).toHaveBeenCalledWith(
         "afterDrawing",
         expect.any(Function),
       );
-
-      // Context menu disabled
-      expect(container.oncontextmenu).not.toBe(originalContextMenu);
-      expect(container.oncontextmenu()).toBe(false);
     });
   });
 
   describe("detach", () => {
-    it("removes all listeners, restores context menu, and triggers redraw", ({
-      expect,
-    }) => {
-      const originalContextMenu = container.oncontextmenu;
+    it("removes all listeners and triggers redraw", ({ expect }) => {
       rs.attach();
 
       rs.detach();
@@ -182,18 +177,20 @@ describe("RectangularSelection", () => {
         ([name]) => name,
       );
       expect(removeEventNames).toEqual(
-        expect.arrayContaining(["mousedown", "mousemove", "mouseup"]),
+        expect.arrayContaining([
+          "mousedown",
+          "mousemove",
+          "mouseup",
+          "contextmenu",
+        ]),
       );
-      expect(container.removeEventListener).toHaveBeenCalledTimes(3);
+      expect(container.removeEventListener).toHaveBeenCalledTimes(4);
 
       // Network listener removed
       expect(network.off).toHaveBeenCalledWith(
         "afterDrawing",
         expect.any(Function),
       );
-
-      // Context menu restored
-      expect(container.oncontextmenu).toBe(originalContextMenu);
 
       // Redraw called to clear leftovers
       expect(network.redraw).toHaveBeenCalled();

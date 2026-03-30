@@ -98,7 +98,7 @@ export default class {
             );
           }
 
-          throw new Error("Script building failure.");
+          throw new Error("Script building failure.", { cause: error });
         }
       });
     });

@@ -49,7 +49,7 @@ const logPriority = {
 };
 
 const sortedLog = computed(() => {
-  return [...props.log].sort(
+  return props.log.toSorted(
     ({ severity: a }, { severity: b }) => logPriority[a] - logPriority[b],
   );
 });

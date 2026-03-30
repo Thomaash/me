@@ -35,8 +35,8 @@ export default class {
     this._network.on("afterDrawing", this._afterDrawing);
 
     // Disable right click menu
-    this._oncontextmenu = this._container.oncontextmenu;
-    this._container.oncontextmenu = () => false;
+    this._preventContextMenu = (e) => e.preventDefault();
+    this._container.addEventListener("contextmenu", this._preventContextMenu);
   }
 
   detach() {
@@ -47,7 +47,10 @@ export default class {
     this._network.off("afterDrawing", this._afterDrawing);
 
     // Restore right click menu
-    this._container.oncontextmenu = this._oncontextmenu;
+    this._container.removeEventListener(
+      "contextmenu",
+      this._preventContextMenu,
+    );
 
     // Remove leftovers
     this._network.redraw();

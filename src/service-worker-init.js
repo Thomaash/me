@@ -5,7 +5,7 @@ export function initServiceWorker() {
     navigator.serviceWorker
       .register("./service-worker.js")
       .then((reg) => {
-        reg?.addEventListener("updatefound", function () {
+        return reg?.addEventListener("updatefound", function () {
           store.commit("setUpdateAvailable");
         });
       })

@@ -21,7 +21,7 @@ function getCleanItems(items, typeOnly) {
       const clean = {};
       Object.keys(orig).forEach((key) => {
         if (type === "port" && key === "ips") {
-          clean[key] = orig[key].sort();
+          clean[key] = orig[key].toSorted();
         } else if (key === "startScript" || key === "stopScript") {
           clean[key] = orig[key]
             .split("\n")
@@ -43,6 +43,12 @@ function removeNonCode(script) {
     .split("\n")
     .filter((line) => !/^($|#)/.test(line))
     .join("\n");
+}
+
+function sortByJson(arr) {
+  return arr.toSorted((a, b) =>
+    JSON.stringify(a).localeCompare(JSON.stringify(b)),
+  );
 }
 
 const types = {
@@ -122,11 +128,7 @@ describe("Export import script", () => {
             const items1 = getCleanItems(data1.items, type);
             const items2 = getCleanItems(data2.items, type);
             expect(items2).toHaveLength(items1.length);
-            const sort = (arr) =>
-              [...arr].sort((a, b) =>
-                JSON.stringify(a).localeCompare(JSON.stringify(b)),
-              );
-            expect(sort(items2)).toEqual(sort(items1));
+            expect(sortByJson(items2)).toEqual(sortByJson(items1));
           });
         });
       });

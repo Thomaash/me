@@ -31,7 +31,7 @@ export const labelPlaceholderReplacers = {
     return neighbors
       .filter((item) => /^(port|host|switch|controller)$/.test(item.type))
       .map((item) => item.hostname)
-      .sort(compare)
+      .toSorted(compare)
       .join(", ");
   },
   "{{IPS}}"(neighbors) {
@@ -64,7 +64,7 @@ export const labelPlaceholderReplacers = {
         }
       })
       .filter((item) => item != null)
-      .sort(compareItems);
+      .toSorted(compareItems);
 
     return buildOutputString(items, "hostname", "ips");
   },
@@ -90,7 +90,7 @@ export const labelPlaceholderReplacers = {
         }
       })
       .filter((item) => item != null)
-      .sort(compareItems);
+      .toSorted(compareItems);
 
     return buildOutputString(items, "hostname", "types");
   },
