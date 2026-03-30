@@ -144,9 +144,9 @@ describe.concurrent("Controller (edit)", () => {
     await nextTick();
     expect(ipField.props("modelValue")).toBe("10.0.0.1");
 
-    await portField.setValue(6653);
+    await portField.setValue("6653");
     await nextTick();
-    expect(portField.props("modelValue")).toBe(6653);
+    expect(portField.props("modelValue")).toBe("6653");
 
     const selects = wrapper.findAllComponents({ name: "VSelect" });
     const typeSelect = selects.find((s) => s.props("label") === "Type");
