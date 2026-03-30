@@ -44,7 +44,7 @@ test.describe.serial("Mininet settings", () => {
     {
       name: "Basic",
       textProps: {
-        "mininet-settings-project-name": ["Cypress Test"],
+        "mininet-settings-project-name": ["Test Project"],
         "mininet-settings-ip-base": ["172.16.0.0/16"],
         "mininet-settings-listen-port-base": ["1564"],
         "mininet-settings-start-script": [...Array(8)].map(
