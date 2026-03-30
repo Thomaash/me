@@ -102,21 +102,21 @@ export async function meTestVuetifyInputs(
     if (ariaChecked === "mixed") {
       const attrs = await input.evaluate((el) => ({
         ariaChecked: el.getAttribute("aria-checked"),
-        checked: el.hasAttribute("checked"),
+        checked: el.checked,
       }));
       expect(attrs.ariaChecked).toBe("mixed");
       expect(attrs.checked).toBe(false);
     } else if (ariaChecked === "true") {
       const attrs = await input.evaluate((el) => ({
         ariaChecked: el.getAttribute("aria-checked"),
-        checked: el.hasAttribute("checked"),
+        checked: el.checked,
       }));
       expect(attrs.ariaChecked).toBeNull();
       expect(attrs.checked).toBe(true);
     } else {
       const attrs = await input.evaluate((el) => ({
         ariaChecked: el.getAttribute("aria-checked"),
-        checked: el.hasAttribute("checked"),
+        checked: el.checked,
       }));
       expect(attrs.ariaChecked).toBeNull();
       expect(attrs.checked).toBe(false);
