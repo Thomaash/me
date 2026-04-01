@@ -129,5 +129,5 @@ function close() {
   dialog.value = false;
 }
 
-defineExpose({ edit, save, cancel, dialog, component, headline, item, valid });
+defineExpose({ edit });
 </script>
