@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-btn
-      v-for="({ icon, text, action, enabled }, i) in items"
-      :key="i"
+      v-for="{ icon, text, action, enabled } in items"
+      :key="text"
       :disabled="!enabled"
       theme="dark"
       icon
