@@ -31,8 +31,7 @@ jobs:
       - run: npm run deps:ci
       - run: npm run style:ci
       - run: npm run lint:ci
-      - run: npm run test:vitest:unit:coverage
-      - run: npm run test:vitest:browser:coverage
+      - run: npm run test:vitest:coverage
       - run: npm run test:e2e
 
       - persist_to_workspace:

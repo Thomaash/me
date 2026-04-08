@@ -18,16 +18,18 @@
     "preview": "vite preview --port 5173",
     "style:ci": "prettier .",
     "style:fix": "prettier --write .",
-    "test": "npm run test:vitest:unit && npm run test:vitest:browser && npm run test:e2e",
+    "test": "npm run test:vitest && npm run test:e2e",
     "test:e2e": "start-server-and-test preview http://127.0.0.1:5173/me/ test:e2e:playwright:run",
     "test:e2e:open": "start-server-and-test dev http://127.0.0.1:5173/me/ test:e2e:playwright:open",
     "test:e2e:playwright:open": "playwright test --ui",
     "test:e2e:playwright:run": "playwright test",
     "test:mutate": "stryker run",
-    "test:vitest:browser": "vitest run --config vitest.config.browser.js",
-    "test:vitest:browser:coverage": "vitest run --config vitest.config.browser.js --coverage",
-    "test:vitest:unit": "vitest run --config vitest.config.unit.js",
-    "test:vitest:unit:coverage": "vitest run --config vitest.config.unit.js --coverage"
+    "test:vitest": "vitest run",
+    "test:vitest:browser": "vitest run --project=browser",
+    "test:vitest:browser:coverage": "vitest run --project=browser --coverage --coverage.reportsDirectory=reports/coverage/browser",
+    "test:vitest:coverage": "vitest run --coverage",
+    "test:vitest:unit": "vitest run --project=unit",
+    "test:vitest:unit:coverage": "vitest run --project=unit --coverage --coverage.reportsDirectory=reports/coverage/unit"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",

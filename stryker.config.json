@@ -2,9 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker/master/packages/core/schema/stryker-core.schema.json",
   "testRunner": "vitest",
   "vitest": {
-    "configFile": "vitest.config.unit.js"
+    "configFile": "vitest.config.js"
   },
-  "mutate": ["src/**/*.js", "!src/**/*.test.js", "!src/**/*.browser-test.js"],
+  "mutate": ["src/**/*.vue", "src/**/*.js", "!src/**/*.test.js", "!src/**/*.browser-test.js"],
   "reporters": ["clear-text", "html", "progress"],
   "mutator": {
     "plugins": [
