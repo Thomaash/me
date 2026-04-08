@@ -204,6 +204,14 @@ describe("ip", () => {
     ["IPv4 too few octets", "192.168.1"],
     ["random string", "not-an-ip"],
     ["non-string number", 12345],
+    [
+      "IPv6 invalid chars in 8 valid-length groups",
+      "zzzz:zzzz:zzzz:zzzz:zzzz:zzzz:zzzz:zzzz",
+    ],
+    [
+      "IPv6 leading invalid char with valid structure",
+      "!aaa:0000:0000:0000:0000:0000:0000:0000",
+    ],
   ])("returns error string for invalid value: %s", (_label, value) => {
     expect(validate(value)).toBe("Has to be valid IP 4/6 address.");
   });
@@ -236,7 +244,9 @@ describe("ipWithMask", () => {
 
   it.each([
     ["IPv4 mask > 32", "192.168.1.0/33"],
+    ["IPv4 mask well above 32", "10.0.0.0/99"],
     ["IPv6 mask > 128", "2001:0db8:85a3:0000:0000:8a2e:0370:7334/129"],
+    ["IPv6 mask non-numeric", "2001:0db8:85a3:0000:0000:8a2e:0370:7334/abc"],
     ["no mask", "192.168.1.0"],
     ["double slash", "192.168.1.0/24/8"],
     ["non-string number", 12345],
