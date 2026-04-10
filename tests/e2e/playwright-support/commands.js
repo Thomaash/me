@@ -100,26 +100,14 @@ export async function meTestVuetifyInputs(
     await expect(input).toHaveCount(1);
 
     if (ariaChecked === "mixed") {
-      const attrs = await input.evaluate((el) => ({
-        ariaChecked: el.getAttribute("aria-checked"),
-        checked: el.checked,
-      }));
-      expect(attrs.ariaChecked).toBe("mixed");
-      expect(attrs.checked).toBe(false);
+      await expect(input).toBeChecked({ indeterminate: true });
+      await expect(input).toHaveAttribute("aria-checked", "mixed");
     } else if (ariaChecked === "true") {
-      const attrs = await input.evaluate((el) => ({
-        ariaChecked: el.getAttribute("aria-checked"),
-        checked: el.checked,
-      }));
-      expect(attrs.ariaChecked).toBeNull();
-      expect(attrs.checked).toBe(true);
+      await expect(input).toBeChecked();
+      await expect(input).not.toHaveAttribute("aria-checked");
     } else {
-      const attrs = await input.evaluate((el) => ({
-        ariaChecked: el.getAttribute("aria-checked"),
-        checked: el.checked,
-      }));
-      expect(attrs.ariaChecked).toBeNull();
-      expect(attrs.checked).toBe(false);
+      await expect(input).not.toBeChecked();
+      await expect(input).not.toHaveAttribute("aria-checked");
     }
   }
 
