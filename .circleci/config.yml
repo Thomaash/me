@@ -27,6 +27,9 @@ jobs:
       - run:
           name: Install pnpm
           command: npm install -g pnpm
+      - run:
+          name: Configure pnpm to keep its store in the workspace
+          command: pnpm config set store-dir .pnpm-store
 
       - run: pnpm install --frozen-lockfile
 
@@ -59,6 +62,9 @@ jobs:
       - run:
           name: Install pnpm
           command: npm install -g pnpm
+      - run:
+          name: Configure pnpm to keep its store in the workspace
+          command: pnpm config set store-dir .pnpm-store
 
       - run:
           name: Copy old files from previous releases
