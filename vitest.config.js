@@ -65,6 +65,7 @@ export default defineConfig({
             "vuetify/components/VCheckbox",
             "vuetify/components/VDataTable",
             "vuetify/components/VDialog",
+            "vuetify/components/VDivider",
             "vuetify/components/VFab",
             "vuetify/components/VForm",
             "vuetify/components/VGrid",
