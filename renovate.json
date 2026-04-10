@@ -1,5 +1,5 @@
 {
-  "extends": ["config:recommended", ":prNotPending"],
+  "extends": ["config:js-app", "config:best-practices", ":prNotPending"],
 
   "automerge": true,
   "masterIssue": false,
