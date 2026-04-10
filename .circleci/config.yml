@@ -24,25 +24,30 @@ jobs:
     steps:
       - checkout
 
-      - run: npm ci
+      - run:
+          name: Install pnpm
+          command: npm install -g pnpm
 
-      - run: npm run build
+      - run: pnpm install --frozen-lockfile
 
-      - run: npm run deps:ci
-      - run: npm run style:ci
-      - run: npm run lint:ci
-      - run: npm run test:vitest:coverage
-      - run: npm run test:e2e
+      - run: pnpm run build
+
+      - run: pnpm run deps:ci
+      - run: pnpm run style:ci
+      - run: pnpm run lint:ci
+      - run: pnpm run test:vitest:coverage
+      - run: pnpm run test:e2e
 
       - persist_to_workspace:
           root: .
           paths:
             - ".git"
+            - ".pnpm-store"
             - "bin"
             - "dist"
             - "node_modules"
-            - "package-lock.json"
             - "package.json"
+            - "pnpm-lock.yaml"
 
   release:
     executor: node
@@ -52,9 +57,13 @@ jobs:
           at: .
 
       - run:
+          name: Install pnpm
+          command: npm install -g pnpm
+
+      - run:
           name: Copy old files from previous releases
           command: |
-            npm run build:old-deploy-files
+            pnpm run build:old-deploy-files
 
       - run:
           name: Prepare Git
@@ -65,7 +74,7 @@ jobs:
       - run:
           name: Publish
           command: |
-            npx gh-pages --dist 'dist/me' --message 'chore: update GitHub Pages [ci skip]' --dotfiles --repo "https://$GH_USERNAME:$GH_TOKEN@github.com/Thomaash/me.git"
+            pnpm exec gh-pages --dist 'dist/me' --message 'chore: update GitHub Pages [ci skip]' --dotfiles --repo "https://$GH_USERNAME:$GH_TOKEN@github.com/Thomaash/me.git"
 
 workflows:
   version: 2

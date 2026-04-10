@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-cd "$(npm root)/../src/importScript" || {
+cd "$(pnpm root)/../src/importScript" || {
   printf -- "\n\n%s\n" 'Failed to change directory to src/importScript' 1>&2
   exit 1
 }

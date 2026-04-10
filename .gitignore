@@ -1,26 +1,25 @@
-.DS_Store
-.playwright-artifacts-1/
-.vitest-attachments/
+/.playwright-artifacts-1/
+/.pnpm-store/
+/.stryker-tmp/
+/.vitest-attachments/
 /dependency-graph.svg
 /dist/
+/pnpm-debug.log*
+/reports/coverage/
+/reports/mutation/
+/selenium-debug.log
+/stryker.log
 /test-results/
 /tests/e2e/reports/
 /tests/e2e/videos/
 __screenshots__/
-.stryker-tmp/
 node_modules/
-reports/coverage/
-reports/mutation/
-stryker.log
-npm-debug.log*
-selenium-debug.log
-yarn-debug.log*
-yarn-error.log*
 
-# Editor directories and files
+# Editor and system directories and files
+*.njsproj
+*.ntvs*
+*.sln
+*.suo
+.DS_Store
 .idea
 .vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
