@@ -2,9 +2,10 @@ import { describe, it, vi } from "vitest";
 import { defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import { createRouter, createMemoryHistory } from "vue-router";
 import VisContainer from "@/components/VisContainer.vue";
+import { useTopologyStore } from "@/store/topologyStore";
 
 const VisCanvasStub = defineComponent({
   name: "VisCanvas",
@@ -18,66 +19,36 @@ const VisCanvasStub = defineComponent({
   },
 });
 
-function createMockStore({
+function createTestPinia({
   loading = false,
   undoThrows = false,
   redoThrows = false,
 } = {}) {
-  return createStore({
-    state() {
-      return {
-        loading,
-        working: false,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
-    },
-    mutations: {
-      clearAlert() {},
-      setWorking() {},
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: { items: {} },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          data: (s) => s.data,
-          canUndo: () => 0,
-          canRedo: () => 0,
-          boundingBox: () => () => ({
-            sX: 0,
-            eX: 100,
-            sY: 0,
-            eY: 100,
-            width: 100,
-            height: 100,
-            empty: false,
-          }),
-        },
-        mutations: {
-          importData() {},
-          applyChange() {},
-        },
-        actions: {
-          updateItems() {},
-          removeItems() {},
-          replaceItems() {},
-          undo() {
-            if (undoThrows) throw new Error("nothing to undo");
-          },
-          redo() {
-            if (redoThrows) throw new Error("nothing to redo");
-          },
-        },
-      },
-    },
-  });
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName: "Test", startScript: "" },
+    past: [],
+    future: [],
+  };
+  // After creating the store instance, override undo/redo if they should throw
+  const topologyStore = useTopologyStore(pinia);
+  if (undoThrows) {
+    topologyStore.undo = () => {
+      throw new Error("nothing to undo");
+    };
+  }
+  if (redoThrows) {
+    topologyStore.redo = () => {
+      throw new Error("nothing to redo");
+    };
+  }
+  return pinia;
 }
 
 function createMockNet() {
@@ -133,21 +104,22 @@ function createTestRouter() {
 
 async function mountVisContainer({ loading = false } = {}) {
   const vuetify = createVuetify();
-  const store = createMockStore({ loading });
+  const pinia = createTestPinia({ loading });
   const router = createTestRouter();
   await router.push("/");
   await router.isReady();
   const mockRouterPush = vi.spyOn(router, "push");
+  const topologyStore = useTopologyStore(pinia);
   return {
     wrapper: mount(VisContainer, {
       global: {
-        plugins: [vuetify, store, router],
+        plugins: [vuetify, pinia, router],
         stubs: {
           VisCanvas: VisCanvasStub,
         },
       },
     }),
-    store,
+    topologyStore,
     mockRouter: { push: mockRouterPush },
     router,
   };
@@ -161,9 +133,10 @@ async function mountWithNet({
   edgeItems = [],
 } = {}) {
   const vuetify = createVuetify();
-  const store = createMockStore({ loading: false, undoThrows, redoThrows });
+  const pinia = createTestPinia({ loading: false, undoThrows, redoThrows });
+  const topologyStore = useTopologyStore(pinia);
   if (Object.keys(items).length > 0) {
-    store.state.topology.data.items = items;
+    topologyStore.data.items = items;
   }
   const router = createTestRouter();
   await router.push("/");
@@ -171,7 +144,7 @@ async function mountWithNet({
   const mockRouterPush = vi.spyOn(router, "push");
   const wrapper = mount(VisContainer, {
     global: {
-      plugins: [vuetify, store, router],
+      plugins: [vuetify, pinia, router],
       stubs: {
         VisCanvas: VisCanvasStub,
       },
@@ -192,7 +165,7 @@ async function mountWithNet({
     net,
     nodes,
     edges,
-    store,
+    topologyStore,
     mockRouter: { push: mockRouterPush },
     router,
   };
@@ -378,27 +351,23 @@ describe.concurrent("VisContainer", () => {
     it("removes items and shows snackbar when selection exists", async ({
       expect,
     }) => {
-      const { wrapper, net, store } = await mountWithNet();
+      const { wrapper, net, topologyStore } = await mountWithNet();
       net.getSelection.mockReturnValue({ nodes: ["n1", "n2"], edges: ["e1"] });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const removeItemsSpy = vi.spyOn(topologyStore, "removeItems");
 
       wrapper.vm.deleteSelected();
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/removeItems", [
-        "n1",
-        "n2",
-        "e1",
-      ]);
+      expect(removeItemsSpy).toHaveBeenCalledWith(["n1", "n2", "e1"]);
       expect(wrapper.vm.snackbar.type).toBe("items-deleted");
       expect(wrapper.vm.snackbar.values).toEqual([3]);
     });
 
-    it("still shows snackbar when store dispatch rejects", async ({
-      expect,
-    }) => {
-      const { wrapper, net, store } = await mountWithNet();
+    it("still shows snackbar when store action rejects", async ({ expect }) => {
+      const { wrapper, net, topologyStore } = await mountWithNet();
       net.getSelection.mockReturnValue({ nodes: ["n1"], edges: [] });
-      vi.spyOn(store, "dispatch").mockRejectedValue(new Error("store failure"));
+      vi.spyOn(topologyStore, "removeItems").mockRejectedValue(
+        new Error("store failure"),
+      );
 
       wrapper.vm.deleteSelected();
 
@@ -407,16 +376,13 @@ describe.concurrent("VisContainer", () => {
     });
 
     it("does nothing when selection is empty", async ({ expect }) => {
-      const { wrapper, net, store } = await mountWithNet();
+      const { wrapper, net, topologyStore } = await mountWithNet();
       net.getSelection.mockReturnValue({ nodes: [], edges: [] });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const removeItemsSpy = vi.spyOn(topologyStore, "removeItems");
 
       wrapper.vm.deleteSelected();
 
-      expect(dispatchSpy).not.toHaveBeenCalledWith(
-        "topology/removeItems",
-        expect.anything(),
-      );
+      expect(removeItemsSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -505,15 +471,19 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("undo", () => {
-    it("dispatches undo and shows undone snackbar on success", async ({
+    it("calls topologyStore.undo and shows undone snackbar on success", async ({
       expect,
     }) => {
-      const { wrapper, store } = await mountWithNet({ undoThrows: false });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const { wrapper, topologyStore } = await mountWithNet({
+        undoThrows: false,
+      });
+      const undoSpy = vi
+        .spyOn(topologyStore, "undo")
+        .mockImplementation(() => {});
 
       wrapper.vm.undo();
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/undo", undefined);
+      expect(undoSpy).toHaveBeenCalled();
       expect(wrapper.vm.snackbar.type).toBe("undone");
     });
 
@@ -529,15 +499,19 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("redo", () => {
-    it("dispatches redo and shows redone snackbar on success", async ({
+    it("calls topologyStore.redo and shows redone snackbar on success", async ({
       expect,
     }) => {
-      const { wrapper, store } = await mountWithNet({ redoThrows: false });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const { wrapper, topologyStore } = await mountWithNet({
+        redoThrows: false,
+      });
+      const redoSpy = vi
+        .spyOn(topologyStore, "redo")
+        .mockImplementation(() => {});
 
       wrapper.vm.redo();
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/redo", undefined);
+      expect(redoSpy).toHaveBeenCalled();
       expect(wrapper.vm.snackbar.type).toBe("redone");
     });
 
@@ -772,15 +746,15 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("commit method", () => {
-    it("dispatches vuex action with type and payload", async ({ expect }) => {
-      const { wrapper, store } = await mountWithNet();
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+    it("calls topology store action with type and payload", async ({
+      expect,
+    }) => {
+      const { wrapper, topologyStore } = await mountWithNet();
+      const replaceItemsSpy = vi.spyOn(topologyStore, "replaceItems");
 
       wrapper.vm.commit("replaceItems", [{ id: "x", type: "host" }]);
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/replaceItems", [
-        { id: "x", type: "host" },
-      ]);
+      expect(replaceItemsSpy).toHaveBeenCalledWith([{ id: "x", type: "host" }]);
     });
   });
 
@@ -846,19 +820,21 @@ describe.concurrent("VisContainer", () => {
   });
 
   describe("commitPositions", () => {
-    it("dispatches updateItems with positions from the network", async ({
+    it("calls topologyStore.updateItems with positions from the network", async ({
       expect,
     }) => {
-      const { wrapper, net, store } = await mountWithNet();
+      const { wrapper, net, topologyStore } = await mountWithNet();
       net.getPositions.mockReturnValue({
         n1: { x: 10, y: 20 },
         n2: { x: 30, y: 40 },
       });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const updateItemsSpy = vi
+        .spyOn(topologyStore, "updateItems")
+        .mockImplementation(() => {});
 
       wrapper.vm.commitPositions(["n1", "n2"]);
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/updateItems", [
+      expect(updateItemsSpy).toHaveBeenCalledWith([
         { x: 10, y: 20, id: "n1" },
         { x: 30, y: 40, id: "n2" },
       ]);
@@ -867,7 +843,7 @@ describe.concurrent("VisContainer", () => {
 
   describe("commitUncommitedPositions", () => {
     it("commits positions for nodes with null x or y", async ({ expect }) => {
-      const { wrapper, net, nodes, store } = await mountWithNet();
+      const { wrapper, net, nodes, topologyStore } = await mountWithNet();
       const testItems = [
         { id: "n1", x: null, y: null },
         { id: "n2", x: 10, y: 20 },
@@ -882,11 +858,13 @@ describe.concurrent("VisContainer", () => {
         n1: { x: 100, y: 200 },
         n3: { x: 50, y: 60 },
       });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const updateItemsSpy = vi
+        .spyOn(topologyStore, "updateItems")
+        .mockImplementation(() => {});
 
       wrapper.vm.commitUncommitedPositions();
 
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/updateItems", [
+      expect(updateItemsSpy).toHaveBeenCalledWith([
         { x: 100, y: 200, id: "n1" },
         { x: 50, y: 60, id: "n3" },
       ]);
@@ -1108,7 +1086,9 @@ describe.concurrent("VisContainer", () => {
         { id: "p1", group: "port", label: "eth0" },
         { id: "p2", group: "port", label: "eth1" },
       ];
-      const { wrapper, net, nodes, store } = await mountWithNet({ items });
+      const { wrapper, net, nodes, topologyStore } = await mountWithNet({
+        items,
+      });
       net.getConnectedNodes.mockReturnValue(["p1", "p2"]);
       nodes.get.mockImplementation((id) => {
         if (id == null) return testNodeItems;
@@ -1118,12 +1098,11 @@ describe.concurrent("VisContainer", () => {
       net.getPositions.mockReturnValue({
         s1: { x: 100, y: 200 },
       });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const updateItemsSpy = vi.spyOn(topologyStore, "updateItems");
 
       wrapper.vm.organizePorts({ id: "s1" });
 
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        "topology/updateItems",
+      expect(updateItemsSpy).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({ id: "p1" }),
           expect.objectContaining({ id: "p2" }),
@@ -1241,8 +1220,8 @@ describe.concurrent("VisContainer", () => {
     it("emits edit-item event and returns item when resolved with data", async ({
       expect,
     }) => {
-      const { wrapper, store } = await mountWithNet();
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const { wrapper, topologyStore } = await mountWithNet();
+      const replaceItemsSpy = vi.spyOn(topologyStore, "replaceItems");
 
       const editPromise = wrapper.vm.editItem({
         id: "n1",
@@ -1261,7 +1240,7 @@ describe.concurrent("VisContainer", () => {
 
       const result = await editPromise;
       expect(result.item.id).toBe("n1");
-      expect(dispatchSpy).toHaveBeenCalledWith("topology/replaceItems", [
+      expect(replaceItemsSpy).toHaveBeenCalledWith([
         { id: "n1", type: "host", hostname: "h1" },
       ]);
     });
@@ -1286,8 +1265,8 @@ describe.concurrent("VisContainer", () => {
     });
 
     it("does not commit when commit parameter is false", async ({ expect }) => {
-      const { wrapper, store } = await mountWithNet();
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const { wrapper, topologyStore } = await mountWithNet();
+      const replaceItemsSpy = vi.spyOn(topologyStore, "replaceItems");
 
       const editPromise = wrapper.vm.editItem(
         { id: "n1", group: "host", label: "h1" },
@@ -1299,10 +1278,7 @@ describe.concurrent("VisContainer", () => {
 
       const result = await editPromise;
       expect(result.item.id).toBe("n1");
-      expect(dispatchSpy).not.toHaveBeenCalledWith(
-        "topology/replaceItems",
-        expect.anything(),
-      );
+      expect(replaceItemsSpy).not.toHaveBeenCalled();
     });
 
     it("sets from/to on item when node has from and to", async ({ expect }) => {
@@ -1349,13 +1325,13 @@ describe.concurrent("VisContainer", () => {
       expect,
     }) => {
       const vuetify = createVuetify();
-      const store = createMockStore({ loading: false });
+      const pinia = createTestPinia({ loading: false });
       const router = createTestRouter();
       await router.push("/100/200/1.5/n1,e1");
       await router.isReady();
       const wrapper = mount(VisContainer, {
         global: {
-          plugins: [vuetify, store, router],
+          plugins: [vuetify, pinia, router],
           stubs: { VisCanvas: VisCanvasStub },
         },
       });
@@ -1388,8 +1364,9 @@ describe.concurrent("VisContainer", () => {
   describe("init event handlers", () => {
     async function initWithHandlers() {
       const vuetify = createVuetify();
-      const store = createMockStore({ loading: false });
-      store.state.topology.data.items = {
+      const pinia = createTestPinia({ loading: false });
+      const topologyStore = useTopologyStore(pinia);
+      topologyStore.data.items = {
         n1: { type: "host", hostname: "h1" },
         n2: { type: "switch", hostname: "s1" },
         p1: { type: "port", hostname: "eth0" },
@@ -1400,7 +1377,7 @@ describe.concurrent("VisContainer", () => {
       const mockRouterPush = vi.spyOn(router, "push");
       const wrapper = mount(VisContainer, {
         global: {
-          plugins: [vuetify, store, router],
+          plugins: [vuetify, pinia, router],
           stubs: { VisCanvas: VisCanvasStub },
         },
       });
@@ -1432,7 +1409,7 @@ describe.concurrent("VisContainer", () => {
         net,
         nodes,
         edges,
-        store,
+        topologyStore,
         handlers,
         mockRouter: { push: mockRouterPush },
         router,
@@ -1440,32 +1417,26 @@ describe.concurrent("VisContainer", () => {
     }
 
     it("dragEnd with nodes commits positions", async ({ expect }) => {
-      const { store, handlers } = await initWithHandlers();
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const { topologyStore, handlers } = await initWithHandlers();
+      const updateItemsSpy = vi.spyOn(topologyStore, "updateItems");
 
       // Find the dragEnd handler that commits positions (the first one)
       const dragEndHandler = handlers.dragEnd[0];
       dragEndHandler({ nodes: ["n1"] });
 
-      expect(dispatchSpy).toHaveBeenCalledWith(
-        "topology/updateItems",
-        expect.anything(),
-      );
+      expect(updateItemsSpy).toHaveBeenCalledWith(expect.anything());
     });
 
     it("dragEnd with no nodes does not commit positions", async ({
       expect,
     }) => {
-      const { store, handlers } = await initWithHandlers();
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const { topologyStore, handlers } = await initWithHandlers();
+      const updateItemsSpy = vi.spyOn(topologyStore, "updateItems");
 
       const dragEndHandler = handlers.dragEnd[0];
       dragEndHandler({ nodes: [] });
 
-      expect(dispatchSpy).not.toHaveBeenCalledWith(
-        "topology/updateItems",
-        expect.anything(),
-      );
+      expect(updateItemsSpy).not.toHaveBeenCalled();
     });
 
     it("dragStart with single host selects connected ports", async ({
@@ -1487,8 +1458,8 @@ describe.concurrent("VisContainer", () => {
     it("dragStart with non-host/switch does not select ports", async ({
       expect,
     }) => {
-      const { net, handlers, store } = await initWithHandlers();
-      store.state.topology.data.items.n3 = { type: "controller" };
+      const { net, handlers, topologyStore } = await initWithHandlers();
+      topologyStore.data.items.n3 = { type: "controller" };
 
       const dragStartHandler = handlers.dragStart[0];
       dragStartHandler({ nodes: ["n3"] });
@@ -1517,8 +1488,8 @@ describe.concurrent("VisContainer", () => {
     it("hold on host/switch node triggers organizePorts", async ({
       expect,
     }) => {
-      const { store, handlers, net } = await initWithHandlers();
-      const dispatchSpy = vi.spyOn(store, "dispatch");
+      const { topologyStore, handlers, net } = await initWithHandlers();
+      const updateItemsSpy = vi.spyOn(topologyStore, "updateItems");
       net.getConnectedNodes.mockReturnValue(["p1"]);
       net.getPositions.mockReturnValue({
         n1: { x: 100, y: 200 },
@@ -1527,7 +1498,7 @@ describe.concurrent("VisContainer", () => {
       const holdHandler = handlers.hold[0];
       holdHandler({ nodes: ["n1"], edges: [] });
 
-      expect(dispatchSpy).toHaveBeenCalled();
+      expect(updateItemsSpy).toHaveBeenCalled();
     });
 
     it("doubleClick on single edge edits the edge item", async ({ expect }) => {

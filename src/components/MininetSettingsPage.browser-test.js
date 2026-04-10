@@ -1,74 +1,54 @@
 import { describe, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
+import { useTopologyStore } from "@/store/topologyStore";
 import MininetSettingsPage from "@/components/MininetSettingsPage.vue";
 
-function createMockStore(loading = false) {
-  return createStore({
-    state() {
-      return {
-        loading,
-        working: false,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
+function createTestPinia(overrides = {}) {
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+    ...overrides.app,
+  };
+  pinia.state.value.topology = {
+    data: {
+      items: {},
+      projectName: "test-project",
+      logLevel: "info",
+      ipBase: "10.0.0.0/8",
+      listenPortBase: 6653,
+      autoSetMAC: undefined,
+      autoStaticARP: undefined,
+      inNamespace: undefined,
+      spawnTerminals: undefined,
+      startScript: "",
+      stopScript: "",
     },
-    mutations: {
-      setLoading(state, value) {
-        state.loading = value;
-      },
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: {
-              items: {},
-              projectName: "test-project",
-              logLevel: "info",
-              ipBase: "10.0.0.0/8",
-              listenPortBase: 6653,
-              autoSetMAC: undefined,
-              autoStaticARP: undefined,
-              inNamespace: undefined,
-              spawnTerminals: undefined,
-              startScript: "",
-              stopScript: "",
-            },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          canUndo: (s) => s.past.length,
-          canRedo: (s) => s.future.length,
-          data: (s) => s.data,
-        },
-        mutations: {
-          setValues(state, values) {
-            Object.assign(state.data, values);
-          },
-        },
-      },
-    },
-  });
+    past: [],
+    future: [],
+    ...overrides.topology,
+  };
+  return pinia;
 }
 
 function mountMininetSettings(loading = false) {
   const vuetify = createVuetify();
-  const store = createMockStore(loading);
+  const pinia = createTestPinia({ app: { loading } });
   const wrapper = mount(MininetSettingsPage, {
     global: {
-      plugins: [vuetify, store],
+      plugins: [vuetify, pinia],
     },
   });
-  return { wrapper, store };
+  const topologyStore = useTopologyStore(pinia);
+  return { wrapper, topologyStore };
 }
 
 describe.concurrent("MininetSettingsPage", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({
+  it("mounts successfully in Vuetify context with mock Pinia store", ({
     expect,
   }) => {
     const { wrapper } = mountMininetSettings();
@@ -112,10 +92,10 @@ describe.concurrent("MininetSettingsPage", () => {
     expect(startScriptField.exists()).toBe(true);
   });
 
-  it("commits text field values to Vuex store when form fields change", async ({
+  it("commits text field values to Pinia store when form fields change", async ({
     expect,
   }) => {
-    const { wrapper, store } = mountMininetSettings(false);
+    const { wrapper, topologyStore } = mountMininetSettings(false);
 
     const projectNameInput = wrapper
       .find('[data-cy="mininet-settings-project-name"]')
@@ -142,30 +122,30 @@ describe.concurrent("MininetSettingsPage", () => {
       .find("textarea");
     await stopScriptTextarea.setValue("echo stop");
 
-    expect(store.state.topology.data.projectName).toBe("new-project");
-    expect(store.state.topology.data.ipBase).toBe("192.168.0.0/16");
-    expect(store.state.topology.data.listenPortBase).toBe(6654);
-    expect(store.state.topology.data.startScript).toBe("echo start");
-    expect(store.state.topology.data.stopScript).toBe("echo stop");
+    expect(topologyStore.data.projectName).toBe("new-project");
+    expect(topologyStore.data.ipBase).toBe("192.168.0.0/16");
+    expect(topologyStore.data.listenPortBase).toBe(6654);
+    expect(topologyStore.data.startScript).toBe("echo start");
+    expect(topologyStore.data.stopScript).toBe("echo stop");
   });
 
-  it("commits log level to Vuex store when select changes", async ({
+  it("commits log level to Pinia store when select changes", async ({
     expect,
   }) => {
-    const { wrapper, store } = mountMininetSettings(false);
+    const { wrapper, topologyStore } = mountMininetSettings(false);
 
     const logLevelSelect = wrapper
       .find('[data-cy="mininet-settings-log-level"]')
       .findComponent({ name: "VSelect" });
     await logLevelSelect.setValue("debug");
 
-    expect(store.state.topology.data.logLevel).toBe("debug");
+    expect(topologyStore.data.logLevel).toBe("debug");
   });
 
-  it("commits checkbox values to Vuex store when checkboxes are clicked", async ({
+  it("commits checkbox values to Pinia store when checkboxes are clicked", async ({
     expect,
   }) => {
-    const { wrapper, store } = mountMininetSettings(false);
+    const { wrapper, topologyStore } = mountMininetSettings(false);
 
     const autoSetMAC = wrapper.find(
       '[data-cy="mininet-settings-auto-set-mac"]',
@@ -187,10 +167,10 @@ describe.concurrent("MininetSettingsPage", () => {
     );
     await spawnTerminals.trigger("click");
 
-    expect(store.state.topology.data.autoSetMAC).toBe(true);
-    expect(store.state.topology.data.autoStaticARP).toBe(true);
-    expect(store.state.topology.data.inNamespace).toBe(true);
-    expect(store.state.topology.data.spawnTerminals).toBe(true);
+    expect(topologyStore.data.autoSetMAC).toBe(true);
+    expect(topologyStore.data.autoStaticARP).toBe(true);
+    expect(topologyStore.data.inNamespace).toBe(true);
+    expect(topologyStore.data.spawnTerminals).toBe(true);
   });
 
   it("shows loading spinner when loading is true", ({ expect }) => {

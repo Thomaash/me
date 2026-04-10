@@ -1,9 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@/store", () => ({
-  store: {
-    commit: vi.fn(),
-  },
+const mockAppStore = {
+  clearAlert: vi.fn(),
+  setWorking: vi.fn(),
+};
+
+vi.mock("@/store/pinia", () => ({
+  pinia: {},
+}));
+
+vi.mock("@/store/appStore", () => ({
+  useAppStore: () => mockAppStore,
 }));
 
 // Capture the beforeEach guard by wrapping createRouter
@@ -24,7 +31,6 @@ vi.mock("vue-router", async (importOriginal) => {
   };
 });
 
-const { store } = await import("@/store");
 const { router } = await import("@/router/index.js");
 const routes = router.options.routes;
 
@@ -448,7 +454,8 @@ describe("view route components are lazy-loaded functions", () => {
 
 describe("beforeEach navigation guard", () => {
   beforeEach(() => {
-    store.commit.mockClear();
+    mockAppStore.clearAlert.mockClear();
+    mockAppStore.setWorking.mockClear();
   });
 
   it("redirects to /view path when navigating from view route to non-view route", ({
@@ -479,8 +486,8 @@ describe("beforeEach navigation guard", () => {
 
     capturedBeforeEachGuard(to, from, next);
 
-    expect(store.commit).toHaveBeenCalledWith("clearAlert");
-    expect(store.commit).toHaveBeenCalledWith("setWorking", {
+    expect(mockAppStore.clearAlert).toHaveBeenCalled();
+    expect(mockAppStore.setWorking).toHaveBeenCalledWith({
       working: false,
     });
     expect(next).toHaveBeenCalledWith();
@@ -502,7 +509,7 @@ describe("beforeEach navigation guard", () => {
 
     capturedBeforeEachGuard(to, from, next);
 
-    expect(store.commit).not.toHaveBeenCalled();
+    expect(mockAppStore.clearAlert).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledWith();
   });
 
@@ -526,8 +533,8 @@ describe("beforeEach navigation guard", () => {
 
     capturedBeforeEachGuard(to, from, next);
 
-    expect(store.commit).toHaveBeenCalledWith("clearAlert");
-    expect(store.commit).toHaveBeenCalledWith("setWorking", {
+    expect(mockAppStore.clearAlert).toHaveBeenCalled();
+    expect(mockAppStore.setWorking).toHaveBeenCalledWith({
       working: false,
     });
     expect(next).toHaveBeenCalledWith();

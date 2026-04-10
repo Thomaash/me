@@ -109,48 +109,48 @@ import { ipWithMask, port } from "@/validation/rules";
 import { logLevels } from "@/components/selects";
 import { useTopologyStore } from "@/composables/useTopologyStore";
 
-const { loading, data, commitTopology } = useTopologyStore();
+const { data, loading, setValues } = useTopologyStore();
 
 const validators = { ipWithMask, port };
 
 const autoSetMAC = computed({
   get: () => data.value.autoSetMAC,
-  set: (value) => commitTopology("setValues", { autoSetMAC: value }),
+  set: (value) => setValues({ autoSetMAC: value }),
 });
 const autoStaticARP = computed({
   get: () => data.value.autoStaticARP,
-  set: (value) => commitTopology("setValues", { autoStaticARP: value }),
+  set: (value) => setValues({ autoStaticARP: value }),
 });
 const inNamespace = computed({
   get: () => data.value.inNamespace,
-  set: (value) => commitTopology("setValues", { inNamespace: value }),
+  set: (value) => setValues({ inNamespace: value }),
 });
 const ipBase = computed({
   get: () => data.value.ipBase,
-  set: (value) => commitTopology("setValues", { ipBase: value }),
+  set: (value) => setValues({ ipBase: value }),
 });
 const listenPortBase = computed({
   get: () => data.value.listenPortBase,
-  set: (value) => commitTopology("setValues", { listenPortBase: value }),
+  set: (value) => setValues({ listenPortBase: value }),
 });
 const logLevel = computed({
   get: () => data.value.logLevel,
-  set: (value) => commitTopology("setValues", { logLevel: value }),
+  set: (value) => setValues({ logLevel: value }),
 });
 const projectName = computed({
   get: () => data.value.projectName,
-  set: (value) => commitTopology("setValues", { projectName: value }),
+  set: (value) => setValues({ projectName: value }),
 });
 const spawnTerminals = computed({
   get: () => data.value.spawnTerminals,
-  set: (value) => commitTopology("setValues", { spawnTerminals: value }),
+  set: (value) => setValues({ spawnTerminals: value }),
 });
 const startScript = computed({
   get: () => data.value.startScript,
-  set: (value) => commitTopology("setValues", { startScript: value }),
+  set: (value) => setValues({ startScript: value }),
 });
 const stopScript = computed({
   get: () => data.value.stopScript,
-  set: (value) => commitTopology("setValues", { stopScript: value }),
+  set: (value) => setValues({ stopScript: value }),
 });
 </script>

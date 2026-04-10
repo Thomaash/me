@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import { defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import ExportPage from "@/components/ExportPage.vue";
 
 const ImportSectionStub = defineComponent({
@@ -26,64 +26,30 @@ const LogListingStub = defineComponent({
   },
 });
 
-function createMockStore({ loading = false } = {}) {
-  return createStore({
-    state() {
-      return {
-        loading,
-        working: false,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
-    },
-    mutations: {
-      setWorking() {},
-      setAlert() {},
-      clearAlert() {},
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: { items: {}, projectName: "test-project" },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          data: (s) => s.data,
-          canUndo: (s) => s.past.length,
-          canRedo: (s) => s.future.length,
-          boundingBox: () => () => ({
-            sX: 0,
-            eX: 100,
-            sY: 0,
-            eY: 100,
-            width: 100,
-            height: 100,
-            empty: false,
-          }),
-        },
-        mutations: {
-          importData() {},
-          setValues() {},
-          applyChange() {},
-        },
-        actions: {
-          updateItems() {},
-        },
-      },
-    },
-  });
+function createTestPinia(overrides = {}) {
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+    ...overrides.app,
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName: "test-project", startScript: "" },
+    past: [],
+    future: [],
+    ...overrides.topology,
+  };
+  return pinia;
 }
 
 function mountExportPage({ loading = false } = {}) {
   const vuetify = createVuetify();
-  const store = createMockStore({ loading });
+  const pinia = createTestPinia({ app: { loading }, topology: { loading } });
   return mount(ExportPage, {
     global: {
-      plugins: [vuetify, store],
+      plugins: [vuetify, pinia],
       stubs: {
         ImportSection: ImportSectionStub,
         ExportSection: ExportSectionStub,

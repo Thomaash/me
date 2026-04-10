@@ -1,61 +1,25 @@
 import { describe, it, vi } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import ImportSection from "@/components/export/ImportSection.vue";
+import { useTopologyStore } from "@/store/topologyStore";
+import { useAppStore } from "@/store/appStore";
 
-function createMockStore({ working = false } = {}) {
-  return createStore({
-    state() {
-      return {
-        loading: false,
-        working,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
-    },
-    mutations: {
-      setWorking(state, val) {
-        state.working = val.working ?? val;
-      },
-      setAlert(state, val) {
-        state.alert = val;
-      },
-      clearAlert(state) {
-        state.alert = { show: false };
-      },
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: { items: {} },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          data: (s) => s.data,
-          canUndo: (s) => s.past.length,
-          canRedo: (s) => s.future.length,
-          boundingBox: () => () => ({
-            sX: 0,
-            eX: 100,
-            sY: 0,
-            eY: 100,
-            width: 100,
-            height: 100,
-          }),
-        },
-        mutations: {
-          importData(state, data) {
-            state.data = data;
-          },
-        },
-      },
-    },
-  });
+function createTestPinia({ working = false } = {}) {
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working,
+    isUpdateAvailable: false,
+    alert: { show: false },
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName: "Test", startScript: "" },
+    past: [],
+    future: [],
+  };
+  return pinia;
 }
 
 function createContainer() {
@@ -64,22 +28,28 @@ function createContainer() {
   return container;
 }
 
-function mountImportSection({ working = false, attachTo, store } = {}) {
+function mountImportSection({
+  working = false,
+  attachTo,
+  pinia: existingPinia,
+} = {}) {
   const vuetify = createVuetify();
-  const resolvedStore = store || createMockStore({ working });
+  const pinia = existingPinia || createTestPinia({ working });
   const options = {
     global: {
-      plugins: [vuetify, resolvedStore],
+      plugins: [vuetify, pinia],
     },
   };
   if (attachTo) {
     options.attachTo = attachTo;
   }
-  return { wrapper: mount(ImportSection, options), store: resolvedStore };
+  const topologyStore = useTopologyStore(pinia);
+  const appStore = useAppStore(pinia);
+  return { wrapper: mount(ImportSection, options), topologyStore, appStore };
 }
 
 describe.concurrent("ImportSection", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({
+  it("mounts successfully in Vuetify context with Pinia store", ({
     expect,
   }) => {
     const { wrapper } = mountImportSection();
@@ -164,9 +134,12 @@ describe.concurrent("ImportSection", () => {
   it("returns early from retrieveFile when no file is present", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
     const fileInput = wrapper.find('input[type="file"]');
 
@@ -174,9 +147,9 @@ describe.concurrent("ImportSection", () => {
     await flushPromises();
 
     // working should remain false since retrieveFile returned early
-    expect(store.state.working).toBe(false);
+    expect(appStore.working).toBe(false);
     // No alert should be set
-    expect(store.state.alert.show).toBe(false);
+    expect(appStore.alert.show).toBe(false);
 
     wrapper.unmount();
     container.remove();
@@ -187,9 +160,12 @@ describe("ImportSection dialog interactions", () => {
   it("shows confirmation dialog and imports data when confirmed via Empty button", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
     const emptyBtn = wrapper
       .findAllComponents({ name: "VBtn" })
@@ -204,9 +180,9 @@ describe("ImportSection dialog interactions", () => {
     );
     expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
-    await expect.poll(() => store.state.alert.type).toBe("success");
+    await expect.poll(() => appStore.alert.type).toBe("success");
 
-    expect(store.state.alert.text).toBe("Successfully imported.");
+    expect(appStore.alert.text).toBe("Successfully imported.");
 
     wrapper.unmount();
     container.remove();
@@ -215,9 +191,12 @@ describe("ImportSection dialog interactions", () => {
   it("shows confirmation dialog and cancels import when cancel is clicked", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
     const emptyBtn = wrapper
       .findAllComponents({ name: "VBtn" })
@@ -232,9 +211,9 @@ describe("ImportSection dialog interactions", () => {
     );
     expect(cancelBtn).not.toBeNull();
     cancelBtn.click();
-    await expect.poll(() => store.state.alert.type).toBe("info");
+    await expect.poll(() => appStore.alert.type).toBe("info");
 
-    expect(store.state.alert.text).toBe("Import canceled.");
+    expect(appStore.alert.text).toBe("Import canceled.");
 
     wrapper.unmount();
     container.remove();
@@ -243,9 +222,12 @@ describe("ImportSection dialog interactions", () => {
   it("sets working state during importData and resets after confirm", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
     const emptyBtn = wrapper
       .findAllComponents({ name: "VBtn" })
@@ -253,26 +235,26 @@ describe("ImportSection dialog interactions", () => {
     emptyBtn.trigger("click");
     await flushPromises();
 
-    expect(store.state.working).toBe(true);
+    expect(appStore.working).toBe(true);
 
     const confirmBtn = document.querySelector(
       '[data-cy="import-warning-confirm"]',
     );
     confirmBtn.click();
-    await expect.poll(() => store.state.working).toBe(false);
+    await expect.poll(() => appStore.working).toBe(false);
 
     wrapper.unmount();
     container.remove();
   });
 
-  it("commits topology importData mutation when import is confirmed", async ({
+  it("calls topologyStore.importData when import is confirmed", async ({
     expect,
   }) => {
-    const store = createMockStore();
-    const commitSpy = vi.fn(store.commit.bind(store));
-    store.commit = commitSpy;
+    const pinia = createTestPinia();
+    const topologyStore = useTopologyStore(pinia);
+    const importDataSpy = vi.spyOn(topologyStore, "importData");
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper } = mountImportSection({ attachTo: container, pinia });
 
     const emptyBtn = wrapper
       .findAllComponents({ name: "VBtn" })
@@ -287,17 +269,10 @@ describe("ImportSection dialog interactions", () => {
     );
     confirmBtn.click();
     await expect
-      .poll(
-        () =>
-          commitSpy.mock.calls.filter(([m]) => m === "topology/importData")
-            .length,
-      )
+      .poll(() => importDataSpy.mock.calls.length)
       .toBeGreaterThanOrEqual(1);
 
-    const importCalls = commitSpy.mock.calls.filter(
-      ([mutation]) => mutation === "topology/importData",
-    );
-    expect(importCalls.length).toBeGreaterThanOrEqual(1);
+    expect(importDataSpy).toHaveBeenCalled();
 
     wrapper.unmount();
     container.remove();
@@ -306,11 +281,14 @@ describe("ImportSection dialog interactions", () => {
   it("processes a JSON file via retrieveFile and imports after confirmation", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
-    const jsonContent = '{"version":1,"items":[{"id":"test"}]}';
+    const jsonContent = '{"version":0,"items":[{"id":"test"}]}';
     const file = new File([jsonContent], "test.json", {
       type: "application/json",
     });
@@ -333,10 +311,10 @@ describe("ImportSection dialog interactions", () => {
       '[data-cy="import-warning-confirm"]',
     );
     confirmBtn.click();
-    await expect.poll(() => store.state.alert.type).toBe("success");
+    await expect.poll(() => appStore.alert.type).toBe("success");
 
-    expect(store.state.alert.text).toBe("Successfully imported.");
-    expect(store.state.working).toBe(false);
+    expect(appStore.alert.text).toBe("Successfully imported.");
+    expect(appStore.working).toBe(false);
 
     wrapper.unmount();
     container.remove();
@@ -345,9 +323,12 @@ describe("ImportSection dialog interactions", () => {
   it("shows error alert when file type is unknown in retrieveFile", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
     const file = new File(["some content"], "data.xyz", {
       type: "application/octet-stream",
@@ -363,10 +344,10 @@ describe("ImportSection dialog interactions", () => {
 
     await fileInput.trigger("input");
     // Wait for FileReader onloadend
-    await expect.poll(() => store.state.alert.type).toBe("error");
+    await expect.poll(() => appStore.alert.type).toBe("error");
 
-    expect(store.state.alert.text).toContain("Unknown file format");
-    expect(store.state.working).toBe(false);
+    expect(appStore.alert.text).toContain("Unknown file format");
+    expect(appStore.working).toBe(false);
 
     wrapper.unmount();
     container.remove();
@@ -375,9 +356,9 @@ describe("ImportSection dialog interactions", () => {
   it("shows script import warning in dialog for Python files", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper } = mountImportSection({ attachTo: container, pinia });
 
     const pyContent =
       "from mininet.net import Mininet\nnet = Mininet()\nnet.start()\nnet.stop()\n";
@@ -432,9 +413,12 @@ describe("ImportSection dialog interactions", () => {
   it("shows error alert when file content is malformed and parsing throws", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
     const malformedJson = "{ this is not valid json !!!";
     const file = new File([malformedJson], "broken.json", {
@@ -451,10 +435,10 @@ describe("ImportSection dialog interactions", () => {
 
     await fileInput.trigger("input");
     // Wait for FileReader onloadend
-    await expect.poll(() => store.state.alert.type).toBe("error");
+    await expect.poll(() => appStore.alert.type).toBe("error");
 
-    expect(store.state.alert.text).toBe("Import failed.");
-    expect(store.state.working).toBe(false);
+    expect(appStore.alert.text).toBe("Import failed.");
+    expect(appStore.working).toBe(false);
 
     wrapper.unmount();
     container.remove();
@@ -463,9 +447,12 @@ describe("ImportSection dialog interactions", () => {
   it("imports example data when an example item is clicked", async ({
     expect,
   }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper, appStore } = mountImportSection({
+      attachTo: container,
+      pinia,
+    });
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     const examplesBtn = buttons.find((btn) => btn.text() === "Examples");
@@ -488,18 +475,18 @@ describe("ImportSection dialog interactions", () => {
     );
     expect(confirmBtn).not.toBeNull();
     confirmBtn.click();
-    await expect.poll(() => store.state.alert.type).toBe("success");
+    await expect.poll(() => appStore.alert.type).toBe("success");
 
-    expect(store.state.alert.text).toBe("Successfully imported.");
+    expect(appStore.alert.text).toBe("Successfully imported.");
 
     wrapper.unmount();
     container.remove();
   });
 
   it("emits log event when importing a file", async ({ expect }) => {
-    const store = createMockStore();
+    const pinia = createTestPinia();
     const container = createContainer();
-    const { wrapper } = mountImportSection({ attachTo: container, store });
+    const { wrapper } = mountImportSection({ attachTo: container, pinia });
 
     const jsonContent = '{"version":0,"items":[]}';
     const file = new File([jsonContent], "test.json", {

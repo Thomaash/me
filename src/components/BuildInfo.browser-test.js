@@ -1,23 +1,33 @@
 import { describe, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import BuildInfo from "@/components/BuildInfo.vue";
 
-function createMockStore(isUpdateAvailable = false) {
-  return createStore({
-    state() {
-      return { isUpdateAvailable };
-    },
-  });
+function createTestPinia(overrides = {}) {
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+    ...overrides.app,
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName: "Test", startScript: "" },
+    past: [],
+    future: [],
+    ...overrides.topology,
+  };
+  return pinia;
 }
 
 function mountBuildInfo(isUpdateAvailable = false) {
   const vuetify = createVuetify();
-  const store = createMockStore(isUpdateAvailable);
+  const pinia = createTestPinia({ app: { isUpdateAvailable } });
   return mount(BuildInfo, {
     global: {
-      plugins: [vuetify, store],
+      plugins: [vuetify, pinia],
     },
   });
 }

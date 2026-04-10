@@ -50,6 +50,7 @@ import { v4 as randomUUID } from "uuid";
 import { compare, compareNodes } from "./vis/locale";
 import { dark, selection as selectionTheme } from "@/theme";
 import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useAppStore } from "@/store/appStore";
 
 function delayCall(fn = () => {}, delay = 0) {
   let timeout = null;
@@ -122,8 +123,13 @@ const emit = defineEmits(["edit-item"]);
 const {
   data: topoData,
   loading,
-  dispatch: topologyDispatch,
+  updateItems,
+  removeItems,
+  replaceItems,
+  undo: storeUndo,
+  redo: storeRedo,
 } = useTopologyStore();
+const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
 
@@ -221,8 +227,15 @@ function addSwitch() {
   net.addNodeMode();
 }
 
+const storeActions = {
+  updateItems,
+  removeItems,
+  replaceItems,
+  undo: storeUndo,
+  redo: storeRedo,
+};
 function commitToStore(type, payload) {
-  topologyDispatch(type, payload);
+  storeActions[type](payload);
 }
 
 function commitPositions(ids) {

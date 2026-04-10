@@ -2,7 +2,7 @@ import { describe, it, afterEach } from "vitest";
 import { defineComponent, h } from "vue";
 import { mount, flushPromises } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import { createRouter, createMemoryHistory } from "vue-router";
 import App from "@/App.vue";
 
@@ -13,55 +13,20 @@ const DummyPage = defineComponent({
   },
 });
 
-function createMockStore() {
-  return createStore({
-    state() {
-      return {
-        loading: false,
-        working: false,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
-    },
-    mutations: {
-      clearAlert() {},
-      setWorking() {},
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: { items: {} },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          canUndo: () => 0,
-          canRedo: () => 0,
-          data: (s) => s.data,
-          boundingBox: () => () => ({
-            sX: 0,
-            eX: 100,
-            sY: 0,
-            eY: 100,
-            width: 100,
-            height: 100,
-            empty: false,
-          }),
-        },
-        mutations: {
-          importData() {},
-        },
-        actions: {
-          updateItems() {},
-          removeItems() {},
-          replaceItems() {},
-        },
-      },
-    },
-  });
+function createTestPinia() {
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName: "Test", startScript: "" },
+    past: [],
+    future: [],
+  };
+  return pinia;
 }
 
 function createMockRouter() {
@@ -144,7 +109,7 @@ afterEach(() => {
 
 async function mountApp() {
   const vuetify = createVuetify();
-  const store = createMockStore();
+  const pinia = createTestPinia();
   const router = createMockRouter();
 
   router.push("/home");
@@ -153,7 +118,7 @@ async function mountApp() {
   wrapper = mount(App, {
     attachTo: document.body,
     global: {
-      plugins: [vuetify, store, router],
+      plugins: [vuetify, pinia, router],
     },
   });
   await flushPromises();

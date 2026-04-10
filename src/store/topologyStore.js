@@ -1,5 +1,6 @@
-import exporter from "@/exporter";
+import { defineStore } from "pinia";
 
+import exporter from "@/exporter";
 import exampleData from "@/examples/medium_1_controller";
 
 const MAX_UNDO_LENGTH = 200;
@@ -25,36 +26,24 @@ function prepareUndoRedoChange(changeLogItem) {
   return change;
 }
 
-export const topology = {
-  namespaced: true,
-  state: {
+export const useTopologyStore = defineStore("topology", {
+  persist: true,
+  state: () => ({
     data: exporter.importData(exampleData),
     past: [],
     future: [],
-  },
+  }),
   getters: {
-    data(state) {
-      return state.data;
-    },
-    canUndo(state) {
-      return state.past.length;
-    },
-    canRedo(state) {
-      return state.future.length;
-    },
+    canUndo: (state) => state.past.length,
+    canRedo: (state) => state.future.length,
     boundingBox(state) {
-      // Find the highest and lowest x and y item center coordinates
-      // This can be cached until the state changes
       const rawBB = (() => {
         const items = Object.values(state.data.items);
 
-        // Edges don't have x and y coordinates
-        // There can be nodes without coordinates (script import)
         const firstWithCoords = items.find(
           ({ x, y }) => x != null && y != null,
         );
 
-        // Nothing can be done if there are no nodes with coordinates
         if (!firstWithCoords) {
           return { sX: 0, eX: 0, sY: 0, eY: 0, empty: true };
         }
@@ -75,8 +64,6 @@ export const topology = {
             return acc;
           },
           {
-            // Some item's position has to be used
-            // If some other values were used they would be included as an imaginary item
             sX: firstWithCoords.x,
             eX: firstWithCoords.x,
             sY: firstWithCoords.y,
@@ -86,34 +73,28 @@ export const topology = {
         );
       })();
 
-      // This has to be reevaluated every time because of arguments
       return ({ margin = 100, scale = 1 } = {}) => {
         const bb = { ...rawBB, width: 0, height: 0 };
 
-        // Empty project
         if (bb.empty) {
           return bb;
         }
 
-        // Add margin
         bb.sX -= margin;
         bb.sY -= margin;
         bb.eX += margin;
         bb.eY += margin;
 
-        // Apply scale
         bb.sX *= scale;
         bb.sY *= scale;
         bb.eX *= scale;
         bb.eY *= scale;
 
-        // Round to integers
         bb.sX = Math.ceil(Math.abs(bb.sX)) * Math.sign(bb.sX);
         bb.sY = Math.ceil(Math.abs(bb.sY)) * Math.sign(bb.sY);
         bb.eX = Math.ceil(Math.abs(bb.eX)) * Math.sign(bb.eX);
         bb.eY = Math.ceil(Math.abs(bb.eY)) * Math.sign(bb.eY);
 
-        // Compute size
         bb.width = bb.eX - bb.sX;
         bb.height = bb.eY - bb.sY;
 
@@ -121,34 +102,32 @@ export const topology = {
       };
     },
   },
-  mutations: {
-    importData({ data: sd, past, future }, importData) {
-      past.splice(0);
-      future.splice(0);
+  actions: {
+    importData(importPayload) {
+      this.past.splice(0);
+      this.future.splice(0);
 
-      // Clean old data
-      Object.keys(sd).forEach((key) => {
-        delete sd[key];
+      Object.keys(this.data).forEach((key) => {
+        delete this.data[key];
       });
 
-      // Load new data
-      const data = exporter.importData(importData);
-      Object.keys(data).forEach((key) => (sd[key] = data[key]));
+      const data = exporter.importData(importPayload);
+      Object.keys(data).forEach((key) => (this.data[key] = data[key]));
     },
-    setValues({ data: sd }, data) {
-      Object.keys(data).forEach((key) => {
-        const value = data[key];
+    setValues(values) {
+      Object.keys(values).forEach((key) => {
+        const value = values[key];
         if (value != null && value !== "") {
-          sd[key] = value;
+          this.data[key] = value;
         } else {
-          delete sd[key];
+          delete this.data[key];
         }
       });
     },
-    applyChange({ data: sd }, { remove, update, replace }) {
+    applyChange({ remove, update, replace }) {
       if (remove) {
         remove.forEach((id) => {
-          delete sd.items[id];
+          delete this.data.items[id];
         });
       }
 
@@ -157,7 +136,7 @@ export const topology = {
           if (item.id == null) {
             throw new Error("Items have to have ids.");
           }
-          const saved = sd.items[item.id];
+          const saved = this.data.items[item.id];
           Object.keys(item).forEach((key) => {
             saved[key] = item[key];
           });
@@ -169,53 +148,49 @@ export const topology = {
           if (item.id == null) {
             throw new Error("Items have to have ids.");
           }
-          sd.items[item.id] = item;
+          this.data.items[item.id] = item;
         });
       }
     },
-    pushChange({ past, future }, unit) {
-      future.splice(0);
-      if (past.length >= MAX_UNDO_LENGTH) {
-        past.splice(0, past.length + 1 - MAX_UNDO_LENGTH);
+    _pushChange(unit) {
+      this.future.splice(0);
+      if (this.past.length >= MAX_UNDO_LENGTH) {
+        this.past.splice(0, this.past.length + 1 - MAX_UNDO_LENGTH);
       }
-      past.push(unit);
+      this.past.push(unit);
     },
-    undoShift({ past, future }) {
-      if (past.length) {
-        if (future.length >= MAX_UNDO_LENGTH) {
-          future.shift();
+    _undoShift() {
+      if (this.past.length) {
+        if (this.future.length >= MAX_UNDO_LENGTH) {
+          this.future.shift();
         }
-        future.push(past.pop());
+        this.future.push(this.past.pop());
       }
     },
-    redoShift({ past, future }) {
-      if (future.length) {
-        if (past.length >= MAX_UNDO_LENGTH) {
-          past.shift();
+    _redoShift() {
+      if (this.future.length) {
+        if (this.past.length >= MAX_UNDO_LENGTH) {
+          this.past.shift();
         }
-        past.push(future.pop());
+        this.past.push(this.future.pop());
       }
     },
-  },
-  actions: {
-    removeItems({ commit, state }, ids) {
-      commit(
-        "pushChange",
+    removeItems(ids) {
+      this._pushChange(
         ids.map((id) => ({
-          before: JSON.stringify(state.data.items[id] || null),
+          before: JSON.stringify(this.data.items[id] || null),
           after: JSON.stringify(null),
         })),
       );
 
-      commit("applyChange", {
+      this.applyChange({
         remove: ids,
       });
     },
-    updateItems({ commit, state }, items) {
-      commit(
-        "pushChange",
+    updateItems(items) {
+      this._pushChange(
         items.map((item) => {
-          const before = state.data.items[item.id];
+          const before = this.data.items[item.id];
           return {
             before: JSON.stringify(before || null),
             after: JSON.stringify({ ...before, ...item }),
@@ -223,40 +198,41 @@ export const topology = {
         }),
       );
 
-      commit("applyChange", {
+      this.applyChange({
         update: items,
       });
     },
-    replaceItems({ commit, state }, items) {
-      commit(
-        "pushChange",
+    replaceItems(items) {
+      this._pushChange(
         items.map((item) => ({
-          before: JSON.stringify(state.data.items[item.id] || null),
+          before: JSON.stringify(this.data.items[item.id] || null),
           after: JSON.stringify(item),
         })),
       );
 
-      commit("applyChange", {
+      this.applyChange({
         replace: items,
       });
     },
-    undo({ commit, state }) {
-      const unit = state.past[state.past.length - 1];
+    undo() {
+      const unit = this.past[this.past.length - 1];
       if (unit) {
-        commit("undoShift");
-        commit("applyChange", prepareUndoRedoChange(unit));
+        this._undoShift();
+        this.applyChange(prepareUndoRedoChange(unit));
       } else {
         throw new Error("Nothing to undo.");
       }
     },
-    redo({ commit, state }) {
-      const unit = state.future[state.future.length - 1];
+    redo() {
+      const unit = this.future[this.future.length - 1];
       if (unit) {
-        commit("redoShift");
-        commit(
-          "applyChange",
+        this._redoShift();
+        this.applyChange(
           prepareUndoRedoChange(
-            unit.map(({ after, before }) => ({ after: before, before: after })),
+            unit.map(({ after, before }) => ({
+              after: before,
+              before: after,
+            })),
           ),
         );
       } else {
@@ -264,4 +240,4 @@ export const topology = {
       }
     },
   },
-};
+});

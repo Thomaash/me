@@ -1,34 +1,41 @@
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useTopologyStore as useRawTopologyStore } from "@/store/topologyStore";
+import { useAppStore } from "@/store/appStore";
 
 export function useTopologyStore() {
-  const store = useStore();
+  const topologyStore = useRawTopologyStore();
+  const appStore = useAppStore();
+
   return {
-    // Topology getters
-    data: computed(() => store.getters["topology/data"]),
-    canUndo: computed(() => store.getters["topology/canUndo"]),
-    canRedo: computed(() => store.getters["topology/canRedo"]),
-    boundingBox: computed(() => store.getters["topology/boundingBox"]),
+    // Topology state and getters (as computed refs)
+    data: computed(() => topologyStore.data),
+    past: computed(() => topologyStore.past),
+    future: computed(() => topologyStore.future),
+    canUndo: computed(() => topologyStore.canUndo),
+    canRedo: computed(() => topologyStore.canRedo),
+    boundingBox: computed(() => topologyStore.boundingBox),
 
-    // Root state
-    loading: computed(() => store.state.loading),
-    working: computed(() => store.state.working),
-    alert: computed(() => store.state.alert),
-    isUpdateAvailable: computed(() => store.state.isUpdateAvailable),
+    // App state (as computed refs)
+    loading: computed(() => appStore.loading),
+    working: computed(() => appStore.working),
+    alert: computed(() => appStore.alert),
+    isUpdateAvailable: computed(() => appStore.isUpdateAvailable),
 
-    // Root mutations (as functions)
-    setWorking: (payload) => store.commit("setWorking", payload),
-    setAlert: (payload) => store.commit("setAlert", payload),
-    clearAlert: () => store.commit("clearAlert"),
+    // App actions (delegating through store so spies work)
+    setWorking: (...args) => appStore.setWorking(...args),
+    setAlert: (...args) => appStore.setAlert(...args),
+    clearAlert: (...args) => appStore.clearAlert(...args),
+    loaded: (...args) => appStore.loaded(...args),
+    setUpdateAvailable: (...args) => appStore.setUpdateAvailable(...args),
 
-    // Topology actions
-    dispatch: (action, payload) =>
-      store.dispatch(`topology/${action}`, payload),
-    commitTopology: (mutation, payload) =>
-      store.commit(`topology/${mutation}`, payload),
-    importData: (data) => store.commit("topology/importData", data),
-
-    // For components that still need store.subscribe (VisCanvas)
-    subscribe: (fn) => store.subscribe(fn),
+    // Topology actions (delegating through store so spies work)
+    importData: (...args) => topologyStore.importData(...args),
+    setValues: (...args) => topologyStore.setValues(...args),
+    applyChange: (...args) => topologyStore.applyChange(...args),
+    removeItems: (...args) => topologyStore.removeItems(...args),
+    updateItems: (...args) => topologyStore.updateItems(...args),
+    replaceItems: (...args) => topologyStore.replaceItems(...args),
+    undo: (...args) => topologyStore.undo(...args),
+    redo: (...args) => topologyStore.redo(...args),
   };
 }

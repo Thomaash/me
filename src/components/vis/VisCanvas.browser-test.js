@@ -2,11 +2,11 @@ import { describe, it, vi } from "vitest";
 import { nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import VisCanvas from "@/components/vis/VisCanvas.vue";
 import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
 
-function createMockStore({ items, zeroBoundingBox = false } = {}) {
+function createTestPinia({ items, zeroBoundingBox = false } = {}) {
   const defaultItems = {
     h1: {
       id: "h1",
@@ -16,80 +16,39 @@ function createMockStore({ items, zeroBoundingBox = false } = {}) {
       y: 0,
     },
   };
-  return createStore({
-    state() {
-      return {
-        loading: false,
-        working: false,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+  };
+  pinia.state.value.topology = {
+    data: {
+      items: items || defaultItems,
+      projectName: "Test",
+      startScript: "",
     },
-    mutations: {
-      clearAlert() {},
-      setWorking() {},
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: {
-              items: items || defaultItems,
-            },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          data: (s) => s.data,
-          canUndo: () => 0,
-          canRedo: () => 0,
-          boundingBox: () =>
-            zeroBoundingBox
-              ? () => ({
-                  sX: 0,
-                  eX: 0,
-                  sY: 0,
-                  eY: 0,
-                  width: 0,
-                  height: 0,
-                  empty: true,
-                })
-              : () => ({
-                  sX: 0,
-                  eX: 100,
-                  sY: 0,
-                  eY: 100,
-                  width: 100,
-                  height: 100,
-                  empty: false,
-                }),
-        },
-        mutations: {
-          importData() {},
-          applyChange() {},
-        },
-        actions: {
-          updateItems() {},
-          removeItems() {},
-          replaceItems() {},
-        },
-      },
-    },
-  });
+    past: [],
+    future: [],
+  };
+  if (zeroBoundingBox) {
+    // With no items having coordinates, the boundingBox getter will return empty/zero
+    pinia.state.value.topology.data.items = {};
+  }
+  return pinia;
 }
 
 function mountVisCanvas({ dark = false, items, zeroBoundingBox = false } = {}) {
   const vuetify = createVuetify();
-  const store = createMockStore({ items, zeroBoundingBox });
+  const pinia = createTestPinia({ items, zeroBoundingBox });
   return mount(VisCanvas, {
     attachTo: document.body,
     props: {
       dark,
     },
     global: {
-      plugins: [vuetify, store],
+      plugins: [vuetify, pinia],
     },
   });
 }
@@ -424,7 +383,7 @@ describe.concurrent("VisCanvas", () => {
   });
 
   describe("mounted lifecycle", () => {
-    it("creates Network instance and subscribes to store mutations", ({
+    it("creates Network instance and subscribes to store actions", ({
       expect,
     }) => {
       const wrapper = mountVisCanvas();
@@ -477,7 +436,7 @@ describe.concurrent("VisCanvas", () => {
   });
 
   describe("storeActions computed", () => {
-    it("topology/importData action calls replaceItems", ({ expect }) => {
+    it("importData action calls replaceItems", ({ expect }) => {
       const items = {
         s1: {
           id: "s1",
@@ -493,14 +452,14 @@ describe.concurrent("VisCanvas", () => {
       const replaceItemsSpy = vi.spyOn(vm, "replaceItems");
 
       // Trigger the importData action handler
-      vm.storeActions["topology/importData"]();
+      vm.storeActions["importData"]();
 
       expect(replaceItemsSpy).toHaveBeenCalledOnce();
 
       wrapper.unmount();
     });
 
-    it("topology/applyChange action updates, replaces and removes items", ({
+    it("applyChange action updates, replaces and removes items", ({
       expect,
     }) => {
       const items = {
@@ -551,7 +510,7 @@ describe.concurrent("VisCanvas", () => {
       // Update includes both a node-type (switch) and an edge-type (link e1)
       // Replace includes both a node-type (host h2) and an edge-type (link e2)
       // This covers both branches: isEdge true and false in update and replace
-      vm.storeActions["topology/applyChange"]({
+      vm.storeActions["applyChange"]({
         update: [
           {
             id: "s1",

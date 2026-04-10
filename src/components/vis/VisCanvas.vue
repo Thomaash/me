@@ -12,7 +12,7 @@
 defineOptions({ name: "VisCanvas" });
 
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-import { useStore } from "vuex";
+import { useTopologyStore } from "@/store/topologyStore";
 import {
   isEdge,
   buildGroupColor,
@@ -44,7 +44,7 @@ const props = defineProps({
 
 const emit = defineEmits(["ready"]);
 
-const store = useStore();
+const topologyStore = useTopologyStore();
 
 // Template refs
 const container = ref(null);
@@ -61,8 +61,8 @@ let nodes = null;
 let edges = null;
 
 // Store getters
-const data = computed(() => store.getters["topology/data"]);
-const boundingBox = computed(() => store.getters["topology/boundingBox"]);
+const data = computed(() => topologyStore.data);
+const boundingBox = computed(() => topologyStore.boundingBox);
 
 // Computed
 const theme = computed(() => ({
@@ -358,10 +358,10 @@ const exposedApi = {
 
 // Add storeActions after exposedApi is defined (references exposedApi methods)
 const storeActions = computed(() => ({
-  "topology/importData": () => {
+  importData: () => {
     exposedApi.replaceItems();
   },
-  "topology/applyChange": ({ remove, update, replace }) => {
+  applyChange: ({ remove, update, replace }) => {
     const ids = [
       ...(remove || []),
       ...[...(update || []), ...(replace || [])].map((item) => item.id),
@@ -468,8 +468,13 @@ onMounted(() => {
   exposedApi.updateLabels();
 
   cleanUpCallbacks.value.push(
-    store.subscribe(({ type, payload }) => {
-      (storeActions.value[type] || (() => {}))(payload);
+    topologyStore.$onAction(({ name, args, after }) => {
+      after(() => {
+        const handler = storeActions.value[name];
+        if (handler) {
+          handler(...args);
+        }
+      });
     }),
   );
 

@@ -48,6 +48,8 @@ export default defineConfig({
             "antlr4",
             "jspdf",
             "jspdf-autotable",
+            "localforage",
+            "pinia",
             "uuid",
             "vis-data/peer",
             "vis-network/peer",
@@ -82,7 +84,6 @@ export default defineConfig({
             "vuetify/components/VTextarea",
             "vuetify/components/VToolbar",
             "vuetify/components/transitions",
-            "vuex",
           ],
         },
         test: {

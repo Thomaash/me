@@ -1,0 +1,65 @@
+import { describe, it, expect, beforeEach } from "vitest";
+import { setActivePinia, createPinia } from "pinia";
+import { useAppStore } from "./appStore";
+
+beforeEach(() => {
+  setActivePinia(createPinia());
+});
+
+describe("appStore", () => {
+  it("has correct initial state", () => {
+    const store = useAppStore();
+    expect(store.loading).toBe(true);
+    expect(store.working).toBe(false);
+    expect(store.isUpdateAvailable).toBe(false);
+    expect(store.alert).toEqual({ show: false });
+  });
+
+  it("loaded sets loading to false", () => {
+    const store = useAppStore();
+    store.loaded();
+    expect(store.loading).toBe(false);
+  });
+
+  describe("setWorking", () => {
+    it("sets working to {curr, max} when both are numbers", () => {
+      const store = useAppStore();
+      store.setWorking({ working: true, curr: 3, max: 10 });
+      expect(store.working).toEqual({ curr: 3, max: 10 });
+    });
+
+    it.each([
+      ["curr is NaN", { working: true, curr: "abc", max: 10 }, true],
+      ["max is NaN", { working: true, curr: 3, max: "abc" }, true],
+      ["both are NaN", { working: false, curr: "a", max: "b" }, false],
+      ["working is false", { working: false }, false],
+    ])("sets working to boolean when %s", (_label, payload, expected) => {
+      const store = useAppStore();
+      store.setWorking(payload);
+      expect(store.working).toBe(expected);
+    });
+  });
+
+  it("setAlert sets alert to {show: true, type, text}", () => {
+    const store = useAppStore();
+    store.setAlert({ type: "error", text: "Something failed" });
+    expect(store.alert).toEqual({
+      show: true,
+      type: "error",
+      text: "Something failed",
+    });
+  });
+
+  it("clearAlert sets alert.show to false", () => {
+    const store = useAppStore();
+    store.setAlert({ type: "error", text: "err" });
+    store.clearAlert();
+    expect(store.alert.show).toBe(false);
+  });
+
+  it("setUpdateAvailable sets isUpdateAvailable to true", () => {
+    const store = useAppStore();
+    store.setUpdateAvailable();
+    expect(store.isUpdateAvailable).toBe(true);
+  });
+});

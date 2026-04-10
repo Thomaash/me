@@ -1,13 +1,21 @@
-import { createStore } from "vuex";
+import { useAppStore } from "./appStore";
+import { useTopologyStore } from "./topologyStore";
+import { pinia } from "./pinia";
+import { ready } from "./persist";
 
-import { config, ready } from "./config";
+export { pinia };
 
-export const store = createStore(config);
+// Must be called after app.use(pinia) so that Pinia plugins (persist, sync)
+// are active when stores are first created.
+export function initStores() {
+  useTopologyStore(pinia);
+  const appStore = useAppStore(pinia);
 
-ready
-  .then(() => {
-    return store.commit("loaded");
-  })
-  .catch((error) => {
-    console.error(error, "Failed to load store from local storage");
-  });
+  ready
+    .then(() => {
+      return appStore.loaded();
+    })
+    .catch((error) => {
+      console.error(error, "Failed to load store from local storage");
+    });
+}

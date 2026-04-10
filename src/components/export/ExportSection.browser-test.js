@@ -2,8 +2,10 @@ import { describe, it, vi, beforeEach, afterEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import { nextTick, h, defineComponent } from "vue";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import ExportSection from "@/components/export/ExportSection.vue";
+import { useTopologyStore } from "@/store/topologyStore";
+import { useAppStore } from "@/store/appStore";
 import exporter from "@/exporter";
 import Builder from "@/builder";
 import AddressingPlan from "@/builder/AddressingPlan";
@@ -34,59 +36,23 @@ vi.mock("@/builder/AddressingPlan", () => {
   return { default: MockAddressingPlan };
 });
 
-function createMockStore({
+function createTestPinia({
   working = false,
   projectName = "test-project",
 } = {}) {
-  return createStore({
-    state() {
-      return {
-        loading: false,
-        working,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
-    },
-    mutations: {
-      setWorking(state, val) {
-        state.working = val.working ?? val;
-      },
-      setAlert(state, val) {
-        state.alert = val;
-      },
-      clearAlert(state) {
-        state.alert = { show: false };
-      },
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: { items: {}, projectName },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          data: (s) => s.data,
-          canUndo: (s) => s.past.length,
-          canRedo: (s) => s.future.length,
-          boundingBox: () => () => ({
-            sX: 0,
-            eX: 100,
-            sY: 0,
-            eY: 100,
-            width: 100,
-            height: 100,
-          }),
-        },
-        mutations: {
-          importData() {},
-        },
-      },
-    },
-  });
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working,
+    isUpdateAvailable: false,
+    alert: { show: false },
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName, startScript: "" },
+    past: [],
+    future: [],
+  };
+  return pinia;
 }
 
 function findButtonByText(wrapper, text) {
@@ -100,7 +66,7 @@ function mountExportSection({
   toTileBlobsFn,
 } = {}) {
   const vuetify = createVuetify();
-  const store = createMockStore({ working, projectName });
+  const pinia = createTestPinia({ working, projectName });
   const imageConfigStub = defineComponent({
     name: "ImageConfig",
     emits: ["render"],
@@ -126,17 +92,20 @@ function mountExportSection({
       return h("div");
     },
   });
+  const topologyStore = useTopologyStore(pinia);
+  const appStore = useAppStore(pinia);
   return {
     wrapper: mount(ExportSection, {
       global: {
-        plugins: [vuetify, store],
+        plugins: [vuetify, pinia],
         stubs: {
           ImageConfig: imageConfigStub,
           VisCanvas: visCanvasStub,
         },
       },
     }),
-    store,
+    topologyStore,
+    appStore,
   };
 }
 
@@ -163,7 +132,7 @@ afterEach(() => {
 });
 
 describe.concurrent("ExportSection", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", ({
+  it("mounts successfully in Vuetify context with Pinia store", ({
     expect,
   }) => {
     const { wrapper } = mountExportSection();
@@ -209,20 +178,19 @@ describe("ExportSection download methods", () => {
   it("downloadJSON exports data, shows success alert, and triggers file download", async ({
     expect,
   }) => {
-    const { wrapper, store } = mountExportSection();
+    const { wrapper, topologyStore, appStore } = mountExportSection();
 
     const jsonBtn = findButtonByText(wrapper, "JSON");
     await jsonBtn.trigger("click");
     await flushPromises();
 
-    expect(exporter.exportData).toHaveBeenCalledWith(
-      store.getters["topology/data"],
-    );
-    expect(store.state.alert).toEqual({
+    expect(exporter.exportData).toHaveBeenCalledWith(topologyStore.data);
+    expect(appStore.alert).toEqual({
+      show: true,
       type: "success",
       text: "Successfully exported.",
     });
-    expect(store.state.working).toBe(false);
+    expect(appStore.working).toBe(false);
     expect(wrapper.emitted("log")).toBeTruthy();
   });
 
@@ -231,35 +199,37 @@ describe("ExportSection download methods", () => {
       throw new Error("export failure");
     });
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const { wrapper, store } = mountExportSection();
+    const { wrapper, appStore } = mountExportSection();
 
     const jsonBtn = findButtonByText(wrapper, "JSON");
     await jsonBtn.trigger("click");
     await flushPromises();
 
-    expect(store.state.alert).toEqual({
+    expect(appStore.alert).toEqual({
+      show: true,
       type: "error",
       text: "Export failed.",
     });
-    expect(store.state.working).toBe(false);
+    expect(appStore.working).toBe(false);
     consoleSpy.mockRestore();
   });
 
   it("downloadScript builds script, shows success alert, and triggers file download", async ({
     expect,
   }) => {
-    const { wrapper, store } = mountExportSection();
+    const { wrapper, appStore } = mountExportSection();
 
     const scriptBtn = findButtonByText(wrapper, "Python 2 script");
     await scriptBtn.trigger("click");
     await flushPromises();
 
     expect(Builder).toHaveBeenCalled();
-    expect(store.state.alert).toEqual({
+    expect(appStore.alert).toEqual({
+      show: true,
       type: "success",
       text: "Script built.",
     });
-    expect(store.state.working).toBe(false);
+    expect(appStore.working).toBe(false);
     const logEmissions = wrapper.emitted("log");
     expect(logEmissions.length).toBeGreaterThanOrEqual(2);
   });
@@ -271,35 +241,37 @@ describe("ExportSection download methods", () => {
       throw new Error("build failure");
     });
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const { wrapper, store } = mountExportSection();
+    const { wrapper, appStore } = mountExportSection();
 
     const scriptBtn = findButtonByText(wrapper, "Python 2 script");
     await scriptBtn.trigger("click");
     await flushPromises();
 
-    expect(store.state.alert).toEqual({
+    expect(appStore.alert).toEqual({
+      show: true,
       type: "error",
       text: "Script was not built.",
     });
-    expect(store.state.working).toBe(false);
+    expect(appStore.working).toBe(false);
     consoleSpy.mockRestore();
   });
 
   it("downloadAddressingPlan builds plan, saves PDF, and shows success alert", async ({
     expect,
   }) => {
-    const { wrapper, store } = mountExportSection();
+    const { wrapper, appStore } = mountExportSection();
 
     const planBtn = findButtonByText(wrapper, "Addressing plan");
     await planBtn.trigger("click");
     await flushPromises();
 
     expect(AddressingPlan).toHaveBeenCalled();
-    expect(store.state.alert).toEqual({
+    expect(appStore.alert).toEqual({
+      show: true,
       type: "success",
       text: "Addressing plan built.",
     });
-    expect(store.state.working).toBe(false);
+    expect(appStore.working).toBe(false);
   });
 
   it("downloadAddressingPlan shows error alert when build fails", async ({
@@ -309,35 +281,33 @@ describe("ExportSection download methods", () => {
       throw new Error("plan failure");
     });
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const { wrapper, store } = mountExportSection();
+    const { wrapper, appStore } = mountExportSection();
 
     const planBtn = findButtonByText(wrapper, "Addressing plan");
     await planBtn.trigger("click");
     await flushPromises();
 
-    expect(store.state.alert).toEqual({
+    expect(appStore.alert).toEqual({
+      show: true,
       type: "error",
       text: "Addressing plan was not built.",
     });
-    expect(store.state.working).toBe(false);
+    expect(appStore.working).toBe(false);
     consoleSpy.mockRestore();
   });
 
   it("working setter clears alert when set to true and commits working state", async ({
     expect,
   }) => {
-    const { store } = mountExportSection();
-    store.commit("setAlert", { type: "error", text: "old error" });
+    const { appStore } = mountExportSection();
+    appStore.setAlert({ type: "error", text: "old error" });
 
-    // Trigger working=true by clicking a button that sets working=true
-    // The JSON button sets working=true in downloadJSON, which clears the alert
-    // But it also sets working=false at the end. Instead, use store to test the behavior:
-    // Set working via store to simulate the computed setter behavior
-    store.commit("clearAlert");
-    store.commit("setWorking", { working: true });
+    // Clear alert and set working via Pinia store actions
+    appStore.clearAlert();
+    appStore.setWorking({ working: true });
 
-    expect(store.state.alert).toEqual({ show: false });
-    expect(store.state.working).toBe(true);
+    expect(appStore.alert.show).toBe(false);
+    expect(appStore.working).toBe(true);
   });
 
   it("getFilename returns project name with extension via download anchor", async ({
@@ -403,7 +373,7 @@ describe("ExportSection downloadImage", () => {
     expect,
   }) => {
     const toTileBlobsFn = vi.fn(async () => {});
-    const { wrapper, store } = mountExportSection({ toTileBlobsFn });
+    const { wrapper, appStore } = mountExportSection({ toTileBlobsFn });
 
     const imageConfig = wrapper.findComponent({ name: "ImageConfig" });
     imageConfig.vm.$emit("render", {
@@ -414,9 +384,9 @@ describe("ExportSection downloadImage", () => {
     await flushPromises();
     await nextTick();
     // Wait for VisCanvas ready event and rendering timeout
-    await expect.poll(() => store.state.alert.type).toBe("success");
-    expect(store.state.alert.text).toContain("Image rendered");
-    expect(store.state.working).toBe(false);
+    await expect.poll(() => appStore.alert.type).toBe("success");
+    expect(appStore.alert.text).toContain("Image rendered");
+    expect(appStore.working).toBe(false);
     expect(toTileBlobsFn).toHaveBeenCalledWith(
       expect.objectContaining({
         canvasHeight: 600,
@@ -432,7 +402,7 @@ describe("ExportSection downloadImage", () => {
     expect,
   }) => {
     const toTileBlobsFn = vi.fn(async () => {});
-    const { wrapper, store } = mountExportSection({ toTileBlobsFn });
+    const { wrapper, appStore } = mountExportSection({ toTileBlobsFn });
 
     const imageConfig = wrapper.findComponent({ name: "ImageConfig" });
     imageConfig.vm.$emit("render", {
@@ -442,8 +412,8 @@ describe("ExportSection downloadImage", () => {
     });
     await flushPromises();
     await nextTick();
-    await expect.poll(() => store.state.alert.type).toBe("success");
-    expect(store.state.alert.text).toContain("Image rendered");
+    await expect.poll(() => appStore.alert.type).toBe("success");
+    expect(appStore.alert.text).toContain("Image rendered");
     expect(toTileBlobsFn).toHaveBeenCalledWith(
       expect.objectContaining({
         canvasHeight: 1200,
@@ -462,7 +432,7 @@ describe("ExportSection downloadImage", () => {
     const toTileBlobsFn = vi.fn(async () => {
       throw new Error("render failure");
     });
-    const { wrapper, store } = mountExportSection({ toTileBlobsFn });
+    const { wrapper, appStore } = mountExportSection({ toTileBlobsFn });
 
     const imageConfig = wrapper.findComponent({ name: "ImageConfig" });
     imageConfig.vm.$emit("render", {
@@ -472,9 +442,9 @@ describe("ExportSection downloadImage", () => {
     });
     await flushPromises();
     await nextTick();
-    await expect.poll(() => store.state.alert.type).toBe("error");
-    expect(store.state.alert.text).toContain("Image rendering failed");
-    expect(store.state.working).toBe(false);
+    await expect.poll(() => appStore.alert.type).toBe("error");
+    expect(appStore.alert.text).toContain("Image rendering failed");
+    expect(appStore.working).toBe(false);
     consoleSpy.mockRestore();
   });
 

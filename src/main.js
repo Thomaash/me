@@ -9,7 +9,7 @@ import { aliases, mdi } from "vuetify/iconsets/mdi";
 
 import App from "./App.vue";
 import { router } from "./router";
-import { store } from "./store";
+import { pinia, initStores } from "./store";
 import { dark, vuetifyDark, vuetifyLight } from "./theme";
 
 import { initServiceWorker } from "./service-worker-init";
@@ -52,7 +52,8 @@ const vuetify = createVuetify({
 
 const app = createApp(App);
 app.use(vuetify);
-app.use(store);
+app.use(pinia);
+initStores();
 app.use(router);
 app.mount("#app");
 

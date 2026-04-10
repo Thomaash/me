@@ -15,7 +15,6 @@
 
 <script setup>
 import { computed } from "vue";
-import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { useTopologyStore } from "@/composables/useTopologyStore";
 
@@ -26,10 +25,9 @@ const props = defineProps({
   },
 });
 
-const store = useStore();
 const route = useRoute();
 const router = useRouter();
-const { canUndo, canRedo } = useTopologyStore();
+const { undo, redo, canUndo, canRedo } = useTopologyStore();
 
 const viewURL = computed(() =>
   route.name.startsWith("Canvas") ? `/view${route.fullPath}` : "/view/canvas",
@@ -44,14 +42,14 @@ const items = computed(() =>
     {
       icon: "mdi-undo",
       text: "Undo",
-      action: () => store.dispatch("topology/undo"),
+      action: () => undo(),
       show: props.undoRedo,
       enabled: canUndo.value,
     },
     {
       icon: "mdi-redo",
       text: "Redo",
-      action: () => store.dispatch("topology/redo"),
+      action: () => redo(),
       show: props.undoRedo,
       enabled: canRedo.value,
     },

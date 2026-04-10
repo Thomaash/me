@@ -1,42 +1,25 @@
 import { describe, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import { createRouter, createMemoryHistory } from "vue-router";
 import TopologyToolbar from "@/components/TopologyToolbar.vue";
+import { useTopologyStore } from "@/store/topologyStore";
 
-function createMockStore({ canUndo = 0, canRedo = 0 } = {}) {
-  return createStore({
-    state() {
-      return {
-        loading: false,
-        working: false,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: { items: {} },
-            past: Array(canUndo).fill(null),
-            future: Array(canRedo).fill(null),
-          };
-        },
-        getters: {
-          canUndo: (s) => s.past.length,
-          canRedo: (s) => s.future.length,
-          data: (s) => s.data,
-        },
-        actions: {
-          undo() {},
-          redo() {},
-        },
-      },
-    },
-  });
+function createTestPinia({ canUndo = 0, canRedo = 0 } = {}) {
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName: "Test", startScript: "" },
+    past: Array(canUndo).fill(null),
+    future: Array(canRedo).fill(null),
+  };
+  return pinia;
 }
 
 function createMockRouter() {
@@ -75,21 +58,22 @@ async function mountToolbar({
   routeFullPath = "/canvas",
 } = {}) {
   const vuetify = createVuetify();
-  const store = createMockStore({ canUndo, canRedo });
+  const pinia = createTestPinia({ canUndo, canRedo });
   const router = createMockRouter();
   await router.push(routeFullPath);
   await router.isReady();
   const wrapper = mount(TopologyToolbar, {
     props: { undoRedo },
     global: {
-      plugins: [vuetify, store, router],
+      plugins: [vuetify, pinia, router],
     },
   });
-  return { wrapper, store, router };
+  const topologyStore = useTopologyStore(pinia);
+  return { wrapper, topologyStore, router };
 }
 
 describe("TopologyToolbar", () => {
-  it("mounts successfully in Vuetify context with mock Vuex store", async ({
+  it("mounts successfully in Vuetify context with Pinia store", async ({
     expect,
   }) => {
     const { wrapper } = await mountToolbar();
@@ -164,14 +148,16 @@ describe("TopologyToolbar", () => {
     expect(buttons.length).toBeGreaterThan(0);
   });
 
-  it("dispatches topology/undo when undo button is clicked", async ({
+  it("calls topologyStore.undo when undo button is clicked", async ({
     expect,
   }) => {
-    const { wrapper, store } = await mountToolbar({
+    const { wrapper, topologyStore } = await mountToolbar({
       undoRedo: true,
       canUndo: 3,
     });
-    const dispatchSpy = vi.spyOn(store, "dispatch");
+    const undoSpy = vi
+      .spyOn(topologyStore, "undo")
+      .mockImplementation(() => {});
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     const undoBtn = buttons.find((btn) => {
@@ -180,17 +166,19 @@ describe("TopologyToolbar", () => {
     });
     await undoBtn.trigger("click");
 
-    expect(dispatchSpy).toHaveBeenCalledWith("topology/undo");
+    expect(undoSpy).toHaveBeenCalled();
   });
 
-  it("dispatches topology/redo when redo button is clicked", async ({
+  it("calls topologyStore.redo when redo button is clicked", async ({
     expect,
   }) => {
-    const { wrapper, store } = await mountToolbar({
+    const { wrapper, topologyStore } = await mountToolbar({
       undoRedo: true,
       canRedo: 2,
     });
-    const dispatchSpy = vi.spyOn(store, "dispatch");
+    const redoSpy = vi
+      .spyOn(topologyStore, "redo")
+      .mockImplementation(() => {});
 
     const buttons = wrapper.findAllComponents({ name: "VBtn" });
     const redoBtn = buttons.find((btn) => {
@@ -199,7 +187,7 @@ describe("TopologyToolbar", () => {
     });
     await redoBtn.trigger("click");
 
-    expect(dispatchSpy).toHaveBeenCalledWith("topology/redo");
+    expect(redoSpy).toHaveBeenCalled();
   });
 
   it("opens view URL based on route when open view popup button is clicked", async ({

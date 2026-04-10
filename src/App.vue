@@ -68,10 +68,10 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
+import { useAppStore } from "@/store/appStore";
 
-const store = useStore();
+const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
 
@@ -95,7 +95,7 @@ const drawerItems = computed(() =>
 );
 
 const progress = computed(() => {
-  const working = store.state.working;
+  const working = appStore.working;
   return {
     show: !!working,
     indeterminate: working === true,
@@ -106,7 +106,7 @@ const progress = computed(() => {
   };
 });
 
-const alert = computed(() => store.state.alert);
+const alert = computed(() => appStore.alert);
 
 const showAlert = computed({
   get() {
@@ -114,7 +114,7 @@ const showAlert = computed({
   },
   set(value) {
     if (value === false) {
-      store.commit("clearAlert");
+      appStore.clearAlert();
     }
   },
 });

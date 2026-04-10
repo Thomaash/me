@@ -2,63 +2,55 @@ import { describe, it, vi, beforeEach } from "vitest";
 
 const flushPromises = () => new Promise((r) => setTimeout(r, 0));
 
-let mockCommit;
-let mockStore;
-let mockConfig;
+let mockLoaded;
 let resolveReady;
 let rejectReady;
-let mockCreateStore;
 
 beforeEach(() => {
   vi.resetModules();
-  mockCommit = vi.fn();
-  mockStore = { commit: mockCommit };
-  mockConfig = { state: { loading: true } };
-  mockCreateStore = vi.fn(function () {
-    return mockStore;
-  });
+  mockLoaded = vi.fn();
 
-  vi.doMock("vuex", () => ({
-    createStore: mockCreateStore,
+  vi.doMock("@/store/pinia", () => ({
+    pinia: {},
+  }));
+
+  vi.doMock("@/store/appStore", () => ({
+    useAppStore: () => ({
+      loaded: mockLoaded,
+    }),
+  }));
+
+  vi.doMock("@/store/topologyStore", () => ({
+    useTopologyStore: () => ({}),
   }));
 });
 
-function mockConfigWithPromise(promiseFactory) {
-  vi.doMock("@/store/config", () => ({
-    config: mockConfig,
+function mockReadyWithPromise(promiseFactory) {
+  vi.doMock("@/store/persist", () => ({
     ready: promiseFactory(),
   }));
 }
 
-describe("vuex store initialization and ready lifecycle", () => {
-  it("creates a Vuex store with the shared config", async ({ expect }) => {
-    mockConfigWithPromise(() => new Promise(() => {}));
-
-    const { store } = await import("@/store/index.js");
-
-    expect(mockCreateStore).toHaveBeenCalledWith(mockConfig);
-    expect(store).toBeDefined();
-    expect(store.commit).toBe(mockCommit);
-  });
-
-  it("commits loaded mutation when the ready promise resolves", async ({
+describe("store initialization and ready lifecycle", () => {
+  it("calls appStore.loaded() when the ready promise resolves", async ({
     expect,
   }) => {
-    mockConfigWithPromise(
+    mockReadyWithPromise(
       () =>
         new Promise((resolve) => {
           resolveReady = resolve;
         }),
     );
 
-    await import("@/store/index.js");
+    const { initStores } = await import("@/store/index.js");
+    initStores();
 
-    expect(mockCommit).not.toHaveBeenCalled();
+    expect(mockLoaded).not.toHaveBeenCalled();
 
     resolveReady();
     await flushPromises();
 
-    expect(mockCommit).toHaveBeenCalledWith("loaded");
+    expect(mockLoaded).toHaveBeenCalled();
   });
 
   it("logs error to console.error when the ready promise rejects", async ({
@@ -69,14 +61,15 @@ describe("vuex store initialization and ready lifecycle", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
 
-    mockConfigWithPromise(
+    mockReadyWithPromise(
       () =>
         new Promise((_resolve, reject) => {
           rejectReady = reject;
         }),
     );
 
-    await import("@/store/index.js");
+    const { initStores } = await import("@/store/index.js");
+    initStores();
 
     rejectReady(testError);
     await flushPromises();

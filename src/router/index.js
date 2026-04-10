@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { store } from "@/store";
+import { pinia } from "@/store/pinia";
+import { useAppStore } from "@/store/appStore";
 
 function selectionTitleSuffix(ids) {
   if (!ids) {
@@ -188,8 +189,9 @@ router.beforeEach((to, from, next) => {
     from.matched.length === 0 ||
     to.matched[0].name !== from.matched[0].name
   ) {
-    store.commit("clearAlert");
-    store.commit("setWorking", { working: false });
+    const appStore = useAppStore(pinia);
+    appStore.clearAlert();
+    appStore.setWorking({ working: false });
   }
 
   next();

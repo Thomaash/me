@@ -2,7 +2,7 @@ import { describe, it, afterEach, vi } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
-import { createStore } from "vuex";
+import { createPinia } from "pinia";
 import { createRouter, createMemoryHistory } from "vue-router";
 import CanvasPage from "@/components/CanvasPage.vue";
 
@@ -50,55 +50,22 @@ const EditStub = defineComponent({
   },
 });
 
-function createMockStore({ loading = false } = {}) {
-  return createStore({
-    state() {
-      return {
-        loading,
-        working: false,
-        isUpdateAvailable: false,
-        alert: { show: false },
-      };
-    },
-    mutations: {
-      clearAlert() {},
-      setWorking() {},
-    },
-    modules: {
-      topology: {
-        namespaced: true,
-        state() {
-          return {
-            data: { items: {} },
-            past: [],
-            future: [],
-          };
-        },
-        getters: {
-          data: (s) => s.data,
-          canUndo: () => 0,
-          canRedo: () => 0,
-          boundingBox: () => () => ({
-            sX: 0,
-            eX: 100,
-            sY: 0,
-            eY: 100,
-            width: 100,
-            height: 100,
-            empty: false,
-          }),
-        },
-        mutations: {
-          importData() {},
-        },
-        actions: {
-          updateItems() {},
-          removeItems() {},
-          replaceItems() {},
-        },
-      },
-    },
-  });
+function createTestPinia(overrides = {}) {
+  const pinia = createPinia();
+  pinia.state.value.app = {
+    loading: false,
+    working: false,
+    isUpdateAvailable: false,
+    alert: { show: false },
+    ...overrides.app,
+  };
+  pinia.state.value.topology = {
+    data: { items: {}, projectName: "Test", startScript: "" },
+    past: [],
+    future: [],
+    ...overrides.topology,
+  };
+  return pinia;
 }
 
 let wrapper;
@@ -109,7 +76,7 @@ afterEach(() => {
 
 async function mountCanvasPage({ loading = false, isView = false } = {}) {
   const vuetify = createVuetify();
-  const store = createMockStore({ loading });
+  const pinia = createTestPinia({ app: { loading }, topology: { loading } });
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [{ path: "/", component: CanvasPage, meta: { isView } }],
@@ -119,7 +86,7 @@ async function mountCanvasPage({ loading = false, isView = false } = {}) {
   wrapper = mount(CanvasPage, {
     attachTo: document.body,
     global: {
-      plugins: [vuetify, store, router],
+      plugins: [vuetify, pinia, router],
       stubs: {
         VisContainer: VisContainerStub,
         Edit: EditStub,
