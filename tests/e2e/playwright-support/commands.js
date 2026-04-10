@@ -1,7 +1,6 @@
 import { expect } from "@playwright/test";
 
 export async function meVisClick(
-  page,
   locator,
   { button = 0, x = 0, y = 0, dbl = false } = {},
 ) {
@@ -31,7 +30,7 @@ export async function meVisClick(
 
 export async function meVisAddItem(page, type, position = { x: 150, y: 150 }) {
   await meVisFabClick(page, type);
-  await meVisClick(page, page.locator("[data-cy=vis] canvas"), position);
+  await meVisClick(page.locator("[data-cy=vis] canvas"), position);
 }
 
 export async function meVisFabClick(page, button) {

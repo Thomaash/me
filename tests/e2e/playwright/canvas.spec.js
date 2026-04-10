@@ -42,7 +42,7 @@ test.describe.serial("Canvas", () => {
     const label =
       ++editDialogCounter % 2 === 1 ? "Open edit dialog" : "Reopen edit dialog";
     test(label, async () => {
-      await meVisClick(page, page.locator("[data-cy=vis] canvas"), {
+      await meVisClick(page.locator("[data-cy=vis] canvas"), {
         ...itemPosition,
         dbl: true,
       });
@@ -199,11 +199,7 @@ test.describe.serial("Canvas", () => {
       });
 
       test("Place the item", async () => {
-        await meVisClick(
-          page,
-          page.locator("[data-cy=vis] canvas"),
-          itemPosition,
-        );
+        await meVisClick(page.locator("[data-cy=vis] canvas"), itemPosition);
       });
 
       test("Save the item", async () => {
