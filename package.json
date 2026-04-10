@@ -51,7 +51,7 @@
     "vuex-shared-mutations": "1.0.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "@stryker-mutator/core": "^9.6.0",
     "@stryker-mutator/vitest-runner": "^9.6.0",
     "@vitejs/plugin-vue": "6.0.5",
@@ -70,7 +70,7 @@
     "jsdom": "^29.0.1",
     "lint-staged": "^16.4.0",
     "oxlint": "1.59.0",
-    "playwright": "^1.58.2",
+    "playwright": "^1.59.1",
     "prettier": "3.8.2",
     "start-server-and-test": "3.0.0",
     "vite": "7.3.2",
