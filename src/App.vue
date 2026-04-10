@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onBeforeUnmount, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "@/store/appStore";
 
@@ -127,6 +127,17 @@ watch(
     document.title = newTitle;
   },
   { immediate: true },
+);
+
+const beforeUnloadHandler = (e) => {
+  if (appStore.saveState !== "idle") {
+    e.preventDefault();
+    e.returnValue = ""; // required for Chrome
+  }
+};
+onMounted(() => window.addEventListener("beforeunload", beforeUnloadHandler));
+onBeforeUnmount(() =>
+  window.removeEventListener("beforeunload", beforeUnloadHandler),
 );
 </script>
 

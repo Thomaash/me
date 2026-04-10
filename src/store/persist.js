@@ -1,5 +1,6 @@
 import { toRaw } from "vue";
 import localforage from "localforage";
+import { useAppStore } from "@/store/appStore";
 
 const storage = localforage.createInstance({
   name: "Vuex",
@@ -21,13 +22,18 @@ export function persistPlugin({ store, options }) {
     return;
   }
 
+  const appStore = useAppStore();
+  let restoring = false;
+
   storage
     .getItem(STORAGE_KEY)
     .then((saved) => {
       if (saved && saved.topology) {
+        restoring = true;
         store.$patch((state) => {
           Object.assign(state, saved.topology);
         });
+        restoring = false;
       }
       return resolveReady();
     })
@@ -37,12 +43,23 @@ export function persistPlugin({ store, options }) {
 
   let timeout = null;
   store.$subscribe(() => {
+    if (restoring) {
+      return;
+    }
+    appStore.markPending();
     clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      storage.setItem(STORAGE_KEY, {
-        topology: toRaw(store.$state),
-      });
-      timeout = null;
+    timeout = setTimeout(async () => {
+      appStore.markSaving();
+      try {
+        await storage.setItem(STORAGE_KEY, {
+          topology: toRaw(store.$state),
+        });
+        appStore.markSaved();
+      } catch (err) {
+        appStore.markSaveError(err);
+      } finally {
+        timeout = null;
+      }
     }, DEBOUNCE_MS);
   });
 }

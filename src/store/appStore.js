@@ -6,6 +6,7 @@ export const useAppStore = defineStore("app", {
     working: false,
     isUpdateAvailable: false,
     alert: { show: false },
+    saveState: "idle", // "idle" | "pending" | "saving" | "error"
   }),
   actions: {
     loaded() {
@@ -26,6 +27,18 @@ export const useAppStore = defineStore("app", {
     },
     setUpdateAvailable() {
       this.isUpdateAvailable = true;
+    },
+    markPending() {
+      this.saveState = "pending";
+    },
+    markSaving() {
+      this.saveState = "saving";
+    },
+    markSaved() {
+      this.saveState = "idle";
+    },
+    markSaveError(_err) {
+      this.saveState = "error";
     },
   },
 });

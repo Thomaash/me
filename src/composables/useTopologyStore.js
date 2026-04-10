@@ -20,6 +20,7 @@ export function useTopologyStore() {
     working: computed(() => appStore.working),
     alert: computed(() => appStore.alert),
     isUpdateAvailable: computed(() => appStore.isUpdateAvailable),
+    saveState: computed(() => appStore.saveState),
 
     // App actions (delegating through store so spies work)
     setWorking: (...args) => appStore.setWorking(...args),
