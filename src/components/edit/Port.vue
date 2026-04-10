@@ -23,7 +23,12 @@
           />
         </v-col>
         <v-col cols="12" data-cy="edit-physical">
-          <v-switch v-model="item.physical" color="primary" label="Physical" />
+          <v-switch
+            v-model="item.physical"
+            color="primary"
+            label="Physical"
+            :title="item.physical ? 'Enabled' : 'Disabled'"
+          />
         </v-col>
       </v-row>
     </v-container>
