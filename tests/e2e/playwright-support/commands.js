@@ -151,3 +151,33 @@ export async function meOpen(page) {
     await page.waitForFunction(() => location.hash === "#/home");
   }
 }
+
+export async function meReadPersistedState(page) {
+  return page.evaluate(
+    () =>
+      new Promise((resolve, reject) => {
+        const req = indexedDB.open("Vuex");
+        req.addEventListener("error", () => reject(req.error));
+        req.addEventListener("success", () => {
+          const db = req.result;
+          const tx = db.transaction("vuex-me", "readonly");
+          const get = tx.objectStore("vuex-me").get("vuex-me");
+          get.addEventListener("success", () => resolve(get.result ?? null));
+          get.addEventListener("error", () => reject(get.error));
+        });
+      }),
+  );
+}
+
+export async function meWaitForPersistenceFlush(page, predicate) {
+  await expect
+    .poll(async () => {
+      const state = await meReadPersistedState(page);
+      try {
+        return predicate(state);
+      } catch {
+        return false;
+      }
+    })
+    .toBeTruthy();
+}

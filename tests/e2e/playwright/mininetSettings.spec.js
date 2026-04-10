@@ -5,6 +5,7 @@ import {
   meClickMenu,
   meSetVuetifyInputs,
   meTestVuetifyInputs,
+  meWaitForPersistenceFlush,
 } from "../playwright-support/commands.js";
 
 test.describe.serial("Mininet settings", () => {
@@ -70,6 +71,15 @@ test.describe.serial("Mininet settings", () => {
           checkboxProps,
           selectProps,
         });
+      });
+
+      test("Wait for persistence flush", async () => {
+        await meWaitForPersistenceFlush(
+          page,
+          (s) =>
+            s?.topology?.data?.projectName ===
+            textProps["mininet-settings-project-name"][0],
+        );
       });
 
       test("Navigate away and back", async () => {
