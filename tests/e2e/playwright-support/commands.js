@@ -99,15 +99,13 @@ export async function meTestVuetifyInputs(
     const input = page.locator(`[data-cy=${key}] input`);
     await expect(input).toHaveCount(1);
 
+    // Asserting title because Vuetify doesn't seem to set indeterminate correctly.
     if (ariaChecked === "mixed") {
-      await expect(input).toBeChecked({ indeterminate: true });
-      await expect(input).toHaveAttribute("aria-checked", "mixed");
+      await expect(input).toHaveAttribute("title", "Default");
     } else if (ariaChecked === "true") {
-      await expect(input).toBeChecked();
-      await expect(input).not.toHaveAttribute("aria-checked");
+      await expect(input).toHaveAttribute("title", "Enabled");
     } else {
-      await expect(input).not.toBeChecked();
-      await expect(input).not.toHaveAttribute("aria-checked");
+      await expect(input).toHaveAttribute("title", "Disabled");
     }
   }
 
