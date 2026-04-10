@@ -53,6 +53,13 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
+
+        <template #append>
+          <v-divider />
+          <v-list>
+            <SaveIndicator />
+          </v-list>
+        </template>
       </v-navigation-drawer>
     </template>
 
@@ -70,6 +77,7 @@
 import { ref, computed, watch, onBeforeUnmount, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAppStore } from "@/store/appStore";
+import SaveIndicator from "@/components/SaveIndicator.vue";
 
 const appStore = useAppStore();
 const route = useRoute();

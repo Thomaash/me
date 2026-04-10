@@ -146,7 +146,7 @@ describe("App", () => {
     expect(navDrawer).not.toBeNull();
 
     const drawerItems = document.querySelectorAll(
-      ".v-navigation-drawer .v-list-item",
+      '.v-navigation-drawer [data-cy^="drawer-"]',
     );
     expect(drawerItems.length).toBe(5);
 
