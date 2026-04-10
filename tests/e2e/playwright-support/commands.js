@@ -70,7 +70,7 @@ export async function meSetVuetifyInputs(
 
   for (const [key, { clicks }] of Object.entries(checkboxProps)) {
     for (let i = 0; i < clicks; ++i) {
-      await page.locator(`[data-cy=${key}] input`).click();
+      await page.locator(`[data-cy=${key}] label`).click();
     }
   }
 
