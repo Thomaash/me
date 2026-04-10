@@ -121,8 +121,8 @@ importers:
         specifier: 3.8.2
         version: 3.8.2
       start-server-and-test:
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.2
+        version: 3.0.2
       vite:
         specifier: 7.3.2
         version: 7.3.2(yaml@2.8.3)
@@ -2439,8 +2439,8 @@ packages:
     resolution: {integrity: sha512-yf7OENo23AGJhBriGx0QivY5JP6Y1HbrrDI6WLt6C5auYZXlQrheoY8hD4ibekFKz1HOfE48Ww8kMWMnJD/zcQ==}
     engines: {node: '>=0.1.14'}
 
-  start-server-and-test@3.0.0:
-    resolution: {integrity: sha512-R//IdnWC+H+raB6zJIqw5QbIsMAjjYFwJC/OIJO6kgZljguYe4n4LlA7vkPTO7zoctFlVPfymsNShjcPOIH8nw==}
+  start-server-and-test@3.0.2:
+    resolution: {integrity: sha512-g6v4zPr1RRL5XxXJ+Wnk1GFLb+DGZLjFqse+5lNZ0X7m4SRMC6eOA+AXYboQDfNCEjpnTu0AGrvJb/JTUOg8dQ==}
     engines: {node: ^22 || >=24}
     hasBin: true
 
@@ -2790,8 +2790,8 @@ packages:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
     engines: {node: '>=18'}
 
-  wait-on@9.0.4:
-    resolution: {integrity: sha512-k8qrgfwrPVJXTeFY8tl6BxVHiclK11u72DVKhpybHfUL/K6KM4bdyK9EhIVYGytB5MJe/3lq4Tf0hrjM+pvJZQ==}
+  wait-on@9.0.5:
+    resolution: {integrity: sha512-qgnbHDfDTRIp73ANEJNRW/7kn8CrDUcvZz18xotJQku/P4saTGkbIzvnMZebPmVvVNUiRq1qWAPyqCH+W4H8KA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
@@ -5091,7 +5091,7 @@ snapshots:
   stackblur-canvas@2.7.0:
     optional: true
 
-  start-server-and-test@3.0.0:
+  start-server-and-test@3.0.2:
     dependencies:
       arg: 5.0.2
       bluebird: 3.7.2
@@ -5100,7 +5100,7 @@ snapshots:
       execa: 5.1.1
       lazy-ass: 1.6.0
       tree-kill: 1.2.2
-      wait-on: 9.0.4(debug@4.4.3)
+      wait-on: 9.0.5(debug@4.4.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -5388,7 +5388,7 @@ snapshots:
     dependencies:
       xml-name-validator: 5.0.0
 
-  wait-on@9.0.4(debug@4.4.3):
+  wait-on@9.0.5(debug@4.4.3):
     dependencies:
       axios: 1.15.0(debug@4.4.3)
       joi: 18.1.2
