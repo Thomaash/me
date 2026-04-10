@@ -2,8 +2,13 @@
   "extends": ["config:js-app", "config:best-practices", ":prNotPending"],
 
   "automerge": true,
-  "masterIssue": false,
-  "rebaseStalePrs": true,
+  "dependencyDashboard": false,
+  "rebaseWhen": "behind-base-branch",
 
-  "packageRules": [{ "packagePatterns": ["^vis-"], "groupName": "Vis" }]
+  "packageRules": [
+    {
+      "groupName": "Vis",
+      "matchPackageNames": ["/^vis-/"]
+    }
+  ]
 }
