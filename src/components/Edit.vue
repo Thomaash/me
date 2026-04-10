@@ -3,6 +3,13 @@
     <v-dialog
       v-model="dialog"
       :fullscreen="fullscreen || xs"
+      :style="{
+        // TODO:
+        // I don't know why this happens but the dialog is rendered above v-select monus.
+        // It may be a bug in Vuetify because I can't find any place where this would be configured or overridden.
+        // For now, I'm setting this to a slightly lower value to make it work right away.
+        zIndex: 1999,
+      }"
       persistent
       scrollable
       max-width="600px"
