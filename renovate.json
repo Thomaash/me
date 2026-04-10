@@ -5,8 +5,5 @@
   "masterIssue": false,
   "rebaseStalePrs": true,
 
-  "packageRules": [
-    { "packagePatterns": ["^eslint\\b"], "groupName": "ESLint" },
-    { "packagePatterns": ["^vis-"], "groupName": "Vis" }
-  ]
+  "packageRules": [{ "packagePatterns": ["^vis-"], "groupName": "Vis" }]
 }
