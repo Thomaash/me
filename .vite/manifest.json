@@ -261,7 +261,7 @@
     ]
   },
   "index.html": {
-    "file": "assets/js/app-Bj7jztzl.js",
+    "file": "assets/js/app-BZ_XDtd5.js",
     "name": "app",
     "src": "index.html",
     "isEntry": true,
@@ -737,7 +737,7 @@
     "src": "node_modules/.pnpm/source-sans@3.52.0/node_modules/source-sans/WOFF2/TTF/SourceSans3-SemiboldIt.ttf.woff2"
   },
   "src/components/AboutPage.vue": {
-    "file": "assets/AboutPage-BR7Uk5wj.js",
+    "file": "assets/AboutPage-YqmUPJAY.js",
     "name": "AboutPage",
     "src": "src/components/AboutPage.vue",
     "isDynamicEntry": true,
