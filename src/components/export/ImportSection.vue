@@ -49,7 +49,7 @@
       </v-btn>
     </v-col>
 
-    <div style="height: 0px; width: 0px; overflow: hidden">
+    <div class="w-0 h-0 overflow-hidden">
       <input
         ref="fileInput"
         :accept="importAccept"

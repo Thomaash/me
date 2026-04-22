@@ -2,7 +2,7 @@
   <div
     ref="container"
     :style="{ width: widthStyle, height: heightStyle }"
-    class="vis-container"
+    class="vis-container position-relative w-100 h-100"
   >
     <div ref="vis" class="vis-root" />
   </div>
@@ -495,11 +495,6 @@ defineExpose(exposedApi);
 </script>
 
 <style scoped>
-.vis-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
 .vis-container > * {
   position: absolute;
   top: 0px;

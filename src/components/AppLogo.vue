@@ -1,5 +1,5 @@
 <template>
-  <v-card class="circle my-5">
+  <v-card class="circle rounded-circle mx-auto w-100 my-5">
     <img src="@/assets/icon.svg" alt="Mininet Editor logo" />
   </v-card>
 </template>
@@ -10,9 +10,6 @@ defineOptions({ name: "AppLogo" });
 
 <style scoped>
 .circle {
-  border-radius: 100% !important;
-  margin: 0 auto;
-  width: 100%;
   max-width: 20em;
 }
 .circle img {

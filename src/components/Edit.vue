@@ -17,18 +17,18 @@
       @keydown.enter="save"
     >
       <v-card :data-cy="`edit-${item.type}`">
-        <v-card-title style="flex-grow: 0" @dblclick="fullscreen = !fullscreen">
+        <v-card-title class="flex-grow-0" @dblclick="fullscreen = !fullscreen">
           <v-icon class="mr-2">{{ `$net-${themeType}` }}</v-icon>
           <h3 class="text-h6" v-text="headline" />
         </v-card-title>
-        <v-card-text style="flex-grow: 1">
+        <v-card-text class="flex-grow-1">
           <component
             :is="component"
             v-model="item"
             @valid="(v) => (valid = v)"
           />
         </v-card-text>
-        <v-card-actions style="flex-grow: 0">
+        <v-card-actions class="flex-grow-0">
           <v-spacer />
           <v-btn
             color="primary"

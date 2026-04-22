@@ -39,7 +39,7 @@
       <ImageConfig :working="working" @render="downloadImage" />
     </v-col>
 
-    <div style="height: 0px; width: 0px; overflow: hidden">
+    <div class="w-0 h-0 overflow-hidden">
       <VisCanvas
         v-if="visCanvasOn"
         ref="visCanvas"

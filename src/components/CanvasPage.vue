@@ -1,10 +1,10 @@
 <template>
-  <div class="canvas-container">
+  <div class="w-100 h-100 pa-0">
     <LoadingSpinner v-if="loading !== false" />
     <template v-else>
       <VisContainer ref="vis" @edit-item="editItem" />
       <Edit ref="edit" />
-      <div style="position: fixed; right: 1em; bottom: 1em">
+      <div class="position-fixed bottom-0 right-0 ma-4">
         <v-speed-dial
           v-if="!isView"
           v-model="fab"
@@ -110,11 +110,3 @@ function editItem(item, callback) {
   edit.value.edit(item, callback);
 }
 </script>
-
-<style scoped>
-.canvas-container {
-  width: 100%;
-  height: 100%;
-  padding: 0px;
-}
-</style>

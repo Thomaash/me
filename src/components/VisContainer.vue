@@ -1,7 +1,7 @@
 <template>
   <div
     ref="root"
-    class="component-container"
+    class="component-container position-relative w-100 h-100"
     tabindex="0"
     @mousemove="moveMouseTag"
     @drag="moveMouseTag"
@@ -865,12 +865,6 @@ defineExpose({
 </script>
 
 <style scoped>
-.component-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
 .mouse-tag {
   position: fixed;
   margin: 1em;

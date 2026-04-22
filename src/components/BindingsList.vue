@@ -13,7 +13,7 @@
     >
       <template #[`item.combination`]="{ item }">
         <div
-          class="with-title combination"
+          class="with-title text-no-wrap"
           :title="getTitleFor(item.combination)"
         >
           <component
@@ -229,9 +229,6 @@ defineExpose({ iconsIndex });
 <style scoped>
 .with-title {
   cursor: help;
-}
-.combination {
-  white-space: nowrap;
 }
 kbd {
   background-color: #eee;
