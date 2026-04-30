@@ -61,7 +61,7 @@
     "@vitest/coverage-v8": "4.1.5",
     "@vue/compiler-dom": "3.5.33",
     "@vue/server-renderer": "3.5.33",
-    "@vue/test-utils": "2.4.8",
+    "@vue/test-utils": "2.4.9",
     "autoprefixer": "10.5.0",
     "dependency-cruiser": "17.3.10",
     "gh-pages": "6.3.0",
