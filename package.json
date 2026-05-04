@@ -16,7 +16,7 @@
     "lint:fix": "oxlint --fix",
     "prepare": "husky",
     "preview": "vite preview --port 5173",
-    "style:ci": "prettier .",
+    "style:ci": "prettier --check .",
     "style:fix": "prettier --write .",
     "test": "pnpm run test:vitest && pnpm run test:e2e",
     "test:e2e": "start-server-and-test preview http://127.0.0.1:5173/me/ test:e2e:playwright:run",
