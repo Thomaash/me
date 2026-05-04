@@ -65,7 +65,7 @@
     "autoprefixer": "10.5.0",
     "dependency-cruiser": "17.3.10",
     "gh-pages": "6.3.0",
-    "globals": "17.5.0",
+    "globals": "17.6.0",
     "globby": "16.2.0",
     "husky": "9.1.7",
     "jsdom": "29.1.1",
