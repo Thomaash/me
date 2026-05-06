@@ -19,6 +19,7 @@ export default defineConfig({
     },
   },
   test: {
+    globals: false,
     coverage: {
       provider: "v8",
       reportsDirectory: "reports/coverage",

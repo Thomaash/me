@@ -23,5 +23,18 @@ export default defineConfig({
     "eslint/no-shadow": "off",
     "import/no-unassigned-import": "off",
     "typescript/no-extraneous-class": "off",
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        paths: [
+          {
+            name: "vitest",
+            importNames: ["expect"],
+            message:
+              "Destructure `expect` from the test callback context instead of importing it from `vitest`. The context-bound form helps concurrent tests attribute failures to the correct test.",
+          },
+        ],
+      },
+    ],
   },
 });
