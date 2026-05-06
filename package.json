@@ -8,7 +8,6 @@
     "build": "vite build",
     "build:old-deploy-files": "./bin/build-old-deploy-files.sh",
     "clean": "rm -rf dist/*",
-    "deploy": "./gh-pages.sh",
     "deps:ci": "depcruise src",
     "deps:visualize": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg",
     "dev": "vite",
