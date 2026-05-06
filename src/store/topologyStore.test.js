@@ -35,6 +35,23 @@ describe("topologyStore", () => {
       expect(store.past).toEqual([]);
       expect(store.future).toEqual([]);
     });
+
+    // Pins the seeded init contract for the named-export migration: if the
+    // exporter import is half-converted (e.g., topologyStore loses access to
+    // importData), this assertion fails with a clear shape mismatch rather
+    // than silently passing on an array-shaped items collection.
+    it("seeds data.items as an object keyed by item id (internal shape)", ({
+      expect,
+    }) => {
+      const store = useTopologyStore();
+      expect(Array.isArray(store.data.items)).toBe(false);
+      const ids = Object.keys(store.data.items);
+      expect(ids.length).toBeGreaterThan(0);
+      for (const id of ids) {
+        expect(store.data.items[id].id).toBe(id);
+      }
+      expect(store.data).not.toHaveProperty("version");
+    });
   });
 
   // Requirement: Topology store exposes derived values for history and layout

@@ -55,7 +55,7 @@ import { ref, computed, nextTick } from "vue";
 import AddressingPlan from "@/builder/AddressingPlan";
 import Builder from "@/builder";
 import VisCanvas from "@/components/vis/VisCanvas.vue";
-import exporter from "@/exporter";
+import { exportData } from "@/exporter";
 
 import ImageConfig from "./ImageConfig.vue";
 import { useTopologyStore } from "@/composables/useTopologyStore";
@@ -115,7 +115,7 @@ function downloadJSON() {
     working.value = true;
     emit("log", []);
 
-    const json = JSON.stringify(exporter.exportData(data.value), undefined, 4);
+    const json = JSON.stringify(exportData(data.value), undefined, 4);
     showAlert("success", "Successfully exported.");
     download(getFilename("json"), "application/json;charset=utf-8", json);
   } catch (error) {
@@ -131,7 +131,7 @@ function downloadScript() {
     working.value = true;
     emit("log", []);
 
-    const builder = new Builder(exporter.exportData(data.value));
+    const builder = new Builder(exportData(data.value));
     emit("log", builder.log);
     const script = builder.build();
     showAlert("success", "Script built.");
@@ -248,7 +248,7 @@ function downloadAddressingPlan() {
     working.value = true;
     emit("log", []);
 
-    const ap = new AddressingPlan(exporter.exportData(data.value));
+    const ap = new AddressingPlan(exportData(data.value));
     ap.build();
     ap.savePDF(data.value.projectName || "Mininet Network", getFilename("pdf"));
 

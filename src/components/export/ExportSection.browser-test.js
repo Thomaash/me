@@ -6,19 +6,21 @@ import { createPinia } from "pinia";
 import ExportSection from "@/components/export/ExportSection.vue";
 import { useTopologyStore } from "@/store/topologyStore";
 import { useAppStore } from "@/store/appStore";
-import exporter from "@/exporter";
+import { exportData } from "@/exporter";
 import Builder from "@/builder";
 import AddressingPlan from "@/builder/AddressingPlan";
 
-vi.mock("@/exporter", () => ({
-  default: {
+vi.mock("@/exporter", async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
     exportData: vi.fn(() => ({
       version: 0,
       items: [],
       projectName: "test-project",
     })),
-  },
-}));
+  };
+});
 
 vi.mock("@/builder", () => {
   const MockBuilder = vi.fn(function () {
@@ -184,7 +186,7 @@ describe("ExportSection download methods", () => {
     await jsonBtn.trigger("click");
     await flushPromises();
 
-    expect(exporter.exportData).toHaveBeenCalledWith(topologyStore.data);
+    expect(exportData).toHaveBeenCalledWith(topologyStore.data);
     expect(appStore.alert).toEqual({
       show: true,
       type: "success",
@@ -195,7 +197,7 @@ describe("ExportSection download methods", () => {
   });
 
   it("downloadJSON shows error alert when export fails", async ({ expect }) => {
-    exporter.exportData.mockImplementationOnce(() => {
+    exportData.mockImplementationOnce(() => {
       throw new Error("export failure");
     });
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});

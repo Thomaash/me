@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-import exporter from "@/exporter";
+import { importData as importDataExternal } from "@/exporter";
 import exampleData from "@/examples/medium_1_controller";
 
 const MAX_UNDO_LENGTH = 200;
@@ -30,7 +30,7 @@ function prepareUndoRedoChange(changeLogItem) {
 export const useTopologyStore = defineStore(
   "topology",
   () => {
-    const data = ref(exporter.importData(exampleData));
+    const data = ref(importDataExternal(exampleData));
     const past = ref([]);
     const future = ref([]);
 
@@ -137,7 +137,7 @@ export const useTopologyStore = defineStore(
         delete data.value[key];
       });
 
-      const imported = exporter.importData(importPayload);
+      const imported = importDataExternal(importPayload);
       Object.keys(imported).forEach((key) => {
         data.value[key] = imported[key];
       });
