@@ -1,53 +1,61 @@
-import { describe, it, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, vi, beforeEach } from "vitest";
 import RectangularSelection from "@/components/vis/RectangularSelection.js";
 
 /**
- * Test Budget: 8 distinct behaviors x 2 = 16 max
- * Behaviors:
- *   1. Full drag-select workflow (acceptance)
- *   2. attach registers listeners
- *   3. detach removes listeners and restores state
- *   4. mousedown right-click initializes drag
- *   5. mousemove updates rect during drag / aborts if released outside
- *   6. mouseup triggers selection with correct mode
- *   7. _selectNodes filters by bounds and emits select event
- *   8. _afterDrawingListener draws rect when dragging
+ * Black-box tests for RectangularSelection.
+ *
+ * Behaviors covered:
+ *   1. attach() registers documented listeners; detach() removes them and triggers redraw.
+ *   2. Right-drag flow selects in-rect nodes and emits the select event.
+ *   3. Non-right mousedown does not start a drag.
+ *   4. Mid-drag mousemove with non-right button aborts the drag.
+ *   5. Modifier-key outcomes on mouseup: set / add (shift) / del (ctrl).
+ *   6. afterDrawing draws the rect during a drag and is a no-op otherwise.
+ *   7. contextmenu listener calls preventDefault.
+ *   8. select event payload shape: nodes, edges, event, pointer (DOM and canvas).
  */
 
-function createMockContainer() {
+function createContainer({ offsetLeft = 0, offsetTop = 0 } = {}) {
+  const handlers = {};
   return {
-    addEventListener: vi.fn(),
+    addEventListener: vi.fn((name, fn) => {
+      handlers[name] = fn;
+    }),
     removeEventListener: vi.fn(),
-    offsetLeft: 0,
-    offsetTop: 0,
+    offsetLeft,
+    offsetTop,
+    handlers,
   };
 }
 
-function createMockNetwork() {
+function createNetwork(overrides = {}) {
+  const handlers = {};
   return {
     DOMtoCanvas: vi.fn(({ x, y }) => ({ x, y })),
-    getPositions: vi.fn((id) => ({ [id]: { x: 5, y: 5 } })),
+    getPositions: vi.fn((id) => ({ [id]: { x: 0, y: 0 } })),
     selectNodes: vi.fn(),
     getSelectedNodes: vi.fn().mockReturnValue([]),
     getSelection: vi.fn().mockReturnValue({ nodes: [], edges: [] }),
     emit: vi.fn(),
-    on: vi.fn(),
+    on: vi.fn((name, fn) => {
+      handlers[name] = fn;
+    }),
     off: vi.fn(),
     redraw: vi.fn(),
+    handlers,
+    ...overrides,
   };
 }
 
-function createMockNodes(nodeList = [{ id: "n1" }, { id: "n2" }]) {
-  return {
-    get: vi.fn().mockReturnValue(nodeList),
-  };
+function createNodes(list = [{ id: "n1" }, { id: "n2" }]) {
+  return { get: vi.fn().mockReturnValue(list) };
 }
 
 function createColors() {
   return { border: "#0000ff", background: "rgba(0,0,255,0.1)" };
 }
 
-function createMockCanvasContext() {
+function createCtx() {
   return {
     strokeRect: vi.fn(),
     fillRect: vi.fn(),
@@ -57,98 +65,66 @@ function createMockCanvasContext() {
   };
 }
 
+/**
+ * Fire a right-button mousedown then mousemove (drag in progress, no release).
+ */
+function startRightDrag(container, { sx = 0, sy = 0, ex = 10, ey = 10 } = {}) {
+  container.handlers.mousedown({ which: 3, offsetX: sx, offsetY: sy });
+  container.handlers.mousemove({ which: 3, offsetX: ex, offsetY: ey });
+}
+
+/**
+ * Run a complete right-button drag from (sx,sy) to (ex,ey) and release with
+ * the supplied modifier keys. Returns the mouseup event reference.
+ */
+function performRightDrag(
+  container,
+  { sx = 0, sy = 0, ex = 10, ey = 10, ctrlKey = false, shiftKey = false } = {},
+) {
+  startRightDrag(container, { sx, sy, ex, ey });
+  const upEvent = {
+    which: 3,
+    ctrlKey,
+    shiftKey,
+    offsetX: ex,
+    offsetY: ey,
+  };
+  container.handlers.mouseup(upEvent);
+  return upEvent;
+}
+
+/**
+ * Wire `network.getPositions` to return positions from an {id: {x,y}} map.
+ */
+function setNodePositions(network, positions) {
+  network.getPositions.mockImplementation((id) => ({ [id]: positions[id] }));
+}
+
 describe("RectangularSelection", () => {
   let container;
   let network;
   let nodes;
   let colors;
   let rs;
-  let savedGlobalEvent;
 
   beforeEach(() => {
-    container = createMockContainer();
-    network = createMockNetwork();
-    nodes = createMockNodes();
+    container = createContainer();
+    network = createNetwork();
+    nodes = createNodes();
     colors = createColors();
     rs = new RectangularSelection(container, network, nodes, colors);
-    savedGlobalEvent = globalThis.event;
   });
 
-  afterEach(() => {
-    globalThis.event = savedGlobalEvent;
-  });
-
-  // --- ACCEPTANCE TEST: Full drag-select workflow ---
-  describe("full drag-select workflow", () => {
-    it("attaches, performs right-click drag, selects nodes within bounds, and emits select event", ({
-      expect,
-    }) => {
-      // Node n1 at (5,5) is inside rect (0,0)-(10,10), n2 at (50,50) is outside
-      network.getPositions.mockImplementation((id) => {
-        const positions = { n1: { x: 5, y: 5 }, n2: { x: 50, y: 50 } };
-        return { [id]: positions[id] };
-      });
-
-      rs.attach();
-
-      // Extract the registered mousedown/mousemove/mouseup listeners
-      const listenerCalls = container.addEventListener.mock.calls;
-      const mousedownHandler = listenerCalls.find(
-        ([evt]) => evt === "mousedown",
-      )[1];
-      const mousemoveHandler = listenerCalls.find(
-        ([evt]) => evt === "mousemove",
-      )[1];
-      const mouseupHandler = listenerCalls.find(
-        ([evt]) => evt === "mouseup",
-      )[1];
-
-      // Right-click mousedown at (0, 0)
-      mousedownHandler({ which: 3, offsetX: 0, offsetY: 0 });
-
-      // Mousemove to (10, 10) while still holding right button
-      mousemoveHandler({ which: 3, offsetX: 10, offsetY: 10 });
-
-      // Mouseup at (10, 10) -- no modifier keys -> "set" mode
-      const mouseupEvent = {
-        which: 3,
-        ctrlKey: false,
-        shiftKey: false,
-        offsetX: 10,
-        offsetY: 10,
-      };
-      // Set globalThis.event to simulate browser's current event
-      globalThis.event = mouseupEvent;
-      mouseupHandler(mouseupEvent);
-
-      // Verify selectNodes was called with only n1 (within bounds)
-      expect(network.selectNodes).toHaveBeenCalledWith(["n1"]);
-      // Verify select event was emitted
-      expect(network.emit).toHaveBeenCalledWith(
-        "select",
-        expect.objectContaining({
-          event: mouseupEvent,
-          pointer: expect.objectContaining({
-            DOM: expect.objectContaining({ x: 10, y: 10 }),
-          }),
-        }),
-      );
-    });
-  });
-
-  // --- UNIT TESTS ---
-
-  describe("attach", () => {
-    it("registers mousedown, mousemove, mouseup, contextmenu on container and afterDrawing on network", ({
+  describe("attach / detach", () => {
+    it("attach registers mousedown, mousemove, mouseup, contextmenu on container and afterDrawing on network", ({
       expect,
     }) => {
       rs.attach();
 
-      // Container listeners registered
-      const eventNames = container.addEventListener.mock.calls.map(
+      const containerEvents = container.addEventListener.mock.calls.map(
         ([name]) => name,
       );
-      expect(eventNames).toEqual(
+      expect(containerEvents).toEqual(
         expect.arrayContaining([
           "mousedown",
           "mousemove",
@@ -157,26 +133,22 @@ describe("RectangularSelection", () => {
         ]),
       );
       expect(container.addEventListener).toHaveBeenCalledTimes(4);
-
-      // Network listener registered
       expect(network.on).toHaveBeenCalledWith(
         "afterDrawing",
         expect.any(Function),
       );
     });
-  });
 
-  describe("detach", () => {
-    it("removes all listeners and triggers redraw", ({ expect }) => {
+    it("detach removes the listeners it registered and triggers a redraw", ({
+      expect,
+    }) => {
       rs.attach();
-
       rs.detach();
 
-      // Container listeners removed
-      const removeEventNames = container.removeEventListener.mock.calls.map(
+      const removed = container.removeEventListener.mock.calls.map(
         ([name]) => name,
       );
-      expect(removeEventNames).toEqual(
+      expect(removed).toEqual(
         expect.arrayContaining([
           "mousedown",
           "mousemove",
@@ -185,188 +157,241 @@ describe("RectangularSelection", () => {
         ]),
       );
       expect(container.removeEventListener).toHaveBeenCalledTimes(4);
-
-      // Network listener removed
       expect(network.off).toHaveBeenCalledWith(
         "afterDrawing",
         expect.any(Function),
       );
 
-      // Redraw called to clear leftovers
+      // Listener identity is preserved between attach and detach.
+      for (const name of ["mousedown", "mousemove", "mouseup", "contextmenu"]) {
+        const added = container.addEventListener.mock.calls.find(
+          ([evt]) => evt === name,
+        )[1];
+        const removedFn = container.removeEventListener.mock.calls.find(
+          ([evt]) => evt === name,
+        )[1];
+        expect(removedFn).toBe(added);
+      }
+
       expect(network.redraw).toHaveBeenCalled();
     });
   });
 
-  describe("_mousedownListener", () => {
-    it("initializes drag state and rectDOM on right-click (which === 3)", ({
+  describe("right-drag selection flow", () => {
+    beforeEach(() => {
+      // n1 at (5,5) is inside (0,0)-(10,10); n2 at (50,50) is outside.
+      setNodePositions(network, {
+        n1: { x: 5, y: 5 },
+        n2: { x: 50, y: 50 },
+      });
+      rs.attach();
+    });
+
+    it("selects nodes whose positions fall inside the dragged rectangle and redraws while dragging", ({
       expect,
     }) => {
-      rs._mousedownListener({ which: 3, offsetX: 100, offsetY: 200 });
+      performRightDrag(container, { sx: 0, sy: 0, ex: 10, ey: 10 });
 
-      expect(rs._drag).toBe(true);
-      expect(rs._rectDOM).toEqual({
-        startX: 100,
-        startY: 200,
-        endX: 100,
-        endY: 200,
+      // Redraw fires during mousemove and on mouseup.
+      expect(network.redraw.mock.calls.length).toBeGreaterThanOrEqual(2);
+      expect(network.selectNodes).toHaveBeenCalledWith(["n1"]);
+    });
+
+    it("emits 'select' with nodes, edges, the originating event, and pointer (DOM + canvas)", ({
+      expect,
+    }) => {
+      network.getSelection.mockReturnValue({ nodes: ["n1"], edges: ["e1"] });
+      // Make canvas mapping distinguishable from DOM coords.
+      network.DOMtoCanvas.mockImplementation(({ x, y }) => ({
+        x: x * 2,
+        y: y * 2,
+      }));
+
+      const upEvent = performRightDrag(container, {
+        sx: 0,
+        sy: 0,
+        ex: 10,
+        ey: 10,
+      });
+
+      expect(network.emit).toHaveBeenCalledWith("select", {
+        nodes: ["n1"],
+        edges: ["e1"],
+        event: upEvent,
+        pointer: {
+          DOM: { x: 10, y: 10 },
+          canvas: { x: 20, y: 20 },
+        },
       });
     });
 
-    it("ignores non-right-click events", ({ expect }) => {
-      rs._mousedownListener({ which: 1, offsetX: 100, offsetY: 200 });
+    it("normalizes a reverse drag (end before start) so in-rect nodes are still selected", ({
+      expect,
+    }) => {
+      // Drag from (10,10) back to (0,0) -- start > end on both axes.
+      performRightDrag(container, { sx: 10, sy: 10, ex: 0, ey: 0 });
 
-      expect(rs._drag).toBe(false);
+      expect(network.selectNodes).toHaveBeenCalledWith(["n1"]);
+    });
+
+    it("subtracts container offsetLeft/offsetTop when computing the rectangle", ({
+      expect,
+    }) => {
+      // Re-create with non-zero offsets; then drag at offsets that, after
+      // subtraction, still cover n1 at (5,5).
+      container = createContainer({ offsetLeft: 100, offsetTop: 200 });
+      rs = new RectangularSelection(container, network, nodes, colors);
+      rs.attach();
+
+      performRightDrag(container, {
+        sx: 100,
+        sy: 200,
+        ex: 110,
+        ey: 210,
+      });
+
+      expect(network.selectNodes).toHaveBeenCalledWith(["n1"]);
     });
   });
 
-  describe("_mousemoveListener", () => {
-    beforeEach(() => {
-      // Start a drag first
-      rs._mousedownListener({ which: 3, offsetX: 10, offsetY: 20 });
-    });
-
-    it("updates rectDOM endX/endY and triggers redraw during right-button drag", ({
+  describe("non-right mousedown", () => {
+    it("does not start a drag: no redraw on subsequent move and no selection on up", ({
       expect,
     }) => {
-      rs._mousemoveListener({ which: 3, offsetX: 50, offsetY: 60 });
+      rs.attach();
 
-      expect(rs._rectDOM.endX).toBe(50);
-      expect(rs._rectDOM.endY).toBe(60);
-      expect(network.redraw).toHaveBeenCalled();
-    });
-
-    it("aborts drag and redraws when mouse button is released outside container (which !== 3 while dragging)", ({
-      expect,
-    }) => {
-      rs._mousemoveListener({ which: 0, offsetX: 50, offsetY: 60 });
-
-      expect(rs._drag).toBe(false);
-      expect(network.redraw).toHaveBeenCalled();
-      expect(network.selectNodes).not.toHaveBeenCalled();
-    });
-
-    it("does nothing when not dragging and which !== 3", ({ expect }) => {
-      rs._drag = false;
-      network.redraw.mockClear();
-
-      rs._mousemoveListener({ which: 1, offsetX: 50, offsetY: 60 });
-
-      expect(rs._drag).toBe(false);
-      expect(network.redraw).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("_mouseupListener", () => {
-    it("stops drag, redraws, and calls _selectNodes on right-click release", ({
-      expect,
-    }) => {
-      // Setup: position nodes, set rectDOM so n1 is inside
-      network.getPositions.mockImplementation((id) => ({
-        [id]: { x: 5, y: 5 },
-      }));
-      nodes.get.mockReturnValue([{ id: "n1" }]);
-      rs._rectDOM = { startX: 0, startY: 0, endX: 10, endY: 10 };
-      rs._drag = true;
-
-      const mouseupEvent = {
-        which: 3,
+      container.handlers.mousedown({ which: 1, offsetX: 0, offsetY: 0 });
+      container.handlers.mousemove({ which: 1, offsetX: 10, offsetY: 10 });
+      container.handlers.mouseup({
+        which: 1,
         ctrlKey: false,
         shiftKey: false,
         offsetX: 10,
         offsetY: 10,
-      };
-      globalThis.event = mouseupEvent;
+      });
 
-      rs._mouseupListener(mouseupEvent);
-
-      expect(rs._drag).toBe(false);
-      expect(network.redraw).toHaveBeenCalled();
-      expect(network.selectNodes).toHaveBeenCalledWith(["n1"]);
+      expect(network.redraw).not.toHaveBeenCalled();
+      expect(network.selectNodes).not.toHaveBeenCalled();
+      expect(network.emit).not.toHaveBeenCalled();
     });
+  });
 
-    it("ignores non-right-click events", ({ expect }) => {
-      rs._drag = true;
+  describe("mid-drag abort", () => {
+    it("aborts when a non-right-button mousemove arrives during a drag (mouseup occurred outside container)", ({
+      expect,
+    }) => {
+      rs.attach();
 
-      rs._mouseupListener({ which: 1, ctrlKey: false, shiftKey: false });
+      startRightDrag(container, { sx: 0, sy: 0, ex: 5, ey: 5 });
 
-      expect(rs._drag).toBe(true);
+      network.redraw.mockClear();
+
+      // Released outside; next move arrives without right button.
+      container.handlers.mousemove({ which: 0, offsetX: 8, offsetY: 8 });
+
+      expect(network.redraw).toHaveBeenCalledTimes(1);
+      expect(network.selectNodes).not.toHaveBeenCalled();
+
+      // A subsequent mouseup with a non-right button must not select either.
+      container.handlers.mouseup({
+        which: 0,
+        ctrlKey: false,
+        shiftKey: false,
+        offsetX: 8,
+        offsetY: 8,
+      });
       expect(network.selectNodes).not.toHaveBeenCalled();
     });
   });
 
-  describe("_selectNodes", () => {
+  describe("modifier-key selection modes", () => {
     beforeEach(() => {
-      rs._rectDOM = { startX: 0, startY: 0, endX: 10, endY: 10 };
-      network.getPositions.mockImplementation((id) => {
-        const positions = {
-          n1: { x: 5, y: 5 },
-          n2: { x: 50, y: 50 },
-          n3: { x: 8, y: 8 },
-        };
-        return { [id]: positions[id] };
+      // Three nodes; n1 and n3 are inside (0,0)-(10,10), n2 is outside.
+      setNodePositions(network, {
+        n1: { x: 5, y: 5 },
+        n2: { x: 50, y: 50 },
+        n3: { x: 8, y: 8 },
       });
       nodes.get.mockReturnValue([{ id: "n1" }, { id: "n2" }, { id: "n3" }]);
+      rs.attach();
     });
 
-    it("selects only nodes within rectangular bounds and emits select event", ({
+    it("no modifier -> set: selectNodes called with exactly the in-rect ids", ({
       expect,
     }) => {
-      const fakeEvent = { offsetX: 10, offsetY: 10 };
+      performRightDrag(container, { sx: 0, sy: 0, ex: 10, ey: 10 });
 
-      rs._selectNodes("set", fakeEvent);
-
-      // n1 (5,5) and n3 (8,8) are inside (0,0)-(10,10), n2 (50,50) is outside
-      expect(network.selectNodes).toHaveBeenCalledWith(
-        expect.arrayContaining(["n1", "n3"]),
-      );
-      expect(network.selectNodes.mock.calls[0][0]).toHaveLength(2);
-      expect(network.emit).toHaveBeenCalledWith(
-        "select",
-        expect.objectContaining({
-          event: fakeEvent,
-          pointer: {
-            DOM: { x: 10, y: 10 },
-            canvas: { x: 10, y: 10 },
-          },
-        }),
-      );
+      const arg = network.selectNodes.mock.calls[0][0];
+      expect(arg).toEqual(expect.arrayContaining(["n1", "n3"]));
+      expect(arg).toHaveLength(2);
     });
 
-    it("uses 'add' mode to union with previously selected nodes", ({
+    it("shift held -> add: union of previously selected and in-rect ids", ({
       expect,
     }) => {
       network.getSelectedNodes.mockReturnValue(["n2"]);
-      const fakeEvent = { offsetX: 10, offsetY: 10 };
 
-      rs._selectNodes("add", fakeEvent);
+      performRightDrag(container, {
+        sx: 0,
+        sy: 0,
+        ex: 10,
+        ey: 10,
+        shiftKey: true,
+      });
 
-      // Should be union of prev [n2] and curr [n1, n3]
-      const selectedArg = network.selectNodes.mock.calls[0][0];
-      expect(selectedArg).toEqual(expect.arrayContaining(["n1", "n2", "n3"]));
-      expect(selectedArg).toHaveLength(3);
+      const arg = network.selectNodes.mock.calls[0][0];
+      expect(arg).toEqual(expect.arrayContaining(["n1", "n2", "n3"]));
+      expect(arg).toHaveLength(3);
     });
 
-    it("uses 'del' mode to remove selected nodes from previous selection", ({
+    it("ctrl held -> del: previous selection minus in-rect ids", ({
       expect,
     }) => {
       network.getSelectedNodes.mockReturnValue(["n1", "n2", "n3"]);
-      const fakeEvent = { offsetX: 10, offsetY: 10 };
 
-      rs._selectNodes("del", fakeEvent);
+      performRightDrag(container, {
+        sx: 0,
+        sy: 0,
+        ex: 10,
+        ey: 10,
+        ctrlKey: true,
+      });
 
-      // n1 and n3 are in bounds, so remove them from prev [n1, n2, n3] -> [n2]
       expect(network.selectNodes).toHaveBeenCalledWith(["n2"]);
+    });
+
+    it("ctrl + shift -> set (overrides del/add): in-rect ids only", ({
+      expect,
+    }) => {
+      network.getSelectedNodes.mockReturnValue(["n2"]);
+
+      performRightDrag(container, {
+        sx: 0,
+        sy: 0,
+        ex: 10,
+        ey: 10,
+        ctrlKey: true,
+        shiftKey: true,
+      });
+
+      const arg = network.selectNodes.mock.calls[0][0];
+      expect(arg).toEqual(expect.arrayContaining(["n1", "n3"]));
+      expect(arg).toHaveLength(2);
     });
   });
 
-  describe("_afterDrawingListener", () => {
-    it("draws rectangle on canvas context when dragging", ({ expect }) => {
-      rs._drag = true;
-      rs._rectDOM = { startX: 10, startY: 20, endX: 50, endY: 60 };
+  describe("afterDrawing rendering", () => {
+    it("draws the selection rectangle with colors.border / colors.background while dragging", ({
+      expect,
+    }) => {
+      rs.attach();
+      const afterDrawing = network.handlers.afterDrawing;
 
-      const ctx = createMockCanvasContext();
+      // Start a drag and move to define a rectangle.
+      startRightDrag(container, { sx: 10, sy: 20, ex: 50, ey: 60 });
 
-      rs._afterDrawingListener(ctx);
+      const ctx = createCtx();
+      afterDrawing(ctx);
 
       expect(ctx.lineWidth).toBe(4);
       expect(ctx.strokeStyle).toBe(colors.border);
@@ -375,15 +400,31 @@ describe("RectangularSelection", () => {
       expect(ctx.fillRect).toHaveBeenCalledWith(10, 20, 40, 40);
     });
 
-    it("does not draw when not dragging", ({ expect }) => {
-      rs._drag = false;
+    it("draws nothing when no drag is active", ({ expect }) => {
+      rs.attach();
+      const afterDrawing = network.handlers.afterDrawing;
 
-      const ctx = createMockCanvasContext();
-
-      rs._afterDrawingListener(ctx);
+      const ctx = createCtx();
+      afterDrawing(ctx);
 
       expect(ctx.strokeRect).not.toHaveBeenCalled();
       expect(ctx.fillRect).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("contextmenu", () => {
+    it("calls preventDefault on the contextmenu event so the browser menu is suppressed", ({
+      expect,
+    }) => {
+      rs.attach();
+
+      const contextHandler = container.addEventListener.mock.calls.find(
+        ([name]) => name === "contextmenu",
+      )[1];
+      const preventDefault = vi.fn();
+      contextHandler({ preventDefault });
+
+      expect(preventDefault).toHaveBeenCalled();
     });
   });
 });
