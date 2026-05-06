@@ -1,4 +1,3 @@
-import { toRaw } from "vue";
 import localforage from "localforage";
 import { useAppStore } from "@/store/appStore";
 
@@ -52,7 +51,7 @@ export function persistPlugin({ store, options }) {
       appStore.markSaving();
       try {
         await storage.setItem(STORAGE_KEY, {
-          topology: toRaw(store.$state),
+          topology: JSON.parse(JSON.stringify(store.$state)),
         });
         appStore.markSaved();
       } catch (err) {
