@@ -89,4 +89,38 @@ describe("appStore", () => {
       expect(store.saveState).toBe("idle");
     });
   });
+
+  it("Pinia action observers see public app store actions by name", ({
+    expect,
+  }) => {
+    const store = useAppStore();
+    const observed = [];
+    const unsubscribe = store.$onAction(({ name }) => {
+      observed.push(name);
+    });
+
+    store.loaded();
+    store.setWorking({ working: true });
+    store.setAlert({ type: "error", text: "Something failed" });
+    store.clearAlert();
+    store.setUpdateAvailable();
+    store.markPending();
+    store.markSaving();
+    store.markSaved();
+    store.markSaveError();
+
+    unsubscribe();
+
+    expect(observed).toEqual([
+      "loaded",
+      "setWorking",
+      "setAlert",
+      "clearAlert",
+      "setUpdateAvailable",
+      "markPending",
+      "markSaving",
+      "markSaved",
+      "markSaveError",
+    ]);
+  });
 });
