@@ -6,8 +6,8 @@
   "license": "ISC",
   "scripts": {
     "build": "vite build",
-    "build:old-deploy-files": "deploy-echoes https://www.vycital.eu/me/old-files/ --dist ./dist/me --archive-dir old-files --decompression-fallback none",
     "clean": "rm -rf dist/*",
+    "deploy-echoes": "deploy-echoes https://www.vycital.eu/me/old-files/ --dist ./dist/me --archive-dir old-files --decompression-fallback none",
     "deps:ci": "depcruise src",
     "deps:visualize": "depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg",
     "dev": "vite",

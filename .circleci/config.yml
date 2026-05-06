@@ -69,7 +69,7 @@ jobs:
       - run:
           name: Copy old files from previous releases
           command: |
-            pnpm run build:old-deploy-files
+            pnpm run deploy-echoes
 
       - run:
           name: Prepare Git
