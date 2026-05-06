@@ -14,38 +14,66 @@ function createItems(entries) {
   );
 }
 
+/**
+ * Returns a store seeded with a single host item `n1` whose hostname is `h1`.
+ * Used by the many history/mutation tests that only need a minimal item graph.
+ */
+function seedSingleHostStore() {
+  const store = useTopologyStore();
+  store.data.items = createItems([["n1", { type: "host", hostname: "h1" }]]);
+  return store;
+}
+
 describe("topologyStore", () => {
-  describe("initial state", () => {
-    it("has data, past, and future", ({ expect }) => {
+  // Requirement: Topology store exposes a stable public state surface
+  describe("public state surface (data, past, future)", () => {
+    it("initializes with topology data and empty past/future", ({ expect }) => {
       const store = useTopologyStore();
       expect(store.data).toBeDefined();
       expect(store.data.items).toBeDefined();
+      expect(Object.keys(store.data.items).length).toBeGreaterThan(0);
       expect(store.past).toEqual([]);
       expect(store.future).toEqual([]);
     });
   });
 
-  describe("getters", () => {
-    it("canUndo returns past length", ({ expect }) => {
-      const store = useTopologyStore();
+  // Requirement: Topology store exposes derived values for history and layout
+  describe("derived values (canUndo, canRedo, boundingBox)", () => {
+    it("canUndo equals past.length after public mutations", ({ expect }) => {
+      const store = seedSingleHostStore();
       expect(store.canUndo).toBe(0);
-      store.past.push(["entry"]);
+
+      store.updateItems([{ id: "n1", hostname: "h2" }]);
+      expect(store.canUndo).toBe(store.past.length);
       expect(store.canUndo).toBe(1);
+
+      store.updateItems([{ id: "n1", hostname: "h3" }]);
+      expect(store.canUndo).toBe(store.past.length);
+      expect(store.canUndo).toBe(2);
     });
 
-    it("canRedo returns future length", ({ expect }) => {
-      const store = useTopologyStore();
+    it("canRedo equals future.length after undo", ({ expect }) => {
+      const store = seedSingleHostStore();
       expect(store.canRedo).toBe(0);
-      store.future.push(["entry"]);
+
+      store.updateItems([{ id: "n1", hostname: "h2" }]);
+      store.updateItems([{ id: "n1", hostname: "h3" }]);
+      store.undo();
+      expect(store.canRedo).toBe(store.future.length);
       expect(store.canRedo).toBe(1);
+
+      store.undo();
+      expect(store.canRedo).toBe(store.future.length);
+      expect(store.canRedo).toBe(2);
     });
 
     describe("boundingBox", () => {
-      it("returns a function", ({ expect }) => {
+      it("is callable", ({ expect }) => {
         const store = useTopologyStore();
         expect(typeof store.boundingBox).toBe("function");
       });
 
+      // Scenario: Bounding box reports empty topology when no coordinates exist
       it("returns empty bounding box when no items have coordinates", ({
         expect,
       }) => {
@@ -55,6 +83,7 @@ describe("topologyStore", () => {
         expect(bb.empty).toBe(true);
       });
 
+      // Scenario: Bounding box is computed from topology item coordinates
       it("computes bounding box from item coordinates", ({ expect }) => {
         const store = useTopologyStore();
         store.data.items = createItems([
@@ -70,7 +99,7 @@ describe("topologyStore", () => {
         expect(bb.height).toBe(180);
       });
 
-      it("applies margin", ({ expect }) => {
+      it("honors margin option", ({ expect }) => {
         const store = useTopologyStore();
         store.data.items = createItems([["n1", { x: 50, y: 50 }]]);
         const bb = store.boundingBox({ margin: 10, scale: 1 });
@@ -79,14 +108,175 @@ describe("topologyStore", () => {
         expect(bb.eX).toBe(60);
         expect(bb.eY).toBe(60);
       });
+
+      it("honors scale option", ({ expect }) => {
+        const store = useTopologyStore();
+        store.data.items = createItems([
+          ["n1", { x: 10, y: 20 }],
+          ["n2", { x: 100, y: 200 }],
+        ]);
+        const bb1 = store.boundingBox({ margin: 0, scale: 1 });
+        const bb2 = store.boundingBox({ margin: 0, scale: 2 });
+        expect(bb2.width).toBe(bb1.width * 2);
+        expect(bb2.height).toBe(bb1.height * 2);
+      });
     });
   });
 
-  describe("importData", () => {
-    it("replaces all data and clears undo/redo", ({ expect }) => {
-      const store = useTopologyStore();
-      store.past.push(["a"]);
-      store.future.push(["b"]);
+  // Requirement: Topology store exposes public mutation actions
+  describe("public mutation actions", () => {
+    describe("setValues", () => {
+      it("sets data properties", ({ expect }) => {
+        const store = useTopologyStore();
+        store.setValues({ projectName: "Test" });
+        expect(store.data.projectName).toBe("Test");
+      });
+
+      it("deletes properties with null or empty string value", ({ expect }) => {
+        const store = useTopologyStore();
+        store.data.projectName = "Old";
+        store.setValues({ projectName: "" });
+        expect(store.data.projectName).toBeUndefined();
+      });
+    });
+
+    describe("applyChange", () => {
+      it("removes items by id", ({ expect }) => {
+        const store = useTopologyStore();
+        store.data.items = createItems([
+          ["n1", { type: "host" }],
+          ["n2", { type: "host" }],
+        ]);
+        store.applyChange({ remove: ["n1"] });
+        expect(store.data.items.n1).toBeUndefined();
+        expect(store.data.items.n2).toBeDefined();
+      });
+
+      it("updates items in place", ({ expect }) => {
+        const store = seedSingleHostStore();
+        store.applyChange({ update: [{ id: "n1", hostname: "h2" }] });
+        expect(store.data.items.n1.hostname).toBe("h2");
+        expect(store.data.items.n1.type).toBe("host");
+      });
+
+      it("replaces items entirely", ({ expect }) => {
+        const store = seedSingleHostStore();
+        store.applyChange({
+          replace: [{ id: "n1", type: "switch", hostname: "s1" }],
+        });
+        expect(store.data.items.n1).toEqual({
+          id: "n1",
+          type: "switch",
+          hostname: "s1",
+        });
+      });
+
+      it("throws when update item has no id", ({ expect }) => {
+        const store = useTopologyStore();
+        expect(() =>
+          store.applyChange({ update: [{ hostname: "h1" }] }),
+        ).toThrow("Items have to have ids.");
+      });
+
+      it("throws when replace item has no id", ({ expect }) => {
+        const store = useTopologyStore();
+        expect(() =>
+          store.applyChange({ replace: [{ hostname: "h1" }] }),
+        ).toThrow("Items have to have ids.");
+      });
+    });
+
+    describe("removeItems", () => {
+      it("removes items, appends one past entry, clears future", ({
+        expect,
+      }) => {
+        const store = useTopologyStore();
+        store.data.items = createItems([
+          ["n1", { type: "host" }],
+          ["n2", { type: "host" }],
+        ]);
+        // Seed future to verify it is cleared.
+        store.updateItems([{ id: "n2", hostname: "renamed" }]);
+        store.undo();
+        expect(store.future).toHaveLength(1);
+
+        const pastBefore = store.past.length;
+        store.removeItems(["n1"]);
+
+        expect(store.data.items.n1).toBeUndefined();
+        expect(store.data.items.n2).toBeDefined();
+        expect(store.past).toHaveLength(pastBefore + 1);
+        expect(store.future).toEqual([]);
+      });
+    });
+
+    describe("updateItems", () => {
+      it("updates items, appends one past entry, clears future", ({
+        expect,
+      }) => {
+        const store = seedSingleHostStore();
+        store.updateItems([{ id: "n1", hostname: "tmp" }]);
+        store.undo();
+        expect(store.future).toHaveLength(1);
+
+        const pastBefore = store.past.length;
+        store.updateItems([{ id: "n1", hostname: "h2" }]);
+
+        expect(store.data.items.n1.hostname).toBe("h2");
+        expect(store.past).toHaveLength(pastBefore + 1);
+        expect(store.future).toEqual([]);
+      });
+    });
+
+    describe("replaceItems", () => {
+      it("replaces items, appends one past entry, clears future", ({
+        expect,
+      }) => {
+        const store = seedSingleHostStore();
+        store.updateItems([{ id: "n1", hostname: "tmp" }]);
+        store.undo();
+        expect(store.future).toHaveLength(1);
+
+        const pastBefore = store.past.length;
+        store.replaceItems([{ id: "n1", type: "switch", hostname: "s1" }]);
+
+        expect(store.data.items.n1.type).toBe("switch");
+        expect(store.past).toHaveLength(pastBefore + 1);
+        expect(store.future).toEqual([]);
+      });
+    });
+
+    // Scenario: Action observers can react to public topology mutations
+    describe("action observers", () => {
+      it("observes importData and applyChange by their public action names", ({
+        expect,
+      }) => {
+        const store = useTopologyStore();
+        const observed = [];
+        const unsubscribe = store.$onAction(({ name }) => {
+          observed.push(name);
+        });
+
+        store.importData(exampleTiny);
+        store.applyChange({ remove: [] });
+
+        unsubscribe();
+
+        expect(observed).toContain("importData");
+        expect(observed).toContain("applyChange");
+      });
+    });
+  });
+
+  // Requirement: Importing topology data resets history
+  describe("importData resets history", () => {
+    it("replaces data and clears past and future", ({ expect }) => {
+      const store = seedSingleHostStore();
+      store.updateItems([{ id: "n1", hostname: "h2" }]);
+      store.updateItems([{ id: "n1", hostname: "h3" }]);
+      store.undo();
+      expect(store.past.length).toBeGreaterThan(0);
+      expect(store.future.length).toBeGreaterThan(0);
 
       store.importData(exampleTiny);
 
@@ -97,263 +287,130 @@ describe("topologyStore", () => {
     });
   });
 
-  describe("setValues", () => {
-    it("sets data properties", ({ expect }) => {
-      const store = useTopologyStore();
-      store.setValues({ projectName: "Test" });
-      expect(store.data.projectName).toBe("Test");
-    });
-
-    it("deletes properties with null or empty string value", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.projectName = "Old";
-      store.setValues({ projectName: "" });
-      expect(store.data.projectName).toBeUndefined();
-    });
-  });
-
-  describe("applyChange", () => {
-    it("removes items by id", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host" }],
-        ["n2", { type: "host" }],
-      ]);
-      store.applyChange({ remove: ["n1"] });
-      expect(store.data.items.n1).toBeUndefined();
-      expect(store.data.items.n2).toBeDefined();
-    });
-
-    it("updates items in place", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
-      store.applyChange({ update: [{ id: "n1", hostname: "h2" }] });
-      expect(store.data.items.n1.hostname).toBe("h2");
-      expect(store.data.items.n1.type).toBe("host");
-    });
-
-    it("replaces items entirely", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
-      store.applyChange({
-        replace: [{ id: "n1", type: "switch", hostname: "s1" }],
-      });
-      expect(store.data.items.n1).toEqual({
-        id: "n1",
-        type: "switch",
-        hostname: "s1",
-      });
-    });
-
-    it("throws when update item has no id", ({ expect }) => {
-      const store = useTopologyStore();
-      expect(() => store.applyChange({ update: [{ hostname: "h1" }] })).toThrow(
-        "Items have to have ids.",
-      );
-    });
-
-    it("throws when replace item has no id", ({ expect }) => {
-      const store = useTopologyStore();
-      expect(() =>
-        store.applyChange({ replace: [{ hostname: "h1" }] }),
-      ).toThrow("Items have to have ids.");
-    });
-  });
-
-  describe("_pushChange", () => {
-    it("adds to past and clears future", ({ expect }) => {
-      const store = useTopologyStore();
-      store.future.push(["old"]);
-      store._pushChange([{ before: "a", after: "b" }]);
-      expect(store.past).toHaveLength(1);
-      expect(store.future).toHaveLength(0);
-    });
-
-    it("limits past to MAX_UNDO_LENGTH", ({ expect }) => {
-      const store = useTopologyStore();
-      for (let i = 0; i < MAX_UNDO_LENGTH + 10; i++) {
-        store._pushChange([{ before: `${i}`, after: `${i + 1}` }]);
-      }
-      expect(store.past.length).toBeLessThanOrEqual(MAX_UNDO_LENGTH);
-    });
-  });
-
-  describe("_undoShift", () => {
-    it("moves last past entry to future", ({ expect }) => {
-      const store = useTopologyStore();
-      store.past.push("a", "b");
-      store._undoShift();
-      expect(store.past).toEqual(["a"]);
-      expect(store.future).toEqual(["b"]);
-    });
-
-    it("does nothing when past is empty", ({ expect }) => {
-      const store = useTopologyStore();
-      store._undoShift();
-      expect(store.past).toEqual([]);
-      expect(store.future).toEqual([]);
-    });
-  });
-
-  describe("_redoShift", () => {
-    it("moves last future entry to past", ({ expect }) => {
-      const store = useTopologyStore();
-      store.future.push("a", "b");
-      store._redoShift();
-      expect(store.past).toEqual(["b"]);
-      expect(store.future).toEqual(["a"]);
-    });
-
-    it("does nothing when future is empty", ({ expect }) => {
-      const store = useTopologyStore();
-      store._redoShift();
-      expect(store.past).toEqual([]);
-      expect(store.future).toEqual([]);
-    });
-  });
-
-  describe("removeItems", () => {
-    it("removes items and records undo entry", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host" }],
-        ["n2", { type: "host" }],
-      ]);
-      store.removeItems(["n1"]);
-      expect(store.data.items.n1).toBeUndefined();
-      expect(store.data.items.n2).toBeDefined();
-      expect(store.past).toHaveLength(1);
-    });
-  });
-
-  describe("updateItems", () => {
-    it("updates items and records undo entry", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
-      store.updateItems([{ id: "n1", hostname: "h2" }]);
-      expect(store.data.items.n1.hostname).toBe("h2");
-      expect(store.past).toHaveLength(1);
-    });
-  });
-
-  describe("replaceItems", () => {
-    it("replaces items and records undo entry", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
-      store.replaceItems([{ id: "n1", type: "switch", hostname: "s1" }]);
-      expect(store.data.items.n1.type).toBe("switch");
-      expect(store.past).toHaveLength(1);
-    });
-  });
-
-  describe("undo", () => {
-    it("undoes the last action", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
-      store.updateItems([{ id: "n1", hostname: "h2" }]);
-      expect(store.data.items.n1.hostname).toBe("h2");
-
-      store.undo();
-      expect(store.data.items.n1.hostname).toBe("h1");
-      expect(store.future).toHaveLength(1);
-    });
-
-    it("throws when nothing to undo", ({ expect }) => {
-      const store = useTopologyStore();
-      expect(() => store.undo()).toThrow("Nothing to undo.");
-    });
-  });
-
-  describe("redo", () => {
-    it("redoes the last undone action", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
-      store.updateItems([{ id: "n1", hostname: "h2" }]);
-      store.undo();
-      expect(store.data.items.n1.hostname).toBe("h1");
-
-      store.redo();
-      expect(store.data.items.n1.hostname).toBe("h2");
-    });
-
-    it("throws when nothing to redo", ({ expect }) => {
-      const store = useTopologyStore();
-      expect(() => store.redo()).toThrow("Nothing to redo.");
-    });
-  });
-
-  describe("undo/redo integration", () => {
-    it("supports multiple undo/redo cycles", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
-
-      store.updateItems([{ id: "n1", hostname: "h2" }]);
-      store.updateItems([{ id: "n1", hostname: "h3" }]);
-
-      store.undo();
-      expect(store.data.items.n1.hostname).toBe("h2");
-
-      store.undo();
-      expect(store.data.items.n1.hostname).toBe("h1");
-
-      store.redo();
-      expect(store.data.items.n1.hostname).toBe("h2");
-
-      store.redo();
-      expect(store.data.items.n1.hostname).toBe("h3");
-    });
-
-    it("clears future when new action is performed after undo", ({
+  // Requirement: Topology mutations record undo history through public workflows
+  describe("history recording through public workflows", () => {
+    // Scenario: History length is capped
+    it("caps past.length at MAX_UNDO_LENGTH across many public mutations", ({
       expect,
     }) => {
       const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
+      store.data.items = createItems([["n1", { type: "host", v: 0 }]]);
 
-      store.updateItems([{ id: "n1", hostname: "h2" }]);
-      store.undo();
-      expect(store.future).toHaveLength(1);
+      for (let i = 0; i < MAX_UNDO_LENGTH + 10; i++) {
+        store.updateItems([{ id: "n1", v: i }]);
+      }
 
-      store.updateItems([{ id: "n1", hostname: "h3" }]);
-      expect(store.future).toHaveLength(0);
+      expect(store.past).toHaveLength(MAX_UNDO_LENGTH);
+    });
+  });
+
+  // Requirement: Undo and redo preserve observable topology behavior
+  describe("undo and redo preserve observable behavior", () => {
+    describe("undo", () => {
+      // Scenario: Undo reverts the last public mutation
+      it("reverts the last action and moves the entry to future", ({
+        expect,
+      }) => {
+        const store = seedSingleHostStore();
+        store.updateItems([{ id: "n1", hostname: "h2" }]);
+        expect(store.data.items.n1.hostname).toBe("h2");
+        const pastBefore = store.past.length;
+
+        store.undo();
+        expect(store.data.items.n1.hostname).toBe("h1");
+        expect(store.past).toHaveLength(pastBefore - 1);
+        expect(store.future).toHaveLength(1);
+      });
+
+      // Scenario: Undo fails when no history exists
+      it("throws when nothing to undo", ({ expect }) => {
+        const store = useTopologyStore();
+        store.past.splice(0);
+        expect(() => store.undo()).toThrow("Nothing to undo.");
+      });
     });
 
-    it("handles remove and undo correctly", ({ expect }) => {
-      const store = useTopologyStore();
-      store.data.items = createItems([
-        ["n1", { type: "host", hostname: "h1" }],
-      ]);
+    describe("redo", () => {
+      // Scenario: Redo reapplies the last undone mutation
+      it("reapplies the last undone action and moves the entry to past", ({
+        expect,
+      }) => {
+        const store = seedSingleHostStore();
+        store.updateItems([{ id: "n1", hostname: "h2" }]);
+        store.undo();
+        expect(store.data.items.n1.hostname).toBe("h1");
+        const futureBefore = store.future.length;
 
-      store.removeItems(["n1"]);
-      expect(store.data.items.n1).toBeUndefined();
+        store.redo();
+        expect(store.data.items.n1.hostname).toBe("h2");
+        expect(store.future).toHaveLength(futureBefore - 1);
+        expect(store.past).toHaveLength(1);
+      });
 
-      store.undo();
-      expect(store.data.items.n1).toBeDefined();
-      expect(store.data.items.n1.hostname).toBe("h1");
+      // Scenario: Redo fails when no redo history exists
+      it("throws when nothing to redo", ({ expect }) => {
+        const store = useTopologyStore();
+        store.future.splice(0);
+        expect(() => store.redo()).toThrow("Nothing to redo.");
+      });
+    });
+
+    describe("integration", () => {
+      it("supports multiple undo/redo cycles", ({ expect }) => {
+        const store = seedSingleHostStore();
+
+        store.updateItems([{ id: "n1", hostname: "h2" }]);
+        store.updateItems([{ id: "n1", hostname: "h3" }]);
+
+        store.undo();
+        expect(store.data.items.n1.hostname).toBe("h2");
+
+        store.undo();
+        expect(store.data.items.n1.hostname).toBe("h1");
+
+        store.redo();
+        expect(store.data.items.n1.hostname).toBe("h2");
+
+        store.redo();
+        expect(store.data.items.n1.hostname).toBe("h3");
+      });
+
+      // Scenario: New mutation after undo clears redo history
+      it("clears future when a new action is performed after undo", ({
+        expect,
+      }) => {
+        const store = seedSingleHostStore();
+
+        store.updateItems([{ id: "n1", hostname: "h2" }]);
+        store.undo();
+        expect(store.future).toHaveLength(1);
+
+        store.updateItems([{ id: "n1", hostname: "h3" }]);
+        expect(store.future).toEqual([]);
+      });
+
+      it("handles remove and undo correctly", ({ expect }) => {
+        const store = seedSingleHostStore();
+
+        store.removeItems(["n1"]);
+        expect(store.data.items.n1).toBeUndefined();
+
+        store.undo();
+        expect(store.data.items.n1).toBeDefined();
+        expect(store.data.items.n1.hostname).toBe("h1");
+      });
     });
   });
 
   describe("with medium_2_controllers data", () => {
     describe("importData", () => {
       it("loads all 176 items with correct metadata", ({ expect }) => {
-        const store = useTopologyStore();
-        store.past.push(["dummy"]);
-        store.future.push(["dummy"]);
+        const store = seedSingleHostStore();
+        store.updateItems([{ id: "n1", hostname: "h2" }]);
+        store.updateItems([{ id: "n1", hostname: "h3" }]);
+        store.undo();
+        expect(store.past.length).toBeGreaterThan(0);
+        expect(store.future.length).toBeGreaterThan(0);
 
         store.importData(exampleMedium2Controllers);
 
