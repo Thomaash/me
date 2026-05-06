@@ -357,70 +357,74 @@ const exposedApi = {
 };
 
 // Add storeActions after exposedApi is defined (references exposedApi methods)
+const applyChangeToCanvas = ({ remove, update, replace }) => {
+  const ids = [
+    ...(remove || []),
+    ...[...(update || []), ...(replace || [])].map((item) => item.id),
+  ];
+  const nodeItems = [];
+  const edgeItems = [];
+
+  // Save old neighbors for label update
+  const updatedIds = new Set(
+    [].concat(...ids, ...ids.map((id) => net.getConnectedNodes(id))),
+  );
+
+  if (update) {
+    Object.values(update).forEach((itemUpdate) => {
+      const item = {
+        ...data.value.items[itemUpdate.id],
+        ...itemUpdate,
+      };
+
+      if (isEdge(item.type)) {
+        edgeItems.push(toEdge(item));
+      } else {
+        nodeItems.push(toNode(item));
+      }
+    });
+  }
+
+  if (replace) {
+    Object.values(replace).forEach((item) => {
+      if (isEdge(item.type)) {
+        edgeItems.push(toEdge(item));
+      } else {
+        nodeItems.push(toNode(item));
+      }
+    });
+  }
+
+  // Update Vis
+  if (ids.length) {
+    nodes.remove(ids);
+    edges.remove(ids);
+  }
+  if (nodeItems.length) {
+    nodes.add(nodeItems);
+  }
+  if (edgeItems.length) {
+    edges.add(edgeItems);
+  }
+
+  // Save new neighbors for label update
+  ids.forEach((id) =>
+    net.getConnectedNodes(id).forEach((id) => updatedIds.add(id)),
+  );
+
+  // Update label texts
+  exposedApi.updateLabels([...updatedIds].filter((id) => data.value.items[id]));
+};
+
+const rebuildFromStore = () => exposedApi.replaceItems();
+
 const storeActions = computed(() => ({
-  importData: () => {
-    exposedApi.replaceItems();
-  },
-  applyChange: ({ remove, update, replace }) => {
-    const ids = [
-      ...(remove || []),
-      ...[...(update || []), ...(replace || [])].map((item) => item.id),
-    ];
-    const nodeItems = [];
-    const edgeItems = [];
-
-    // Save old neighbors for label update
-    const updatedIds = new Set(
-      [].concat(...ids, ...ids.map((id) => net.getConnectedNodes(id))),
-    );
-
-    if (update) {
-      Object.values(update).forEach((itemUpdate) => {
-        const item = {
-          ...data.value.items[itemUpdate.id],
-          ...itemUpdate,
-        };
-
-        if (isEdge(item.type)) {
-          edgeItems.push(toEdge(item));
-        } else {
-          nodeItems.push(toNode(item));
-        }
-      });
-    }
-
-    if (replace) {
-      Object.values(replace).forEach((item) => {
-        if (isEdge(item.type)) {
-          edgeItems.push(toEdge(item));
-        } else {
-          nodeItems.push(toNode(item));
-        }
-      });
-    }
-
-    // Update Vis
-    if (ids.length) {
-      nodes.remove(ids);
-      edges.remove(ids);
-    }
-    if (nodeItems.length) {
-      nodes.add(nodeItems);
-    }
-    if (edgeItems.length) {
-      edges.add(edgeItems);
-    }
-
-    // Save new neighbors for label update
-    ids.forEach((id) =>
-      net.getConnectedNodes(id).forEach((id) => updatedIds.add(id)),
-    );
-
-    // Update label texts
-    exposedApi.updateLabels(
-      [...updatedIds].filter((id) => data.value.items[id]),
-    );
-  },
+  importData: rebuildFromStore,
+  undo: rebuildFromStore,
+  redo: rebuildFromStore,
+  removeItems: (ids) => applyChangeToCanvas({ remove: ids }),
+  updateItems: (items) => applyChangeToCanvas({ update: items }),
+  replaceItems: (items) => applyChangeToCanvas({ replace: items }),
 }));
 
 // Add storeActions and non-reactive getters to the exposed API

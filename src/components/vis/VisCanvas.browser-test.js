@@ -4,6 +4,7 @@ import { mount } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
 import { createPinia } from "pinia";
 import VisCanvas from "@/components/vis/VisCanvas.vue";
+import { useTopologyStore } from "@/store/topologyStore";
 import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
 
 function createTestPinia({ items, zeroBoundingBox = false } = {}) {
@@ -459,7 +460,7 @@ describe.concurrent("VisCanvas", () => {
       wrapper.unmount();
     });
 
-    it("applyChange action updates, replaces and removes items", ({
+    it("public mutation handlers update, replace and remove items", ({
       expect,
     }) => {
       const items = {
@@ -510,40 +511,193 @@ describe.concurrent("VisCanvas", () => {
       // Update includes both a node-type (switch) and an edge-type (link e1)
       // Replace includes both a node-type (host h2) and an edge-type (link e2)
       // This covers both branches: isEdge true and false in update and replace
-      vm.storeActions["applyChange"]({
-        update: [
-          {
-            id: "s1",
-            hostname: "s1-updated",
-          },
-          {
-            id: "e1",
-            hostname: "link-1-updated",
-          },
-        ],
-        replace: [
-          {
-            id: "h2",
-            type: "host",
-            hostname: "h2-replaced",
-            x: 20,
-            y: 20,
-          },
-          {
-            id: "e2",
-            type: "link",
-            from: "s1",
-            to: "h2",
-            hostname: "link-2-replaced",
-          },
-        ],
-        remove: [],
-      });
+      vm.storeActions["updateItems"]([
+        {
+          id: "s1",
+          hostname: "s1-updated",
+        },
+        {
+          id: "e1",
+          hostname: "link-1-updated",
+        },
+      ]);
+      vm.storeActions["replaceItems"]([
+        {
+          id: "h2",
+          type: "host",
+          hostname: "h2-replaced",
+          x: 20,
+          y: 20,
+        },
+        {
+          id: "e2",
+          type: "link",
+          from: "s1",
+          to: "h2",
+          hostname: "link-2-replaced",
+        },
+      ]);
 
       expect(nodesRemoveSpy).toHaveBeenCalled();
       expect(edgesRemoveSpy).toHaveBeenCalled();
       expect(nodesAddSpy).toHaveBeenCalled();
       expect(edgesAddSpy).toHaveBeenCalled();
+
+      wrapper.unmount();
+    });
+  });
+
+  describe("public mutation action synchronization", () => {
+    it("removes vis-network nodes and edges when topology store removeItems action is dispatched", async ({
+      expect,
+    }) => {
+      const items = {
+        s1: {
+          id: "s1",
+          type: "switch",
+          hostname: "s1",
+          x: 0,
+          y: 0,
+        },
+        h1: {
+          id: "h1",
+          type: "host",
+          hostname: "h1",
+          x: 10,
+          y: 10,
+        },
+        e1: {
+          id: "e1",
+          type: "link",
+          from: "s1",
+          to: "h1",
+          hostname: "link-1",
+        },
+      };
+      const wrapper = mountVisCanvas({ items });
+      const vm = wrapper.vm;
+      const store = useTopologyStore();
+
+      // Sanity: datasets initially populated
+      expect(vm.nodes.getIds()).toContain("h1");
+      expect(vm.edges.getIds()).toContain("e1");
+
+      // Dispatch the public mutation action
+      store.removeItems(["h1", "e1"]);
+      await nextTick();
+
+      // Canvas datasets must reflect the removal
+      expect(vm.nodes.getIds()).not.toContain("h1");
+      expect(vm.edges.getIds()).not.toContain("e1");
+
+      wrapper.unmount();
+    });
+
+    it("updates vis-network nodes when topology store updateItems action is dispatched", async ({
+      expect,
+    }) => {
+      const items = {
+        s1: {
+          id: "s1",
+          type: "switch",
+          hostname: "s1",
+          x: 0,
+          y: 0,
+        },
+        d1: {
+          id: "d1",
+          type: "dummy",
+          hostname: "dummy-original",
+          x: 5,
+          y: 5,
+        },
+      };
+      const wrapper = mountVisCanvas({ items });
+      const vm = wrapper.vm;
+      const store = useTopologyStore();
+
+      const nodesUpdateSpy = vi.spyOn(vm.nodes, "update");
+
+      // Dispatch the public mutation action
+      store.updateItems([{ id: "s1", hostname: "s1-renamed" }]);
+      await nextTick();
+
+      // Canvas should have pushed an update through nodes.update reflecting the new hostname
+      expect(nodesUpdateSpy).toHaveBeenCalled();
+      const updatedNode = vm.nodes.get("s1");
+      expect(updatedNode).toBeTruthy();
+      // The label is composed from item state; the new hostname must surface
+      expect(JSON.stringify(updatedNode)).toContain("s1-renamed");
+
+      wrapper.unmount();
+    });
+
+    it("replaces vis-network items when topology store replaceItems action is dispatched", async ({
+      expect,
+    }) => {
+      const items = {
+        s1: {
+          id: "s1",
+          type: "switch",
+          hostname: "s1",
+          x: 0,
+          y: 0,
+        },
+      };
+      const wrapper = mountVisCanvas({ items });
+      const vm = wrapper.vm;
+      const store = useTopologyStore();
+
+      // Dispatch the public mutation action with a brand-new item
+      store.replaceItems([
+        {
+          id: "h-new",
+          type: "host",
+          hostname: "h-new",
+          x: 50,
+          y: 50,
+        },
+      ]);
+      await nextTick();
+
+      // Canvas datasets must reflect the new item
+      expect(vm.nodes.getIds()).toContain("h-new");
+
+      wrapper.unmount();
+    });
+
+    it("keeps the canvas synchronized after undo of a public mutation", async ({
+      expect,
+    }) => {
+      const items = {
+        s1: {
+          id: "s1",
+          type: "switch",
+          hostname: "s1",
+          x: 0,
+          y: 0,
+        },
+        h1: {
+          id: "h1",
+          type: "host",
+          hostname: "h1",
+          x: 10,
+          y: 10,
+        },
+      };
+      const wrapper = mountVisCanvas({ items });
+      const vm = wrapper.vm;
+      const store = useTopologyStore();
+
+      store.removeItems(["h1"]);
+      await nextTick();
+      expect(vm.nodes.getIds()).not.toContain("h1");
+
+      store.undo();
+      await nextTick();
+
+      // After undo, the previously-removed item should be back on the canvas
+      expect(vm.nodes.getIds()).toContain("h1");
 
       wrapper.unmount();
     });
