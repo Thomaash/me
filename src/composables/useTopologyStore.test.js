@@ -27,14 +27,13 @@ describe("useTopologyStore composable wrapper", () => {
     }
   });
 
-  it("exposes all topology action delegates as callable functions", ({
+  it("exposes all public topology action delegates as callable functions", ({
     expect,
   }) => {
     const wrapped = useTopologyStore();
     for (const action of [
       "importData",
       "setValues",
-      "applyChange",
       "removeItems",
       "updateItems",
       "replaceItems",
@@ -43,6 +42,15 @@ describe("useTopologyStore composable wrapper", () => {
     ]) {
       expect(typeof wrapped[action]).toBe("function");
     }
+  });
+
+  // Requirement: Topology store exposes only domain-level public mutation
+  // workflows. The composable wrapper MUST NOT re-export the internal
+  // `applyChange` helper.
+  it("does not expose applyChange on the composable wrapper", ({ expect }) => {
+    const wrapped = useTopologyStore();
+    expect(wrapped.applyChange).toBeUndefined();
+    expect("applyChange" in wrapped).toBe(false);
   });
 
   it("removeItems through the composable updates data.value.items and adds to past.value", ({

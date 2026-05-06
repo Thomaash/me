@@ -15,7 +15,6 @@ describe("sync.js action-replay contract", () => {
   const PUBLIC_ACTIONS = [
     "importData",
     "setValues",
-    "applyChange",
     "removeItems",
     "updateItems",
     "replaceItems",
@@ -31,6 +30,14 @@ describe("sync.js action-replay contract", () => {
     for (const action of PUBLIC_ACTIONS) {
       expect(typeof store[action]).toBe("function");
     }
+  });
+
+  // Scenario: Internal helper is not part of observable public contract
+  it("does not expose the internal applyChange helper on the store", ({
+    expect,
+  }) => {
+    const store = useTopologyStore();
+    expect(store.applyChange).toBeUndefined();
   });
 
   // Scenario: Action observers can react to public topology mutations

@@ -32,7 +32,6 @@ export function useTopologyStore() {
     // Topology actions (delegating through store so spies work)
     importData: (...args) => topologyStore.importData(...args),
     setValues: (...args) => topologyStore.setValues(...args),
-    applyChange: (...args) => topologyStore.applyChange(...args),
     removeItems: (...args) => topologyStore.removeItems(...args),
     updateItems: (...args) => topologyStore.updateItems(...args),
     replaceItems: (...args) => topologyStore.replaceItems(...args),

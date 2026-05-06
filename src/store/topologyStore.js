@@ -261,7 +261,6 @@ export const useTopologyStore = defineStore(
       boundingBox,
       importData,
       setValues,
-      applyChange,
       removeItems,
       updateItems,
       replaceItems,

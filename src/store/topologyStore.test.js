@@ -157,49 +157,26 @@ describe("topologyStore", () => {
       });
     });
 
-    describe("applyChange", () => {
-      it("removes items by id", ({ expect }) => {
+    // Requirement: Topology store exposes only domain-level public mutation
+    // workflows. The internal `applyChange` helper MUST NOT leak through the
+    // store's public surface.
+    describe("applyChange is not part of the public API", () => {
+      it("does not expose applyChange on the store instance", ({ expect }) => {
         const store = useTopologyStore();
-        store.data.items = createItems([
-          ["n1", { type: "host" }],
-          ["n2", { type: "host" }],
-        ]);
-        store.applyChange({ remove: ["n1"] });
-        expect(store.data.items.n1).toBeUndefined();
-        expect(store.data.items.n2).toBeDefined();
+        expect(store.applyChange).toBeUndefined();
+        expect(typeof store.applyChange).toBe("undefined");
       });
 
-      it("updates items in place", ({ expect }) => {
-        const store = seedSingleHostStore();
-        store.applyChange({ update: [{ id: "n1", hostname: "h2" }] });
-        expect(store.data.items.n1.hostname).toBe("h2");
-        expect(store.data.items.n1.type).toBe("host");
-      });
-
-      it("replaces items entirely", ({ expect }) => {
-        const store = seedSingleHostStore();
-        store.applyChange({
-          replace: [{ id: "n1", type: "switch", hostname: "s1" }],
-        });
-        expect(store.data.items.n1).toEqual({
-          id: "n1",
-          type: "switch",
-          hostname: "s1",
-        });
-      });
-
-      it("throws when update item has no id", ({ expect }) => {
+      it("throws on update with missing id via public replaceItems/updateItems path", ({
+        expect,
+      }) => {
         const store = useTopologyStore();
-        expect(() =>
-          store.applyChange({ update: [{ hostname: "h1" }] }),
-        ).toThrow("Items have to have ids.");
-      });
-
-      it("throws when replace item has no id", ({ expect }) => {
-        const store = useTopologyStore();
-        expect(() =>
-          store.applyChange({ replace: [{ hostname: "h1" }] }),
-        ).toThrow("Items have to have ids.");
+        expect(() => store.updateItems([{ hostname: "h1" }])).toThrow(
+          "Items have to have ids.",
+        );
+        expect(() => store.replaceItems([{ hostname: "h1" }])).toThrow(
+          "Items have to have ids.",
+        );
       });
     });
 
@@ -263,24 +240,41 @@ describe("topologyStore", () => {
       });
     });
 
-    // Scenario: Action observers can react to public topology mutations
+    // Scenario: Public mutation actions are observable
+    // Requirement: Topology store action observation reflects supported public
+    // workflows. `$onAction` MUST emit for the public mutation actions and
+    // MUST NOT require external consumers to observe `applyChange`.
     describe("action observers", () => {
-      it("observes importData and applyChange by their public action names", ({
+      it("observes the public mutation workflows by their action names", ({
         expect,
       }) => {
         const store = useTopologyStore();
+        store.data.items = createItems([
+          ["n1", { type: "host", hostname: "h1" }],
+          ["n2", { type: "host", hostname: "h2" }],
+        ]);
+
         const observed = [];
         const unsubscribe = store.$onAction(({ name }) => {
           observed.push(name);
         });
 
         store.importData(exampleTiny);
-        store.applyChange({ remove: [] });
+        const seededId = Object.keys(store.data.items)[0];
+        store.updateItems([{ id: seededId, hostname: "renamed" }]);
+        store.replaceItems([
+          { id: seededId, type: "host", hostname: "replaced" },
+        ]);
+        store.removeItems([seededId]);
 
         unsubscribe();
 
         expect(observed).toContain("importData");
-        expect(observed).toContain("applyChange");
+        expect(observed).toContain("updateItems");
+        expect(observed).toContain("replaceItems");
+        expect(observed).toContain("removeItems");
+        // applyChange is internal; consumers must not need to observe it.
+        expect(observed).not.toContain("applyChange");
       });
     });
   });
