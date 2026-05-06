@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import {
   compare,
   compareNodes,
@@ -6,7 +6,7 @@ import {
 } from "@/components/vis/locale.js";
 
 describe.concurrent("compare", () => {
-  it.each([
+  it.for([
     {
       a: "apple",
       b: "banana",
@@ -32,7 +32,7 @@ describe.concurrent("compare", () => {
       desc: "numeric collation (file10 after file2)",
       check: "positive",
     },
-  ])("returns $check for $desc ($a vs $b)", ({ a, b, check }) => {
+  ])("returns $check for $desc ($a vs $b)", ({ a, b, check }, { expect }) => {
     const result = compare(a, b);
     if (check === "negative") {
       expect(result).toBeLessThan(0);

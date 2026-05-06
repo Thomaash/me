@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, beforeEach } from "vitest";
 import Builder from "@/builder/index.js";
 import medium2Controllers from "@/examples/medium_2_controllers.json";
 
@@ -414,7 +414,7 @@ describe("Builder", () => {
       expect(script).toContain("cli.onecmd('cleanup')");
     });
 
-    it.each([
+    it.for([
       ["autoSetMAC", true, "autoSetMacs=True"],
       ["autoStaticARP", false, "autoStaticArp=False"],
       ["inNamespace", false, "inNamespace=False"],
@@ -423,7 +423,7 @@ describe("Builder", () => {
       ["spawnTerminals", true, "xterms=True"],
     ])(
       "includes Mininet constructor argument %s",
-      (configKey, configValue, expectedArg) => {
+      ([configKey, configValue, expectedArg], { expect }) => {
         const { data } = buildMinimalTopology({
           [configKey]: configValue,
         });

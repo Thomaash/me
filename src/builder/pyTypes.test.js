@@ -1,54 +1,66 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import pyTypes from "@/builder/pyTypes.js";
 
 describe.concurrent("pyTypes", () => {
   describe("pyBoolean (via pyTypes.get(Boolean))", () => {
     const pyBoolean = pyTypes.get(Boolean);
 
-    it.each([
+    it.for([
       ["true", true, "True"],
       ["false", false, "False"],
-    ])("converts %s to Python representation", (_label, input, expected) => {
-      expect(pyBoolean(input)).toBe(expected);
-    });
+    ])(
+      "converts %s to Python representation",
+      ([_label, input, expected], { expect }) => {
+        expect(pyBoolean(input)).toBe(expected);
+      },
+    );
   });
 
   describe("pyNumber (via pyTypes.get(Number))", () => {
     const pyNumber = pyTypes.get(Number);
 
-    it.each([
+    it.for([
       ["integer", 42, "42"],
       ["zero", 0, "0"],
       ["negative", -7, "-7"],
       ["float", 3.14, "3.14"],
-    ])("converts %s to string representation", (_label, input, expected) => {
-      expect(pyNumber(input)).toBe(expected);
-    });
+    ])(
+      "converts %s to string representation",
+      ([_label, input, expected], { expect }) => {
+        expect(pyNumber(input)).toBe(expected);
+      },
+    );
   });
 
   describe("pyString (via pyTypes.get(String))", () => {
     const pyString = pyTypes.get(String);
 
-    it.each([
+    it.for([
       ["simple string", "hello", "'hello'"],
       ["empty string", "", "''"],
       ["string with single quote", "it's", "'it\\'s'"],
       ["string with special characters", "a&b<c>d", "'a&b<c>d'"],
-    ])("wraps %s in single quotes with escaping", (_label, input, expected) => {
-      expect(pyString(input)).toBe(expected);
-    });
+    ])(
+      "wraps %s in single quotes with escaping",
+      ([_label, input, expected], { expect }) => {
+        expect(pyString(input)).toBe(expected);
+      },
+    );
   });
 
   describe("pyRaw (via pyTypes.get(null))", () => {
     const pyRaw = pyTypes.get(null);
 
-    it.each([
+    it.for([
       ["simple string", "raw_value", "raw_value"],
       ["empty string", "", ""],
       ["numeric string", "42", "42"],
-    ])("returns %s as-is without wrapping", (_label, input, expected) => {
-      expect(pyRaw(input)).toBe(expected);
-    });
+    ])(
+      "returns %s as-is without wrapping",
+      ([_label, input, expected], { expect }) => {
+        expect(pyRaw(input)).toBe(expected);
+      },
+    );
   });
 
   describe("Map structure", () => {

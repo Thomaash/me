@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import {
   labelPlaceholderRE,
   labelPlaceholderReplacers,
 } from "@/components/vis/placeholders.js";
 
 describe.concurrent("labelPlaceholderRE", () => {
-  it.each([
+  it.for([
     { input: "{{HOSTNAMES}}", expected: ["{{HOSTNAMES}}"] },
     { input: "{{IPS}}", expected: ["{{IPS}}"] },
     { input: "{{TYPES}}", expected: ["{{TYPES}}"] },
@@ -15,17 +15,17 @@ describe.concurrent("labelPlaceholderRE", () => {
       input: "prefix {{A}} middle {{B}} suffix",
       expected: ["{{A}}", "{{B}}"],
     },
-  ])("matches $input", ({ input, expected }) => {
+  ])("matches $input", ({ input, expected }, { expect }) => {
     expect([...input.matchAll(labelPlaceholderRE)].map((m) => m[0])).toEqual(
       expected,
     );
   });
 
-  it.each([
+  it.for([
     { input: "{{{foo}}}", desc: "triple braces" },
     { input: "{foo}", desc: "single braces" },
     { input: "plain text", desc: "no braces" },
-  ])("does not fully match $desc ($input)", ({ input }) => {
+  ])("does not fully match $desc ($input)", ({ input }, { expect }) => {
     const matches = [...input.matchAll(labelPlaceholderRE)].map((m) => m[0]);
     // For triple braces {{{foo}}}, the regex must NOT match the full string
     // (it may match a substring like {{foo}}, but {{{foo}}} as a whole is not a valid match)

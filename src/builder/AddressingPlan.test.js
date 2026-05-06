@@ -1,4 +1,4 @@
-import { beforeEach, describe, it, expect, vi } from "vitest";
+import { beforeEach, describe, it, vi } from "vitest";
 
 // Mock window.matchMedia before importing AddressingPlan (which imports @/theme)
 Object.defineProperty(window, "matchMedia", {
@@ -134,19 +134,22 @@ describe("AddressingPlan", () => {
   });
 
   describe("port filtering", () => {
-    it.each([
+    it.for([
       ["no ips property", {}],
       ["empty ips array", { ips: [] }],
-    ])("excludes ports with %s from the plan", (_label, ipOverrides) => {
-      const h1 = makeHost({ hostname: "host-1" });
-      const p1 = makePort({ hostname: "eth0", ...ipOverrides });
-      const assoc = makeAssociation(h1.id, p1.id);
+    ])(
+      "excludes ports with %s from the plan",
+      ([_label, ipOverrides], { expect }) => {
+        const h1 = makeHost({ hostname: "host-1" });
+        const p1 = makePort({ hostname: "eth0", ...ipOverrides });
+        const assoc = makeAssociation(h1.id, p1.id);
 
-      const ap = new AddressingPlan(buildTopology([h1, p1, assoc]));
-      ap.build();
+        const ap = new AddressingPlan(buildTopology([h1, p1, assoc]));
+        ap.build();
 
-      expect(Object.keys(ap.plan)).toHaveLength(0);
-    });
+        expect(Object.keys(ap.plan)).toHaveLength(0);
+      },
+    );
   });
 
   describe("_portToNode resolves parent via associations", () => {

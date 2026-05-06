@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import {
   pyBoolean,
   pyNotNull,
@@ -8,35 +8,35 @@ import {
 
 describe.concurrent("importScript/pyTypes", () => {
   describe("pyBoolean", () => {
-    it.each([
+    it.for([
       ["True", true],
       ["False", false],
-    ])("returns %s parsed as %s", (input, expected) => {
+    ])("returns %s parsed as %s", ([input, expected], { expect }) => {
       expect(pyBoolean(input)).toBe(expected);
     });
 
-    it.each(["true", "false", "yes", "no", "1", "0", ""])(
+    it.for(["true", "false", "yes", "no", "1", "0", ""])(
       'throws TypeError for invalid input "%s"',
-      (input) => {
+      (input, { expect }) => {
         expect(() => pyBoolean(input)).toThrow(TypeError);
       },
     );
   });
 
   describe("pyNotNull", () => {
-    it.each(["hello", "some value", "0", "false", "True", "False"])(
+    it.for(["hello", "some value", "0", "false", "True", "False"])(
       'returns truthy for non-null non-"None" string "%s"',
-      (input) => {
+      (input, { expect }) => {
         expect(pyNotNull(input)).toBeTruthy();
       },
     );
 
-    it.each([
+    it.for([
       ["null", null],
       ["undefined", undefined],
       ["empty string", ""],
       ["None", "None"],
-    ])("returns falsy for %s", (_label, input) => {
+    ])("returns falsy for %s", ([_label, input], { expect }) => {
       expect(pyNotNull(input)).toBeFalsy();
     });
 
@@ -51,16 +51,19 @@ describe.concurrent("importScript/pyTypes", () => {
   });
 
   describe("pyNumber", () => {
-    it.each([
+    it.for([
       ["42", 42],
       ["0", 0],
       ["-7", -7],
       ["3.14", 3.14],
       ["1", 1],
       ["100", 100],
-    ])('converts numeric string "%s" to %d', (input, expected) => {
-      expect(pyNumber(input)).toBe(expected);
-    });
+    ])(
+      'converts numeric string "%s" to %d',
+      ([input, expected], { expect }) => {
+        expect(pyNumber(input)).toBe(expected);
+      },
+    );
 
     it("returns exact numeric value (not 0 or negated)", ({ expect }) => {
       expect(pyNumber("5")).toBe(5);
@@ -68,9 +71,9 @@ describe.concurrent("importScript/pyTypes", () => {
       expect(pyNumber("5")).not.toBe(-5);
     });
 
-    it.each(["abc", "twelve", "10px"])(
+    it.for(["abc", "twelve", "10px"])(
       'throws TypeError for non-numeric string "%s"',
-      (input) => {
+      (input, { expect }) => {
         expect(() => pyNumber(input)).toThrow(TypeError);
       },
     );
@@ -81,14 +84,14 @@ describe.concurrent("importScript/pyTypes", () => {
   });
 
   describe("pyString", () => {
-    it.each([
+    it.for([
       ["'hello'", "hello"],
       ["'world'", "world"],
       ["''", ""],
       ["'it\\'s'", "it\\'s"],
       ["'a'", "a"],
       ["'ab'", "ab"],
-    ])("strips surrounding quotes from %s", (input, expected) => {
+    ])("strips surrounding quotes from %s", ([input, expected], { expect }) => {
       expect(pyString(input)).toBe(expected);
     });
 
@@ -108,9 +111,9 @@ describe.concurrent("importScript/pyTypes", () => {
       expect(pyString("'abc'")[0]).toBe("a");
     });
 
-    it.each(["hello", '"hello"', "no quotes", ""])(
+    it.for(["hello", '"hello"', "no quotes", ""])(
       'throws TypeError for non-quoted string "%s"',
-      (input) => {
+      (input, { expect }) => {
         expect(() => pyString(input)).toThrow(TypeError);
       },
     );

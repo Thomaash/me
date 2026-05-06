@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, vi, beforeEach } from "vitest";
 import deselectHandler from "@/components/vis/deselectHandler.js";
 import RectangularSelection from "@/components/vis/RectangularSelection.js";
 
@@ -93,14 +93,17 @@ describe("deselectHandler", () => {
 
 describe("RectangularSelection", () => {
   describe("_orderPair", () => {
-    it.each([
+    it.for([
       { a: 1, b: 5, expected: [1, 5], desc: "a < b" },
       { a: 10, b: 3, expected: [3, 10], desc: "a > b" },
       { a: 4, b: 4, expected: [4, 4], desc: "a === b" },
-    ])("returns [$expected] when $desc (a=$a, b=$b)", ({ a, b, expected }) => {
-      const rs = new RectangularSelection({}, {}, {}, {});
-      expect(rs._orderPair(a, b)).toEqual(expected);
-    });
+    ])(
+      "returns [$expected] when $desc (a=$a, b=$b)",
+      ({ a, b, expected }, { expect }) => {
+        const rs = new RectangularSelection({}, {}, {}, {});
+        expect(rs._orderPair(a, b)).toEqual(expected);
+      },
+    );
   });
 
   describe("_prepareNodeSelection", () => {
@@ -141,14 +144,14 @@ describe("RectangularSelection", () => {
   });
 
   describe("keysModeMap (via _mouseupListener)", () => {
-    it.each([
+    it.for([
       { ctrlKey: false, shiftKey: false, expectedMode: "set" },
       { ctrlKey: false, shiftKey: true, expectedMode: "add" },
       { ctrlKey: true, shiftKey: false, expectedMode: "del" },
       { ctrlKey: true, shiftKey: true, expectedMode: "set" },
     ])(
       "maps ctrl=$ctrlKey, shift=$shiftKey to mode '$expectedMode'",
-      ({ ctrlKey, shiftKey, expectedMode }) => {
+      ({ ctrlKey, shiftKey, expectedMode }, { expect }) => {
         const mockNetwork = {
           getSelectedNodes: vi.fn().mockReturnValue([]),
           redraw: vi.fn(),

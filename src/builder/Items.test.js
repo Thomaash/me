@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import Items from "@/builder/Items.js";
 
 // --- Test Fixtures ---
@@ -79,14 +79,14 @@ describe.concurrent("Items", () => {
       expect(p1.$links).toEqual([]);
     });
 
-    it.each([
+    it.for([
       ["controller", ["c1"]],
       ["host", ["h1", "h2"]],
       ["switch", ["s1"]],
       ["port", ["p1"]],
       ["link", ["l1"]],
       ["association", ["a1"]],
-    ])("groups %s items into map.%s", (type, expectedIds) => {
+    ])("groups %s items into map.%s", ([type, expectedIds], { expect }) => {
       const items = new Items(buildFixtureItems());
 
       const ids = Object.keys(items.map[type]);
@@ -112,9 +112,9 @@ describe.concurrent("Items", () => {
       expect(hostnames).toEqual(["a1", "z2", "z10"]);
     });
 
-    it.each(["$all", "$edges", "$nodes", "host", "link"])(
+    it.for(["$all", "$edges", "$nodes", "host", "link"])(
       "produces arr.%s as a sorted array matching map.%s values",
-      (key) => {
+      (key, { expect }) => {
         const items = new Items(buildFixtureItems());
 
         expect(Array.isArray(items.arr[key])).toBe(true);

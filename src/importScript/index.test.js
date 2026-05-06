@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import importScript from "@/importScript/index.js";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -271,25 +271,28 @@ net.stop()
   });
 
   describe("Mininet constructor arguments", () => {
-    it.each([
+    it.for([
       ["ipBase", "ipBase='10.0.0.0/8'", { ipBase: "10.0.0.0/8" }],
       ["autoSetMAC", "autoSetMacs=True", { autoSetMAC: true }],
       ["autoStaticARP", "autoStaticArp=True", { autoStaticARP: true }],
       ["spawnTerminals", "xterms=True", { spawnTerminals: true }],
       ["listenPortBase", "listenPort=6634", { listenPortBase: 6634 }],
-    ])("extracts %s from Mininet(%s)", (_label, argString, expectedProps) => {
-      const script = `
+    ])(
+      "extracts %s from Mininet(%s)",
+      ([_label, argString, expectedProps], { expect }) => {
+        const script = `
 net = Mininet(topo=None, build=False, ${argString})
 net.build()
 CLI(net)
 net.stop()
 `;
-      const result = importScript(script);
+        const result = importScript(script);
 
-      Object.entries(expectedProps).forEach(([key, value]) => {
-        expect(result.data[key]).toBe(value);
-      });
-    });
+        Object.entries(expectedProps).forEach(([key, value]) => {
+          expect(result.data[key]).toBe(value);
+        });
+      },
+    );
   });
 
   describe("switch-controller associations", () => {

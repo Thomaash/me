@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import generateTooltip from "@/components/vis/generateTooltip.js";
 
 describe.concurrent("generateTooltip", () => {
@@ -50,7 +50,7 @@ describe.concurrent("generateTooltip", () => {
   });
 
   describe("link generator", () => {
-    it.each([
+    it.for([
       {
         props: { bandwidth: 100 },
         desc: "bandwidth",
@@ -78,10 +78,13 @@ describe.concurrent("generateTooltip", () => {
         desc: "jitter",
         expected: "<table><tr><td>Jitter</td><td>2 ms</td></tr></table>",
       },
-    ])("renders $desc in an HTML table row", ({ props, expected }) => {
-      const result = generateTooltip({ type: "link", ...props });
-      expect(result).toBe(expected);
-    });
+    ])(
+      "renders $desc in an HTML table row",
+      ({ props, expected }, { expect }) => {
+        const result = generateTooltip({ type: "link", ...props });
+        expect(result).toBe(expected);
+      },
+    );
 
     it("renders all link properties in order", ({ expect }) => {
       const result = generateTooltip({
@@ -125,15 +128,18 @@ describe.concurrent("generateTooltip", () => {
   });
 
   describe("switch generator", () => {
-    it.each([
+    it.for([
       { switchType: "OVSSwitch", expected: "OVS Switch" },
       { switchType: "LinuxBridge", expected: "Linux Bridge" },
       { switchType: "OVSBridge", expected: "OVS Bridge" },
       { switchType: "IVSSwitch", expected: "IVS Switch" },
       { switchType: "UserSwitch", expected: "User Switch" },
-    ])("maps $switchType to '$expected'", ({ switchType, expected }) => {
-      expect(generateTooltip({ type: "switch", switchType })).toBe(expected);
-    });
+    ])(
+      "maps $switchType to '$expected'",
+      ({ switchType, expected }, { expect }) => {
+        expect(generateTooltip({ type: "switch", switchType })).toBe(expected);
+      },
+    );
 
     it("returns 'Default' when switchType is null", ({ expect }) => {
       expect(generateTooltip({ type: "switch", switchType: null })).toBe(

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import pyArgs from "@/builder/pyArgs.js";
 
 describe.concurrent("pyArgs", () => {
@@ -10,25 +10,28 @@ describe.concurrent("pyArgs", () => {
   });
 
   describe("pyArgPre with 2 args (value, type)", () => {
-    it.each([
+    it.for([
       ["Boolean true", true, Boolean, "True"],
       ["Boolean false", false, Boolean, "False"],
       ["Number", 42, Number, "42"],
       ["String", "hello", String, "'hello'"],
-    ])("applies the type converter for %s", (_label, value, type, expected) => {
-      const result = pyArgs([[value, type]]);
-      expect(result).toEqual([expected]);
-    });
+    ])(
+      "applies the type converter for %s",
+      ([_label, value, type, expected], { expect }) => {
+        const result = pyArgs([[value, type]]);
+        expect(result).toEqual([expected]);
+      },
+    );
   });
 
   describe("pyArgPre with 3 args (value, type, name) where name is a string", () => {
-    it.each([
+    it.for([
       ["Boolean", true, Boolean, "flag", "flag=True"],
       ["Number", 100, Number, "count", "count=100"],
       ["String", "world", String, "greeting", "greeting='world'"],
     ])(
       "returns name=convertedValue for %s type",
-      (_label, value, type, name, expected) => {
+      ([_label, value, type, name, expected], { expect }) => {
         const result = pyArgs([[value, type, name]]);
         expect(result).toEqual([expected]);
       },
@@ -64,11 +67,11 @@ describe.concurrent("pyArgs", () => {
   });
 
   describe("pyArgPre argument count validation", () => {
-    it.each([
+    it.for([
       ["0 arguments", []],
       ["5 arguments", [1, 2, 3, 4, 5]],
       ["6 arguments", [1, 2, 3, 4, 5, 6]],
-    ])("throws TypeError for %s", (_label, args) => {
+    ])("throws TypeError for %s", ([_label, args], { expect }) => {
       expect(() => pyArgs([args])).toThrow(TypeError);
     });
 

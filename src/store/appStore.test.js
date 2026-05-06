@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { useAppStore } from "./appStore";
 
@@ -7,7 +7,7 @@ beforeEach(() => {
 });
 
 describe("appStore", () => {
-  it("has correct initial state", () => {
+  it("has correct initial state", ({ expect }) => {
     const store = useAppStore();
     expect(store.loading).toBe(true);
     expect(store.working).toBe(false);
@@ -15,32 +15,35 @@ describe("appStore", () => {
     expect(store.alert).toEqual({ show: false });
   });
 
-  it("loaded sets loading to false", () => {
+  it("loaded sets loading to false", ({ expect }) => {
     const store = useAppStore();
     store.loaded();
     expect(store.loading).toBe(false);
   });
 
   describe("setWorking", () => {
-    it("sets working to {curr, max} when both are numbers", () => {
+    it("sets working to {curr, max} when both are numbers", ({ expect }) => {
       const store = useAppStore();
       store.setWorking({ working: true, curr: 3, max: 10 });
       expect(store.working).toEqual({ curr: 3, max: 10 });
     });
 
-    it.each([
+    it.for([
       ["curr is NaN", { working: true, curr: "abc", max: 10 }, true],
       ["max is NaN", { working: true, curr: 3, max: "abc" }, true],
       ["both are NaN", { working: false, curr: "a", max: "b" }, false],
       ["working is false", { working: false }, false],
-    ])("sets working to boolean when %s", (_label, payload, expected) => {
-      const store = useAppStore();
-      store.setWorking(payload);
-      expect(store.working).toBe(expected);
-    });
+    ])(
+      "sets working to boolean when %s",
+      ([_label, payload, expected], { expect }) => {
+        const store = useAppStore();
+        store.setWorking(payload);
+        expect(store.working).toBe(expected);
+      },
+    );
   });
 
-  it("setAlert sets alert to {show: true, type, text}", () => {
+  it("setAlert sets alert to {show: true, type, text}", ({ expect }) => {
     const store = useAppStore();
     store.setAlert({ type: "error", text: "Something failed" });
     expect(store.alert).toEqual({
@@ -50,14 +53,14 @@ describe("appStore", () => {
     });
   });
 
-  it("clearAlert sets alert.show to false", () => {
+  it("clearAlert sets alert.show to false", ({ expect }) => {
     const store = useAppStore();
     store.setAlert({ type: "error", text: "err" });
     store.clearAlert();
     expect(store.alert.show).toBe(false);
   });
 
-  it("setUpdateAvailable sets isUpdateAvailable to true", () => {
+  it("setUpdateAvailable sets isUpdateAvailable to true", ({ expect }) => {
     const store = useAppStore();
     store.setUpdateAvailable();
     expect(store.isUpdateAvailable).toBe(true);

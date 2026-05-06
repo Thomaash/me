@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, vi, beforeEach } from "vitest";
 
 const mockAppStore = {
   clearAlert: vi.fn(),
@@ -106,7 +106,7 @@ describe("selectionTitleSuffix (tested via canvas child subtitle)", () => {
 });
 
 describe("createRoutes (tested via router.options.routes)", () => {
-  it.each([
+  it.for([
     ["/", "/", { isView: false }],
     ["/home", "Home", { title: "Home", drawer: true, isView: false }],
     ["/canvas", "Canvas", { title: "Canvas", drawer: true, isView: false }],
@@ -123,7 +123,7 @@ describe("createRoutes (tested via router.options.routes)", () => {
     ["/about", "About", { title: "About", drawer: true, isView: false }],
   ])(
     "includes normal route with path=%s, name=%s",
-    (path, name, expectedMeta) => {
+    ([path, name, expectedMeta], { expect }) => {
       const route = normalRoutes.find((r) => r.path === path);
       expect(route).toBeDefined();
       expect(route.name).toBe(name);
@@ -152,29 +152,32 @@ describe("createRoutes (tested via router.options.routes)", () => {
 });
 
 describe("route meta icon properties", () => {
-  it.each([
+  it.for([
     ["Home", "mdi-home"],
     ["Canvas", "mdi-map"],
     ["Mininet settings", "mdi-tune"],
     ["Export", "mdi-content-save"],
     ["About", "mdi-information"],
-  ])("normal route %s has icon %s", (name, expectedIcon) => {
+  ])("normal route %s has icon %s", ([name, expectedIcon], { expect }) => {
     const route = normalRoutes.find((r) => r.name === name);
     expect(route.meta.icon).toBe(expectedIcon);
   });
 });
 
 describe("route meta routerViewKey properties", () => {
-  it.each([
+  it.for([
     ["Home", "Home"],
     ["Canvas", "Canvas"],
     ["Mininet settings", "Mininet settings"],
     ["Export", "Export"],
     ["About", "About"],
-  ])("normal route %s has routerViewKey %s", (name, expectedKey) => {
-    const route = normalRoutes.find((r) => r.name === name);
-    expect(route.meta.routerViewKey).toBe(expectedKey);
-  });
+  ])(
+    "normal route %s has routerViewKey %s",
+    ([name, expectedKey], { expect }) => {
+      const route = normalRoutes.find((r) => r.name === name);
+      expect(route.meta.routerViewKey).toBe(expectedKey);
+    },
+  );
 });
 
 describe("canvas child route paths", () => {
@@ -204,21 +207,24 @@ describe("canvas route props", () => {
 });
 
 describe("route components", () => {
-  it.each([
+  it.for([
     ["Home", ["default"]],
     ["Canvas", ["default", "toolbar"]],
     ["Mininet settings", ["default", "toolbar"]],
     ["Export", ["default", "toolbar"]],
     ["About", ["default"]],
-  ])("normal route %s has component keys %j", (name, expectedKeys) => {
-    const route = normalRoutes.find((r) => r.name === name);
-    expect(Object.keys(route.components).toSorted()).toEqual(
-      expectedKeys.toSorted(),
-    );
-    for (const key of expectedKeys) {
-      expect(typeof route.components[key]).toBe("function");
-    }
-  });
+  ])(
+    "normal route %s has component keys %j",
+    ([name, expectedKeys], { expect }) => {
+      const route = normalRoutes.find((r) => r.name === name);
+      expect(Object.keys(route.components).toSorted()).toEqual(
+        expectedKeys.toSorted(),
+      );
+      for (const key of expectedKeys) {
+        expect(typeof route.components[key]).toBe("function");
+      }
+    },
+  );
 
   it("canvas children have both default and toolbar components", ({
     expect,
@@ -298,18 +304,21 @@ describe("createViewRoute (tested via view routes in router)", () => {
     }
   });
 
-  it.each([
+  it.for([
     ["View | /", "/view/"],
     ["View | Home", "/view/home"],
     ["View | Canvas", "/view/canvas"],
     ["View | Mininet settings", "/view/mininet_settings"],
     ["View | Export", "/view/export"],
     ["View | About", "/view/about"],
-  ])("includes view route %s at path %s", (name, expectedPath) => {
-    const route = viewRoutes.find((r) => r.name === name);
-    expect(route).toBeDefined();
-    expect(route.path).toBe(expectedPath);
-  });
+  ])(
+    "includes view route %s at path %s",
+    ([name, expectedPath], { expect }) => {
+      const route = viewRoutes.find((r) => r.name === name);
+      expect(route).toBeDefined();
+      expect(route.path).toBe(expectedPath);
+    },
+  );
 });
 
 describe("router configuration", () => {
@@ -325,7 +334,7 @@ describe("router configuration", () => {
 });
 
 describe("view route meta properties are fully transformed", () => {
-  it.each([
+  it.for([
     ["View | Home", { title: "Home", drawer: false, isView: true }],
     ["View | Canvas", { title: "Canvas", drawer: false, isView: true }],
     [
@@ -334,7 +343,7 @@ describe("view route meta properties are fully transformed", () => {
     ],
     ["View | Export", { title: "Export/Import", drawer: false, isView: true }],
     ["View | About", { title: "About", drawer: false, isView: true }],
-  ])("view route %s has correct meta", (name, expectedMeta) => {
+  ])("view route %s has correct meta", ([name, expectedMeta], { expect }) => {
     const route = viewRoutes.find((r) => r.name === name);
     expect(route).toBeDefined();
     expect(route.meta).toEqual(expect.objectContaining(expectedMeta));
@@ -342,29 +351,32 @@ describe("view route meta properties are fully transformed", () => {
 });
 
 describe("view route icon properties are preserved from base routes", () => {
-  it.each([
+  it.for([
     ["View | Home", "mdi-home"],
     ["View | Canvas", "mdi-map"],
     ["View | Mininet settings", "mdi-tune"],
     ["View | Export", "mdi-content-save"],
     ["View | About", "mdi-information"],
-  ])("view route %s has icon %s", (name, expectedIcon) => {
+  ])("view route %s has icon %s", ([name, expectedIcon], { expect }) => {
     const route = viewRoutes.find((r) => r.name === name);
     expect(route.meta.icon).toBe(expectedIcon);
   });
 });
 
 describe("view route routerViewKey properties", () => {
-  it.each([
+  it.for([
     ["View | Home", "Home"],
     ["View | Canvas", "Canvas"],
     ["View | Mininet settings", "Mininet settings"],
     ["View | Export", "Export"],
     ["View | About", "About"],
-  ])("view route %s has routerViewKey %s", (name, expectedKey) => {
-    const route = viewRoutes.find((r) => r.name === name);
-    expect(route.meta.routerViewKey).toBe(expectedKey);
-  });
+  ])(
+    "view route %s has routerViewKey %s",
+    ([name, expectedKey], { expect }) => {
+      const route = viewRoutes.find((r) => r.name === name);
+      expect(route.meta.routerViewKey).toBe(expectedKey);
+    },
+  );
 });
 
 describe("view canvas child route details", () => {
@@ -438,13 +450,13 @@ describe("normal route structures are complete", () => {
 });
 
 describe("view route components are lazy-loaded functions", () => {
-  it.each([
+  it.for([
     "View | Home",
     "View | Canvas",
     "View | Mininet settings",
     "View | Export",
     "View | About",
-  ])("view route %s has function components", (name) => {
+  ])("view route %s has function components", (name, { expect }) => {
     const route = viewRoutes.find((r) => r.name === name);
     for (const key of Object.keys(route.components)) {
       expect(typeof route.components[key]).toBe("function");
@@ -513,7 +525,7 @@ describe("beforeEach navigation guard", () => {
     expect(next).toHaveBeenCalledWith();
   });
 
-  it.each([
+  it.for([
     [
       "to.matched is empty",
       { meta: { isView: false }, fullPath: "/unknown", matched: [] },
@@ -528,15 +540,18 @@ describe("beforeEach navigation guard", () => {
       },
       { meta: { isView: false }, matched: [] },
     ],
-  ])("calls clearAlert and setWorking when %s", (_label, to, from) => {
-    const next = vi.fn();
+  ])(
+    "calls clearAlert and setWorking when %s",
+    ([_label, to, from], { expect }) => {
+      const next = vi.fn();
 
-    capturedBeforeEachGuard(to, from, next);
+      capturedBeforeEachGuard(to, from, next);
 
-    expect(mockAppStore.clearAlert).toHaveBeenCalled();
-    expect(mockAppStore.setWorking).toHaveBeenCalledWith({
-      working: false,
-    });
-    expect(next).toHaveBeenCalledWith();
-  });
+      expect(mockAppStore.clearAlert).toHaveBeenCalled();
+      expect(mockAppStore.setWorking).toHaveBeenCalledWith({
+        working: false,
+      });
+      expect(next).toHaveBeenCalledWith();
+    },
+  );
 });

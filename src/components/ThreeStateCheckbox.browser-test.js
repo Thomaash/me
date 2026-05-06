@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import { mountWithVuetify } from "../test-utils/browser-setup.js";
 import ThreeStateCheckbox from "@/components/ThreeStateCheckbox.vue";
 
@@ -22,13 +22,13 @@ describe.concurrent("ThreeStateCheckbox", () => {
     expect(checkbox.props("label")).toBe("My Option");
   });
 
-  it.each([
+  it.for([
     { modelValue: undefined, expectedTitle: "Default" },
     { modelValue: true, expectedTitle: "Enabled" },
     { modelValue: false, expectedTitle: "Disabled" },
   ])(
     "displays title $expectedTitle when modelValue is $modelValue",
-    ({ modelValue, expectedTitle }) => {
+    ({ modelValue, expectedTitle }, { expect }) => {
       const wrapper = mountCheckbox({ modelValue });
 
       // title is passed as a prop/attribute to VCheckbox which renders it on the root element

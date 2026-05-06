@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { useTopologyStore, MAX_UNDO_LENGTH } from "./topologyStore";
 import exampleMedium2Controllers from "@/examples/medium_2_controllers";
@@ -16,7 +16,7 @@ function createItems(entries) {
 
 describe("topologyStore", () => {
   describe("initial state", () => {
-    it("has data, past, and future", () => {
+    it("has data, past, and future", ({ expect }) => {
       const store = useTopologyStore();
       expect(store.data).toBeDefined();
       expect(store.data.items).toBeDefined();
@@ -26,14 +26,14 @@ describe("topologyStore", () => {
   });
 
   describe("getters", () => {
-    it("canUndo returns past length", () => {
+    it("canUndo returns past length", ({ expect }) => {
       const store = useTopologyStore();
       expect(store.canUndo).toBe(0);
       store.past.push(["entry"]);
       expect(store.canUndo).toBe(1);
     });
 
-    it("canRedo returns future length", () => {
+    it("canRedo returns future length", ({ expect }) => {
       const store = useTopologyStore();
       expect(store.canRedo).toBe(0);
       store.future.push(["entry"]);
@@ -41,19 +41,21 @@ describe("topologyStore", () => {
     });
 
     describe("boundingBox", () => {
-      it("returns a function", () => {
+      it("returns a function", ({ expect }) => {
         const store = useTopologyStore();
         expect(typeof store.boundingBox).toBe("function");
       });
 
-      it("returns empty bounding box when no items have coordinates", () => {
+      it("returns empty bounding box when no items have coordinates", ({
+        expect,
+      }) => {
         const store = useTopologyStore();
         store.data.items = {};
         const bb = store.boundingBox();
         expect(bb.empty).toBe(true);
       });
 
-      it("computes bounding box from item coordinates", () => {
+      it("computes bounding box from item coordinates", ({ expect }) => {
         const store = useTopologyStore();
         store.data.items = createItems([
           ["n1", { x: 10, y: 20 }],
@@ -68,7 +70,7 @@ describe("topologyStore", () => {
         expect(bb.height).toBe(180);
       });
 
-      it("applies margin", () => {
+      it("applies margin", ({ expect }) => {
         const store = useTopologyStore();
         store.data.items = createItems([["n1", { x: 50, y: 50 }]]);
         const bb = store.boundingBox({ margin: 10, scale: 1 });
@@ -81,7 +83,7 @@ describe("topologyStore", () => {
   });
 
   describe("importData", () => {
-    it("replaces all data and clears undo/redo", () => {
+    it("replaces all data and clears undo/redo", ({ expect }) => {
       const store = useTopologyStore();
       store.past.push(["a"]);
       store.future.push(["b"]);
@@ -96,13 +98,13 @@ describe("topologyStore", () => {
   });
 
   describe("setValues", () => {
-    it("sets data properties", () => {
+    it("sets data properties", ({ expect }) => {
       const store = useTopologyStore();
       store.setValues({ projectName: "Test" });
       expect(store.data.projectName).toBe("Test");
     });
 
-    it("deletes properties with null or empty string value", () => {
+    it("deletes properties with null or empty string value", ({ expect }) => {
       const store = useTopologyStore();
       store.data.projectName = "Old";
       store.setValues({ projectName: "" });
@@ -111,7 +113,7 @@ describe("topologyStore", () => {
   });
 
   describe("applyChange", () => {
-    it("removes items by id", () => {
+    it("removes items by id", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host" }],
@@ -122,7 +124,7 @@ describe("topologyStore", () => {
       expect(store.data.items.n2).toBeDefined();
     });
 
-    it("updates items in place", () => {
+    it("updates items in place", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -132,7 +134,7 @@ describe("topologyStore", () => {
       expect(store.data.items.n1.type).toBe("host");
     });
 
-    it("replaces items entirely", () => {
+    it("replaces items entirely", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -147,14 +149,14 @@ describe("topologyStore", () => {
       });
     });
 
-    it("throws when update item has no id", () => {
+    it("throws when update item has no id", ({ expect }) => {
       const store = useTopologyStore();
       expect(() => store.applyChange({ update: [{ hostname: "h1" }] })).toThrow(
         "Items have to have ids.",
       );
     });
 
-    it("throws when replace item has no id", () => {
+    it("throws when replace item has no id", ({ expect }) => {
       const store = useTopologyStore();
       expect(() =>
         store.applyChange({ replace: [{ hostname: "h1" }] }),
@@ -163,7 +165,7 @@ describe("topologyStore", () => {
   });
 
   describe("_pushChange", () => {
-    it("adds to past and clears future", () => {
+    it("adds to past and clears future", ({ expect }) => {
       const store = useTopologyStore();
       store.future.push(["old"]);
       store._pushChange([{ before: "a", after: "b" }]);
@@ -171,7 +173,7 @@ describe("topologyStore", () => {
       expect(store.future).toHaveLength(0);
     });
 
-    it("limits past to MAX_UNDO_LENGTH", () => {
+    it("limits past to MAX_UNDO_LENGTH", ({ expect }) => {
       const store = useTopologyStore();
       for (let i = 0; i < MAX_UNDO_LENGTH + 10; i++) {
         store._pushChange([{ before: `${i}`, after: `${i + 1}` }]);
@@ -181,7 +183,7 @@ describe("topologyStore", () => {
   });
 
   describe("_undoShift", () => {
-    it("moves last past entry to future", () => {
+    it("moves last past entry to future", ({ expect }) => {
       const store = useTopologyStore();
       store.past.push("a", "b");
       store._undoShift();
@@ -189,7 +191,7 @@ describe("topologyStore", () => {
       expect(store.future).toEqual(["b"]);
     });
 
-    it("does nothing when past is empty", () => {
+    it("does nothing when past is empty", ({ expect }) => {
       const store = useTopologyStore();
       store._undoShift();
       expect(store.past).toEqual([]);
@@ -198,7 +200,7 @@ describe("topologyStore", () => {
   });
 
   describe("_redoShift", () => {
-    it("moves last future entry to past", () => {
+    it("moves last future entry to past", ({ expect }) => {
       const store = useTopologyStore();
       store.future.push("a", "b");
       store._redoShift();
@@ -206,7 +208,7 @@ describe("topologyStore", () => {
       expect(store.future).toEqual(["a"]);
     });
 
-    it("does nothing when future is empty", () => {
+    it("does nothing when future is empty", ({ expect }) => {
       const store = useTopologyStore();
       store._redoShift();
       expect(store.past).toEqual([]);
@@ -215,7 +217,7 @@ describe("topologyStore", () => {
   });
 
   describe("removeItems", () => {
-    it("removes items and records undo entry", () => {
+    it("removes items and records undo entry", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host" }],
@@ -229,7 +231,7 @@ describe("topologyStore", () => {
   });
 
   describe("updateItems", () => {
-    it("updates items and records undo entry", () => {
+    it("updates items and records undo entry", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -241,7 +243,7 @@ describe("topologyStore", () => {
   });
 
   describe("replaceItems", () => {
-    it("replaces items and records undo entry", () => {
+    it("replaces items and records undo entry", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -253,7 +255,7 @@ describe("topologyStore", () => {
   });
 
   describe("undo", () => {
-    it("undoes the last action", () => {
+    it("undoes the last action", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -266,14 +268,14 @@ describe("topologyStore", () => {
       expect(store.future).toHaveLength(1);
     });
 
-    it("throws when nothing to undo", () => {
+    it("throws when nothing to undo", ({ expect }) => {
       const store = useTopologyStore();
       expect(() => store.undo()).toThrow("Nothing to undo.");
     });
   });
 
   describe("redo", () => {
-    it("redoes the last undone action", () => {
+    it("redoes the last undone action", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -286,14 +288,14 @@ describe("topologyStore", () => {
       expect(store.data.items.n1.hostname).toBe("h2");
     });
 
-    it("throws when nothing to redo", () => {
+    it("throws when nothing to redo", ({ expect }) => {
       const store = useTopologyStore();
       expect(() => store.redo()).toThrow("Nothing to redo.");
     });
   });
 
   describe("undo/redo integration", () => {
-    it("supports multiple undo/redo cycles", () => {
+    it("supports multiple undo/redo cycles", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -315,7 +317,9 @@ describe("topologyStore", () => {
       expect(store.data.items.n1.hostname).toBe("h3");
     });
 
-    it("clears future when new action is performed after undo", () => {
+    it("clears future when new action is performed after undo", ({
+      expect,
+    }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -329,7 +333,7 @@ describe("topologyStore", () => {
       expect(store.future).toHaveLength(0);
     });
 
-    it("handles remove and undo correctly", () => {
+    it("handles remove and undo correctly", ({ expect }) => {
       const store = useTopologyStore();
       store.data.items = createItems([
         ["n1", { type: "host", hostname: "h1" }],
@@ -346,7 +350,7 @@ describe("topologyStore", () => {
 
   describe("with medium_2_controllers data", () => {
     describe("importData", () => {
-      it("loads all 176 items with correct metadata", () => {
+      it("loads all 176 items with correct metadata", ({ expect }) => {
         const store = useTopologyStore();
         store.past.push(["dummy"]);
         store.future.push(["dummy"]);
@@ -366,7 +370,9 @@ describe("topologyStore", () => {
     });
 
     describe("boundingBox", () => {
-      it("computes non-empty bounding box from real coordinates", () => {
+      it("computes non-empty bounding box from real coordinates", ({
+        expect,
+      }) => {
         const store = useTopologyStore();
         store.importData(exampleMedium2Controllers);
 
@@ -378,7 +384,7 @@ describe("topologyStore", () => {
         expect(bb.sY).toBeLessThan(bb.eY);
       });
 
-      it("scales dimensions proportionally", () => {
+      it("scales dimensions proportionally", ({ expect }) => {
         const store = useTopologyStore();
         store.importData(exampleMedium2Controllers);
 
@@ -391,7 +397,7 @@ describe("topologyStore", () => {
     });
 
     describe("removeItems", () => {
-      it("removes a host and its related items, then undoes", () => {
+      it("removes a host and its related items, then undoes", ({ expect }) => {
         const store = useTopologyStore();
         store.importData(exampleMedium2Controllers);
 
@@ -421,7 +427,7 @@ describe("topologyStore", () => {
     });
 
     describe("updateItems", () => {
-      it("renames a controller and undoes", () => {
+      it("renames a controller and undoes", ({ expect }) => {
         const store = useTopologyStore();
         store.importData(exampleMedium2Controllers);
 
@@ -444,7 +450,7 @@ describe("topologyStore", () => {
     });
 
     describe("replaceItems", () => {
-      it("replaces a switch entirely and undoes", () => {
+      it("replaces a switch entirely and undoes", ({ expect }) => {
         const store = useTopologyStore();
         store.importData(exampleMedium2Controllers);
 
@@ -473,7 +479,7 @@ describe("topologyStore", () => {
     });
 
     describe("multiple operations then undo/redo", () => {
-      it("undoes and redoes three operations in sequence", () => {
+      it("undoes and redoes three operations in sequence", ({ expect }) => {
         const store = useTopologyStore();
         store.importData(exampleMedium2Controllers);
 
@@ -524,7 +530,7 @@ describe("topologyStore", () => {
     });
 
     describe("re-import", () => {
-      it("clears undo history after mutations", () => {
+      it("clears undo history after mutations", ({ expect }) => {
         const store = useTopologyStore();
         store.importData(exampleMedium2Controllers);
 

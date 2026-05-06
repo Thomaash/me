@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import exporter from "@/exporter/index.js";
 
 const { importData, exportData } = exporter;
@@ -47,15 +47,18 @@ describe.concurrent("exporter", () => {
       expect(external.items[0].nested.deep).toBe(true);
     });
 
-    it.each([
+    it.for([
       ["version 1", { version: 1, items: [] }],
       ["version 99", { version: 99, items: [] }],
       ["undefined version", { items: [] }],
       ["null version", { version: null, items: [] }],
       ["string version", { version: "0", items: [] }],
-    ])("throws TypeError for unsupported version: %s", (_label, external) => {
-      expect(() => importData(external)).toThrow(TypeError);
-    });
+    ])(
+      "throws TypeError for unsupported version: %s",
+      ([_label, external], { expect }) => {
+        expect(() => importData(external)).toThrow(TypeError);
+      },
+    );
 
     it("throws with specific error message for unsupported version", ({
       expect,
