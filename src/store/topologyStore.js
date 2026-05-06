@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { ref, computed } from "vue";
 
 import exporter from "@/exporter";
 import exampleData from "@/examples/medium_1_controller";
@@ -26,19 +27,19 @@ function prepareUndoRedoChange(changeLogItem) {
   return change;
 }
 
-export const useTopologyStore = defineStore("topology", {
-  persist: true,
-  state: () => ({
-    data: exporter.importData(exampleData),
-    past: [],
-    future: [],
-  }),
-  getters: {
-    canUndo: (state) => state.past.length,
-    canRedo: (state) => state.future.length,
-    boundingBox(state) {
+export const useTopologyStore = defineStore(
+  "topology",
+  () => {
+    const data = ref(exporter.importData(exampleData));
+    const past = ref([]);
+    const future = ref([]);
+
+    const canUndo = computed(() => past.value.length);
+    const canRedo = computed(() => future.value.length);
+
+    const boundingBox = computed(() => {
       const rawBB = (() => {
-        const items = Object.values(state.data.items);
+        const items = Object.values(data.value.items);
 
         const firstWithCoords = items.find(
           ({ x, y }) => x != null && y != null,
@@ -100,34 +101,63 @@ export const useTopologyStore = defineStore("topology", {
 
         return bb;
       };
-    },
-  },
-  actions: {
-    importData(importPayload) {
-      this.past.splice(0);
-      this.future.splice(0);
+    });
 
-      Object.keys(this.data).forEach((key) => {
-        delete this.data[key];
+    function pushChange(unit) {
+      future.value.splice(0);
+      if (past.value.length >= MAX_UNDO_LENGTH) {
+        past.value.splice(0, past.value.length + 1 - MAX_UNDO_LENGTH);
+      }
+      past.value.push(unit);
+    }
+
+    function undoShift() {
+      if (past.value.length) {
+        if (future.value.length >= MAX_UNDO_LENGTH) {
+          future.value.shift();
+        }
+        future.value.push(past.value.pop());
+      }
+    }
+
+    function redoShift() {
+      if (future.value.length) {
+        if (past.value.length >= MAX_UNDO_LENGTH) {
+          past.value.shift();
+        }
+        past.value.push(future.value.pop());
+      }
+    }
+
+    function importData(importPayload) {
+      past.value.splice(0);
+      future.value.splice(0);
+
+      Object.keys(data.value).forEach((key) => {
+        delete data.value[key];
       });
 
-      const data = exporter.importData(importPayload);
-      Object.keys(data).forEach((key) => (this.data[key] = data[key]));
-    },
-    setValues(values) {
+      const imported = exporter.importData(importPayload);
+      Object.keys(imported).forEach((key) => {
+        data.value[key] = imported[key];
+      });
+    }
+
+    function setValues(values) {
       Object.keys(values).forEach((key) => {
         const value = values[key];
         if (value != null && value !== "") {
-          this.data[key] = value;
+          data.value[key] = value;
         } else {
-          delete this.data[key];
+          delete data.value[key];
         }
       });
-    },
-    applyChange({ remove, update, replace }) {
+    }
+
+    function applyChange({ remove, update, replace }) {
       if (remove) {
         remove.forEach((id) => {
-          delete this.data.items[id];
+          delete data.value.items[id];
         });
       }
 
@@ -136,7 +166,7 @@ export const useTopologyStore = defineStore("topology", {
           if (item.id == null) {
             throw new Error("Items have to have ids.");
           }
-          const saved = this.data.items[item.id];
+          const saved = data.value.items[item.id];
           Object.keys(item).forEach((key) => {
             saved[key] = item[key];
           });
@@ -148,49 +178,28 @@ export const useTopologyStore = defineStore("topology", {
           if (item.id == null) {
             throw new Error("Items have to have ids.");
           }
-          this.data.items[item.id] = item;
+          data.value.items[item.id] = item;
         });
       }
-    },
-    _pushChange(unit) {
-      this.future.splice(0);
-      if (this.past.length >= MAX_UNDO_LENGTH) {
-        this.past.splice(0, this.past.length + 1 - MAX_UNDO_LENGTH);
-      }
-      this.past.push(unit);
-    },
-    _undoShift() {
-      if (this.past.length) {
-        if (this.future.length >= MAX_UNDO_LENGTH) {
-          this.future.shift();
-        }
-        this.future.push(this.past.pop());
-      }
-    },
-    _redoShift() {
-      if (this.future.length) {
-        if (this.past.length >= MAX_UNDO_LENGTH) {
-          this.past.shift();
-        }
-        this.past.push(this.future.pop());
-      }
-    },
-    removeItems(ids) {
-      this._pushChange(
+    }
+
+    function removeItems(ids) {
+      pushChange(
         ids.map((id) => ({
-          before: JSON.stringify(this.data.items[id] || null),
+          before: JSON.stringify(data.value.items[id] || null),
           after: JSON.stringify(null),
         })),
       );
 
-      this.applyChange({
+      applyChange({
         remove: ids,
       });
-    },
-    updateItems(items) {
-      this._pushChange(
+    }
+
+    function updateItems(items) {
+      pushChange(
         items.map((item) => {
-          const before = this.data.items[item.id];
+          const before = data.value.items[item.id];
           return {
             before: JSON.stringify(before || null),
             after: JSON.stringify({ ...before, ...item }),
@@ -198,36 +207,39 @@ export const useTopologyStore = defineStore("topology", {
         }),
       );
 
-      this.applyChange({
+      applyChange({
         update: items,
       });
-    },
-    replaceItems(items) {
-      this._pushChange(
+    }
+
+    function replaceItems(items) {
+      pushChange(
         items.map((item) => ({
-          before: JSON.stringify(this.data.items[item.id] || null),
+          before: JSON.stringify(data.value.items[item.id] || null),
           after: JSON.stringify(item),
         })),
       );
 
-      this.applyChange({
+      applyChange({
         replace: items,
       });
-    },
-    undo() {
-      const unit = this.past[this.past.length - 1];
+    }
+
+    function undo() {
+      const unit = past.value[past.value.length - 1];
       if (unit) {
-        this._undoShift();
-        this.applyChange(prepareUndoRedoChange(unit));
+        undoShift();
+        applyChange(prepareUndoRedoChange(unit));
       } else {
         throw new Error("Nothing to undo.");
       }
-    },
-    redo() {
-      const unit = this.future[this.future.length - 1];
+    }
+
+    function redo() {
+      const unit = future.value[future.value.length - 1];
       if (unit) {
-        this._redoShift();
-        this.applyChange(
+        redoShift();
+        applyChange(
           prepareUndoRedoChange(
             unit.map(({ after, before }) => ({
               after: before,
@@ -238,6 +250,24 @@ export const useTopologyStore = defineStore("topology", {
       } else {
         throw new Error("Nothing to redo.");
       }
-    },
+    }
+
+    return {
+      data,
+      past,
+      future,
+      canUndo,
+      canRedo,
+      boundingBox,
+      importData,
+      setValues,
+      applyChange,
+      removeItems,
+      updateItems,
+      replaceItems,
+      undo,
+      redo,
+    };
   },
-});
+  { persist: true },
+);
