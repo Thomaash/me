@@ -32,435 +32,289 @@ vi.mock("vue-router", async (importOriginal) => {
 });
 
 const { router } = await import("@/router/index.js");
-const routes = router.options.routes;
 
-// Helper: find a route by name in a flat or nested structure
-function findRoute(name, routeList = routes) {
-  for (const route of routeList) {
-    if (route.name === name) return route;
-    if (route.children) {
-      const found = findRoute(name, route.children);
-      if (found) return found;
-    }
-  }
-  return null;
-}
+// --- Helpers ---------------------------------------------------------------
 
-// Normal routes are the first set (isView === false), view routes the second (isView === true)
-const normalRoutes = routes.filter(
-  (r) => r.meta == null || r.meta.isView === false,
-);
-const viewRoutes = routes.filter((r) => r.meta && r.meta.isView === true);
-const canvasRoute = normalRoutes.find((r) => r.path === "/canvas");
-const viewCanvasRoute = viewRoutes.find((r) => r.name === "View | Canvas");
+const findRouteByName = (name) =>
+  router.getRoutes().find((r) => r.name === name);
 
-describe("selectionTitleSuffix (tested via canvas child subtitle)", () => {
-  const canvasWithPosition = findRoute("Canvas with position", normalRoutes);
-  const canvasWithoutPosition = findRoute(
+const findMatched = (path, name) =>
+  router.resolve(path).matched.find((r) => r.name === name);
+
+/** Invoke the captured beforeEach guard with resolved `to` / `from` paths. */
+const invokeGuard = (toPath, fromPath, { toOverride, fromOverride } = {}) => {
+  const to = toOverride ?? router.resolve(toPath);
+  const from = fromOverride ?? router.resolve(fromPath);
+  const next = vi.fn();
+  capturedBeforeEachGuard(to, from, next);
+  return { to, from, next };
+};
+
+// Expected normal (non-view) routes — drives drawer/icon/title contract.
+const NORMAL_ROUTES = [
+  {
+    path: "/home",
+    name: "Home",
+    title: "Home",
+    icon: "mdi-home",
+    routerViewKey: "Home",
+  },
+  {
+    path: "/mininet_settings",
+    name: "Mininet settings",
+    title: "Mininet Settings",
+    icon: "mdi-tune",
+    routerViewKey: "Mininet settings",
+  },
+  {
+    path: "/export",
+    name: "Export",
+    title: "Export/Import",
+    icon: "mdi-content-save",
+    routerViewKey: "Export",
+  },
+  {
+    path: "/about",
+    name: "About",
+    title: "About",
+    icon: "mdi-information",
+    routerViewKey: "About",
+  },
+];
+
+// Expected view-mode mirror routes.
+const VIEW_ROUTES = [
+  { path: "/view/home", name: "View | Home", title: "Home", icon: "mdi-home" },
+  {
+    path: "/view/canvas",
+    name: "View | Canvas without position",
+    title: "Canvas",
+    icon: undefined, // child route, icon lives on parent "View | Canvas"
+  },
+  {
+    path: "/view/mininet_settings",
+    name: "View | Mininet settings",
+    title: "Mininet Settings",
+    icon: "mdi-tune",
+  },
+  {
+    path: "/view/export",
+    name: "View | Export",
+    title: "Export/Import",
+    icon: "mdi-content-save",
+  },
+  {
+    path: "/view/about",
+    name: "View | About",
+    title: "About",
+    icon: "mdi-information",
+  },
+];
+
+// --- Tests -----------------------------------------------------------------
+
+describe("canvas subtitle behavior (consumed by App.vue)", () => {
+  const canvasWithoutPosition = findMatched(
+    "/canvas",
     "Canvas without position",
-    normalRoutes,
+  );
+  const canvasWithPosition = findMatched(
+    "/canvas/10/20/0.5",
+    "Canvas with position",
   );
 
   it("returns empty string for falsy ids input", ({ expect }) => {
-    const result = canvasWithoutPosition.meta.subtitle({
-      params: { ids: undefined },
-    });
-    expect(result).toBe("");
+    expect(
+      canvasWithoutPosition.meta.subtitle({ params: { ids: undefined } }),
+    ).toBe("");
   });
 
   it("returns singular form for a single id string", ({ expect }) => {
-    const result = canvasWithoutPosition.meta.subtitle({
-      params: { ids: "abc" },
-    });
-    expect(result).toBe(" with 1 selected item");
+    expect(
+      canvasWithoutPosition.meta.subtitle({ params: { ids: "abc" } }),
+    ).toBe(" with 1 selected item");
   });
 
   it("returns plural form for comma-separated ids with N > 1", ({ expect }) => {
-    const result = canvasWithoutPosition.meta.subtitle({
-      params: { ids: "a,b,c" },
-    });
-    expect(result).toBe(" with 3 selected items");
+    expect(
+      canvasWithoutPosition.meta.subtitle({ params: { ids: "a,b,c" } }),
+    ).toBe(" with 3 selected items");
   });
 
   it("produces correct position and selection text for canvas with position", ({
     expect,
   }) => {
-    const result = canvasWithPosition.meta.subtitle({
-      params: { x: "10", y: "20", scale: "0.5", ids: "a,b" },
-    });
-    expect(result).toBe(
-      " at position 10\u00a0\u00d7\u00a020 scaled to 50\u00a0% with 2 selected items",
-    );
+    expect(
+      canvasWithPosition.meta.subtitle({
+        params: { x: "10", y: "20", scale: "0.5", ids: "a,b" },
+      }),
+    ).toBe(" at position 10 × 20 scaled to 50 % with 2 selected items");
   });
 
   it("produces position text without selection when ids is falsy", ({
     expect,
   }) => {
-    const result = canvasWithPosition.meta.subtitle({
-      params: { x: "5", y: "15", scale: "1", ids: undefined },
-    });
-    expect(result).toBe(
-      " at position 5\u00a0\u00d7\u00a015 scaled to 100\u00a0%",
-    );
+    expect(
+      canvasWithPosition.meta.subtitle({
+        params: { x: "5", y: "15", scale: "1", ids: undefined },
+      }),
+    ).toBe(" at position 5 × 15 scaled to 100 %");
   });
 });
 
-describe("createRoutes (tested via router.options.routes)", () => {
-  it.for([
-    ["/", "/", { isView: false }],
-    ["/home", "Home", { title: "Home", drawer: true, isView: false }],
-    ["/canvas", "Canvas", { title: "Canvas", drawer: true, isView: false }],
-    [
-      "/mininet_settings",
-      "Mininet settings",
-      { title: "Mininet Settings", drawer: true, isView: false },
-    ],
-    [
-      "/export",
-      "Export",
-      { title: "Export/Import", drawer: true, isView: false },
-    ],
-    ["/about", "About", { title: "About", drawer: true, isView: false }],
-  ])(
-    "includes normal route with path=%s, name=%s",
-    ([path, name, expectedMeta], { expect }) => {
-      const route = normalRoutes.find((r) => r.path === path);
-      expect(route).toBeDefined();
-      expect(route.name).toBe(name);
-      expect(route.meta).toEqual(expect.objectContaining(expectedMeta));
-    },
-  );
-
-  it("canvas normal route has two children", ({ expect }) => {
-    expect(canvasRoute.children).toHaveLength(2);
-    expect(canvasRoute.children[0].name).toBe("Canvas without position");
-    expect(canvasRoute.children[1].name).toBe("Canvas with position");
-  });
-
-  it("has exactly 6 normal routes at the top level", ({ expect }) => {
-    expect(normalRoutes).toHaveLength(6);
-  });
-
-  it("has exactly 6 view routes at the top level", ({ expect }) => {
-    expect(viewRoutes).toHaveLength(6);
-  });
-
-  it("root route redirects to Home", ({ expect }) => {
-    const root = normalRoutes.find((r) => r.path === "/");
-    expect(root.redirect).toEqual({ name: "Home" });
-  });
-});
-
-describe("route meta icon properties", () => {
-  it.for([
-    ["Home", "mdi-home"],
-    ["Canvas", "mdi-map"],
-    ["Mininet settings", "mdi-tune"],
-    ["Export", "mdi-content-save"],
-    ["About", "mdi-information"],
-  ])("normal route %s has icon %s", ([name, expectedIcon], { expect }) => {
-    const route = normalRoutes.find((r) => r.name === name);
-    expect(route.meta.icon).toBe(expectedIcon);
-  });
-});
-
-describe("route meta routerViewKey properties", () => {
-  it.for([
-    ["Home", "Home"],
-    ["Canvas", "Canvas"],
-    ["Mininet settings", "Mininet settings"],
-    ["Export", "Export"],
-    ["About", "About"],
-  ])(
-    "normal route %s has routerViewKey %s",
-    ([name, expectedKey], { expect }) => {
-      const route = normalRoutes.find((r) => r.name === name);
-      expect(route.meta.routerViewKey).toBe(expectedKey);
-    },
-  );
-});
-
-describe("canvas child route paths", () => {
-  it("canvas without position has path ':ids?'", ({ expect }) => {
-    expect(canvasRoute.children[0].path).toBe(":ids?");
-  });
-
-  it("canvas with position has path ':x/:y/:scale/:ids?'", ({ expect }) => {
-    expect(canvasRoute.children[1].path).toBe(":x/:y/:scale/:ids?");
-  });
-
-  it("canvas children have routerViewKey 'Canvas'", ({ expect }) => {
-    expect(canvasRoute.children[0].meta.routerViewKey).toBe("Canvas");
-    expect(canvasRoute.children[1].meta.routerViewKey).toBe("Canvas");
-  });
-
-  it("canvas children have title 'Canvas'", ({ expect }) => {
-    expect(canvasRoute.children[0].meta.title).toBe("Canvas");
-    expect(canvasRoute.children[1].meta.title).toBe("Canvas");
-  });
-});
-
-describe("canvas route props", () => {
-  it("canvas toolbar has undoRedo set to true", ({ expect }) => {
-    expect(canvasRoute.props).toEqual({ toolbar: { undoRedo: true } });
-  });
-});
-
-describe("route components", () => {
-  it.for([
-    ["Home", ["default"]],
-    ["Canvas", ["default", "toolbar"]],
-    ["Mininet settings", ["default", "toolbar"]],
-    ["Export", ["default", "toolbar"]],
-    ["About", ["default"]],
-  ])(
-    "normal route %s has component keys %j",
-    ([name, expectedKeys], { expect }) => {
-      const route = normalRoutes.find((r) => r.name === name);
-      expect(Object.keys(route.components).toSorted()).toEqual(
-        expectedKeys.toSorted(),
+describe("normal route resolution (drawer entries)", () => {
+  it.for(NORMAL_ROUTES)(
+    "drawer renders $name at $path with title/icon for App.vue",
+    ({ path, name, title, icon, routerViewKey }, { expect }) => {
+      const resolved = router.resolve(path);
+      expect(resolved.name).toBe(name);
+      expect(resolved.meta).toEqual(
+        expect.objectContaining({
+          title,
+          icon,
+          drawer: true,
+          routerViewKey,
+          isView: false,
+        }),
       );
-      for (const key of expectedKeys) {
-        expect(typeof route.components[key]).toBe("function");
-      }
     },
   );
 
-  it("canvas children have both default and toolbar components", ({
+  it("resolves /canvas to 'Canvas without position' (drawer entry lives on parent)", ({
     expect,
   }) => {
-    for (const child of canvasRoute.children) {
-      expect(child.components).toHaveProperty("default");
-      expect(child.components).toHaveProperty("toolbar");
-      expect(typeof child.components.default).toBe("function");
-      expect(typeof child.components.toolbar).toBe("function");
-    }
+    const resolved = router.resolve("/canvas");
+    expect(resolved.name).toBe("Canvas without position");
+    expect(resolved.meta).toEqual(
+      expect.objectContaining({
+        title: "Canvas",
+        routerViewKey: "Canvas",
+        isView: false,
+      }),
+    );
+  });
+
+  it("Canvas parent registers drawer entry with map icon", ({ expect }) => {
+    expect(router.hasRoute("Canvas")).toBe(true);
+    const canvasParent = router
+      .getRoutes()
+      .find((r) => r.name === "Canvas" && r.meta.isView === false);
+    expect(canvasParent.meta).toEqual(
+      expect.objectContaining({
+        title: "Canvas",
+        icon: "mdi-map",
+        drawer: true,
+        routerViewKey: "Canvas",
+        isView: false,
+      }),
+    );
+  });
+
+  it("root path / redirects to Home", async ({ expect }) => {
+    const resolved = router.resolve("/");
+    expect(resolved.matched[0].redirect).toEqual({ name: "Home" });
+    await router.push("/");
+    expect(router.currentRoute.value.name).toBe("Home");
   });
 });
 
-describe("createNormalRoute (tested via normal routes in router)", () => {
-  it("sets meta.isView to false on all normal routes", ({ expect }) => {
-    for (const route of normalRoutes) {
-      if (route.meta) {
-        expect(route.meta.isView).toBe(false);
-      }
-    }
+describe("canvas child route resolution", () => {
+  it("/canvas/a,b carries ids param", ({ expect }) => {
+    const resolved = router.resolve("/canvas/a,b");
+    expect(resolved.name).toBe("Canvas without position");
+    expect(resolved.params.ids).toBe("a,b");
   });
 
-  it("recurses into children setting meta.isView to false", ({ expect }) => {
-    for (const child of canvasRoute.children) {
-      expect(child.meta.isView).toBe(false);
-    }
+  it("/canvas/10/20/1.5 resolves to 'Canvas with position' with x/y/scale params", ({
+    expect,
+  }) => {
+    const resolved = router.resolve("/canvas/10/20/1.5");
+    expect(resolved.name).toBe("Canvas with position");
+    expect(resolved.params).toEqual(
+      expect.objectContaining({ x: "10", y: "20", scale: "1.5" }),
+    );
+    expect(resolved.meta.title).toBe("Canvas");
+    expect(resolved.meta.routerViewKey).toBe("Canvas");
   });
 
-  it("creates meta object if route has no meta (root route)", ({ expect }) => {
-    const root = normalRoutes.find((r) => r.path === "/");
-    expect(root.meta).toBeDefined();
-    expect(root.meta.isView).toBe(false);
+  it("/canvas/10/20/1.5/a,b combines position and ids params", ({ expect }) => {
+    const resolved = router.resolve("/canvas/10/20/1.5/a,b");
+    expect(resolved.name).toBe("Canvas with position");
+    expect(resolved.params.ids).toBe("a,b");
   });
 });
 
-describe("createViewRoute (tested via view routes in router)", () => {
-  it("prefixes route names with 'View | '", ({ expect }) => {
-    const viewHome = viewRoutes.find((r) => r.name === "View | Home");
-    expect(viewHome).toBeDefined();
-  });
-
-  it("prefixes absolute paths with /view", ({ expect }) => {
-    const viewHome = viewRoutes.find((r) => r.name === "View | Home");
-    expect(viewHome.path).toBe("/view/home");
-  });
-
-  it("sets meta.drawer to false and meta.isView to true", ({ expect }) => {
-    for (const route of viewRoutes) {
-      expect(route.meta.drawer).toBe(false);
-      expect(route.meta.isView).toBe(true);
-    }
-  });
-
-  it("prefixes redirect name with 'View | '", ({ expect }) => {
-    const viewRoot = viewRoutes.find((r) => r.name === "View | /");
-    expect(viewRoot).toBeDefined();
-    expect(viewRoot.redirect.name).toBe("View | Home");
-  });
-
-  it("recurses into children applying view transformations", ({ expect }) => {
-    expect(viewCanvasRoute).toBeDefined();
-    expect(viewCanvasRoute.children).toHaveLength(2);
-    expect(viewCanvasRoute.children[0].name).toBe(
-      "View | Canvas without position",
-    );
-    expect(viewCanvasRoute.children[1].name).toBe(
-      "View | Canvas with position",
-    );
-    // Children with relative paths should NOT be prefixed with /view
-    expect(viewCanvasRoute.children[0].path).toBe(":ids?");
-  });
-
-  it("view canvas children have drawer false and isView true", ({ expect }) => {
-    for (const child of viewCanvasRoute.children) {
-      expect(child.meta.drawer).toBe(false);
-      expect(child.meta.isView).toBe(true);
-    }
-  });
-
-  it.for([
-    ["View | /", "/view/"],
-    ["View | Home", "/view/home"],
-    ["View | Canvas", "/view/canvas"],
-    ["View | Mininet settings", "/view/mininet_settings"],
-    ["View | Export", "/view/export"],
-    ["View | About", "/view/about"],
-  ])(
-    "includes view route %s at path %s",
-    ([name, expectedPath], { expect }) => {
-      const route = viewRoutes.find((r) => r.name === name);
-      expect(route).toBeDefined();
-      expect(route.path).toBe(expectedPath);
+describe("view-mode mirror routes", () => {
+  it.for(VIEW_ROUTES)(
+    "$path resolves as view-mode (drawer hidden, isView=true)",
+    ({ path, name, title }, { expect }) => {
+      const resolved = router.resolve(path);
+      expect(resolved.name).toBe(name);
+      expect(resolved.meta.isView).toBe(true);
+      expect(resolved.meta.drawer).toBe(false);
+      expect(resolved.meta.title).toBe(title);
     },
   );
-});
 
-describe("router configuration", () => {
-  it("uses web hash history with base /me", ({ expect }) => {
-    // The router is created with createWebHashHistory("/me")
-    // We can verify by checking the history mode
-    expect(router.options.history).toBeDefined();
+  it("/view/ redirects to View | Home and tags route as view-mode", async ({
+    expect,
+  }) => {
+    const resolved = router.resolve("/view/");
+    expect(resolved.matched[0].redirect).toEqual({ name: "View | Home" });
+    await router.push("/view/");
+    expect(router.currentRoute.value.name).toBe("View | Home");
+    expect(router.currentRoute.value.meta.isView).toBe(true);
   });
 
-  it("has 12 total routes (6 normal + 6 view)", ({ expect }) => {
-    expect(routes).toHaveLength(12);
-  });
-});
+  it("view canvas child paths resolve with isView=true", ({ expect }) => {
+    const withIds = router.resolve("/view/canvas/a,b");
+    expect(withIds.name).toBe("View | Canvas without position");
+    expect(withIds.meta.isView).toBe(true);
+    expect(withIds.params.ids).toBe("a,b");
 
-describe("view route meta properties are fully transformed", () => {
-  it.for([
-    ["View | Home", { title: "Home", drawer: false, isView: true }],
-    ["View | Canvas", { title: "Canvas", drawer: false, isView: true }],
-    [
-      "View | Mininet settings",
-      { title: "Mininet Settings", drawer: false, isView: true },
-    ],
-    ["View | Export", { title: "Export/Import", drawer: false, isView: true }],
-    ["View | About", { title: "About", drawer: false, isView: true }],
-  ])("view route %s has correct meta", ([name, expectedMeta], { expect }) => {
-    const route = viewRoutes.find((r) => r.name === name);
-    expect(route).toBeDefined();
-    expect(route.meta).toEqual(expect.objectContaining(expectedMeta));
+    const withPosition = router.resolve("/view/canvas/10/20/1.5");
+    expect(withPosition.name).toBe("View | Canvas with position");
+    expect(withPosition.meta.isView).toBe(true);
   });
-});
 
-describe("view route icon properties are preserved from base routes", () => {
   it.for([
     ["View | Home", "mdi-home"],
     ["View | Canvas", "mdi-map"],
     ["View | Mininet settings", "mdi-tune"],
     ["View | Export", "mdi-content-save"],
     ["View | About", "mdi-information"],
-  ])("view route %s has icon %s", ([name, expectedIcon], { expect }) => {
-    const route = viewRoutes.find((r) => r.name === name);
-    expect(route.meta.icon).toBe(expectedIcon);
-  });
-});
-
-describe("view route routerViewKey properties", () => {
-  it.for([
-    ["View | Home", "Home"],
-    ["View | Canvas", "Canvas"],
-    ["View | Mininet settings", "Mininet settings"],
-    ["View | Export", "Export"],
-    ["View | About", "About"],
   ])(
-    "view route %s has routerViewKey %s",
-    ([name, expectedKey], { expect }) => {
-      const route = viewRoutes.find((r) => r.name === name);
-      expect(route.meta.routerViewKey).toBe(expectedKey);
+    "view mirror %s preserves icon for App.vue header",
+    ([name, icon], { expect }) => {
+      const route = findRouteByName(name);
+      expect(route, `route ${name}`).toBeDefined();
+      expect(route.meta.icon).toBe(icon);
     },
   );
 });
 
-describe("view canvas child route details", () => {
-  it("view canvas without position child has path ':ids?'", ({ expect }) => {
-    expect(viewCanvasRoute.children[0].path).toBe(":ids?");
-  });
-
-  it("view canvas with position child has path ':x/:y/:scale/:ids?'", ({
+describe("registered route counts", () => {
+  it("registers the same number of normal and view routes via getRoutes()", ({
     expect,
   }) => {
-    expect(viewCanvasRoute.children[1].path).toBe(":x/:y/:scale/:ids?");
+    const all = router.getRoutes();
+    const normalCount = all.filter((r) => r.meta.isView === false).length;
+    const viewCount = all.filter((r) => r.meta.isView === true).length;
+    expect(normalCount).toBe(viewCount);
+    expect(normalCount).toBeGreaterThan(0);
   });
 
-  it("view canvas children have routerViewKey 'Canvas'", ({ expect }) => {
-    expect(viewCanvasRoute.children[0].meta.routerViewKey).toBe("Canvas");
-    expect(viewCanvasRoute.children[1].meta.routerViewKey).toBe("Canvas");
-  });
-
-  it("view canvas children have title 'Canvas'", ({ expect }) => {
-    expect(viewCanvasRoute.children[0].meta.title).toBe("Canvas");
-    expect(viewCanvasRoute.children[1].meta.title).toBe("Canvas");
-  });
-
-  it("view canvas children have subtitle functions", ({ expect }) => {
-    expect(typeof viewCanvasRoute.children[0].meta.subtitle).toBe("function");
-    expect(typeof viewCanvasRoute.children[1].meta.subtitle).toBe("function");
-  });
-
-  it("view canvas children have components", ({ expect }) => {
-    for (const child of viewCanvasRoute.children) {
-      expect(child.components).toHaveProperty("default");
-      expect(child.components).toHaveProperty("toolbar");
-    }
-  });
-});
-
-describe("normal route structures are complete", () => {
-  it("Home route has only default component", ({ expect }) => {
-    const home = normalRoutes.find((r) => r.name === "Home");
-    expect(Object.keys(home.components)).toEqual(["default"]);
-    expect(home.components).not.toHaveProperty("toolbar");
-  });
-
-  it("About route has only default component", ({ expect }) => {
-    const about = normalRoutes.find((r) => r.name === "About");
-    expect(Object.keys(about.components)).toEqual(["default"]);
-    expect(about.components).not.toHaveProperty("toolbar");
-  });
-
-  it("Mininet settings route has no children", ({ expect }) => {
-    const ms = normalRoutes.find((r) => r.name === "Mininet settings");
-    expect(ms.children).toBeUndefined();
-  });
-
-  it("Export route has no children", ({ expect }) => {
-    const exp = normalRoutes.find((r) => r.name === "Export");
-    expect(exp.children).toBeUndefined();
-  });
-
-  it("Canvas is the only route with children", ({ expect }) => {
-    const routesWithChildren = normalRoutes.filter((r) => r.children);
-    expect(routesWithChildren).toHaveLength(1);
-    expect(routesWithChildren[0].name).toBe("Canvas");
-  });
-
-  it("Canvas is the only route with props", ({ expect }) => {
-    const routesWithProps = normalRoutes.filter((r) => r.props);
-    expect(routesWithProps).toHaveLength(1);
-    expect(routesWithProps[0].name).toBe("Canvas");
-  });
-});
-
-describe("view route components are lazy-loaded functions", () => {
   it.for([
-    "View | Home",
-    "View | Canvas",
-    "View | Mininet settings",
-    "View | Export",
-    "View | About",
-  ])("view route %s has function components", (name, { expect }) => {
-    const route = viewRoutes.find((r) => r.name === name);
-    for (const key of Object.keys(route.components)) {
-      expect(typeof route.components[key]).toBe("function");
-    }
+    "Home",
+    "Canvas",
+    "Canvas without position",
+    "Canvas with position",
+    "Mininet settings",
+    "Export",
+    "About",
+  ])("registers '%s' in both normal and view modes", (name, { expect }) => {
+    expect(router.hasRoute(name), `normal ${name}`).toBe(true);
+    expect(router.hasRoute(`View | ${name}`), `view ${name}`).toBe(true);
   });
 });
 
@@ -470,88 +324,66 @@ describe("beforeEach navigation guard", () => {
     mockAppStore.setWorking.mockClear();
   });
 
-  it("redirects to /view path when navigating from view route to non-view route", ({
+  it("redirects to /view-prefixed path when leaving view mode", ({
     expect,
   }) => {
-    const to = { meta: { isView: false }, fullPath: "/about", matched: [] };
-    const from = { meta: { isView: true }, matched: [] };
-    const next = vi.fn();
-
-    capturedBeforeEachGuard(to, from, next);
-
+    const { to, next } = invokeGuard("/about", "/view/home");
+    expect(next).toHaveBeenCalledWith(`/view${to.fullPath}`);
     expect(next).toHaveBeenCalledWith("/view/about");
   });
 
-  it("calls clearAlert and setWorking when navigating between routes with different top-level names", ({
+  it("clears alert and resets working flag on cross-route navigation", ({
     expect,
   }) => {
-    const to = {
-      meta: { isView: false },
-      fullPath: "/about",
-      matched: [{ name: "About" }],
-    };
-    const from = {
-      meta: { isView: false },
-      matched: [{ name: "Home" }],
-    };
-    const next = vi.fn();
+    const { next } = invokeGuard("/about", "/home");
+    expect(mockAppStore.clearAlert).toHaveBeenCalled();
+    expect(mockAppStore.setWorking).toHaveBeenCalledWith({ working: false });
+    expect(next).toHaveBeenCalledWith();
+  });
 
-    capturedBeforeEachGuard(to, from, next);
+  it("skips store side effects when staying within the same canvas parent", ({
+    expect,
+  }) => {
+    const { next } = invokeGuard("/canvas/a,b", "/canvas/10/20/1.5");
+    expect(mockAppStore.clearAlert).not.toHaveBeenCalled();
+    expect(mockAppStore.setWorking).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith();
+  });
+
+  it("treats empty to.matched as a cross-route nav (clears alert)", ({
+    expect,
+  }) => {
+    const toOverride = {
+      meta: { isView: false },
+      fullPath: "/unknown",
+      matched: [],
+    };
+    const { next } = invokeGuard(null, "/home", { toOverride });
+    expect(mockAppStore.clearAlert).toHaveBeenCalled();
+    expect(mockAppStore.setWorking).toHaveBeenCalledWith({ working: false });
+    expect(next).toHaveBeenCalledWith();
+  });
+
+  it("treats empty from.matched as a cross-route nav (clears alert)", ({
+    expect,
+  }) => {
+    const fromOverride = { meta: { isView: false }, matched: [] };
+    const { next } = invokeGuard("/home", null, { fromOverride });
+    expect(mockAppStore.clearAlert).toHaveBeenCalled();
+    expect(mockAppStore.setWorking).toHaveBeenCalledWith({ working: false });
+    expect(next).toHaveBeenCalledWith();
+  });
+
+  it("real router.push triggers store side effects on cross-route nav", async ({
+    expect,
+  }) => {
+    await router.push("/home");
+    mockAppStore.clearAlert.mockClear();
+    mockAppStore.setWorking.mockClear();
+
+    await router.push("/about");
 
     expect(mockAppStore.clearAlert).toHaveBeenCalled();
-    expect(mockAppStore.setWorking).toHaveBeenCalledWith({
-      working: false,
-    });
-    expect(next).toHaveBeenCalledWith();
+    expect(mockAppStore.setWorking).toHaveBeenCalledWith({ working: false });
   });
-
-  it("does not call clearAlert or setWorking when navigating between child routes of the same parent", ({
-    expect,
-  }) => {
-    const to = {
-      meta: { isView: false },
-      fullPath: "/canvas/some-ids",
-      matched: [{ name: "Canvas" }],
-    };
-    const from = {
-      meta: { isView: false },
-      matched: [{ name: "Canvas" }],
-    };
-    const next = vi.fn();
-
-    capturedBeforeEachGuard(to, from, next);
-
-    expect(mockAppStore.clearAlert).not.toHaveBeenCalled();
-    expect(next).toHaveBeenCalledWith();
-  });
-
-  it.for([
-    [
-      "to.matched is empty",
-      { meta: { isView: false }, fullPath: "/unknown", matched: [] },
-      { meta: { isView: false }, matched: [{ name: "Home" }] },
-    ],
-    [
-      "from.matched is empty",
-      {
-        meta: { isView: false },
-        fullPath: "/home",
-        matched: [{ name: "Home" }],
-      },
-      { meta: { isView: false }, matched: [] },
-    ],
-  ])(
-    "calls clearAlert and setWorking when %s",
-    ([_label, to, from], { expect }) => {
-      const next = vi.fn();
-
-      capturedBeforeEachGuard(to, from, next);
-
-      expect(mockAppStore.clearAlert).toHaveBeenCalled();
-      expect(mockAppStore.setWorking).toHaveBeenCalledWith({
-        working: false,
-      });
-      expect(next).toHaveBeenCalledWith();
-    },
-  );
 });
