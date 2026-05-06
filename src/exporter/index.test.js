@@ -1,4 +1,4 @@
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import exporter from "@/exporter/index.js";
 
 const { importData, exportData } = exporter;
@@ -132,5 +132,115 @@ describe.concurrent("exporter", () => {
 
       expect(roundTripped).toEqual(original);
     });
+  });
+
+  // Unskips after Slice 2 converts the exporter module to named exports.
+  describe.skip("named exports", () => {
+    it("exposes importData as a named export from @/exporter/index.js", async ({
+      expect,
+    }) => {
+      const ns = await import("@/exporter/index.js");
+
+      expect(typeof ns.importData).toBe("function");
+    });
+
+    it("exposes exportData as a named export from @/exporter/index.js", async ({
+      expect,
+    }) => {
+      const ns = await import("@/exporter/index.js");
+
+      expect(typeof ns.exportData).toBe("function");
+    });
+
+    it("named importData behaves identically to the default-exported importData", async ({
+      expect,
+    }) => {
+      const ns = await import("@/exporter/index.js");
+      const external = {
+        version: 0,
+        items: [{ id: "n1", value: 1 }],
+      };
+
+      expect(ns.importData(external)).toEqual({
+        items: { n1: { id: "n1", value: 1 } },
+      });
+    });
+
+    it("named exportData behaves identically to the default-exported exportData", async ({
+      expect,
+    }) => {
+      const ns = await import("@/exporter/index.js");
+      const internal = {
+        items: { n1: { id: "n1", value: 1 } },
+      };
+
+      expect(ns.exportData(internal)).toEqual({
+        version: 0,
+        items: [{ id: "n1", value: 1 }],
+      });
+    });
+  });
+});
+
+// Unskips after Slice 2 converts the exporter module to named exports.
+describe.skip("exporter partial mocking", () => {
+  it("mocking only exportData leaves importData callable through the same module", async ({
+    expect,
+  }) => {
+    vi.resetModules();
+    vi.doMock("@/exporter/index.js", async (importOriginal) => {
+      const actual = await importOriginal();
+      return {
+        ...actual,
+        exportData: vi.fn(() => ({ mocked: true })),
+      };
+    });
+
+    try {
+      const mocked = await import("@/exporter/index.js");
+
+      expect(typeof mocked.importData).toBe("function");
+      expect(
+        mocked.importData({
+          version: 0,
+          items: [{ id: "p1", value: 7 }],
+        }),
+      ).toEqual({ items: { p1: { id: "p1", value: 7 } } });
+      expect(mocked.exportData({})).toEqual({ mocked: true });
+    } finally {
+      vi.doUnmock("@/exporter/index.js");
+      vi.resetModules();
+    }
+  });
+
+  it("mocking only importData leaves exportData callable through the same module", async ({
+    expect,
+  }) => {
+    vi.resetModules();
+    vi.doMock("@/exporter/index.js", async (importOriginal) => {
+      const actual = await importOriginal();
+      return {
+        ...actual,
+        importData: vi.fn(() => ({ mocked: true })),
+      };
+    });
+
+    try {
+      const mocked = await import("@/exporter/index.js");
+
+      expect(typeof mocked.exportData).toBe("function");
+      expect(
+        mocked.exportData({
+          items: { p1: { id: "p1", value: 7 } },
+        }),
+      ).toEqual({
+        version: 0,
+        items: [{ id: "p1", value: 7 }],
+      });
+      expect(mocked.importData({})).toEqual({ mocked: true });
+    } finally {
+      vi.doUnmock("@/exporter/index.js");
+      vi.resetModules();
+    }
   });
 });
