@@ -156,3 +156,117 @@ test.describe
     await expect(page.locator("[data-cy=edit-host]")).toHaveCount(0);
   });
 });
+
+/**
+ * Regression coverage for the spec scenarios:
+ *   "Undo preserves editability of an affected item"
+ *   "Redo preserves editability of an affected item"
+ *
+ * After a public topology mutation followed by undo (and, separately, redo),
+ * the affected rendered item must remain selectable and the appropriate
+ * edit dialog must open via double-click. These are kept in their own
+ * describe block with independent setup so the undo and redo cases fail
+ * (and report) independently of each other and of the create/update flows
+ * already covered above.
+ */
+test.describe("Canvas undo/redo editability regression", () => {
+  /** @type {import("@playwright/test").Page} */
+  let page;
+  const itemPosition = { x: 200, y: 200 };
+  const MUTATED_HOSTNAME = "hmutated";
+
+  const hostnameInputLocator = () =>
+    page.locator(
+      "[data-cy=edit-host] [data-cy=edit-hostname] input, [data-cy=edit-host] [data-cy=edit-hostname] textarea:not([aria-hidden])",
+    );
+
+  async function placeHostViaFab() {
+    await meVisFabClick(page, "host");
+    for (const pos of [
+      { clientX: 50, clientY: 50 },
+      { clientX: 250, clientY: 250 },
+    ]) {
+      await page.locator(".vis-root").evaluate((el, p) => {
+        el.dispatchEvent(
+          new MouseEvent("mousemove", {
+            button: 0,
+            clientX: p.clientX,
+            clientY: p.clientY,
+            bubbles: true,
+          }),
+        );
+      }, pos);
+    }
+    await meVisClick(page.locator("[data-cy=vis] canvas"), itemPosition);
+    await expect(page.locator("[data-cy=edit-host]")).toBeVisible();
+  }
+
+  async function saveHostDialog() {
+    await page
+      .locator("[data-cy=edit-host]")
+      .locator("[data-cy=edit-save]")
+      .click();
+    await expect(page.locator("[data-cy=edit-host]")).toHaveCount(0);
+  }
+
+  async function dblClickHost() {
+    await meVisClick(page.locator("[data-cy=vis] canvas"), {
+      ...itemPosition,
+      dbl: true,
+    });
+    await expect(page.locator("[data-cy=edit-host]")).toBeVisible();
+  }
+
+  /**
+   * Sets up a saved host whose hostname has been mutated through the public
+   * update workflow. Returns the auto-assigned (pre-mutation) hostname so the
+   * caller can assert against it after undo, without any window globals.
+   */
+  async function setupMutatedHost() {
+    await placeHostViaFab();
+    const originalHostname = await hostnameInputLocator().inputValue();
+    await saveHostDialog();
+
+    await dblClickHost();
+    await hostnameInputLocator().clear();
+    await hostnameInputLocator().fill(MUTATED_HOSTNAME);
+    await saveHostDialog();
+
+    return originalHostname;
+  }
+
+  test.beforeEach(async ({ browser }) => {
+    page = await browser.newPage();
+    await meOpen(page);
+    await meImportEmpty(page);
+    await meClickMenu(page, "canvas");
+  });
+
+  test.afterEach(async () => {
+    await page.close();
+  });
+
+  test("after undo of a public update mutation, the affected item is selectable and reopens its edit dialog", async () => {
+    const originalHostname = await setupMutatedHost();
+
+    // Trigger undo via the documented Ctrl+Z keybinding handled by VisContainer.
+    await page.locator(".vis-root").focus();
+    await page.keyboard.press("Control+z");
+
+    // Item must remain rendered and double-clickable; the dialog must reopen
+    // and reflect the pre-mutation state.
+    await dblClickHost();
+    await expect(hostnameInputLocator()).toHaveValue(originalHostname);
+  });
+
+  test("after redo of a previously-undone mutation, the affected item is selectable and reopens its edit dialog", async () => {
+    await setupMutatedHost();
+
+    await page.locator(".vis-root").focus();
+    await page.keyboard.press("Control+z");
+    await page.keyboard.press("Control+y");
+
+    await dblClickHost();
+    await expect(hostnameInputLocator()).toHaveValue(MUTATED_HOSTNAME);
+  });
+});
