@@ -5,6 +5,18 @@ import { describe, it, beforeEach } from "vitest";
 import Builder from "@/builder/index.js";
 import medium2Controllers from "@/examples/medium_2_controllers.json";
 
+// Extract content lines from the "# Log {{{ ... # }}}" block of a rendered
+// script. Returns the lines between the markers, excluding empty lines and
+// the markers themselves.
+function extractLogBlock(script) {
+  const lines = script.split("\n");
+  const start = lines.findIndex((l) => l === "# Log {{{");
+  if (start === -1) return [];
+  const end = lines.indexOf("# }}}", start + 1);
+  if (end === -1) return [];
+  return lines.slice(start + 1, end).filter((l) => l !== "");
+}
+
 // --- Minimal Fixture Helpers ---
 
 // Unique ID counter to avoid collisions across fixtures
@@ -661,13 +673,16 @@ describe("Builder", () => {
       expect(builder.log.length).toBeGreaterThan(0);
       expect(builder.log[0].msg).toContain("conflicting hostname");
 
-      // The Code.log should have the "# " prefixed version
-      // Access _code internal to verify the regex formatting
-      expect(builder._code).toBeDefined();
-      expect(builder._code.log.length).toBeGreaterThan(0);
-      builder._code.log.forEach((line) => {
+      // Render the script via the public Code.toString() and assert
+      // the Log section's content lines are all prefixed with "# ".
+      const script = builder._code.toString();
+      const logBlock = extractLogBlock(script);
+      expect(logBlock.length).toBeGreaterThan(0);
+      logBlock.forEach((line) => {
         expect(line).toMatch(/^# /);
       });
+      // And the conflict message text appears in the rendered log block.
+      expect(logBlock.join("\n")).toContain("conflicting hostname");
     });
 
     it("prefixes multi-line log messages with '# ' on each line", ({
@@ -696,11 +711,13 @@ describe("Builder", () => {
       );
       builder.build();
 
-      // Verify each code log line starts with "# "
-      builder._code.log.forEach((line) => {
-        line.split("\n").forEach((subLine) => {
-          expect(subLine).toMatch(/^# /);
-        });
+      // Verify each rendered log line (including multi-line messages)
+      // starts with "# " in the rendered Python script's Log section.
+      const script = builder._code.toString();
+      const logBlock = extractLogBlock(script);
+      expect(logBlock.length).toBeGreaterThan(0);
+      logBlock.forEach((line) => {
+        expect(line).toMatch(/^# /);
       });
     });
   });
