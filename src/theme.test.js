@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, vi } from "vitest";
 
 const matchMediaMock = vi.fn().mockImplementation((query) => ({
   matches: false,
@@ -82,12 +82,12 @@ describe("addAlpha with short hex format", () => {
 
 describe("theme exports", () => {
   describe("vuetify theme objects", () => {
-    it.each([
+    it.for([
       ["vuetifyLight", vuetifyLight, false],
       ["vuetifyDark", vuetifyDark, true],
     ])(
       "%s has dark=%s and colors with all required keys",
-      (_name, theme, expectedDark) => {
+      ([_name, theme, expectedDark], { expect }) => {
         expect(theme.dark).toBe(expectedDark);
         expect(Object.keys(theme.colors)).toEqual(
           expect.arrayContaining(vuetifyColorKeys),
@@ -100,12 +100,12 @@ describe("theme exports", () => {
   });
 
   describe("items theme objects", () => {
-    it.each([
+    it.for([
       ["itemsLight", itemsLight],
       ["itemsDark", itemsDark],
     ])(
       "%s contains all item types with menu and canvas color values",
-      (_name, items) => {
+      ([_name, items], { expect }) => {
         expect(Object.keys(items)).toEqual(expect.arrayContaining(itemKeys));
         for (const key of itemKeys) {
           expect(items[key]).toEqual({
@@ -118,12 +118,12 @@ describe("theme exports", () => {
   });
 
   describe("selection theme objects (addAlpha indirect verification)", () => {
-    it.each([
+    it.for([
       ["selectionLight", selectionLight],
       ["selectionDark", selectionDark],
     ])(
       "%s contains background and border as rgba strings with alpha values",
-      (_name, sel) => {
+      ([_name, sel], { expect }) => {
         expect(sel.background).toBe("rgba(0, 114, 104, 0.25)");
         expect(sel.border).toBe("rgba(0, 114, 104, 0.75)");
       },

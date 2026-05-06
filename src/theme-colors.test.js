@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 
 import {
   themeColorRed,
@@ -89,9 +89,9 @@ const allColors = [
 
 describe.concurrent("theme-colors exports and immutability", () => {
   describe("standard color objects (with accents)", () => {
-    it.each(standardColors)(
+    it.for(standardColors)(
       "%s has base, lighten1-5, darken1-4, and accent1-4 keys with string values",
-      (_name, colorObj) => {
+      ([_name, colorObj], { expect }) => {
         expect(Object.keys(colorObj).toSorted()).toEqual(
           standardKeys.toSorted(),
         );
@@ -103,9 +103,9 @@ describe.concurrent("theme-colors exports and immutability", () => {
   });
 
   describe("color objects without accents", () => {
-    it.each(noAccentColors)(
+    it.for(noAccentColors)(
       "%s has base, lighten1-5, and darken1-4 keys (no accents) with string values",
-      (_name, colorObj) => {
+      ([_name, colorObj], { expect }) => {
         expect(Object.keys(colorObj).toSorted()).toEqual(
           noAccentKeys.toSorted(),
         );
@@ -128,13 +128,13 @@ describe.concurrent("theme-colors exports and immutability", () => {
   });
 
   describe("immutability", () => {
-    it.each(allColors)("%s is frozen", (_name, colorObj) => {
+    it.for(allColors)("%s is frozen", ([_name, colorObj], { expect }) => {
       expect(Object.isFrozen(colorObj)).toBe(true);
     });
 
-    it.each(allColors)(
+    it.for(allColors)(
       "%s throws on property mutation and preserves original value",
-      (_name, colorObj) => {
+      ([_name, colorObj], { expect }) => {
         const firstKey = Object.keys(colorObj)[0];
         const originalValue = colorObj[firstKey];
         expect(() => {
