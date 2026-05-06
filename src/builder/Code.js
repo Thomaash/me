@@ -1,62 +1,71 @@
 const sectionMeta = [
-  { name: "imports", displayName: "Imports", silent: true },
+  {
+    name: "imports",
+    displayName: "Imports",
+    silent: true,
+    defaults: [
+      "from mininet.cli import CLI",
+      "from mininet.net import Mininet",
+      "import mininet.link",
+      "import mininet.log",
+      "import mininet.node",
+    ],
+  },
   { name: "preInit", displayName: "Prepare workspace" },
+  {
+    name: "mininetArgs",
+    defaults: [
+      "build=False",
+      "controller=mininet.node.RemoteController",
+      "link=mininet.link.TCLink",
+      "topo=None",
+    ],
+  },
+  {
+    name: "init",
+    displayName: "Initialize Mininet",
+    derived: ({ mininetArgs }) => [
+      `net = Mininet(${mininetArgs.join(", ")})`,
+      "cli = CLI(net, script='/dev/null')",
+    ],
+  },
   { name: "postInit", displayName: "Run post-init commands" },
   { name: "nodes", displayName: "Add nodes" },
   { name: "links", displayName: "Add links" },
   { name: "ports", displayName: "Add interfaces" },
   { name: "nodeLimits", displayName: "Add node limits" },
   { name: "ips", displayName: "Add IP addresses" },
-  { name: "build", displayName: "Build the network" },
+  {
+    name: "build",
+    displayName: "Build the network",
+    defaults: ["net.build()"],
+  },
   { name: "startControllers", displayName: "Start controllers" },
   { name: "startSwitches", displayName: "Start switches" },
   { name: "nodeStartCmds", displayName: "Run node startup commands" },
   { name: "globalStartCmds", displayName: "Run global startup commands" },
-  { name: "cli", displayName: "Start CLI" },
+  { name: "cli", displayName: "Start CLI", defaults: ["cli.run()"] },
   { name: "globalStopCmds", displayName: "Run global shutdown commands" },
   { name: "nodeStopCmds", displayName: "Run node shutdown commands" },
-  { name: "finish", displayName: "Finish" },
+  { name: "finish", displayName: "Finish", defaults: ["net.stop()"] },
   { name: "log", displayName: "Log", silent: true },
 ];
 
-const writableNames = new Set([
-  ...sectionMeta.map((m) => m.name),
-  "mininetArgs",
-]);
-
-const defaultImports = [
-  "from mininet.cli import CLI",
-  "from mininet.net import Mininet",
-  "import mininet.link",
-  "import mininet.log",
-  "import mininet.node",
-];
-
-const defaultMininetArgs = [
-  "build=False",
-  "controller=mininet.node.RemoteController",
-  "link=mininet.link.TCLink",
-  "topo=None",
-];
-
-const INIT_DISPLAY_NAME = "Initialize Mininet";
+const metaByName = new Map(sectionMeta.map((m) => [m.name, m]));
 
 export default class Code {
-  #sections = new Map(sectionMeta.map(({ name }) => [name, []]));
-  #mininetArgs = [...defaultMininetArgs];
-
-  constructor() {
-    this.#sections.get("imports").push(...defaultImports);
-    this.#sections.get("build").push("net.build()");
-    this.#sections.get("cli").push("cli.run()");
-    this.#sections.get("finish").push("net.stop()");
-  }
+  #lines = new Map(
+    sectionMeta
+      .filter((m) => !m.derived)
+      .map((m) => [m.name, [...(m.defaults ?? [])]]),
+  );
 
   add(name, ...values) {
     if (name == null) {
       throw new Error("Code.add: section name is required");
     }
-    if (!writableNames.has(name)) {
+    const meta = metaByName.get(name);
+    if (!meta || meta.derived) {
       throw new Error(`Code.add: unknown section name "${name}"`);
     }
     for (const v of values) {
@@ -67,25 +76,20 @@ export default class Code {
       }
     }
     if (values.length === 0) return;
-    if (name === "mininetArgs") {
-      this.#mininetArgs.push(...values);
-    } else {
-      this.#sections.get(name).push(...values);
-    }
+    this.#lines.get(name).push(...values);
   }
 
   toString() {
     const body = [];
-    for (const { name, displayName, silent } of sectionMeta) {
-      if (name === "postInit") {
-        body.push(
-          ...renderSection(INIT_DISPLAY_NAME, this.#initLines(), false),
-        );
-      }
-      const lines = this.#sections.get(name);
-      if (lines.length) {
-        body.push(...renderSection(displayName, lines, silent === true));
-      }
+    for (const meta of sectionMeta) {
+      if (!meta.displayName) continue;
+      const lines = meta.derived
+        ? meta.derived(Object.fromEntries(this.#lines))
+        : this.#lines.get(meta.name);
+      if (!lines.length) continue;
+      body.push(
+        ...renderSection(meta.displayName, lines, meta.silent === true),
+      );
     }
 
     return [
@@ -97,13 +101,6 @@ export default class Code {
       "# vim:fdm=marker",
       "",
     ].join("\n");
-  }
-
-  #initLines() {
-    return [
-      `net = Mininet(${this.#mininetArgs.join(", ")})`,
-      "cli = CLI(net, script='/dev/null')",
-    ];
   }
 }
 
