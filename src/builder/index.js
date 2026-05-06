@@ -105,25 +105,29 @@ export default class {
 
     // Log level
     if (this._data.logLevel) {
-      this._code.preInit.push(
+      this._code.add(
+        "preInit",
         `mininet.log.setLogLevel('${this._data.logLevel}')`,
       );
     }
 
     // Scripts
     if (this._data.startScript) {
-      this._code.globalStartCmds.push(
+      this._code.add(
+        "globalStartCmds",
         ...this._scriptToCmds(this._data.startScript),
       );
     }
     if (this._data.stopScript) {
-      this._code.globalStopCmds.push(
+      this._code.add(
+        "globalStopCmds",
         ...this._scriptToCmds(this._data.stopScript),
       );
     }
 
     // Mininet arguments
-    this._code.mininetArgs.push(
+    this._code.add(
+      "mininetArgs",
       ...pyArgs([
         [
           this._data.autoSetMAC != null,
@@ -177,10 +181,11 @@ export default class {
       [controller.port != null, controller.port, Number, "port"],
       [controller.protocol != null, controller.protocol, String, "protocol"],
     ]);
-    this._code.nodes.push(
+    this._code.add(
+      "nodes",
       `${controller.hostname} = net.addController(${args.join(", ")})`,
     );
-    this._code.startControllers.push(`${controller.hostname}.start()`);
+    this._code.add("startControllers", `${controller.hostname}.start()`);
   }
 
   _addHost(host) {
@@ -204,14 +209,18 @@ export default class {
         "cls",
       ],
     ]);
-    this._code.nodes.push(`${host.hostname} = net.addHost(${args.join(", ")})`);
+    this._code.add(
+      "nodes",
+      `${host.hostname} = net.addHost(${args.join(", ")})`,
+    );
 
     if (host.cpuScheduler != null || host.cpuLimit != null) {
       const args = pyArgs([
         [host.cpuScheduler != null, host.cpuScheduler, String, "sched"],
         [host.cpuLimit != null, host.cpuLimit, Number, "f"],
       ]);
-      this._code.nodeLimits.push(
+      this._code.add(
+        "nodeLimits",
         `${host.hostname}.setCPUFrac(${args.join(", ")})`,
       );
     }
@@ -219,7 +228,8 @@ export default class {
       const args = pyArgs([
         [host.cpuCores != null, host.cpuCores.join(","), String, "cores"],
       ]);
-      this._code.nodeLimits.push(
+      this._code.add(
+        "nodeLimits",
         `${host.hostname}.setCPUs(${args.join(", ")})`,
       );
     }
@@ -271,7 +281,7 @@ export default class {
       [link.jitter != null, link.jitter, String, "jitter"],
     ]);
 
-    this._code.links.push(`net.addLink(${args.join(", ")})`);
+    this._code.add("links", `net.addLink(${args.join(", ")})`);
   }
 
   _addPort(port) {
@@ -310,11 +320,12 @@ export default class {
         [dev, String],
         [node.hostname, null, "node"],
       ]);
-      this._code.ports.push(`mininet.link.Intf(${args.join(", ")})`);
+      this._code.add("ports", `mininet.link.Intf(${args.join(", ")})`);
     }
 
     (port.ips || []).forEach((ip, i) => {
-      this._code.ips.push(
+      this._code.add(
+        "ips",
         ...(i === 0
           ? [
               `${node.hostname}.intf('${dev}').ip = '${ip.split("/")[0]}'`,
@@ -356,10 +367,12 @@ export default class {
     const controllerHostnames = this._getNeighbors(swtch, ["controller"]).map(
       (controller) => controller.hostname,
     );
-    this._code.nodes.push(
+    this._code.add(
+      "nodes",
       `${swtch.hostname} = net.addSwitch(${args.join(", ")})`,
     );
-    this._code.startSwitches.push(
+    this._code.add(
+      "startSwitches",
       `${swtch.hostname}.start([${controllerHostnames.join(", ")}])`,
     );
 
@@ -424,17 +437,21 @@ export default class {
 
   _addNodeScripts(hostname, startScript, stopScript) {
     if (startScript) {
-      this._code.nodeStartCmds.push(
+      this._code.add(
+        "nodeStartCmds",
         ...this._scriptToCmds(startScript, hostname),
       );
     }
     if (stopScript) {
-      this._code.nodeStopCmds.push(...this._scriptToCmds(stopScript, hostname));
+      this._code.add(
+        "nodeStopCmds",
+        ...this._scriptToCmds(stopScript, hostname),
+      );
     }
   }
 
   _log(msg, severity, item) {
-    this._code.log.push(msg.replace(/^(.*)$/gm, "# $1"));
+    this._code.add("log", msg.replace(/^(.*)$/gm, "# $1"));
     this.log.push({ item, severity, msg });
   }
 }
