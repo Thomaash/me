@@ -13,6 +13,7 @@ describe("appStore", () => {
     expect(store.working).toBe(false);
     expect(store.isUpdateAvailable).toBe(false);
     expect(store.alert).toEqual({ show: false });
+    expect(store.saveState).toBe("idle");
   });
 
   it("loaded sets loading to false", ({ expect }) => {
@@ -64,5 +65,28 @@ describe("appStore", () => {
     const store = useAppStore();
     store.setUpdateAvailable();
     expect(store.isUpdateAvailable).toBe(true);
+  });
+
+  describe("saveState transitions", () => {
+    it.for([
+      ["markPending", "pending"],
+      ["markSaving", "saving"],
+      ["markSaved", "idle"],
+      ["markSaveError", "error"],
+    ])("%s sets saveState to %s", ([action, expected], { expect }) => {
+      const store = useAppStore();
+      store[action]();
+      expect(store.saveState).toBe(expected);
+    });
+
+    it("markSaved resets saveState to idle after a pending state", ({
+      expect,
+    }) => {
+      const store = useAppStore();
+      store.markPending();
+      store.markSaving();
+      store.markSaved();
+      expect(store.saveState).toBe("idle");
+    });
   });
 });
