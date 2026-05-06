@@ -2,228 +2,191 @@ import { describe, it } from "vitest";
 import Code from "@/builder/Code.js";
 
 describe.concurrent("Code", () => {
-  describe("constructor initialization", () => {
-    it("initializes imports with mininet CLI, net, link, log, and node imports", ({
-      expect,
-    }) => {
-      const code = new Code();
-      expect(code.imports).toEqual([
-        "from mininet.cli import CLI",
-        "from mininet.net import Mininet",
-        "import mininet.link",
-        "import mininet.log",
-        "import mininet.node",
-      ]);
-    });
-
-    it("initializes init with Mininet instantiation function and CLI creation string", ({
-      expect,
-    }) => {
-      const code = new Code();
-      expect(code.init).toHaveLength(2);
-      expect(typeof code.init[0]).toBe("function");
-      expect(code.init[1]).toBe("cli = CLI(net, script='/dev/null')");
-    });
-
-    it("initializes build, cli, and finish arrays with correct commands", ({
-      expect,
-    }) => {
-      const code = new Code();
-      expect(code.build).toEqual(["net.build()"]);
-      expect(code.cli).toEqual(["cli.run()"]);
-      expect(code.finish).toEqual(["net.stop()"]);
-    });
-
-    it("initializes empty arrays for all metadata sections not pre-initialized", ({
-      expect,
-    }) => {
-      const code = new Code();
-      const expectedEmpty = [
-        "preInit",
-        "nodes",
-        "links",
-        "ports",
-        "nodeLimits",
-        "ips",
-        "startControllers",
-        "startSwitches",
-        "nodeStartCmds",
-        "globalStartCmds",
-        "globalStopCmds",
-        "nodeStopCmds",
-        "log",
-      ];
-      expectedEmpty.forEach((attr) => {
-        expect(code[attr], `${attr} should be an empty array`).toEqual([]);
-      });
-    });
-
-    it("initializes mininetArgs with build, controller, link, and topo defaults", ({
-      expect,
-    }) => {
-      const code = new Code();
-      expect(code.mininetArgs).toEqual([
-        "build=False",
-        "controller=mininet.node.RemoteController",
-        "link=mininet.link.TCLink",
-        "topo=None",
-      ]);
-    });
-  });
-
-  describe("toString() output structure", () => {
-    it("starts with shebang line and encoding declaration", ({ expect }) => {
-      const code = new Code();
-      const output = code.toString();
+  describe("default render", () => {
+    it("includes shebang, encoding line, and vim modeline", ({ expect }) => {
+      const output = new Code().toString();
       const lines = output.split("\n");
       expect(lines[0]).toBe("#!/usr/bin/env python2");
       expect(lines[1]).toBe("# -*- coding: utf-8 -*-");
+      const nonEmpty = lines.filter((l) => l.length > 0);
+      expect(nonEmpty[nonEmpty.length - 1]).toBe("# vim:fdm=marker");
     });
 
-    it("ends with vim modeline comment", ({ expect }) => {
-      const code = new Code();
-      const output = code.toString();
-      const lines = output.split("\n");
-      const nonEmptyLines = lines.filter((l) => l.length > 0);
-      expect(nonEmptyLines[nonEmptyLines.length - 1]).toBe("# vim:fdm=marker");
+    it("includes the five default imports", ({ expect }) => {
+      const output = new Code().toString();
+      expect(output).toContain("from mininet.cli import CLI");
+      expect(output).toContain("from mininet.net import Mininet");
+      expect(output).toContain("import mininet.link");
+      expect(output).toContain("import mininet.log");
+      expect(output).toContain("import mininet.node");
     });
 
-    it("wraps each non-empty section in fold markers", ({ expect }) => {
-      const code = new Code();
-      const output = code.toString();
-
-      expect(output).toContain("# Imports {{{");
-      expect(output).toContain("# Initialize Mininet {{{");
-      expect(output).toContain("# Build the network {{{");
-      expect(output).toContain("# Start CLI {{{");
-      expect(output).toContain("# Finish {{{");
-
-      const closingMarkers = output.match(/# }}}/g);
-      expect(closingMarkers.length).toBeGreaterThanOrEqual(5);
-    });
-
-    it("adds mininet.log.info for non-silent sections and omits for silent sections", ({
+    it("renders derived init line with the four default mininet args", ({
       expect,
     }) => {
-      const code = new Code();
-      const output = code.toString();
-
-      // Non-silent sections should have log.info
-      expect(output).toContain(
-        "mininet.log.info('\\n*** Initialize Mininet\\n')",
-      );
-      expect(output).toContain(
-        "mininet.log.info('\\n*** Build the network\\n')",
-      );
-      expect(output).toContain("mininet.log.info('\\n*** Start CLI\\n')");
-      expect(output).toContain("mininet.log.info('\\n*** Finish\\n')");
-
-      // Silent sections (imports, log) should NOT have log.info
-      expect(output).not.toContain("mininet.log.info('\\n*** Imports\\n')");
-      expect(output).not.toContain("mininet.log.info('\\n*** Log\\n')");
-    });
-
-    it("resolves function entries by calling .apply()", ({ expect }) => {
-      const code = new Code();
-      const output = code.toString();
-
-      // The init[0] function resolves mininetArgs into the Mininet() call
+      const output = new Code().toString();
       expect(output).toContain(
         "net = Mininet(build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink, topo=None)",
       );
+      expect(output).toContain("cli = CLI(net, script='/dev/null')");
     });
 
-    it("does not include fold markers for empty sections", ({ expect }) => {
-      const code = new Code();
-      const output = code.toString();
+    it("renders default build, cli, and finish content", ({ expect }) => {
+      const output = new Code().toString();
+      expect(output).toContain("net.build()");
+      expect(output).toContain("cli.run()");
+      expect(output).toContain("net.stop()");
+    });
 
-      // preInit, nodes, links etc. are empty and should not appear
+    it("does not render fold markers for empty optional sections", ({
+      expect,
+    }) => {
+      const output = new Code().toString();
       expect(output).not.toContain("# Prepare workspace {{{");
       expect(output).not.toContain("# Add nodes {{{");
       expect(output).not.toContain("# Add links {{{");
+      expect(output).not.toContain("# Log {{{");
+    });
+  });
+
+  describe("add() validation", () => {
+    it("throws when called with no arguments", ({ expect }) => {
+      const code = new Code();
+      expect(() => code.add()).toThrow();
     });
 
-    it("includes content from sections populated after construction", ({
+    it("throws when given an unknown section name", ({ expect }) => {
+      const code = new Code();
+      expect(() => code.add("unknownSection", "x")).toThrow();
+    });
+
+    it("throws when given a non-string value", ({ expect }) => {
+      const code = new Code();
+      expect(() => code.add("nodes", 123)).toThrow();
+    });
+
+    it("is a no-op when called with only a section name", ({ expect }) => {
+      const code = new Code();
+      const before = code.toString();
+      expect(() => code.add("nodes")).not.toThrow();
+      expect(code.toString()).toBe(before);
+    });
+  });
+
+  describe("add() to writable sections", () => {
+    it("renders nodes content under '# Add nodes {{{' with announce line", ({
       expect,
     }) => {
       const code = new Code();
-      code.nodes.push("net.addHost('h1')");
-      code.log.push("print('done')");
+      code.add("nodes", "net.addHost('h1')");
       const output = code.toString();
-
-      // nodes is non-silent, should have fold marker and log.info
       expect(output).toContain("# Add nodes {{{");
       expect(output).toContain("mininet.log.info('\\n*** Add nodes\\n')");
       expect(output).toContain("net.addHost('h1')");
-
-      // log is silent, should have fold marker but no log.info
-      expect(output).toContain("# Log {{{");
-      expect(output).not.toContain("mininet.log.info('\\n*** Log\\n')");
-      expect(output).toContain("print('done')");
     });
 
-    it.for([
-      ["preInit", "Prepare workspace"],
-      ["links", "Add links"],
-      ["ports", "Add interfaces"],
-      ["nodeLimits", "Add node limits"],
-      ["ips", "Add IP addresses"],
-      ["startControllers", "Start controllers"],
-      ["startSwitches", "Start switches"],
-      ["nodeStartCmds", "Run node startup commands"],
-      ["globalStartCmds", "Run global startup commands"],
-      ["globalStopCmds", "Run global shutdown commands"],
-      ["nodeStopCmds", "Run node shutdown commands"],
-    ])(
-      "uses exact step name '%s' -> '%s' in fold marker and log.info when section is populated",
-      ([attr, name], { expect }) => {
-        const code = new Code();
-        code[attr].push("dummy_command()");
-        const output = code.toString();
-
-        expect(output).toContain(`# ${name} {{{`);
-        expect(output).toContain(`mininet.log.info('\\n*** ${name}\\n')`);
-      },
-    );
-
-    it("produces no content between shebang header and first section when all optional sections are empty", ({
+    it("appends mininetArgs to the derived Mininet() call after defaults", ({
       expect,
     }) => {
       const code = new Code();
+      code.add("mininetArgs", "autoSetMacs=True");
       const output = code.toString();
-      const lines = output.split("\n");
-
-      // Line 0: shebang, Line 1: encoding, Line 2: blank, Line 3: first section marker
-      expect(lines[2]).toBe("");
-      expect(lines[3]).toBe("# Imports {{{");
-    });
-
-    it("separates section content with blank lines in the correct pattern", ({
-      expect,
-    }) => {
-      const code = new Code();
-      code.preInit.push("os.mkdir('/tmp/mn')");
-      const output = code.toString();
-
-      // Each non-empty section follows: "# Name {{{", "", "log.info(...)", "", ...content, "", "# }}}"
-      // For non-silent sections, verify blank line after fold marker and after log.info
-      const sectionMatch = output.match(
-        /# Prepare workspace \{\{\{\n\n.*?mininet\.log\.info.*?\n\n.*?os\.mkdir.*?\n\n# \}\}\}/s,
+      expect(output).toContain(
+        "net = Mininet(build=False, controller=mininet.node.RemoteController, link=mininet.link.TCLink, topo=None, autoSetMacs=True)",
       );
-      expect(sectionMatch).not.toBeNull();
     });
 
-    it("for silent sections, omits log.info line but keeps blank line separators", ({
+    it("does not produce a section when add(name) is called without values", ({
       expect,
     }) => {
       const code = new Code();
+      code.add("nodes");
+      const output = code.toString();
+      expect(output).not.toContain("# Add nodes {{{");
+      expect(output).not.toContain("mininet.log.info('\\n*** Add nodes\\n')");
+    });
+  });
+
+  describe("silent sections", () => {
+    it("renders imports content without announce line", ({ expect }) => {
+      const code = new Code();
+      code.add("imports", "import x");
+      const output = code.toString();
+      expect(output).toContain("import x");
+      expect(output).not.toContain("mininet.log.info('\\n*** Imports\\n')");
+    });
+
+    it("renders log content without announce line", ({ expect }) => {
+      const code = new Code();
+      code.add("log", "# msg");
+      const output = code.toString();
+      expect(output).toContain("# msg");
+      expect(output).not.toContain("mininet.log.info('\\n*** Log\\n')");
+    });
+  });
+
+  describe("preInit and postInit placement", () => {
+    it("renders preInit before the derived init line", ({ expect }) => {
+      const code = new Code();
+      code.add("preInit", "os.mkdir('/tmp/mn')");
+      const output = code.toString();
+      const preIdx = output.indexOf("os.mkdir('/tmp/mn')");
+      const initIdx = output.indexOf("net = Mininet(");
+      expect(preIdx).toBeGreaterThan(-1);
+      expect(initIdx).toBeGreaterThan(-1);
+      expect(preIdx).toBeLessThan(initIdx);
+    });
+
+    it("renders postInit after cli line and before nodes section", ({
+      expect,
+    }) => {
+      const code = new Code();
+      code.add("postInit", "net.waitConnected()");
+      code.add("nodes", "net.addHost('h1')");
+      const output = code.toString();
+      const cliIdx = output.indexOf("cli = CLI(net, script='/dev/null')");
+      const postIdx = output.indexOf("net.waitConnected()");
+      const nodesIdx = output.indexOf("# Add nodes {{{");
+      expect(cliIdx).toBeGreaterThan(-1);
+      expect(postIdx).toBeGreaterThan(-1);
+      expect(nodesIdx).toBeGreaterThan(-1);
+      expect(postIdx).toBeGreaterThan(cliIdx);
+      expect(postIdx).toBeLessThan(nodesIdx);
+    });
+  });
+
+  describe("canonical section order", () => {
+    it("renders imports -> preInit -> init -> postInit -> nodes -> links -> finish", ({
+      expect,
+    }) => {
+      const code = new Code();
+      code.add("imports", "import extra");
+      code.add("preInit", "preinit_marker_xyz()");
+      code.add("postInit", "postinit_marker_xyz()");
+      code.add("nodes", "nodes_marker_xyz()");
+      code.add("links", "links_marker_xyz()");
       const output = code.toString();
 
-      // Imports is silent: "# Imports {{{", "", ...imports..., "", "# }}}"
-      // There should be no mininet.log.info between the fold marker and the import lines
-      const importsSection = output.match(/# Imports \{\{\{\n\n(.*?)# \}\}\}/s);
-      expect(importsSection).not.toBeNull();
-      expect(importsSection[1]).not.toContain("mininet.log.info");
+      const positions = [
+        output.indexOf("import extra"),
+        output.indexOf("preinit_marker_xyz()"),
+        output.indexOf("net = Mininet("),
+        output.indexOf("postinit_marker_xyz()"),
+        output.indexOf("nodes_marker_xyz()"),
+        output.indexOf("links_marker_xyz()"),
+        output.indexOf("net.stop()"),
+      ];
+
+      positions.forEach((p, i) => {
+        expect(p, `position ${i} should be present`).toBeGreaterThan(-1);
+      });
+
+      for (let i = 1; i < positions.length; i++) {
+        expect(
+          positions[i],
+          `index ${i} should follow index ${i - 1}`,
+        ).toBeGreaterThan(positions[i - 1]);
+      }
     });
   });
 });

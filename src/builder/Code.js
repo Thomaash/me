@@ -1,82 +1,119 @@
-const metadata = [
-  { attr: "imports", name: "Imports", silent: true },
-  { attr: "preInit", name: "Prepare workspace" },
-  { attr: "init", name: "Initialize Mininet" },
-  { attr: "nodes", name: "Add nodes" },
-  { attr: "links", name: "Add links" },
-  { attr: "ports", name: "Add interfaces" },
-  { attr: "nodeLimits", name: "Add node limits" },
-  { attr: "ips", name: "Add IP addresses" },
-  { attr: "build", name: "Build the network" },
-  { attr: "startControllers", name: "Start controllers" },
-  { attr: "startSwitches", name: "Start switches" },
-  { attr: "nodeStartCmds", name: "Run node startup commands" },
-  { attr: "globalStartCmds", name: "Run global startup commands" },
-  { attr: "cli", name: "Start CLI" },
-  { attr: "globalStopCmds", name: "Run global shutdown commands" },
-  { attr: "nodeStopCmds", name: "Run node shutdown commands" },
-  { attr: "finish", name: "Finish" },
-  { attr: "log", name: "Log", silent: true },
+const sectionMeta = [
+  { name: "imports", displayName: "Imports", silent: true },
+  { name: "preInit", displayName: "Prepare workspace" },
+  { name: "postInit", displayName: "Run post-init commands" },
+  { name: "nodes", displayName: "Add nodes" },
+  { name: "links", displayName: "Add links" },
+  { name: "ports", displayName: "Add interfaces" },
+  { name: "nodeLimits", displayName: "Add node limits" },
+  { name: "ips", displayName: "Add IP addresses" },
+  { name: "build", displayName: "Build the network" },
+  { name: "startControllers", displayName: "Start controllers" },
+  { name: "startSwitches", displayName: "Start switches" },
+  { name: "nodeStartCmds", displayName: "Run node startup commands" },
+  { name: "globalStartCmds", displayName: "Run global startup commands" },
+  { name: "cli", displayName: "Start CLI" },
+  { name: "globalStopCmds", displayName: "Run global shutdown commands" },
+  { name: "nodeStopCmds", displayName: "Run node shutdown commands" },
+  { name: "finish", displayName: "Finish" },
+  { name: "log", displayName: "Log", silent: true },
 ];
 
-export default class {
+const writableNames = new Set([
+  ...sectionMeta.map((m) => m.name),
+  "mininetArgs",
+]);
+
+const defaultImports = [
+  "from mininet.cli import CLI",
+  "from mininet.net import Mininet",
+  "import mininet.link",
+  "import mininet.log",
+  "import mininet.node",
+];
+
+const defaultMininetArgs = [
+  "build=False",
+  "controller=mininet.node.RemoteController",
+  "link=mininet.link.TCLink",
+  "topo=None",
+];
+
+const INIT_DISPLAY_NAME = "Initialize Mininet";
+
+export default class Code {
+  #sections = new Map(sectionMeta.map(({ name }) => [name, []]));
+  #mininetArgs = [...defaultMininetArgs];
+
   constructor() {
-    this.imports = [
-      "from mininet.cli import CLI",
-      "from mininet.net import Mininet",
-      "import mininet.link",
-      "import mininet.log",
-      "import mininet.node",
-    ];
-    this.init = [
-      () => `net = Mininet(${this.mininetArgs.join(", ")})`,
-      "cli = CLI(net, script='/dev/null')",
-    ];
-    this.build = ["net.build()"];
-    this.cli = ["cli.run()"];
-    this.finish = ["net.stop()"];
+    this.#sections.get("imports").push(...defaultImports);
+    this.#sections.get("build").push("net.build()");
+    this.#sections.get("cli").push("cli.run()");
+    this.#sections.get("finish").push("net.stop()");
+  }
 
-    // Init empty arrays
-    metadata.forEach(({ attr }) => {
-      if (!this[attr]) {
-        this[attr] = [];
+  add(name, ...values) {
+    if (name == null) {
+      throw new Error("Code.add: section name is required");
+    }
+    if (!writableNames.has(name)) {
+      throw new Error(`Code.add: unknown section name "${name}"`);
+    }
+    for (const v of values) {
+      if (typeof v !== "string") {
+        throw new Error(
+          `Code.add: unsupported value type "${typeof v}" for section "${name}"`,
+        );
       }
-    });
-
-    // Helpers
-    this.mininetArgs = [
-      "build=False",
-      "controller=mininet.node.RemoteController",
-      "link=mininet.link.TCLink",
-      "topo=None",
-    ];
+    }
+    if (values.length === 0) return;
+    if (name === "mininetArgs") {
+      this.#mininetArgs.push(...values);
+    } else {
+      this.#sections.get(name).push(...values);
+    }
   }
 
   toString() {
-    const code = [];
-    metadata.forEach(({ attr, name, silent }) => {
-      const arr = this[attr].map((v) => (v.apply ? v.apply() : v));
-
-      if (arr.length) {
-        code.push(
-          `# ${name} {{{`,
-          "",
-          ...(silent ? [] : [`mininet.log.info('\\n*** ${name}\\n')`, ""]),
-          ...arr,
-          "",
-          "# }}}",
+    const body = [];
+    for (const { name, displayName, silent } of sectionMeta) {
+      if (name === "postInit") {
+        body.push(
+          ...renderSection(INIT_DISPLAY_NAME, this.#initLines(), false),
         );
       }
-    });
+      const lines = this.#sections.get(name);
+      if (lines.length) {
+        body.push(...renderSection(displayName, lines, silent === true));
+      }
+    }
 
     return [
       "#!/usr/bin/env python2",
       "# -*- coding: utf-8 -*-",
       "",
-      ...code,
+      ...body,
       "",
       "# vim:fdm=marker",
       "",
     ].join("\n");
   }
+
+  #initLines() {
+    return [
+      `net = Mininet(${this.#mininetArgs.join(", ")})`,
+      "cli = CLI(net, script='/dev/null')",
+    ];
+  }
+}
+
+function renderSection(displayName, lines, silent) {
+  return [
+    `# ${displayName} {{{`,
+    "",
+    ...(silent ? [] : [`mininet.log.info('\\n*** ${displayName}\\n')`, ""]),
+    ...lines,
+    "",
+    "# }}}",
+  ];
 }
