@@ -2,7 +2,7 @@ import { ParseTreeWalker, CommonTokenStream, InputStream } from "antlr4";
 import Python2Lexer from "./generated/PythonLexer";
 import Python2Parser from "./generated/PythonParser";
 
-import CustomListener from "./CustomListener";
+import { CustomListener } from "./CustomListener";
 import { pyBoolean, pyNotNull, pyNumber, pyString } from "./pyTypes";
 
 const ipAARE = /^'ip a a ([0-9a-fA-F.:/]{6,42}) dev ([^-]+-)?([^-]+)'$/;
@@ -90,7 +90,7 @@ function fixNextHostDev(set, hostDev) {
   return hostDev;
 }
 
-export default function (input) {
+export function importScript(input) {
   const associations = [];
   const hostIPs = {};
   const ips = new IPs();

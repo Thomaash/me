@@ -1,5 +1,5 @@
 import { describe, it, vi, beforeEach } from "vitest";
-import deselectHandler from "@/components/vis/deselectHandler.js";
+import { deselectHandler } from "@/components/vis/deselectHandler.js";
 
 describe("deselectHandler", () => {
   let net;

@@ -1,5 +1,5 @@
 import { describe, it, vi, beforeEach } from "vitest";
-import RectangularSelection from "@/components/vis/RectangularSelection.js";
+import { RectangularSelection } from "@/components/vis/RectangularSelection.js";
 
 /**
  * Black-box tests for RectangularSelection.

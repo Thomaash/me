@@ -1,4 +1,4 @@
-import generateTooltip from "./generateTooltip";
+import { generateTooltip } from "./generateTooltip";
 import { labelPlaceholderRE, labelPlaceholderReplacers } from "./placeholders";
 import { themeColorShades } from "@/theme-colors";
 

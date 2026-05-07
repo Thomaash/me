@@ -3,7 +3,7 @@ function jsonImporter(content) {
 }
 
 async function pythonImporter(content) {
-  const { default: importScript } = await import("@/importScript");
+  const { importScript } = await import("@/importScript");
   const { data, log } = importScript(content);
   return { data, log, warnings: ["script-import-warning"] };
 }
@@ -22,7 +22,7 @@ const importAccept = Object.keys(importersByKey)
   .filter((key) => /(^\.|\/)/.test(key))
   .join(",");
 
-export default {
+export const importer = {
   importAccept,
 
   async stringToImport(fileType, fileName, content) {

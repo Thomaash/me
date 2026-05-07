@@ -10,7 +10,7 @@ const keysModeMap = {
   },
 };
 
-export default class {
+export class RectangularSelection {
   constructor(container, network, nodes, colors) {
     this._container = container;
     this._network = network;

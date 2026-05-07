@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { describe, it, beforeEach } from "vitest";
-import Builder from "@/builder/index.js";
+import { Builder } from "@/builder/index.js";
 import medium2Controllers from "@/examples/medium_2_controllers.json";
 
 // Extract content lines from the "# Log {{{ ... # }}}" block of a rendered

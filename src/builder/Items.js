@@ -1,7 +1,7 @@
 const edgeRE = /^(link|association)$/;
 const collator = new Intl.Collator("en-US-u-kn");
 
-export default class {
+export class Items {
   constructor(itemsArray) {
     // Maps
     this.map = {

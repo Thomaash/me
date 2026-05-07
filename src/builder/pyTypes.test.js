@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import pyTypes from "@/builder/pyTypes.js";
+import { pyTypes } from "@/builder/pyTypes.js";
 
 describe.concurrent("pyTypes", () => {
   describe("pyBoolean (via pyTypes.get(Boolean))", () => {

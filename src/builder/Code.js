@@ -53,7 +53,7 @@ const sectionMeta = [
 
 const metaByName = new Map(sectionMeta.map((m) => [m.name, m]));
 
-export default class Code {
+export class Code {
   #lines = new Map(
     sectionMeta
       .filter((m) => !m.derived)

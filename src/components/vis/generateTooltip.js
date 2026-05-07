@@ -81,6 +81,6 @@ const generators = {
   },
 };
 
-export default function (item) {
+export function generateTooltip(item) {
   return (generators[item.type] || generators.$default)(item);
 }

@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import generateTooltip from "@/components/vis/generateTooltip.js";
+import { generateTooltip } from "@/components/vis/generateTooltip.js";
 
 describe.concurrent("generateTooltip", () => {
   describe("dispatch", () => {

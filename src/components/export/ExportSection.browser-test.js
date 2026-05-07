@@ -7,8 +7,8 @@ import ExportSection from "@/components/export/ExportSection.vue";
 import { useTopologyStore } from "@/store/topologyStore";
 import { useAppStore } from "@/store/appStore";
 import { exportData } from "@/exporter";
-import Builder from "@/builder";
-import AddressingPlan from "@/builder/AddressingPlan";
+import { Builder } from "@/builder";
+import { AddressingPlan } from "@/builder/AddressingPlan";
 
 vi.mock("@/exporter", async (importOriginal) => {
   const actual = await importOriginal();
@@ -27,7 +27,7 @@ vi.mock("@/builder", () => {
     this.log = ["mock-log-entry"];
     this.build = vi.fn(() => "#!/usr/bin/python\nprint('hello')");
   });
-  return { default: MockBuilder };
+  return { Builder: MockBuilder };
 });
 
 vi.mock("@/builder/AddressingPlan", () => {
@@ -35,7 +35,7 @@ vi.mock("@/builder/AddressingPlan", () => {
     this.build = vi.fn();
     this.savePDF = vi.fn();
   });
-  return { default: MockAddressingPlan };
+  return { AddressingPlan: MockAddressingPlan };
 });
 
 function createTestPinia({

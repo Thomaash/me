@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
-import Builder from "@/builder/index.js";
-import importScript from "@/importScript/index.js";
+import { Builder } from "@/builder/index.js";
+import { importScript } from "@/importScript/index.js";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 

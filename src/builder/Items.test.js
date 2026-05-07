@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import Items from "@/builder/Items.js";
+import { Items } from "@/builder/Items.js";
 
 // --- Test Fixtures ---
 

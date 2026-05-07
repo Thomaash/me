@@ -1,7 +1,7 @@
 import JSPDF from "jspdf";
 import { autoTable } from "jspdf-autotable";
 
-import Items from "./Items";
+import { Items } from "./Items";
 import { compare } from "@/components/vis/locale";
 import { vuetify as theme } from "@/theme";
 
@@ -9,7 +9,7 @@ function compareEntries([a], [b]) {
   return compare(a, b);
 }
 
-export default class {
+export class AddressingPlan {
   constructor(data) {
     this.data = data;
   }

@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import Code from "@/builder/Code.js";
+import { Code } from "@/builder/Code.js";
 
 describe.concurrent("Code", () => {
   describe("default render", () => {

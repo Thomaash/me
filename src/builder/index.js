@@ -1,8 +1,8 @@
-import Code from "./Code";
-import Items from "./Items";
-import pyArgs from "./pyArgs";
+import { Code } from "./Code";
+import { Items } from "./Items";
+import { pyArgs } from "./pyArgs";
 
-export default class {
+export class Builder {
   constructor(data) {
     this.log = [];
 

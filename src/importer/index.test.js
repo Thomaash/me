@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import importer from "@/importer/index.js";
+import { importer } from "@/importer/index.js";
 
 const { stringToImport, importAccept } = importer;
 

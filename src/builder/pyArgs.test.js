@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import pyArgs from "@/builder/pyArgs.js";
+import { pyArgs } from "@/builder/pyArgs.js";
 
 describe.concurrent("pyArgs", () => {
   describe("pyArgPre with 1 arg (value only)", () => {

@@ -52,8 +52,8 @@
 
 <script setup>
 import { ref, computed, nextTick } from "vue";
-import AddressingPlan from "@/builder/AddressingPlan";
-import Builder from "@/builder";
+import { AddressingPlan } from "@/builder/AddressingPlan";
+import { Builder } from "@/builder";
 import VisCanvas from "@/components/vis/VisCanvas.vue";
 import { exportData } from "@/exporter";
 

@@ -1,4 +1,4 @@
-import pyTypes from "./pyTypes";
+import { pyTypes } from "./pyTypes";
 
 function pyArg(test, value, type, pre) {
   if (!test) {
@@ -34,8 +34,6 @@ function pyArgPre(...args) {
   }
 }
 
-function pyArgs(values) {
+export function pyArgs(values) {
   return values.map((value) => pyArgPre(...value)).filter((str) => str != null);
 }
-
-export default pyArgs;

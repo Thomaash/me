@@ -37,7 +37,7 @@ vi.mock("jspdf-autotable", () => ({
   }),
 }));
 
-const { default: AddressingPlan } = await import("@/builder/AddressingPlan.js");
+const { AddressingPlan } = await import("@/builder/AddressingPlan.js");
 
 // --- Fixture Helpers ---
 

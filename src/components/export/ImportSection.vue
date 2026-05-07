@@ -113,7 +113,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useConfirmDialog } from "@vueuse/core";
-import importer from "@/importer";
+import { importer } from "@/importer";
 
 import exampleEmpty from "@/examples/empty";
 import { useTopologyStore } from "@/composables/useTopologyStore";

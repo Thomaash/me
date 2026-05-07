@@ -43,9 +43,9 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
-import RectangularSelection from "./vis/RectangularSelection";
+import { RectangularSelection } from "./vis/RectangularSelection";
 import VisCanvas from "./vis/VisCanvas.vue";
-import deselectHandler from "./vis/deselectHandler";
+import { deselectHandler } from "./vis/deselectHandler";
 import { v4 as randomUUID } from "uuid";
 import { compare, compareNodes } from "./vis/locale";
 import { dark, selection as selectionTheme } from "@/theme";

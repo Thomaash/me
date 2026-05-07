@@ -1,5 +1,5 @@
 let last = null;
-export default function (net, event) {
+export function deselectHandler(net, event) {
   // Don't replace the selection when ctrl is pressed.
   if (event.event.srcEvent.ctrlKey) {
     // Don't react multiple times to the same event.

@@ -11,10 +11,8 @@ function pyRaw(jsString) {
   return `${jsString}`;
 }
 
-const pyTypes = new Map();
+export const pyTypes = new Map();
 pyTypes.set(Boolean, pyBoolean);
 pyTypes.set(Number, pyNumber);
 pyTypes.set(String, pyString);
 pyTypes.set(null, pyRaw);
-
-export default pyTypes;
