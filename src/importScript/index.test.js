@@ -279,7 +279,7 @@ net.stop()
       ["listenPortBase", "listenPort=6634", { listenPortBase: 6634 }],
     ])(
       "extracts %s from Mininet(%s)",
-      ([_label, argString, expectedProps], { expect }) => {
+      ([, argString, expectedProps], { expect }) => {
         const script = `
 net = Mininet(topo=None, build=False, ${argString})
 net.build()

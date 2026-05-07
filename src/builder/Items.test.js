@@ -215,7 +215,8 @@ describe.concurrent("Items", () => {
       const input = buildFixtureItems();
       const frozen = input.map((item) => ({ ...item }));
 
-      const _items = new Items(input);
+      const items = new Items(input);
+      expect(items).toBeDefined();
 
       input.forEach((item, i) => {
         expect(item).toEqual(frozen[i]);

@@ -9,14 +9,15 @@ const ipAARE = /^'ip a a ([0-9a-fA-F.:/]{6,42}) dev ([^-]+-)?([^-]+)'$/;
 
 const hostnameLookupTypeRE = /^(host|switch|controller)$/;
 class Items {
+  #indexMap = Object.create(null);
+  #lastId = -1;
+
   constructor() {
     this.array = [];
-    this._indexMap = Object.create(null);
-    this._lastId = -1;
   }
 
   nextId() {
-    return "script_import_" + ++this._lastId;
+    return "script_import_" + ++this.#lastId;
   }
 
   put(item) {
@@ -28,7 +29,7 @@ class Items {
       item.hostname != null &&
       (hostnameLookupTypeRE.test(item.type) || item.type == null)
     ) {
-      if (this._indexMap[item.hostname] != null) {
+      if (this.#indexMap[item.hostname] != null) {
         const oldItem = this.get(item.hostname);
 
         // Append to the scripts
@@ -41,7 +42,7 @@ class Items {
 
         Object.assign(oldItem, item);
       } else {
-        this._indexMap[item.hostname] = this.array.length;
+        this.#indexMap[item.hostname] = this.array.length;
         this.array[this.array.length] = item;
       }
     } else {
@@ -50,7 +51,7 @@ class Items {
   }
 
   get(hostname) {
-    return this.array[this._indexMap[hostname]];
+    return this.array[this.#indexMap[hostname]];
   }
 }
 

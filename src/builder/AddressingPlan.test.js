@@ -139,7 +139,7 @@ describe("AddressingPlan", () => {
       ["empty ips array", { ips: [] }],
     ])(
       "excludes ports with %s from the plan",
-      ([_label, ipOverrides], { expect }) => {
+      ([, ipOverrides], { expect }) => {
         const h1 = makeHost({ hostname: "host-1" });
         const p1 = makePort({ hostname: "eth0", ...ipOverrides });
         const assoc = makeAssociation(h1.id, p1.id);
