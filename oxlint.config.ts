@@ -37,4 +37,12 @@ export default defineConfig({
       },
     ],
   },
+  overrides: [
+    {
+      files: ["src/**/*.js"],
+      rules: {
+        "import/no-default-export": "error",
+      },
+    },
+  ],
 });
