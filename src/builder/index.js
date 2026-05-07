@@ -3,33 +3,36 @@ import { Items } from "./Items";
 import { pyArgs } from "./pyArgs";
 
 export class Builder {
+  #devnames = Object.create(null);
+  #hostnames = new Set();
+  #linked = new Set();
+  #data;
+  #items;
+  #code;
+
   constructor(data) {
     this.log = [];
 
-    this._devnames = Object.create(null);
-    this._hostnames = new Set();
-    this._linked = new Set();
-
-    this._data = data;
-    this._items = new Items(data.items);
-    this._code = new Code();
+    this.#data = data;
+    this.#items = new Items(data.items);
+    this.#code = new Code();
   }
 
   build() {
     [
       // Nodes (stop on hostname conflict)
       {
-        items: this._items.arr.controller,
-        method: this._addController.bind(this),
+        items: this.#items.arr.controller,
+        method: this.#addController.bind(this),
       },
-      { items: this._items.arr.host, method: this._addHost.bind(this) },
-      { items: this._items.arr.switch, method: this._addSwitch.bind(this) },
+      { items: this.#items.arr.host, method: this.#addHost.bind(this) },
+      { items: this.#items.arr.switch, method: this.#addSwitch.bind(this) },
 
       // Interfaces (stop on devname conflict)
-      { items: this._items.arr.port, method: this._addPort.bind(this) },
+      { items: this.#items.arr.port, method: this.#addPort.bind(this) },
 
       // Links
-      { items: this._items.arr.link, method: this._addLink.bind(this) },
+      { items: this.#items.arr.link, method: this.#addLink.bind(this) },
     ].forEach(({ items, method }) => {
       items.forEach((item) => {
         try {
@@ -41,13 +44,13 @@ export class Builder {
           ) {
             const hostname = item.hostname;
             [
-              ...this._items.arr.controller,
-              ...this._items.arr.host,
-              ...this._items.arr.switch,
+              ...this.#items.arr.controller,
+              ...this.#items.arr.host,
+              ...this.#items.arr.switch,
             ]
               .filter((node) => node.hostname === hostname)
               .forEach((node) =>
-                this._log(
+                this.#log(
                   `Failed to add ${node.type}/${node.hostname}: conflicting hostname.`,
                   "error",
                   node,
@@ -59,7 +62,7 @@ export class Builder {
           ) {
             const { devname, ports } = error.payload;
             ports.forEach((port) =>
-              this._log(
+              this.#log(
                 `Failed to add ${port.type}/${port.hostname}: conflicting interface name ${devname}.`,
                 "error",
                 port,
@@ -70,7 +73,7 @@ export class Builder {
             error.message === "Multiple links per port."
           ) {
             const { port } = error.payload;
-            this._log(
+            this.#log(
               `Failed to add ${port.type}/${port.hostname}: single port has multiple links.`,
               "error",
               port,
@@ -80,17 +83,17 @@ export class Builder {
             error.message === "Physical port connected to a link."
           ) {
             const { port } = error.payload;
-            this._log(
+            this.#log(
               `Failed to add ${port.type}/${port.hostname}: port can't be both physical and connected to a link.`,
               "error",
               port,
             );
           } else {
             console.error(error);
-            this._log(
+            this.#log(
               item != null && item.type !== null && item.id !== null
                 ? `Failed to add ${item.type}/${item.hostname}.`
-                : `Malformed item (${this._items.arr.$all.find(
+                : `Malformed item (${this.#items.arr.$all.find(
                     (v) => v === item,
                   )}).`,
               "error",
@@ -104,70 +107,70 @@ export class Builder {
     });
 
     // Log level
-    if (this._data.logLevel) {
-      this._code.add(
+    if (this.#data.logLevel) {
+      this.#code.add(
         "preInit",
-        `mininet.log.setLogLevel('${this._data.logLevel}')`,
+        `mininet.log.setLogLevel('${this.#data.logLevel}')`,
       );
     }
 
     // Scripts
-    if (this._data.startScript) {
-      this._code.add(
+    if (this.#data.startScript) {
+      this.#code.add(
         "globalStartCmds",
-        ...this._scriptToCmds(this._data.startScript),
+        ...this.#scriptToCmds(this.#data.startScript),
       );
     }
-    if (this._data.stopScript) {
-      this._code.add(
+    if (this.#data.stopScript) {
+      this.#code.add(
         "globalStopCmds",
-        ...this._scriptToCmds(this._data.stopScript),
+        ...this.#scriptToCmds(this.#data.stopScript),
       );
     }
 
     // Mininet arguments
-    this._code.add(
+    this.#code.add(
       "mininetArgs",
       ...pyArgs([
         [
-          this._data.autoSetMAC != null,
-          this._data.autoSetMAC,
+          this.#data.autoSetMAC != null,
+          this.#data.autoSetMAC,
           Boolean,
           "autoSetMacs",
         ],
         [
-          this._data.autoStaticARP != null,
-          this._data.autoStaticARP,
+          this.#data.autoStaticARP != null,
+          this.#data.autoStaticARP,
           Boolean,
           "autoStaticArp",
         ],
         [
-          this._data.inNamespace != null,
-          this._data.inNamespace,
+          this.#data.inNamespace != null,
+          this.#data.inNamespace,
           Boolean,
           "inNamespace",
         ],
-        [this._data.ipBase != null, this._data.ipBase, String, "ipBase"],
+        [this.#data.ipBase != null, this.#data.ipBase, String, "ipBase"],
         [
-          this._data.listenPortBase != null,
-          this._data.listenPortBase,
+          this.#data.listenPortBase != null,
+          this.#data.listenPortBase,
           Number,
           "listenPort",
         ],
         [
-          this._data.spawnTerminals != null,
-          this._data.spawnTerminals,
+          this.#data.spawnTerminals != null,
+          this.#data.spawnTerminals,
           Boolean,
           "xterms",
         ],
       ]),
     );
 
-    return this._code.toString();
+    return this.#code.toString();
   }
 
-  _addController(controller) {
-    this._addHostname(controller);
+  #addController(controller) {
+    this.#addHostname(controller);
 
     const args = pyArgs([
       [controller.hostname, String],
@@ -181,15 +184,15 @@ export class Builder {
       [controller.port != null, controller.port, Number, "port"],
       [controller.protocol != null, controller.protocol, String, "protocol"],
     ]);
-    this._code.add(
+    this.#code.add(
       "nodes",
       `${controller.hostname} = net.addController(${args.join(", ")})`,
     );
-    this._code.add("startControllers", `${controller.hostname}.start()`);
+    this.#code.add("startControllers", `${controller.hostname}.start()`);
   }
 
-  _addHost(host) {
-    this._addHostname(host);
+  #addHost(host) {
+    this.#addHostname(host);
 
     const args = pyArgs([
       [host.hostname, String],
@@ -209,7 +212,7 @@ export class Builder {
         "cls",
       ],
     ]);
-    this._code.add(
+    this.#code.add(
       "nodes",
       `${host.hostname} = net.addHost(${args.join(", ")})`,
     );
@@ -219,7 +222,7 @@ export class Builder {
         [host.cpuScheduler != null, host.cpuScheduler, String, "sched"],
         [host.cpuLimit != null, host.cpuLimit, Number, "f"],
       ]);
-      this._code.add(
+      this.#code.add(
         "nodeLimits",
         `${host.hostname}.setCPUFrac(${args.join(", ")})`,
       );
@@ -228,34 +231,34 @@ export class Builder {
       const args = pyArgs([
         [host.cpuCores != null, host.cpuCores.join(","), String, "cores"],
       ]);
-      this._code.add(
+      this.#code.add(
         "nodeLimits",
         `${host.hostname}.setCPUs(${args.join(", ")})`,
       );
     }
 
-    this._addNodeScripts(host.hostname, host.startScript, host.stopScript);
+    this.#addNodeScripts(host.hostname, host.startScript, host.stopScript);
   }
 
-  _addLink(link) {
-    const fromPort = this._items.map.port[link.from];
-    const toPort = this._items.map.port[link.to];
+  #addLink(link) {
+    const fromPort = this.#items.map.port[link.from];
+    const toPort = this.#items.map.port[link.to];
 
-    this._addLinkedPort(fromPort);
-    this._addLinkedPort(toPort);
+    this.#addLinkedPort(fromPort);
+    this.#addLinkedPort(toPort);
 
-    const fromNode = this._portToNode(fromPort);
-    const toNode = this._portToNode(toPort);
+    const fromNode = this.#portToNode(fromPort);
+    const toNode = this.#portToNode(toPort);
 
     if (!fromNode || !toNode) {
-      this._log(
+      this.#log(
         `Failed to add ${link.type}/${link.hostname}: link can't be connected to disconnected port(s).`,
         "warning",
         link,
       );
       [...(fromNode ? [] : [fromPort]), ...(toNode ? [] : [toPort])].forEach(
         (port) => {
-          this._log(
+          this.#log(
             `Failed to add ${port.type}/${port.hostname}: port can't be connected to a link but not to a node.`,
             "warning",
             port,
@@ -281,13 +284,13 @@ export class Builder {
       [link.jitter != null, link.jitter, String, "jitter"],
     ]);
 
-    this._code.add("links", `net.addLink(${args.join(", ")})`);
+    this.#code.add("links", `net.addLink(${args.join(", ")})`);
   }
 
-  _addPort(port) {
-    const node = this._portToNode(port);
+  #addPort(port) {
+    const node = this.#portToNode(port);
     if (!node) {
-      this._log(
+      this.#log(
         `Skipping ${port.type}/${port.hostname}: not connected to any node.`,
         "info",
         port,
@@ -296,7 +299,7 @@ export class Builder {
     }
     const link = port.$links[0];
     if (!link && !port.physical) {
-      this._log(
+      this.#log(
         `Skipping ${port.type}/${port.hostname}: port has to be either physical or connected to a link.`,
         "info",
         port,
@@ -313,18 +316,18 @@ export class Builder {
       ? port.hostname
       : `${node.hostname}-${port.hostname}`;
 
-    this._addDevname(port, dev);
+    this.#addDevname(port, dev);
 
     if (!link) {
       const args = pyArgs([
         [dev, String],
         [node.hostname, null, "node"],
       ]);
-      this._code.add("ports", `mininet.link.Intf(${args.join(", ")})`);
+      this.#code.add("ports", `mininet.link.Intf(${args.join(", ")})`);
     }
 
     (port.ips || []).forEach((ip, i) => {
-      this._code.add(
+      this.#code.add(
         "ips",
         ...(i === 0
           ? [
@@ -337,8 +340,8 @@ export class Builder {
     });
   }
 
-  _addSwitch(swtch) {
-    this._addHostname(swtch);
+  #addSwitch(swtch) {
+    this.#addHostname(swtch);
 
     const args = pyArgs([
       [swtch.hostname, String],
@@ -364,26 +367,26 @@ export class Builder {
       ],
       [swtch.verbose != null, swtch.verbose, Boolean, "verbose"],
     ]);
-    const controllerHostnames = this._getNeighbors(swtch, ["controller"]).map(
+    const controllerHostnames = this.#getNeighbors(swtch, ["controller"]).map(
       (controller) => controller.hostname,
     );
-    this._code.add(
+    this.#code.add(
       "nodes",
       `${swtch.hostname} = net.addSwitch(${args.join(", ")})`,
     );
-    this._code.add(
+    this.#code.add(
       "startSwitches",
       `${swtch.hostname}.start([${controllerHostnames.join(", ")}])`,
     );
 
-    this._addNodeScripts(swtch.hostname, swtch.startScript, swtch.stopScript);
+    this.#addNodeScripts(swtch.hostname, swtch.startScript, swtch.stopScript);
   }
 
-  _portToNode(port) {
-    return this._getNeighbors(port, ["host", "switch"])[0];
+  #portToNode(port) {
+    return this.#getNeighbors(port, ["host", "switch"])[0];
   }
 
-  _getNeighbors(node, types) {
+  #getNeighbors(node, types) {
     const nodes = new Set();
     node.$associations.forEach((assoc) => {
       assoc.$nodes.forEach((node) => nodes.add(node));
@@ -392,39 +395,39 @@ export class Builder {
     return [...nodes].filter((n) => n !== node && types.indexOf(n.type) >= 0);
   }
 
-  _addHostname(item) {
+  #addHostname(item) {
     const hostname = item.hostname;
-    if (this._hostnames.has(hostname)) {
+    if (this.#hostnames.has(hostname)) {
       throw new SyntaxError("Hostname collision.");
     } else {
-      this._hostnames.add(hostname);
+      this.#hostnames.add(hostname);
     }
   }
 
-  _addDevname(port, devname) {
-    if (this._devnames[devname]) {
+  #addDevname(port, devname) {
+    if (this.#devnames[devname]) {
       const error = new SyntaxError("Devname collision.");
       error.payload = {
         devname,
-        ports: [this._devnames[devname], port],
+        ports: [this.#devnames[devname], port],
       };
       throw error;
     } else {
-      this._devnames[devname] = port;
+      this.#devnames[devname] = port;
     }
   }
 
-  _addLinkedPort(port) {
-    if (this._linked.has(port)) {
+  #addLinkedPort(port) {
+    if (this.#linked.has(port)) {
       const error = new SyntaxError("Multiple links per port.");
       error.payload = { port };
       throw error;
     } else {
-      this._linked.add(port);
+      this.#linked.add(port);
     }
   }
 
-  _scriptToCmds(script, nodeVar) {
+  #scriptToCmds(script, nodeVar) {
     return script
       .split("\n")
       .filter((line) => !/^(#|$)/.test(line))
@@ -435,23 +438,23 @@ export class Builder {
       .reduce((acc, val) => acc.concat(val), []);
   }
 
-  _addNodeScripts(hostname, startScript, stopScript) {
+  #addNodeScripts(hostname, startScript, stopScript) {
     if (startScript) {
-      this._code.add(
+      this.#code.add(
         "nodeStartCmds",
-        ...this._scriptToCmds(startScript, hostname),
+        ...this.#scriptToCmds(startScript, hostname),
       );
     }
     if (stopScript) {
-      this._code.add(
+      this.#code.add(
         "nodeStopCmds",
-        ...this._scriptToCmds(stopScript, hostname),
+        ...this.#scriptToCmds(stopScript, hostname),
       );
     }
   }
 
-  _log(msg, severity, item) {
-    this._code.add("log", msg.replace(/^(.*)$/gm, "# $1"));
+  #log(msg, severity, item) {
+    this.#code.add("log", msg.replace(/^(.*)$/gm, "# $1"));
     this.log.push({ item, severity, msg });
   }
 }
