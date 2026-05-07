@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "license": "ISC",
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
     "build": "vite build",
     "clean": "rm -rf dist/* .stryker-tmp",
@@ -80,11 +81,5 @@
   },
   "engines": {
     "node": ">=22.16"
-  },
-  "pnpm": {
-    "allowBuilds": {
-      "core-js": false,
-      "esbuild": true
-    }
   }
 }
