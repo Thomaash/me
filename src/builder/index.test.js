@@ -654,7 +654,9 @@ describe("Builder", () => {
   });
 
   describe("log formatting", () => {
-    it("prefixes log messages with '# ' via _log regex", ({ expect }) => {
+    it("logs conflicting hostname diagnostics when build fails", ({
+      expect,
+    }) => {
       const s1 = makeSwitch({ hostname: "s1" });
       const h1 = makeHost({ hostname: "s1" }); // hostname collision
 
@@ -668,21 +670,9 @@ describe("Builder", () => {
         // expected
       }
 
-      // The _log method uses /^(.*)$/gm to prefix each line with "# "
-      // Check the builder log entries have the expected messages
+      // Check the builder's public log entries have the expected messages
       expect(builder.log.length).toBeGreaterThan(0);
       expect(builder.log[0].msg).toContain("conflicting hostname");
-
-      // Render the script via the public Code.toString() and assert
-      // the Log section's content lines are all prefixed with "# ".
-      const script = builder._code.toString();
-      const logBlock = extractLogBlock(script);
-      expect(logBlock.length).toBeGreaterThan(0);
-      logBlock.forEach((line) => {
-        expect(line).toMatch(/^# /);
-      });
-      // And the conflict message text appears in the rendered log block.
-      expect(logBlock.join("\n")).toContain("conflicting hostname");
     });
 
     it("prefixes multi-line log messages with '# ' on each line", ({
@@ -709,11 +699,10 @@ describe("Builder", () => {
       const builder = new Builder(
         JSON.parse(JSON.stringify({ version: 0, items })),
       );
-      builder.build();
 
       // Verify each rendered log line (including multi-line messages)
       // starts with "# " in the rendered Python script's Log section.
-      const script = builder._code.toString();
+      const script = builder.build();
       const logBlock = extractLogBlock(script);
       expect(logBlock.length).toBeGreaterThan(0);
       logBlock.forEach((line) => {
@@ -722,7 +711,7 @@ describe("Builder", () => {
     });
   });
 
-  describe("script command generation (_scriptToCmds)", () => {
+  describe("script command generation", () => {
     it("filters out comment lines starting with # from scripts", ({
       expect,
     }) => {
