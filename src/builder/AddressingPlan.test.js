@@ -41,9 +41,9 @@ const { AddressingPlan } = await import("@/builder/AddressingPlan.js");
 
 // --- Fixture Helpers ---
 
-let _uid = 0;
+let lastUid = 0;
 function uid() {
-  return `uid-${++_uid}`;
+  return `uid-${++lastUid}`;
 }
 
 function makeHost({ id = uid(), ...overrides } = {}) {
@@ -70,7 +70,7 @@ function buildTopology(items) {
 
 describe("AddressingPlan", () => {
   beforeEach(() => {
-    _uid = 0;
+    lastUid = 0;
   });
 
   describe("build() groups ports by parent node hostname", () => {
@@ -152,7 +152,7 @@ describe("AddressingPlan", () => {
     );
   });
 
-  describe("_portToNode resolves parent via associations", () => {
+  describe("build() resolves parent node via associations", () => {
     it("finds a switch as parent node for a port", ({ expect }) => {
       const s1 = makeSwitch({ hostname: "switch-1" });
       const p1 = makePort({ hostname: "eth0", ips: ["172.16.0.1/16"] });
@@ -179,7 +179,7 @@ describe("AddressingPlan", () => {
     });
   });
 
-  describe("_getNeighbors filters by type", () => {
+  describe("build() filters parent candidates by type", () => {
     it("ignores non-host/switch neighbors such as controllers", ({
       expect,
     }) => {
@@ -190,7 +190,7 @@ describe("AddressingPlan", () => {
       const ap = new AddressingPlan(buildTopology([ctrl, p1, assoc]));
       ap.build();
 
-      // Controller is not host or switch, so _portToNode returns undefined
+      // Controller is not host or switch, so the port has no resolved parent
       expect(ap.plan[""]).toBeDefined();
       expect(ap.plan[""].ports["eth0"]).toEqual(["10.0.0.1/24"]);
     });

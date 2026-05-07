@@ -22,7 +22,7 @@ export class AddressingPlan {
     items.arr.port
       .filter((port) => port.ips && port.ips.length)
       .forEach((port) => {
-        const node = this._portToNode(port);
+        const node = this.#portToNode(port);
         const nodeHostname = node ? node.hostname : "";
 
         const planNode = (this.plan[nodeHostname] = this.plan[nodeHostname] || {
@@ -93,11 +93,11 @@ export class AddressingPlan {
     doc.save(filename);
   }
 
-  _portToNode(port) {
-    return this._getNeighbors(port, ["host", "switch"])[0];
+  #portToNode(port) {
+    return this.#getNeighbors(port, ["host", "switch"])[0];
   }
 
-  _getNeighbors(node, types) {
+  #getNeighbors(node, types) {
     const nodes = new Set();
     node.$associations.forEach((assoc) => {
       assoc.$nodes.forEach((node) => nodes.add(node));
