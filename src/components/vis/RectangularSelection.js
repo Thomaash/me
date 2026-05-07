@@ -11,81 +11,92 @@ const keysModeMap = {
 };
 
 export class RectangularSelection {
-  constructor(container, network, nodes, colors) {
-    this._container = container;
-    this._network = network;
-    this._nodes = nodes;
-    this._colors = colors;
+  #container;
+  #network;
+  #nodes;
+  #colors;
 
-    this._drag = false;
-    this._rectDOM = {};
+  #drag = false;
+  #rectDOM = {};
+
+  #mousedown;
+  #mousemove;
+  #mouseup;
+  #afterDrawing;
+  #preventContextMenu;
+
+  constructor(container, network, nodes, colors) {
+    this.#container = container;
+    this.#network = network;
+    this.#nodes = nodes;
+    this.#colors = colors;
   }
 
   attach() {
     // Prepare callback
-    this._mousedown = (...args) => this._mousedownListener(...args);
-    this._mousemove = (...args) => this._mousemoveListener(...args);
-    this._mouseup = (...args) => this._mouseupListener(...args);
-    this._afterDrawing = (...args) => this._afterDrawingListener(...args);
+    this.#mousedown = (...args) => this.#mousedownListener(...args);
+    this.#mousemove = (...args) => this.#mousemoveListener(...args);
+    this.#mouseup = (...args) => this.#mouseupListener(...args);
+    this.#afterDrawing = (...args) => this.#afterDrawingListener(...args);
 
     // Listeners
-    this._container.addEventListener("mousedown", this._mousedown);
-    this._container.addEventListener("mousemove", this._mousemove);
-    this._container.addEventListener("mouseup", this._mouseup);
-    this._network.on("afterDrawing", this._afterDrawing);
+    this.#container.addEventListener("mousedown", this.#mousedown);
+    this.#container.addEventListener("mousemove", this.#mousemove);
+    this.#container.addEventListener("mouseup", this.#mouseup);
+    this.#network.on("afterDrawing", this.#afterDrawing);
 
     // Disable right click menu
-    this._preventContextMenu = (e) => e.preventDefault();
-    this._container.addEventListener("contextmenu", this._preventContextMenu);
+    this.#preventContextMenu = (e) => e.preventDefault();
+    this.#container.addEventListener("contextmenu", this.#preventContextMenu);
   }
 
   detach() {
     // Listeners
-    this._container.removeEventListener("mousedown", this._mousedown);
-    this._container.removeEventListener("mousemove", this._mousemove);
-    this._container.removeEventListener("mouseup", this._mouseup);
-    this._network.off("afterDrawing", this._afterDrawing);
+    this.#container.removeEventListener("mousedown", this.#mousedown);
+    this.#container.removeEventListener("mousemove", this.#mousemove);
+    this.#container.removeEventListener("mouseup", this.#mouseup);
+    this.#network.off("afterDrawing", this.#afterDrawing);
 
     // Restore right click menu
-    this._container.removeEventListener(
+    this.#container.removeEventListener(
       "contextmenu",
-      this._preventContextMenu,
+      this.#preventContextMenu,
     );
 
     // Remove leftovers
-    this._network.redraw();
+    this.#network.redraw();
   }
 
-  get _rectCanvas() {
-    let { x: startX, y: startY } = this._network.DOMtoCanvas({
-      x: this._rectDOM.startX,
-      y: this._rectDOM.startY,
+  get #rectCanvas() {
+    let { x: startX, y: startY } = this.#network.DOMtoCanvas({
+      x: this.#rectDOM.startX,
+      y: this.#rectDOM.startY,
     });
-    let { x: endX, y: endY } = this._network.DOMtoCanvas({
-      x: this._rectDOM.endX,
-      y: this._rectDOM.endY,
+    let { x: endX, y: endY } = this.#network.DOMtoCanvas({
+      x: this.#rectDOM.endX,
+      y: this.#rectDOM.endY,
     });
-    [startX, endX] = this._orderPair(startX, endX);
-    [startY, endY] = this._orderPair(startY, endY);
+    [startX, endX] = this.#orderPair(startX, endX);
+    [startY, endY] = this.#orderPair(startY, endY);
     return { startX, startY, endX, endY };
   }
 
-  _orderPair(a, b) {
+  #orderPair(a, b) {
     return a < b ? [a, b] : [b, a];
   }
 
-  _selectNodes(mode, event) {
-    const { startX, startY, endX, endY } = this._rectCanvas;
+  #selectNodes(mode, event) {
+    const { startX, startY, endX, endY } = this.#rectCanvas;
 
-    const selected = this._nodes
+    const selected = this.#nodes
       .get()
       .filter(({ id }) => {
-        const { x, y } = this._network.getPositions(id)[id];
+        const { x, y } = this.#network.getPositions(id)[id];
         return startX <= x && x <= endX && startY <= y && y <= endY;
       })
       .map(({ id }) => id);
 
-    this._network.selectNodes(this._prepareNodeSelection(selected, mode));
+    this.#network.selectNodes(this.#prepareNodeSelection(selected, mode));
 
     // Fabricate select event
     // It should be fired because this is user interaction
@@ -93,21 +104,21 @@ export class RectangularSelection {
       x: event.offsetX,
       y: event.offsetY,
     };
-    this._network.emit("select", {
-      ...this._network.getSelection(),
+    this.#network.emit("select", {
+      ...this.#network.getSelection(),
       event,
       pointer: {
         DOM: pointerDOM,
-        canvas: this._network.DOMtoCanvas(pointerDOM),
+        canvas: this.#network.DOMtoCanvas(pointerDOM),
       },
     });
   }
 
-  _prepareNodeSelection(curr, mode) {
+  #prepareNodeSelection(curr, mode) {
     if (mode === "set") {
       return curr;
     }
-    const prev = this._network.getSelectedNodes();
+    const prev = this.#network.getSelectedNodes();
     if (mode === "add") {
       return [...new Set([...prev, ...curr])];
     }
@@ -116,47 +127,47 @@ export class RectangularSelection {
     }
   }
 
-  _mousedownListener({ which, offsetX: x, offsetY: y }) {
+  #mousedownListener({ which, offsetX: x, offsetY: y }) {
     if (which === 3) {
       // Init the rectangle
-      this._rectDOM.startX = x - this._container.offsetLeft;
-      this._rectDOM.startY = y - this._container.offsetTop;
-      this._rectDOM.endX = x - this._container.offsetLeft;
-      this._rectDOM.endY = y - this._container.offsetTop;
-      this._drag = true;
+      this.#rectDOM.startX = x - this.#container.offsetLeft;
+      this.#rectDOM.startY = y - this.#container.offsetTop;
+      this.#rectDOM.endX = x - this.#container.offsetLeft;
+      this.#rectDOM.endY = y - this.#container.offsetTop;
+      this.#drag = true;
     }
   }
 
-  _mousemoveListener({ which, offsetX: x, offsetY: y }) {
-    if (which !== 3 && this._drag) {
+  #mousemoveListener({ which, offsetX: x, offsetY: y }) {
+    if (which !== 3 && this.#drag) {
       // Mouse released outside of the container, abort
-      this._drag = false;
-      this._network.redraw();
-    } else if (this._drag) {
-      this._rectDOM.endX = x - this._container.offsetLeft;
-      this._rectDOM.endY = y - this._container.offsetTop;
-      this._network.redraw();
+      this.#drag = false;
+      this.#network.redraw();
+    } else if (this.#drag) {
+      this.#rectDOM.endX = x - this.#container.offsetLeft;
+      this.#rectDOM.endY = y - this.#container.offsetTop;
+      this.#network.redraw();
     }
   }
 
-  _mouseupListener(event) {
+  #mouseupListener(event) {
     const { which, ctrlKey, shiftKey } = event;
     if (which === 3) {
       // Select nodes
-      this._drag = false;
-      this._network.redraw();
-      this._selectNodes(keysModeMap[ctrlKey][shiftKey], event);
+      this.#drag = false;
+      this.#network.redraw();
+      this.#selectNodes(keysModeMap[ctrlKey][shiftKey], event);
     }
   }
 
-  _afterDrawingListener(ctx) {
-    if (this._drag) {
-      const { startX, startY, endX, endY } = this._rectCanvas;
+  #afterDrawingListener(ctx) {
+    if (this.#drag) {
+      const { startX, startY, endX, endY } = this.#rectCanvas;
 
       ctx.lineWidth = 4;
-      ctx.strokeStyle = this._colors.border;
+      ctx.strokeStyle = this.#colors.border;
       ctx.strokeRect(startX, startY, endX - startX, endY - startY);
-      ctx.fillStyle = this._colors.background;
+      ctx.fillStyle = this.#colors.background;
       ctx.fillRect(startX, startY, endX - startX, endY - startY);
     }
   }
