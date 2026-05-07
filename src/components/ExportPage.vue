@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <LoadingSpinner v-if="loading !== false" />
+    <LoadingSpinner v-if="appStore.loading" />
     <template v-else>
       <v-row>
         <v-col cols="12" class="py-5">
@@ -33,8 +33,8 @@ import ExportSection from "./export/ExportSection.vue";
 import ImportSection from "./export/ImportSection.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import LogListing from "./export/LogListing.vue";
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useAppStore } from "@/store/appStore";
 
-const { loading } = useTopologyStore();
+const appStore = useAppStore();
 const log = ref([]);
 </script>

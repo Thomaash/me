@@ -20,7 +20,7 @@
       </v-btn>
     </p>
 
-    <p v-if="isUpdateAvailable">
+    <p v-if="appStore.isUpdateAvailable">
       A new version is available and will be automatically installed when you
       close all open tabs.
     </p>
@@ -30,9 +30,9 @@
 <script setup>
 defineOptions({ name: "BuildInfo" });
 
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useAppStore } from "@/store/appStore";
 
-const { isUpdateAvailable } = useTopologyStore();
+const appStore = useAppStore();
 
 const buildDate = import.meta.env.VITE_BUILD_DATE;
 const buildCommitHash = import.meta.env.VITE_BUILD_COMMIT_HASH;

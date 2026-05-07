@@ -1,6 +1,6 @@
 <template>
   <div class="w-100 h-100 pa-0">
-    <LoadingSpinner v-if="loading !== false" />
+    <LoadingSpinner v-if="appStore.loading" />
     <template v-else>
       <VisContainer ref="vis" @edit-item="editItem" />
       <Edit ref="edit" />
@@ -96,9 +96,9 @@ import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import VisContainer from "@/components/VisContainer.vue";
 import { items as theme } from "@/theme";
 import { useRoute } from "vue-router";
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useAppStore } from "@/store/appStore";
 
-const { loading } = useTopologyStore();
+const appStore = useAppStore();
 const route = useRoute();
 
 const vis = ref(null);

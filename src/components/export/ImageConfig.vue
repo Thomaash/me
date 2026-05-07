@@ -163,7 +163,7 @@ defineOptions({ name: "ImageConfig" });
 
 import { ref, reactive, computed, watch, onMounted } from "vue";
 import { decimal, integer, minValue } from "@/validation/rules";
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useTopologyStore } from "@/store/topologyStore";
 
 const SCREEN_DPCM = 38;
 const PAPER_DPCM = 120;
@@ -217,7 +217,7 @@ const props = defineProps({
 
 const emit = defineEmits(["render"]);
 
-const { boundingBox } = useTopologyStore();
+const topologyStore = useTopologyStore();
 
 const scale = ref(1);
 const dark = ref(false);
@@ -234,8 +234,8 @@ const size = reactive({
 });
 const validators = { decimal, integer, minValue };
 
-const width = computed(() => boundingBox.value().width);
-const height = computed(() => boundingBox.value().height);
+const width = computed(() => topologyStore.boundingBox().width);
+const height = computed(() => topologyStore.boundingBox().height);
 
 const disabled = computed(
   () => props.working || width.value <= 0 || height.value <= 0,
