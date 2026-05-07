@@ -58,15 +58,11 @@ import VisCanvas from "@/components/vis/VisCanvas.vue";
 import { exportData } from "@/exporter";
 
 import ImageConfig from "./ImageConfig.vue";
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useTopologyStore } from "@/store/topologyStore";
+import { useAppStore } from "@/store/appStore";
 
-const {
-  data,
-  working: storeWorking,
-  setWorking,
-  setAlert,
-  clearAlert,
-} = useTopologyStore();
+const topologyStore = useTopologyStore();
+const appStore = useAppStore();
 const emit = defineEmits(["log"]);
 
 const visCanvas = ref(null);
@@ -76,13 +72,13 @@ const dark = ref(false);
 
 const working = computed({
   get() {
-    return !!storeWorking.value;
+    return !!appStore.working;
   },
   set(value) {
     if (value === true) {
-      clearAlert();
+      appStore.clearAlert();
     }
-    setWorking({ working: value });
+    appStore.setWorking({ working: value });
   },
 });
 
@@ -103,11 +99,11 @@ function download(filename, mimeOrHref, fileData) {
 }
 
 function showAlert(type, text) {
-  setAlert({ type, text });
+  appStore.setAlert({ type, text });
 }
 
 function getFilename(extension) {
-  return `${data.value.projectName || "mininet_network"}.${extension}`;
+  return `${topologyStore.data.projectName || "mininet_network"}.${extension}`;
 }
 
 function downloadJSON() {
@@ -115,7 +111,7 @@ function downloadJSON() {
     working.value = true;
     emit("log", []);
 
-    const json = JSON.stringify(exportData(data.value), undefined, 4);
+    const json = JSON.stringify(exportData(topologyStore.data), undefined, 4);
     showAlert("success", "Successfully exported.");
     download(getFilename("json"), "application/json;charset=utf-8", json);
   } catch (error) {
@@ -131,7 +127,7 @@ function downloadScript() {
     working.value = true;
     emit("log", []);
 
-    const builder = new Builder(exportData(data.value));
+    const builder = new Builder(exportData(topologyStore.data));
     emit("log", builder.log);
     const script = builder.build();
     showAlert("success", "Script built.");
@@ -221,7 +217,7 @@ async function downloadImage({ size, tiles, dark: darkParam }) {
             url,
           );
           await new Promise((resolve) => setTimeout(resolve, 50));
-          setWorking({
+          appStore.setWorking({
             curr: doneTiles,
             max: totalTiles,
           });
@@ -248,9 +244,12 @@ function downloadAddressingPlan() {
     working.value = true;
     emit("log", []);
 
-    const ap = new AddressingPlan(exportData(data.value));
+    const ap = new AddressingPlan(exportData(topologyStore.data));
     ap.build();
-    ap.savePDF(data.value.projectName || "Mininet Network", getFilename("pdf"));
+    ap.savePDF(
+      topologyStore.data.projectName || "Mininet Network",
+      getFilename("pdf"),
+    );
 
     showAlert("success", "Addressing plan built.");
   } catch (error) {

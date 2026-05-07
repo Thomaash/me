@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <LoadingSpinner v-if="loading !== false" />
+    <LoadingSpinner v-if="appStore.loading !== false" />
     <template v-else>
       <v-row wrap>
         <v-col :class="{ 'pr-4': $vuetify.display.lgAndUp }" cols="12" lg="6">
@@ -107,50 +107,52 @@ import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import ThreeStateCheckbox from "@/components/ThreeStateCheckbox.vue";
 import { ipWithMask, port } from "@/validation/rules";
 import { logLevels } from "@/components/selects";
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useTopologyStore } from "@/store/topologyStore";
+import { useAppStore } from "@/store/appStore";
 
-const { data, loading, setValues } = useTopologyStore();
+const topologyStore = useTopologyStore();
+const appStore = useAppStore();
 
 const validators = { ipWithMask, port };
 
 const autoSetMAC = computed({
-  get: () => data.value.autoSetMAC,
-  set: (value) => setValues({ autoSetMAC: value }),
+  get: () => topologyStore.data.autoSetMAC,
+  set: (value) => topologyStore.setValues({ autoSetMAC: value }),
 });
 const autoStaticARP = computed({
-  get: () => data.value.autoStaticARP,
-  set: (value) => setValues({ autoStaticARP: value }),
+  get: () => topologyStore.data.autoStaticARP,
+  set: (value) => topologyStore.setValues({ autoStaticARP: value }),
 });
 const inNamespace = computed({
-  get: () => data.value.inNamespace,
-  set: (value) => setValues({ inNamespace: value }),
+  get: () => topologyStore.data.inNamespace,
+  set: (value) => topologyStore.setValues({ inNamespace: value }),
 });
 const ipBase = computed({
-  get: () => data.value.ipBase,
-  set: (value) => setValues({ ipBase: value }),
+  get: () => topologyStore.data.ipBase,
+  set: (value) => topologyStore.setValues({ ipBase: value }),
 });
 const listenPortBase = computed({
-  get: () => data.value.listenPortBase,
-  set: (value) => setValues({ listenPortBase: value }),
+  get: () => topologyStore.data.listenPortBase,
+  set: (value) => topologyStore.setValues({ listenPortBase: value }),
 });
 const logLevel = computed({
-  get: () => data.value.logLevel,
-  set: (value) => setValues({ logLevel: value }),
+  get: () => topologyStore.data.logLevel,
+  set: (value) => topologyStore.setValues({ logLevel: value }),
 });
 const projectName = computed({
-  get: () => data.value.projectName,
-  set: (value) => setValues({ projectName: value }),
+  get: () => topologyStore.data.projectName,
+  set: (value) => topologyStore.setValues({ projectName: value }),
 });
 const spawnTerminals = computed({
-  get: () => data.value.spawnTerminals,
-  set: (value) => setValues({ spawnTerminals: value }),
+  get: () => topologyStore.data.spawnTerminals,
+  set: (value) => topologyStore.setValues({ spawnTerminals: value }),
 });
 const startScript = computed({
-  get: () => data.value.startScript,
-  set: (value) => setValues({ startScript: value }),
+  get: () => topologyStore.data.startScript,
+  set: (value) => topologyStore.setValues({ startScript: value }),
 });
 const stopScript = computed({
-  get: () => data.value.stopScript,
-  set: (value) => setValues({ stopScript: value }),
+  get: () => topologyStore.data.stopScript,
+  set: (value) => topologyStore.setValues({ stopScript: value }),
 });
 </script>

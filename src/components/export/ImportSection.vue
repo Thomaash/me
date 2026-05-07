@@ -116,15 +116,11 @@ import { useConfirmDialog } from "@vueuse/core";
 import { importer } from "@/importer";
 
 import exampleEmpty from "@/examples/empty";
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useTopologyStore } from "@/store/topologyStore";
+import { useAppStore } from "@/store/appStore";
 
-const {
-  working: storeWorking,
-  setWorking,
-  setAlert,
-  clearAlert,
-  importData: storeImportData,
-} = useTopologyStore();
+const topologyStore = useTopologyStore();
+const appStore = useAppStore();
 const emit = defineEmits(["log"]);
 const { isRevealed, reveal, confirm, cancel } = useConfirmDialog();
 
@@ -165,20 +161,20 @@ const examples = [
 
 const working = computed({
   get() {
-    return !!storeWorking.value;
+    return !!appStore.working;
   },
   set(value) {
     if (value) {
-      clearAlert();
+      appStore.clearAlert();
     }
-    setWorking({ working: !!value });
+    appStore.setWorking({ working: !!value });
   },
 });
 
 const importAccept = importer.importAccept;
 
 function showAlert(type, text) {
-  setAlert({ type, text });
+  appStore.setAlert({ type, text });
 }
 
 function openFileChooser() {
@@ -193,7 +189,7 @@ async function confirmImport(importData, warnings = []) {
   if (isCanceled) {
     showAlert("info", "Import canceled.");
   } else {
-    storeImportData(importData);
+    topologyStore.importData(importData);
     showAlert("success", "Successfully imported.");
   }
 }

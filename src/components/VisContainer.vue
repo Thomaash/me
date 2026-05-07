@@ -8,7 +8,7 @@
     @mouseover="focusRoot"
     @keydown="keypress"
   >
-    <LoadingSpinner v-if="loading !== false" />
+    <LoadingSpinner v-if="appStore.loading !== false" />
     <template v-else>
       <VisCanvas data-cy="vis" :dark="dark" @ready="init" />
 
@@ -49,7 +49,7 @@ import { deselectHandler } from "./vis/deselectHandler";
 import { v4 as randomUUID } from "uuid";
 import { compare, compareNodes } from "./vis/locale";
 import { dark, selection as selectionTheme } from "@/theme";
-import { useTopologyStore } from "@/composables/useTopologyStore";
+import { useTopologyStore } from "@/store/topologyStore";
 import { useAppStore } from "@/store/appStore";
 
 function delayCall(fn = () => {}, delay = 0) {
@@ -120,15 +120,7 @@ const keybindings = {
 };
 
 const emit = defineEmits(["edit-item"]);
-const {
-  data: topoData,
-  loading,
-  updateItems,
-  removeItems,
-  replaceItems,
-  undo: storeUndo,
-  redo: storeRedo,
-} = useTopologyStore();
+const topologyStore = useTopologyStore();
 const appStore = useAppStore();
 const route = useRoute();
 const router = useRouter();
@@ -173,7 +165,7 @@ let nodes = null;
 let edges = null;
 
 // Computed
-const data = topoData;
+const data = topologyStore.data;
 const mouseTagIcon = computed(() => "$net-" + newItem.type);
 
 // Methods
@@ -227,15 +219,8 @@ function addSwitch() {
   net.addNodeMode();
 }
 
-const storeActions = {
-  updateItems,
-  removeItems,
-  replaceItems,
-  undo: storeUndo,
-  redo: storeRedo,
-};
 function commitToStore(type, payload) {
-  storeActions[type](payload);
+  topologyStore[type](payload);
 }
 
 function commitPositions(ids) {
@@ -341,7 +326,7 @@ function stopEditMode() {
 }
 
 async function editItem(node, commit) {
-  const oldItem = data.value.items[node.id] || {
+  const oldItem = data.items[node.id] || {
     id: node.id,
     type: node.group,
     hostname: node.label,
@@ -372,8 +357,8 @@ async function editItem(node, commit) {
 }
 
 function orderNodes(edge) {
-  const src = data.value.items[edge.from].type;
-  const dst = data.value.items[edge.to].type;
+  const src = data.items[edge.from].type;
+  const dst = data.items[edge.to].type;
   if (nodePriorities.indexOf(src) > nodePriorities.indexOf(dst)) {
     const tmp = edge.from;
     edge.from = edge.to;
@@ -382,13 +367,13 @@ function orderNodes(edge) {
 }
 
 function getEdgeType(edge) {
-  const item = data.value.items[edge.id];
+  const item = data.items[edge.id];
   if (item && item.type) {
     return item.type;
   }
 
-  const src = data.value.items[edge.from].type;
-  const dst = data.value.items[edge.to].type;
+  const src = data.items[edge.from].type;
+  const dst = data.items[edge.to].type;
   if (src === "port" && dst === "port") {
     return "link";
   } else {
@@ -397,8 +382,8 @@ function getEdgeType(edge) {
 }
 
 function isEdgeValid(edge, type) {
-  const src = data.value.items[edge.from].type;
-  const dst = data.value.items[edge.to].type;
+  const src = data.items[edge.from].type;
+  const dst = data.items[edge.to].type;
   return edgeTests[type](src, dst);
 }
 
@@ -462,7 +447,7 @@ function getNextFreeHostname(type, rootNodeId) {
 
     return getNextHostname(
       getConnectedNodes(rootNodeId, type).map(
-        ({ id }) => data.value.items[id].hostname,
+        ({ id }) => data.items[id].hostname,
       ),
       baseHostnames[type],
     );
@@ -472,7 +457,7 @@ function getNextFreeHostname(type, rootNodeId) {
       nodes
         .get()
         .filter((node) => node.group === type)
-        .map(({ id }) => data.value.items[id].hostname),
+        .map(({ id }) => data.items[id].hostname),
       baseHostnames[type],
     );
   }
@@ -481,7 +466,7 @@ function getNextFreeHostname(type, rootNodeId) {
 function getClosestId(x, y, types, maxDistance) {
   const ids = nodes
     .getIds()
-    .filter((id) => types.indexOf(data.value.items[id].type) !== -1);
+    .filter((id) => types.indexOf(data.items[id].type) !== -1);
   const positions = net.getPositions(ids);
   const distances = ids.map((id) =>
     Math.hypot(positions[id].x - x, positions[id].y - y),
@@ -643,7 +628,7 @@ function init({
 
           if (
             nodePriorities.indexOf(item.type) >
-            nodePriorities.indexOf(data.value.items[closestId].type)
+            nodePriorities.indexOf(data.items[closestId].type)
           ) {
             association.from = closestId;
             association.to = edited.id;
@@ -757,7 +742,7 @@ function init({
     if (event.nodes.length !== 1) {
       return;
     }
-    const nodeItem = data.value.items[event.nodes[0]];
+    const nodeItem = data.items[event.nodes[0]];
     if (!(nodeItem.type === "host" || nodeItem.type === "switch")) {
       return;
     }
@@ -769,7 +754,7 @@ function init({
       toSelect.add(edge.from);
     });
     const toSelectFiltered = [...toSelect].filter(
-      (nodeId) => data.value.items[nodeId].type === "port",
+      (nodeId) => data.items[nodeId].type === "port",
     );
     if (toSelectFiltered.length) {
       net.selectNodes([event.nodes[0], ...toSelectFiltered]);
