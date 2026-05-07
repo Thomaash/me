@@ -82,8 +82,9 @@
     "node": ">=22.16"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
+    "allowBuilds": {
+      "core-js": false,
+      "esbuild": true
+    }
   }
 }
