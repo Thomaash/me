@@ -1,7 +1,4 @@
+allowBuilds:
+  core-js: false
+
 strictDepBuilds: true
-
-onlyBuiltDependencies:
-  - esbuild
-
-ignoredBuiltDependencies:
-  - core-js
