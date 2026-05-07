@@ -47,7 +47,17 @@ import { RectangularSelection } from "./vis/RectangularSelection";
 import VisCanvas from "./vis/VisCanvas.vue";
 import { deselectHandler } from "./vis/deselectHandler";
 import { v4 as randomUUID } from "uuid";
-import { compare, compareNodes } from "./vis/locale";
+import { compareNodes } from "./vis/locale";
+import {
+  baseHostnames,
+  generateOrganizedPortCoors,
+  getEdgeType as getEdgeTypeHelper,
+  getNextHostname,
+  isEdgeValid as isEdgeValidHelper,
+  nodePriorities,
+  orderNodes as orderNodesHelper,
+  portAmounts,
+} from "./vis/visContainerHelpers";
 import { dark, selection as selectionTheme } from "@/theme";
 import { useTopologyStore } from "@/store/topologyStore";
 import { useAppStore } from "@/store/appStore";
@@ -73,26 +83,6 @@ const snackbarMsgGenerator = new Map([
     (count) => `${count} item${count === 1 ? "" : "s"} deleted.`,
   ],
 ]);
-
-const portAmounts = {
-  host: 2,
-  switch: 6,
-};
-const nodePriorities = ["dummy", "controller", "switch", "host", "port"];
-const edgeTests = {
-  link: (src, dst) => src === "port" && dst === "port",
-  association: (src, dst) =>
-    (src === "controller" && dst === "switch") ||
-    (src === "switch" && dst === "port") ||
-    (src === "host" && dst === "port") ||
-    src === "dummy",
-};
-const baseHostnames = {
-  controller: "c1",
-  host: "h1",
-  port: "eth0",
-  switch: "s1",
-};
 
 // [ctrl][key]
 const keybindings = {
@@ -357,46 +347,15 @@ async function editItem(node, commit) {
 }
 
 function orderNodes(edge) {
-  const src = data.items[edge.from].type;
-  const dst = data.items[edge.to].type;
-  if (nodePriorities.indexOf(src) > nodePriorities.indexOf(dst)) {
-    const tmp = edge.from;
-    edge.from = edge.to;
-    edge.to = tmp;
-  }
+  return orderNodesHelper(edge, data.items);
 }
 
 function getEdgeType(edge) {
-  const item = data.items[edge.id];
-  if (item && item.type) {
-    return item.type;
-  }
-
-  const src = data.items[edge.from].type;
-  const dst = data.items[edge.to].type;
-  if (src === "port" && dst === "port") {
-    return "link";
-  } else {
-    return "association";
-  }
+  return getEdgeTypeHelper(edge, data.items);
 }
 
 function isEdgeValid(edge, type) {
-  const src = data.items[edge.from].type;
-  const dst = data.items[edge.to].type;
-  return edgeTests[type](src, dst);
-}
-
-function generateOrganizedPortCoors({ x, y }, ports) {
-  const xOffset = ports <= 8 ? 50 : 30;
-  const yEvenOffset = ports <= 8 ? 0 : 25;
-  const portY = y + 70;
-  const firstX = x - ((ports - 1) * xOffset) / 2;
-
-  return [...Array(ports)].map((_v, i) => ({
-    x: firstX + xOffset * i,
-    y: portY + (i % 2 === 0 ? yEvenOffset : 0),
-  }));
+  return isEdgeValidHelper(edge, type, data.items);
 }
 
 function getConnectedNodes(id, type) {
@@ -420,22 +379,6 @@ function organizePorts(node) {
       id: ports[i].id,
     })),
   );
-}
-
-function getNextHostname(hostnames, fallback) {
-  if (!hostnames.length) {
-    return fallback;
-  }
-
-  const prevHostname = hostnames.toSorted(compare)[hostnames.length - 1];
-  const res = /^(.*?)(\d+)([^\d]*?)$/.exec(prevHostname);
-  if (res == null) {
-    return fallback;
-  }
-
-  const [, pre, nm, post] = res;
-  const nextLabel = `${pre}${+nm + 1}${post}`;
-  return nextLabel;
 }
 
 function getNextFreeHostname(type, rootNodeId) {
