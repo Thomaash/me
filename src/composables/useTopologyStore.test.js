@@ -1,75 +1,129 @@
 import { describe, it, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
-import { isRef } from "vue";
-import { useTopologyStore } from "./useTopologyStore";
+import { useTopologyStore as useRawTopologyStore } from "@/store/topologyStore";
 
 beforeEach(() => {
   setActivePinia(createPinia());
 });
 
-describe("useTopologyStore composable wrapper", () => {
-  it("returns reactive ref-shaped values for data, past, future, canUndo, canRedo, boundingBox", ({
-    expect,
-  }) => {
-    const wrapped = useTopologyStore();
+describe("useTopologyStore raw Pinia store", () => {
+  it("removeItems updates data.items and adds to past", ({ expect }) => {
+    const store = useRawTopologyStore();
 
-    for (const key of [
-      "data",
-      "past",
-      "future",
-      "canUndo",
-      "canRedo",
-      "boundingBox",
-    ]) {
-      expect(isRef(wrapped[key])).toBe(true);
-      // Each must expose a `.value` (computed refs do).
-      expect(wrapped[key]).toHaveProperty("value");
-    }
-  });
-
-  it("exposes all public topology action delegates as callable functions", ({
-    expect,
-  }) => {
-    const wrapped = useTopologyStore();
-    for (const action of [
-      "importData",
-      "setValues",
-      "removeItems",
-      "updateItems",
-      "replaceItems",
-      "undo",
-      "redo",
-    ]) {
-      expect(typeof wrapped[action]).toBe("function");
-    }
-  });
-
-  // Requirement: Topology store exposes only domain-level public mutation
-  // workflows. The composable wrapper MUST NOT re-export the internal
-  // `applyChange` helper.
-  it("does not expose applyChange on the composable wrapper", ({ expect }) => {
-    const wrapped = useTopologyStore();
-    expect(wrapped.applyChange).toBeUndefined();
-    expect("applyChange" in wrapped).toBe(false);
-  });
-
-  it("removeItems through the composable updates data.value.items and adds to past.value", ({
-    expect,
-  }) => {
-    const wrapped = useTopologyStore();
-
-    // Seed the underlying store data through the composable's reactive surface.
-    wrapped.data.value.items = {
+    store.data.items = {
       n1: { id: "n1", type: "host", hostname: "h1" },
       n2: { id: "n2", type: "host", hostname: "h2" },
     };
-    const pastBefore = wrapped.past.value.length;
+    const pastBefore = store.past.length;
 
-    wrapped.removeItems(["n1"]);
+    store.removeItems(["n1"]);
 
-    expect(wrapped.data.value.items.n1).toBeUndefined();
-    expect(wrapped.data.value.items.n2).toBeDefined();
-    expect(wrapped.past.value.length).toBe(pastBefore + 1);
-    expect(wrapped.canUndo.value).toBe(wrapped.past.value.length);
+    expect(store.data.items.n1).toBeUndefined();
+    expect(store.data.items.n2).toBeDefined();
+    expect(store.past.length).toBe(pastBefore + 1);
+    expect(store.canUndo).toBe(store.past.length);
+  });
+
+  it("undo restores removed items and updates future", ({ expect }) => {
+    const store = useRawTopologyStore();
+
+    store.data.items = {
+      n1: { id: "n1", type: "host", hostname: "h1" },
+      n2: { id: "n2", type: "host", hostname: "h2" },
+    };
+
+    store.removeItems(["n1"]);
+    expect(store.data.items.n1).toBeUndefined();
+    expect(store.past.length).toBe(1);
+    expect(store.future.length).toBe(0);
+
+    store.undo();
+
+    expect(store.data.items.n1).toBeDefined();
+    expect(store.data.items.n1.id).toBe("n1");
+    expect(store.past.length).toBe(0);
+    expect(store.future.length).toBe(1);
+  });
+
+  it("redo re-applies removed items and updates past", ({ expect }) => {
+    const store = useRawTopologyStore();
+
+    store.data.items = {
+      n1: { id: "n1", type: "host", hostname: "h1" },
+      n2: { id: "n2", type: "host", hostname: "h2" },
+    };
+
+    store.removeItems(["n1"]);
+    store.undo();
+    expect(store.data.items.n1).toBeDefined();
+    expect(store.future.length).toBe(1);
+
+    store.redo();
+
+    expect(store.data.items.n1).toBeUndefined();
+    expect(store.past.length).toBe(1);
+    expect(store.future.length).toBe(0);
+  });
+
+  it("updateItems modifies existing items and adds to past", ({ expect }) => {
+    const store = useRawTopologyStore();
+
+    store.data.items = {
+      n1: { id: "n1", type: "host", hostname: "h1" },
+    };
+    const pastBefore = store.past.length;
+
+    store.updateItems([{ id: "n1", hostname: "updated" }]);
+
+    expect(store.data.items.n1.hostname).toBe("updated");
+    expect(store.data.items.n1.type).toBe("host");
+    expect(store.past.length).toBe(pastBefore + 1);
+  });
+
+  it("replaceItems replaces existing items and adds to past", ({ expect }) => {
+    const store = useRawTopologyStore();
+
+    store.data.items = {
+      n1: { id: "n1", type: "host", hostname: "h1" },
+    };
+    const pastBefore = store.past.length;
+
+    store.replaceItems([{ id: "n1", type: "router", hostname: "new" }]);
+
+    expect(store.data.items.n1.type).toBe("router");
+    expect(store.data.items.n1.hostname).toBe("new");
+    expect(store.past.length).toBe(pastBefore + 1);
+  });
+
+  it("setValues sets top-level data properties", ({ expect }) => {
+    const store = useRawTopologyStore();
+
+    store.setValues({ foo: "bar" });
+
+    expect(store.data.foo).toBe("bar");
+  });
+
+  it("importData replaces all data and clears undo history", ({ expect }) => {
+    const store = useRawTopologyStore();
+
+    store.data.items = { n1: { id: "n1" } };
+    store.data.foo = "bar";
+    store.removeItems(["n1"]);
+    expect(store.past.length).toBeGreaterThan(0);
+
+    const newData = { version: 0, items: [{ id: "n2" }], baz: "qux" };
+    store.importData(newData);
+
+    expect(store.data.items).toEqual({ n2: { id: "n2" } });
+    expect(store.data.baz).toBe("qux");
+    expect(store.data.foo).toBeUndefined();
+    expect(store.past.length).toBe(0);
+    expect(store.future.length).toBe(0);
+  });
+
+  it("does not expose applyChange on the raw store", ({ expect }) => {
+    const store = useRawTopologyStore();
+    expect(store.applyChange).toBeUndefined();
+    expect("applyChange" in store).toBe(false);
   });
 });
