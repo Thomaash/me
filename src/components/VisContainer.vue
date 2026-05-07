@@ -209,17 +209,13 @@ function addSwitch() {
   net.addNodeMode();
 }
 
-function commitToStore(type, payload) {
-  topologyStore[type](payload);
-}
-
 function commitPositions(ids) {
   const positions = net.getPositions(ids);
   const updateItems = Object.keys(positions).map((id) => ({
     ...positions[id],
     id,
   }));
-  commitToStore("updateItems", updateItems);
+  topologyStore.updateItems(updateItems);
 }
 
 function commitUncommitedPositions() {
@@ -256,7 +252,7 @@ function deleteSelected() {
   const count = selection.nodes.length + selection.edges.length;
 
   if (count) {
-    commitToStore("removeItems", [...selection.nodes, ...selection.edges]);
+    topologyStore.removeItems([...selection.nodes, ...selection.edges]);
 
     showSnackbar("items-deleted", [count], "Undo", undo);
     updateURL();
@@ -294,7 +290,7 @@ function setScale(scale) {
 
 function undo() {
   try {
-    commitToStore("undo");
+    topologyStore.undo();
     showSnackbar("undone");
   } catch {
     showSnackbar("nothing-to-undo");
@@ -303,7 +299,7 @@ function undo() {
 
 function redo() {
   try {
-    commitToStore("redo");
+    topologyStore.redo();
     showSnackbar("redone");
   } catch {
     showSnackbar("nothing-to-redo");
@@ -340,7 +336,7 @@ async function editItem(node, commit) {
   }
 
   if (commit !== false) {
-    commitToStore("replaceItems", [item]);
+    topologyStore.replaceItems([item]);
   }
 
   return { node, item };
@@ -372,8 +368,7 @@ function organizePorts(node) {
     ports.length,
   );
 
-  commitToStore(
-    "updateItems",
+  topologyStore.updateItems(
     coords.map((coords, i) => ({
       ...coords,
       id: ports[i].id,
@@ -619,7 +614,7 @@ function init({
           }
         }
 
-        commitToStore("replaceItems", items);
+        topologyStore.replaceItems(items);
       },
       editNode: async (node, callback) => {
         newItem.set();
@@ -722,73 +717,15 @@ onMounted(() => {
   focusRoot();
 });
 
-// Expose for parent (CanvasPage) and tests
+// Expose only the parent-facing commands consumed by CanvasPage.
 defineExpose({
-  // Reactive state
-  newItem,
-  mouseTag,
-  snackbar,
-  // Computed
-  snackbarMessage,
-  mouseTagIcon,
-  // Non-reactive vis instances (assigned in init)
-  get net() {
-    return net;
-  },
-  set net(v) {
-    net = v;
-  },
-  get nodes() {
-    return nodes;
-  },
-  set nodes(v) {
-    nodes = v;
-  },
-  get edges() {
-    return edges;
-  },
-  set edges(v) {
-    edges = v;
-  },
-  // Methods
-  moveMouseTag,
-  keypress,
   addEdge,
+  addPort,
+  addHost,
+  addSwitch,
   addController,
   addDummy,
-  addIPsDummy,
-  addTypesDummy,
-  addHost,
-  addPort,
-  addSwitch,
   deleteSelected,
-  selectAll,
-  fitAll,
-  fitSelected,
-  setScale,
-  undo,
-  redo,
-  showSnackbar,
-  stopEditMode,
-  editItem,
-  commit: commitToStore,
-  commitPositions,
-  commitUncommitedPositions,
-  orderNodes,
-  getEdgeType,
-  isEdgeValid,
-  generateOrganizedPortCoors,
-  getConnectedNodes,
-  organizePorts,
-  getNextHostname,
-  getNextFreeHostname,
-  getClosestId,
-  focusRoot,
-  routerPush,
-  clearURLPosition,
-  updateURL,
-  applyURL,
-  init,
 });
 </script>
 
