@@ -26,12 +26,18 @@ function createTestPinia({ width = 200, height = 200 } = {}) {
   if (width > 0 || height > 0) {
     const spanX = Math.max(0, width - 200);
     const spanY = Math.max(0, height - 200);
-    items._bb1 = { id: "_bb1", type: "host", hostname: "_bb1", x: 0, y: 0 };
+    items["bounding-box-1"] = {
+      id: "bounding-box-1",
+      type: "host",
+      hostname: "bounding-box-1",
+      x: 0,
+      y: 0,
+    };
     if (spanX > 0 || spanY > 0) {
-      items._bb2 = {
-        id: "_bb2",
+      items["bounding-box-2"] = {
+        id: "bounding-box-2",
         type: "host",
-        hostname: "_bb2",
+        hostname: "bounding-box-2",
         x: spanX,
         y: spanY,
       };
@@ -291,10 +297,10 @@ describe("ImageConfig watcher", () => {
 
     // Change the bounding box by updating item positions
     // Adding a second item further away increases the bounding box
-    topologyStore.data.items._bb3 = {
-      id: "_bb3",
+    topologyStore.data.items["bounding-box-3"] = {
+      id: "bounding-box-3",
       type: "host",
-      hostname: "_bb3",
+      hostname: "bounding-box-3",
       x: 200,
       y: 200,
     };
