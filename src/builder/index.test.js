@@ -20,9 +20,9 @@ function extractLogBlock(script) {
 // --- Minimal Fixture Helpers ---
 
 // Unique ID counter to avoid collisions across fixtures
-let _uid = 0;
+let lastUid = 0;
 function uid() {
-  return `uid-${++_uid}`;
+  return `uid-${++lastUid}`;
 }
 
 function makeAssociation(fromId, toId) {
@@ -160,7 +160,7 @@ function removeNonCode(script) {
 
 describe("Builder", () => {
   beforeEach(() => {
-    _uid = 0;
+    lastUid = 0;
   });
 
   describe("controller generation", () => {
