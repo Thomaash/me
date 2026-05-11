@@ -22,25 +22,15 @@ import {
 import { useTopologyStore } from "@/store/topologyStore";
 import {
   isEdge,
-  buildGroupColor,
   itemToNode as itemToNodeUtil,
   itemToEdge as itemToEdgeUtil,
   processLabel as processLabelUtil,
 } from "./visCanvasUtils";
+import { useVisCanvasOptions } from "./useVisCanvasOptions";
 import { DataSet } from "vis-data/peer";
 import { Network } from "vis-network/peer";
-import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
 
 import "vis-network/styles/vis-network.css";
-
-import controllerImgDark from "@/assets/network/controller.dark.svg";
-import controllerImgLight from "@/assets/network/controller.light.svg";
-import hostImgDark from "@/assets/network/host.dark.svg";
-import hostImgLight from "@/assets/network/host.light.svg";
-import portImgDark from "@/assets/network/port.dark.svg";
-import portImgLight from "@/assets/network/port.light.svg";
-import switchImgDark from "@/assets/network/switch.dark.svg";
-import switchImgLight from "@/assets/network/switch.light.svg";
 
 const props = defineProps({
   dark: {
@@ -71,124 +61,10 @@ let edges = null;
 const data = computed(() => topologyStore.data);
 const boundingBox = computed(() => topologyStore.boundingBox);
 
-// Computed
-const theme = computed(() => ({
-  images: {
-    controller: props.dark ? controllerImgDark : controllerImgLight,
-    host: props.dark ? hostImgDark : hostImgLight,
-    port: props.dark ? portImgDark : portImgLight,
-    switch: props.dark ? switchImgDark : switchImgLight,
-  },
-  items: {
-    controller: props.dark ? itemsDark.controller : itemsLight.controller,
-    dummy: props.dark ? itemsDark.dummy : itemsLight.dummy,
-    host: props.dark ? itemsDark.host : itemsLight.host,
-    port: props.dark ? itemsDark.port : itemsLight.port,
-    switch: props.dark ? itemsDark.switch : itemsLight.switch,
-  },
-  foreground: props.dark ? canvasDark.foreground : canvasLight.foreground,
-  background: props.dark ? canvasDark.background : canvasLight.background,
-}));
-
-const options = computed(() => ({
-  physics: {
-    enabled: false,
-  },
-  nodes: {
-    // Invisible border, 0 makes selected border disappear
-    borderWidth: 0.0001,
-    borderWidthSelected: 2,
-    font: {
-      align: "center",
-      color: theme.value.foreground,
-      face: "Source Sans 3",
-      strokeWidth: 0,
-    },
-    shapeProperties: {
-      borderRadius: 6,
-      useBorderWithImage: true,
-    },
-    scaling: {
-      label: {
-        // Don't hide labels while zooming in too much (useful for image export)
-        maxVisible: Number.MAX_SAFE_INTEGER,
-      },
-    },
-  },
-  edges: {
-    smooth: false,
-    font: {
-      align: "top",
-      color: theme.value.foreground,
-      face: "Source Sans 3",
-      strokeWidth: 0,
-    },
-  },
-  interaction: {
-    hover: true,
-    navigationButtons: false,
-    keyboard: false,
-  },
-  manipulation: {
-    enabled: false,
-  },
-  groups: {
-    controller: {
-      shape: "image",
-      color: buildGroupColor(
-        theme.value.items.controller,
-        false,
-        theme.value.background,
-      ),
-      size: 25,
-      image: theme.value.images.controller,
-    },
-    dummy: {
-      shape: "box",
-      color: buildGroupColor(
-        theme.value.items.dummy,
-        true,
-        theme.value.background,
-      ),
-      font: {
-        color: theme.value.foreground,
-        face: "Source Code Pro",
-        align: "left",
-      },
-      borderWidth: 1,
-    },
-    host: {
-      shape: "image",
-      color: buildGroupColor(
-        theme.value.items.host,
-        false,
-        theme.value.background,
-      ),
-      size: 25,
-      image: theme.value.images.host,
-    },
-    port: {
-      shape: "image",
-      color: buildGroupColor(
-        theme.value.items.port,
-        false,
-        theme.value.background,
-      ),
-      size: 10,
-      image: theme.value.images.port,
-    },
-    switch: {
-      shape: "image",
-      color: buildGroupColor(
-        theme.value.items.switch,
-        false,
-        theme.value.background,
-      ),
-      size: 25,
-      image: theme.value.images.switch,
-    },
-  },
-}));
+// Vis-network options derived from dark-mode prop via dedicated composable.
+// `theme` is staging state retained transiently for tests; slice 3 will drop
+// it from the exposed surface once tests no longer reach for it.
+const { options, theme } = useVisCanvasOptions(() => props.dark);
 
 const widthStyle = computed(() =>
   width.value == null ? undefined : `${width.value}px`,
