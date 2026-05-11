@@ -30,7 +30,6 @@
         </v-col>
         <v-col cols="12" md="6">
           <v-text-field
-            ref="itemCPULimit"
             v-model.number="item.cpuLimit"
             :rules="[validators.decimal(), validators.between(0, 1)]"
             label="CPU Utilization Limit"

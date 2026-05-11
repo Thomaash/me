@@ -11,7 +11,6 @@
 
     <v-col cols="12" sm="4">
       <v-text-field
-        ref="sizeWidthScreenCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
@@ -25,7 +24,6 @@
     </v-col>
     <v-col cols="12" sm="4">
       <v-text-field
-        ref="sizeWidthPaperCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
@@ -39,7 +37,6 @@
     </v-col>
     <v-col cols="12" sm="4">
       <v-text-field
-        ref="sizeWidthPx"
         :disabled="disabled"
         :min="1"
         :step="1"
@@ -54,7 +51,6 @@
 
     <v-col cols="12" sm="4">
       <v-text-field
-        ref="sizeHeightScreenCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
@@ -68,7 +64,6 @@
     </v-col>
     <v-col cols="12" sm="4">
       <v-text-field
-        ref="sizeHeightPaperCm"
         :disabled="disabled"
         :min="0"
         :step="0.1"
@@ -82,7 +77,6 @@
     </v-col>
     <v-col cols="12" sm="4">
       <v-text-field
-        ref="sizeHeightPx"
         :disabled="disabled"
         :min="1"
         :step="1"
@@ -107,7 +101,6 @@
     <template v-if="tiles">
       <v-col cols="12" sm="4">
         <v-text-field
-          ref="sizeTileWidthPx"
           v-model="tileWidthPx"
           :disabled="disabled"
           :min="1"
@@ -120,7 +113,6 @@
       </v-col>
       <v-col cols="12" sm="4">
         <v-text-field
-          ref="sizeTileHeightPx"
           v-model="tileHeightPx"
           :disabled="disabled"
           :min="1"

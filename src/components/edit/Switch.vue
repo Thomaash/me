@@ -104,7 +104,6 @@
         </v-col>
         <v-col cols="12">
           <v-text-field
-            ref="itemReconnectMs"
             v-model.number="item.reconnectms"
             :rules="[validators.integer(), validators.minValue(0)]"
             label="Reconnect Timeout"

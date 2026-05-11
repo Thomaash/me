@@ -12,7 +12,6 @@
         </v-col>
         <v-col cols="12">
           <v-text-field
-            ref="itemBandwidth"
             v-model.number="item.bandwidth"
             :rules="[validators.minValue(0)]"
             label="Bandwidth"
@@ -43,7 +42,6 @@
         </v-col>
         <v-col cols="12">
           <v-text-field
-            ref="itemLoss"
             v-model.number="item.loss"
             :rules="[validators.between(0, 100)]"
             label="Loss"
@@ -57,7 +55,6 @@
         </v-col>
         <v-col cols="12">
           <v-text-field
-            ref="itemMaxQueueSize"
             v-model.number="item.maxQueueSize"
             :rules="[validators.integer(), validators.minValue(0)]"
             label="Max queue"
