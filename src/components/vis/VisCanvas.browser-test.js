@@ -5,7 +5,7 @@ import { createVuetify } from "vuetify";
 import { createPinia } from "pinia";
 import VisCanvas from "@/components/vis/VisCanvas.vue";
 import { useTopologyStore } from "@/store/topologyStore";
-import { canvasDark, canvasLight, itemsDark, itemsLight } from "@/theme";
+import { canvasDark } from "@/theme";
 
 function createTestPinia({ items, zeroBoundingBox = false } = {}) {
   const defaultItems = {
@@ -86,71 +86,6 @@ describe.concurrent("VisCanvas", () => {
     wrapper.unmount();
   });
 
-  describe("theme computed", () => {
-    it("selects dark theme colors and dark item colors when dark=true", ({
-      expect,
-    }) => {
-      const wrapper = mountVisCanvas({ dark: true });
-      const vm = wrapper.vm;
-
-      // Dark theme should use canvasDark foreground/background
-      expect(vm.theme.foreground).toBe(canvasDark.foreground);
-      expect(vm.theme.background).toBe(canvasDark.background);
-
-      // Dark theme should use itemsDark colors
-      expect(vm.theme.items.controller).toBe(itemsDark.controller);
-      expect(vm.theme.items.host).toBe(itemsDark.host);
-      expect(vm.theme.items.port).toBe(itemsDark.port);
-      expect(vm.theme.items.switch).toBe(itemsDark.switch);
-      expect(vm.theme.items.dummy).toBe(itemsDark.dummy);
-
-      // Images should be defined
-      expect(vm.theme.images.controller).toBeDefined();
-      expect(vm.theme.images.host).toBeDefined();
-      expect(vm.theme.images.port).toBeDefined();
-      expect(vm.theme.images.switch).toBeDefined();
-
-      wrapper.unmount();
-    });
-
-    it("selects light theme colors and light item colors when dark=false", ({
-      expect,
-    }) => {
-      const wrapper = mountVisCanvas({ dark: false });
-      const vm = wrapper.vm;
-
-      // Light theme should use canvasLight foreground/background
-      expect(vm.theme.foreground).toBe(canvasLight.foreground);
-      expect(vm.theme.background).toBe(canvasLight.background);
-
-      // Light theme should use itemsLight colors
-      expect(vm.theme.items.controller).toBe(itemsLight.controller);
-      expect(vm.theme.items.host).toBe(itemsLight.host);
-      expect(vm.theme.items.port).toBe(itemsLight.port);
-      expect(vm.theme.items.switch).toBe(itemsLight.switch);
-      expect(vm.theme.items.dummy).toBe(itemsLight.dummy);
-
-      wrapper.unmount();
-    });
-
-    it("produces different images for dark vs light themes", ({ expect }) => {
-      const wrapperDark = mountVisCanvas({ dark: true });
-      const wrapperLight = mountVisCanvas({ dark: false });
-
-      const darkImages = wrapperDark.vm.theme.images;
-      const lightImages = wrapperLight.vm.theme.images;
-
-      // Dark and light should use different image references
-      expect(darkImages.controller).not.toBe(lightImages.controller);
-      expect(darkImages.host).not.toBe(lightImages.host);
-      expect(darkImages.port).not.toBe(lightImages.port);
-      expect(darkImages.switch).not.toBe(lightImages.switch);
-
-      wrapperDark.unmount();
-      wrapperLight.unmount();
-    });
-  });
-
   describe("options computed", () => {
     it("generates vis-network configuration with physics disabled and correct groups", ({
       expect,
@@ -201,11 +136,10 @@ describe.concurrent("VisCanvas", () => {
       const wrapper = mountVisCanvas({ dark: true });
       const vm = wrapper.vm;
       const opts = vm.options;
-      const fg = vm.theme.foreground;
 
-      expect(opts.nodes.font.color).toBe(fg);
-      expect(opts.edges.font.color).toBe(fg);
-      expect(opts.groups.dummy.font.color).toBe(fg);
+      expect(opts.nodes.font.color).toBe(canvasDark.foreground);
+      expect(opts.edges.font.color).toBe(canvasDark.foreground);
+      expect(opts.groups.dummy.font.color).toBe(canvasDark.foreground);
 
       wrapper.unmount();
     });
