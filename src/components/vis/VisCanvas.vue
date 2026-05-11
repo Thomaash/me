@@ -11,7 +11,14 @@
 <script setup>
 defineOptions({ name: "VisCanvas" });
 
-import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+import {
+  ref,
+  useTemplateRef,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import { useTopologyStore } from "@/store/topologyStore";
 import {
   isEdge,
@@ -47,8 +54,8 @@ const emit = defineEmits(["ready"]);
 const topologyStore = useTopologyStore();
 
 // Template refs
-const container = ref(null);
-const vis = ref(null);
+const container = useTemplateRef("container");
+const vis = useTemplateRef("vis");
 
 // Reactive state
 const width = ref(null);

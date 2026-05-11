@@ -111,7 +111,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, useTemplateRef, computed } from "vue";
 import { useConfirmDialog } from "@vueuse/core";
 import { importer } from "@/importer";
 
@@ -124,7 +124,7 @@ const appStore = useAppStore();
 const emit = defineEmits(["log"]);
 const { isRevealed, reveal, confirm, cancel } = useConfirmDialog();
 
-const fileInput = ref(null);
+const fileInput = useTemplateRef("fileInput");
 const scriptImportWarning = ref(false);
 
 const emptyProject = exampleEmpty;

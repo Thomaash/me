@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, useTemplateRef, computed } from "vue";
 import Edit from "@/components/Edit.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import VisContainer from "@/components/VisContainer.vue";
@@ -101,8 +101,8 @@ import { useAppStore } from "@/store/appStore";
 const appStore = useAppStore();
 const route = useRoute();
 
-const vis = ref(null);
-const edit = ref(null);
+const vis = useTemplateRef("vis");
+const edit = useTemplateRef("edit");
 const fab = ref(false);
 const isView = computed(() => route.meta?.isView);
 

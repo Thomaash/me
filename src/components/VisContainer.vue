@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { useTemplateRef, reactive, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import { RectangularSelection } from "./vis/RectangularSelection";
@@ -116,7 +116,7 @@ const route = useRoute();
 const router = useRouter();
 
 // Template ref
-const root = ref(null);
+const root = useTemplateRef("root");
 
 // Reactive state
 const newItem = reactive({

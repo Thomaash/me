@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from "vue";
+import { ref, useTemplateRef, computed, nextTick } from "vue";
 import { AddressingPlan } from "@/builder/AddressingPlan";
 import { Builder } from "@/builder";
 import VisCanvas from "@/components/vis/VisCanvas.vue";
@@ -65,7 +65,7 @@ const topologyStore = useTopologyStore();
 const appStore = useAppStore();
 const emit = defineEmits(["log"]);
 
-const visCanvas = ref(null);
+const visCanvas = useTemplateRef("visCanvas");
 const visCanvasOn = ref(false);
 const visCanvasResolve = ref(() => {});
 const dark = ref(false);
