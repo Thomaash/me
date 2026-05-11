@@ -17,10 +17,8 @@ import switchImgLight from "@/assets/network/switch.light.svg";
  * Public contract: `dark` in, `options` out.
  *
  * @param {import("vue").MaybeRefOrGetter<boolean>} dark - Dark-mode state.
- * @returns {{ options: import("vue").ComputedRef<object>, theme: import("vue").ComputedRef<object> }}
- *   `options` is the public output. `theme` is internal staging state exposed
- *   only for transitional test access; it will be removed in a follow-up slice
- *   once tests no longer depend on it.
+ * @returns {{ options: import("vue").ComputedRef<object> }}
+ *   Reactive vis-network options derived from the current dark-mode input.
  */
 export function useVisCanvasOptions(dark) {
   const theme = computed(() => {
@@ -144,5 +142,5 @@ export function useVisCanvasOptions(dark) {
     },
   }));
 
-  return { options, theme };
+  return { options };
 }

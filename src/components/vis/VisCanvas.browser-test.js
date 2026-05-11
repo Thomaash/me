@@ -5,7 +5,6 @@ import { createVuetify } from "vuetify";
 import { createPinia } from "pinia";
 import VisCanvas from "@/components/vis/VisCanvas.vue";
 import { useTopologyStore } from "@/store/topologyStore";
-import { canvasDark } from "@/theme";
 
 function createTestPinia({ items, zeroBoundingBox = false } = {}) {
   const defaultItems = {
@@ -84,65 +83,6 @@ describe.concurrent("VisCanvas", () => {
     expect(payload).toHaveProperty("nodes");
     expect(payload).toHaveProperty("edges");
     wrapper.unmount();
-  });
-
-  describe("options computed", () => {
-    it("generates vis-network configuration with physics disabled and correct groups", ({
-      expect,
-    }) => {
-      const wrapper = mountVisCanvas({ dark: false });
-      const vm = wrapper.vm;
-      const opts = vm.options;
-
-      expect(opts.physics.enabled).toBe(false);
-      expect(opts.nodes.borderWidth).toBeCloseTo(0.0001);
-      expect(opts.nodes.borderWidthSelected).toBe(2);
-      expect(opts.nodes.font.align).toBe("center");
-      expect(opts.nodes.font.face).toBe("Source Sans 3");
-      expect(opts.nodes.font.strokeWidth).toBe(0);
-      expect(opts.nodes.shapeProperties.borderRadius).toBe(6);
-      expect(opts.nodes.shapeProperties.useBorderWithImage).toBe(true);
-      expect(opts.nodes.scaling.label.maxVisible).toBe(Number.MAX_SAFE_INTEGER);
-
-      expect(opts.edges.smooth).toBe(false);
-      expect(opts.edges.font.align).toBe("top");
-      expect(opts.edges.font.face).toBe("Source Sans 3");
-
-      expect(opts.interaction.hover).toBe(true);
-      expect(opts.interaction.navigationButtons).toBe(false);
-      expect(opts.interaction.keyboard).toBe(false);
-
-      expect(opts.manipulation.enabled).toBe(false);
-
-      expect(opts.groups.controller.shape).toBe("image");
-      expect(opts.groups.host.shape).toBe("image");
-      expect(opts.groups.port.shape).toBe("image");
-      expect(opts.groups.switch.shape).toBe("image");
-      expect(opts.groups.dummy.shape).toBe("box");
-
-      expect(opts.groups.controller.size).toBe(25);
-      expect(opts.groups.host.size).toBe(25);
-      expect(opts.groups.port.size).toBe(10);
-      expect(opts.groups.switch.size).toBe(25);
-
-      expect(opts.groups.dummy.font.face).toBe("Source Code Pro");
-      expect(opts.groups.dummy.font.align).toBe("left");
-      expect(opts.groups.dummy.borderWidth).toBe(1);
-
-      wrapper.unmount();
-    });
-
-    it("uses theme foreground color in node and edge fonts", ({ expect }) => {
-      const wrapper = mountVisCanvas({ dark: true });
-      const vm = wrapper.vm;
-      const opts = vm.options;
-
-      expect(opts.nodes.font.color).toBe(canvasDark.foreground);
-      expect(opts.edges.font.color).toBe(canvasDark.foreground);
-      expect(opts.groups.dummy.font.color).toBe(canvasDark.foreground);
-
-      wrapper.unmount();
-    });
   });
 
   describe("widthStyle and heightStyle computed", () => {

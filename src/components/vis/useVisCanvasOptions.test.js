@@ -140,6 +140,51 @@ describe.concurrent("useVisCanvasOptions", () => {
     });
   });
 
+  describe("static option shape", () => {
+    it("generates vis-network configuration with physics disabled and correct groups", ({
+      expect,
+    }) => {
+      const { options } = useVisCanvasOptions(ref(false));
+      const opts = options.value;
+
+      expect(opts.physics.enabled).toBe(false);
+      expect(opts.nodes.borderWidth).toBeCloseTo(0.0001);
+      expect(opts.nodes.borderWidthSelected).toBe(2);
+      expect(opts.nodes.font.align).toBe("center");
+      expect(opts.nodes.font.face).toBe("Source Sans 3");
+      expect(opts.nodes.font.strokeWidth).toBe(0);
+      expect(opts.nodes.shapeProperties.borderRadius).toBe(6);
+      expect(opts.nodes.shapeProperties.useBorderWithImage).toBe(true);
+      expect(opts.nodes.scaling.label.maxVisible).toBe(Number.MAX_SAFE_INTEGER);
+
+      expect(opts.edges.smooth).toBe(false);
+      expect(opts.edges.font.align).toBe("top");
+      expect(opts.edges.font.face).toBe("Source Sans 3");
+      expect(opts.edges.font.strokeWidth).toBe(0);
+
+      expect(opts.interaction.hover).toBe(true);
+      expect(opts.interaction.navigationButtons).toBe(false);
+      expect(opts.interaction.keyboard).toBe(false);
+
+      expect(opts.manipulation.enabled).toBe(false);
+
+      expect(opts.groups.controller.shape).toBe("image");
+      expect(opts.groups.host.shape).toBe("image");
+      expect(opts.groups.port.shape).toBe("image");
+      expect(opts.groups.switch.shape).toBe("image");
+      expect(opts.groups.dummy.shape).toBe("box");
+
+      expect(opts.groups.controller.size).toBe(25);
+      expect(opts.groups.host.size).toBe(25);
+      expect(opts.groups.port.size).toBe(10);
+      expect(opts.groups.switch.size).toBe(25);
+
+      expect(opts.groups.dummy.font.face).toBe("Source Code Pro");
+      expect(opts.groups.dummy.font.align).toBe("left");
+      expect(opts.groups.dummy.borderWidth).toBe(1);
+    });
+  });
+
   describe("reactivity", () => {
     it("updates options reactively when the dark input ref changes", ({
       expect,

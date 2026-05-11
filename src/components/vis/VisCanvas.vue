@@ -62,9 +62,7 @@ const data = computed(() => topologyStore.data);
 const boundingBox = computed(() => topologyStore.boundingBox);
 
 // Vis-network options derived from dark-mode prop via dedicated composable.
-// `theme` is staging state retained transiently for tests; slice 3 will drop
-// it from the exposed surface once tests no longer reach for it.
-const { options, theme } = useVisCanvasOptions(() => props.dark);
+const { options } = useVisCanvasOptions(() => props.dark);
 
 const widthStyle = computed(() =>
   width.value == null ? undefined : `${width.value}px`,
@@ -94,8 +92,6 @@ function doProcessLabel(item) {
 const exposedApi = {
   // Refs auto-unwrap through proxyRefs in Vue's expose proxy
   cleanUpCallbacks,
-  theme,
-  options,
   widthStyle,
   heightStyle,
   width,
