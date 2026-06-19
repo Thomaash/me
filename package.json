@@ -57,7 +57,7 @@
     "@stryker-mutator/vitest-runner": "9.6.1",
     "@tomina/deploy-echoes": "1.0.0",
     "@vitejs/plugin-vue": "6.0.6",
-    "@vitest/browser": "4.1.5",
+    "@vitest/browser": "4.1.8",
     "@vitest/browser-playwright": "4.1.5",
     "@vitest/coverage-v8": "4.1.5",
     "@vue/compiler-dom": "3.5.34",
