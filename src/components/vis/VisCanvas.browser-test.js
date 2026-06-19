@@ -53,6 +53,51 @@ function mountVisCanvas({ dark = false, items, zeroBoundingBox = false } = {}) {
   });
 }
 
+/**
+ * Installs mock net event/redraw/view plumbing needed by toTileBlobs.
+ * Returns { eventHandlers, allHandlers } -- allHandlers preserves every
+ * registered handler even after off() removes it from eventHandlers.
+ */
+function stubNetForTiling(vm, { canvasSize = 100, view } = {}) {
+  const eventHandlers = {};
+  const allHandlers = {};
+
+  vm.net.on = (event, handler) => {
+    eventHandlers[event] = handler;
+    allHandlers[event] = handler;
+    if (event === "resize") {
+      Promise.resolve().then(() => handler());
+    }
+  };
+
+  vm.net.off = (event, handler) => {
+    if (eventHandlers[event] === handler) {
+      delete eventHandlers[event];
+    }
+  };
+
+  vm.net.moveTo = vi.fn();
+
+  vm.net.redraw = () => {
+    if (eventHandlers["afterDrawing"]) {
+      const handler = eventHandlers["afterDrawing"];
+      const fakeCanvas = {
+        width: canvasSize,
+        height: canvasSize,
+        toBlob: (cb, type) => cb(new Blob(["tile"], { type })),
+      };
+      handler({ canvas: fakeCanvas });
+    }
+  };
+
+  vm.net.view = view || {
+    targetTranslation: { x: 0, y: 0 },
+    targetScale: 1,
+  };
+
+  return { eventHandlers, allHandlers };
+}
+
 describe.concurrent("VisCanvas", () => {
   it("mounts in Vuetify context and renders container with class vis-container", ({
     expect,
@@ -578,55 +623,6 @@ describe.concurrent("VisCanvas", () => {
   });
 
   describe("toTileBlobs method", () => {
-    /**
-     * Installs mock net event/redraw/view plumbing needed by toTileBlobs.
-     * Returns { eventHandlers } so callers can inspect captured handlers.
-     */
-    /**
-     * Installs mock net event/redraw/view plumbing needed by toTileBlobs.
-     * Returns { eventHandlers, allHandlers } -- allHandlers preserves every
-     * registered handler even after off() removes it from eventHandlers.
-     */
-    function stubNetForTiling(vm, { canvasSize = 100, view } = {}) {
-      const eventHandlers = {};
-      const allHandlers = {};
-
-      vm.net.on = (event, handler) => {
-        eventHandlers[event] = handler;
-        allHandlers[event] = handler;
-        if (event === "resize") {
-          Promise.resolve().then(() => handler());
-        }
-      };
-
-      vm.net.off = (event, handler) => {
-        if (eventHandlers[event] === handler) {
-          delete eventHandlers[event];
-        }
-      };
-
-      vm.net.moveTo = vi.fn();
-
-      vm.net.redraw = () => {
-        if (eventHandlers["afterDrawing"]) {
-          const handler = eventHandlers["afterDrawing"];
-          const fakeCanvas = {
-            width: canvasSize,
-            height: canvasSize,
-            toBlob: (cb, type) => cb(new Blob(["tile"], { type })),
-          };
-          handler({ canvas: fakeCanvas });
-        }
-      };
-
-      vm.net.view = view || {
-        targetTranslation: { x: 0, y: 0 },
-        targetScale: 1,
-      };
-
-      return { eventHandlers, allHandlers };
-    }
-
     it("throws RangeError when bounding box has zero dimensions", async ({
       expect,
     }) => {
