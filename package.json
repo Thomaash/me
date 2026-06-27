@@ -52,7 +52,7 @@
   "devDependencies": {
     "@commitlint/cli": "21.1.0",
     "@commitlint/config-conventional": "21.1.0",
-    "@playwright/test": "1.61.0",
+    "@playwright/test": "1.61.1",
     "@stryker-mutator/core": "9.6.1",
     "@stryker-mutator/vitest-runner": "9.6.1",
     "@tomina/deploy-echoes": "1.0.0",
@@ -72,7 +72,7 @@
     "jsdom": "29.1.1",
     "lint-staged": "17.0.7",
     "oxlint": "1.71.0",
-    "playwright": "1.61.0",
+    "playwright": "1.61.1",
     "prettier": "3.8.4",
     "start-server-and-test": "3.0.11",
     "vite": "8.0.11",
