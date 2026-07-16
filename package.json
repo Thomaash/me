@@ -64,7 +64,7 @@
     "@vue/server-renderer": "3.5.39",
     "@vue/test-utils": "2.4.11",
     "autoprefixer": "10.5.2",
-    "dependency-cruiser": "18.0.0",
+    "dependency-cruiser": "18.1.0",
     "gh-pages": "6.3.0",
     "globals": "17.7.0",
     "globby": "16.2.1",
