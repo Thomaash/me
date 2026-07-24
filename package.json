@@ -73,7 +73,7 @@
     "lint-staged": "17.0.7",
     "oxlint": "1.74.0",
     "playwright": "1.61.1",
-    "prettier": "3.9.5",
+    "prettier": "3.9.6",
     "start-server-and-test": "3.0.11",
     "vite": "8.0.11",
     "vite-plugin-vuetify": "2.1.3",
