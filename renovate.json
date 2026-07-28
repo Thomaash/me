@@ -10,6 +10,15 @@
     {
       "groupName": "Vis",
       "matchPackageNames": ["/^vis-/"]
+    },
+
+    {
+      "groupName": "playwright packages",
+      "matchPackageNames": [
+        "@playwright/test",
+        "mcr.microsoft.com/playwright",
+        "playwright"
+      ]
     }
   ]
 }
