@@ -109,8 +109,8 @@ importers:
         specifier: 17.9.0
         version: 17.9.0
       globby:
-        specifier: 16.2.2
-        version: 16.2.2
+        specifier: 16.2.3
+        version: 16.2.3
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -1876,8 +1876,8 @@ packages:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
 
-  globby@16.2.2:
-    resolution: {integrity: sha512-NLvV9ubZ6NDsJaOpKPy3cQeJpKi9DcWiyCiFUpJPA0YihRqiE6RWaLUmgNNPr8MgPpLZjnBjSmou7uZBRJv9wA==}
+  globby@16.2.3:
+    resolution: {integrity: sha512-VZX7TV7jmd/pn71vdnLKtgwy1IWqc3KjI9x1/UtPkwoKk5fKrNLY30ltDe3cAM5xruIN7YuuaulFt133jRrKZg==}
     engines: {node: '>=20'}
 
   gopd@1.2.0:
@@ -4995,7 +4995,7 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
-  globby@16.2.2:
+  globby@16.2.3:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
       fast-glob: 3.3.3
