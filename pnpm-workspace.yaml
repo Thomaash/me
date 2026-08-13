@@ -1,4 +1,7 @@
 allowBuilds:
   core-js: false
 
+minimumReleaseAgeExclude:
+  - qs@6.15.2
+
 strictDepBuilds: true
