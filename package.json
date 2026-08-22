@@ -67,7 +67,7 @@
     "dependency-cruiser": "18.2.0",
     "gh-pages": "6.3.0",
     "globals": "17.11.0",
-    "globby": "16.2.3",
+    "globby": "16.2.4",
     "husky": "9.1.7",
     "jsdom": "30.0.1",
     "lint-staged": "17.3.0",
