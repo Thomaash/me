@@ -67,7 +67,17 @@ class IPs {
   }
 }
 
+// Guards against denial-of-service via extremely large or pathological inputs
+// being fed straight into the ANTLR lexer/parser.
+const maxImportScriptLength = 1_000_000;
+
 function parse(input) {
+  if (typeof input !== "string" || input.length > maxImportScriptLength) {
+    throw new Error(
+      `Import script exceeds the maximum allowed length of ${maxImportScriptLength} characters.`,
+    );
+  }
+
   const chars = new InputStream(input);
   const lexer = new Python2Lexer(chars);
   const tokens = new CommonTokenStream(lexer);
