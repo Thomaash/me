@@ -46,7 +46,7 @@
     "vis-network": "10.1.2",
     "vis-util": "6.0.2",
     "vue": "3.5.42",
-    "vue-router": "5.2.0",
+    "vue-router": "5.3.0",
     "vuetify": "4.1.12"
   },
   "devDependencies": {
