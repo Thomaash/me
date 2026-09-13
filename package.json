@@ -70,7 +70,7 @@
     "globby": "16.2.4",
     "husky": "9.1.7",
     "jsdom": "30.0.1",
-    "lint-staged": "17.5.0",
+    "lint-staged": "17.5.1",
     "oxlint": "1.82.0",
     "playwright": "1.63.0",
     "prettier": "3.9.6",
