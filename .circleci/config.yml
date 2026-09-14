@@ -7,7 +7,7 @@ version: 2.1
 executors:
   node:
     docker:
-      - image: node:24.19.0@sha256:4196d66a565c6f195728d9952f161f4adfe2ad753052a08b7ec7f1c5a6bda42b
+      - image: node:24.21.0@sha256:6dac556d980b7f0e5498d08f08cee0ca67798b4ad6c23964a9214920e67758d0
     working_directory: ~/repo
     resource_class: small
 
