@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "license": "ISC",
-  "packageManager": "pnpm@11.28.0",
+  "packageManager": "pnpm@11.28.2",
   "scripts": {
     "build": "vite build",
     "clean": "rm -rf dist/* .stryker-tmp",
