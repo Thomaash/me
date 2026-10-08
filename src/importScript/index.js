@@ -67,7 +67,15 @@ class IPs {
   }
 }
 
+const MAX_SCRIPT_LENGTH = 1_000_000;
+
 function parse(input) {
+  if (typeof input !== "string" || input.length > MAX_SCRIPT_LENGTH) {
+    throw new Error(
+      `Script is too large to import (limit is ${MAX_SCRIPT_LENGTH} characters).`,
+    );
+  }
+
   const chars = new InputStream(input);
   const lexer = new Python2Lexer(chars);
   const tokens = new CommonTokenStream(lexer);
