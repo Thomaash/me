@@ -71,7 +71,7 @@
     "husky": "9.1.7",
     "jsdom": "30.1.2",
     "lint-staged": "17.6.0",
-    "oxlint": "1.83.0",
+    "oxlint": "1.87.0",
     "playwright": "1.63.0",
     "prettier": "3.9.9",
     "start-server-and-test": "3.0.12",
