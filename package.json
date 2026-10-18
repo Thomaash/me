@@ -36,7 +36,7 @@
     "@vueuse/core": "15.0.0",
     "antlr4": "4.13.2",
     "jspdf": "4.2.1",
-    "jspdf-autotable": "5.0.8",
+    "jspdf-autotable": "5.0.9",
     "localforage": "1.10.0",
     "pinia": "4.1.0",
     "source-code-pro": "2.42.0",
