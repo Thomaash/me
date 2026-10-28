@@ -92,7 +92,4 @@ workflows:
       - release:
           requires:
             - build-and-test
-          filters:
-            branches:
-              only:
-                - release
+          filters: pipeline.git.branch == "release"
