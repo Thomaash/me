@@ -243,6 +243,21 @@ function trackWrapper(wrapper) {
   return wrapper;
 }
 
+async function initWithHandlers() {
+  return mountWithNet({
+    items: {
+      n1: { type: "host", hostname: "h1" },
+      n2: { type: "switch", hostname: "s1" },
+      p1: { type: "port", hostname: "eth0" },
+    },
+    nodeItems: [
+      { id: "n1", group: "host" },
+      { id: "n2", group: "switch" },
+      { id: "p1", group: "port" },
+    ],
+  });
+}
+
 // NOTE: not concurrent — Vuetify teleports v-snackbar to document.body, so
 // concurrent tests would step on each other's rendered snackbar. Running this
 // suite sequentially keeps DOM snackbar assertions reliable.
@@ -861,21 +876,6 @@ describe("VisContainer", () => {
   });
 
   describe("vis-network event handlers", () => {
-    async function initWithHandlers() {
-      return mountWithNet({
-        items: {
-          n1: { type: "host", hostname: "h1" },
-          n2: { type: "switch", hostname: "s1" },
-          p1: { type: "port", hostname: "eth0" },
-        },
-        nodeItems: [
-          { id: "n1", group: "host" },
-          { id: "n2", group: "switch" },
-          { id: "p1", group: "port" },
-        ],
-      });
-    }
-
     it("dragEnd with nodes commits node positions to the store", async ({
       expect,
     }) => {

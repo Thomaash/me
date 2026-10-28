@@ -19,14 +19,14 @@ const mockSetProperties = vi.fn();
 const mockViewerPreferences = vi.fn();
 const mockSetFontSize = vi.fn();
 
+class MockJSPDF {
+  save = mockSave;
+  text = mockText;
+  setProperties = mockSetProperties;
+  viewerPreferences = mockViewerPreferences;
+  setFontSize = mockSetFontSize;
+}
 vi.mock("jspdf", () => {
-  function MockJSPDF() {
-    this.save = mockSave;
-    this.text = mockText;
-    this.setProperties = mockSetProperties;
-    this.viewerPreferences = mockViewerPreferences;
-    this.setFontSize = mockSetFontSize;
-  }
   return { default: MockJSPDF };
 });
 
@@ -64,6 +64,20 @@ function makeAssociation(fromId, toId) {
 
 function buildTopology(items) {
   return { items };
+}
+
+function singlePortTopology() {
+  const h1 = makeHost({ hostname: "host-1" });
+  const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
+  const a1 = makeAssociation(h1.id, p1.id);
+  return [h1, p1, a1];
+}
+
+function buildAndSavePDF(items, headline = "Test Plan", filename = "test.pdf") {
+  const ap = new AddressingPlan(buildTopology(items));
+  ap.build();
+  ap.savePDF(headline, filename);
+  return ap;
 }
 
 // --- Tests ---
@@ -245,24 +259,6 @@ describe("AddressingPlan", () => {
       mockSetFontSize.mockClear();
       lastAutoTableArgs = null;
     });
-
-    function buildAndSavePDF(
-      items,
-      headline = "Test Plan",
-      filename = "test.pdf",
-    ) {
-      const ap = new AddressingPlan(buildTopology(items));
-      ap.build();
-      ap.savePDF(headline, filename);
-      return ap;
-    }
-
-    function singlePortTopology() {
-      const h1 = makeHost({ hostname: "host-1" });
-      const p1 = makePort({ hostname: "eth0", ips: ["10.0.0.1/24"] });
-      const a1 = makeAssociation(h1.id, p1.id);
-      return [h1, p1, a1];
-    }
 
     it("sets document properties with the headline as title", ({ expect }) => {
       buildAndSavePDF(singlePortTopology(), "My Network Plan");
