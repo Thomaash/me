@@ -69,7 +69,7 @@
     "globals": "17.14.0",
     "globby": "16.2.4",
     "husky": "9.1.7",
-    "jsdom": "31.0.0",
+    "jsdom": "31.0.1",
     "lint-staged": "17.6.0",
     "oxlint": "1.93.0",
     "playwright": "1.65.0",
