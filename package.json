@@ -47,7 +47,7 @@
     "vis-util": "6.0.3",
     "vue": "3.5.45",
     "vue-router": "5.5.1",
-    "vuetify": "4.3.3"
+    "vuetify": "4.3.4"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.4",
