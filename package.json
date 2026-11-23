@@ -63,7 +63,7 @@
     "@vue/compiler-dom": "3.5.45",
     "@vue/server-renderer": "3.5.45",
     "@vue/test-utils": "2.5.1",
-    "autoprefixer": "10.6.2",
+    "autoprefixer": "10.7.0",
     "dependency-cruiser": "18.8.0",
     "gh-pages": "6.3.0",
     "globals": "17.14.0",
