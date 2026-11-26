@@ -2,7 +2,9 @@
   "extends": ["config:js-app", "config:best-practices", ":prNotPending"],
 
   "automerge": true,
-  "dependencyDashboard": false,
+  "dependencyDashboard": {
+    "enabled": false
+  },
   "gitIgnoredAuthors": ["114827586+autofix-ci[bot]@users.noreply.github.com"],
   "rebaseWhen": "behind-base-branch",
 
